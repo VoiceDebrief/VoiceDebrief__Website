@@ -10,7 +10,7 @@ The WhatsApp voice note transcription tool — the first SGraph product going to
 One job, one pass: drop in the audio (`.opus` / `.ogg` / `.m4a`) → transcript, analysis,
 short debrief, and an infographic only if asked.
 
-Canonical architecture: `docs/brief-pack/v0.1.0__02__architecture.md` and the 27 July
+Canonical architecture: `library/brief-pack/v0.1.0__02__architecture.md` and the 27 July
 arch brief in `SGraph-AI__App__Send` (see the brief pack's source map). Load-bearing
 decisions, do not casually revisit:
 

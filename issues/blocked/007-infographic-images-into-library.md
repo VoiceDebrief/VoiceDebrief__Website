@@ -7,7 +7,7 @@ estimated_effort: small
 
 # Add the shared infographics to library/infographics/
 
-Seven infographics shared in-session on 28 Jul (consulting model, commercialising primitives, tools inventory, first product to market, voice note tool, user journey, partnership agreement). Mapping to source briefs already recorded in docs/brief-pack/v0.1.0__05__source-map.md.
+Seven infographics shared in-session on 28 Jul (consulting model, commercialising primitives, tools inventory, first product to market, voice note tool, user journey, partnership agreement). Mapping to source briefs already recorded in library/brief-pack/v0.1.0__05__source-map.md.
 
 ## Blocked on
 blocked_on: the image files themselves — shared in chat as images; the actual files need to be added to the repo by Dinis (or a session that receives them as files).

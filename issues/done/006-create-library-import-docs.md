@@ -11,3 +11,6 @@ Import the relevant docs from __App__Send (27 Jul first-product pack, lineage br
 
 ## Acceptance criteria
 library/ with imports + README index; provenance (original repo, path, version) recorded per import.
+
+## Outcome
+Done 28 Jul: library/ with README (provenance table), first-product-to-market pack (4 docs), lineage briefs (3), audio-transcribe docs (3), issues-fs-lite guides (2), infographics index, and the brief pack moved in from docs/. Image files still tracked by issue 007 (blocked).

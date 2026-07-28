@@ -12,13 +12,13 @@
 | Item | Where | Since |
 |------|-------|-------|
 | Repo scaffold (README, LICENSE, .gitignore) | repo root | initial commit |
-| Brief pack: session understanding, architecture, commercial model, task plan, source map | `docs/brief-pack/` | 2026-07-28 |
+| Brief pack: session understanding, architecture, commercial model, task plan, source map | `library/brief-pack/` | 2026-07-28 |
 | Agentic team wiring: rulebook, roster, 10 active ROLE files, humans/comms folders | `.claude/CLAUDE.md`, `team/` | 2026-07-28 |
 | This reality document | `team/roles/librarian/reality/index.md` | 2026-07-28 |
 | CI auto-tag on `dev` and `main` | `.github/workflows/` | 2026-07-28 |
 | Issues tracking (issues-fs-lite style) | `issues/` | 2026-07-28 |
 | Project library with imported source docs | `library/` | 2026-07-28 |
-| MVP static site + GitHub Pages workflow | `site/`, `.github/workflows/` | 2026-07-28 |
+| MVP static site + GitHub Pages workflow | `website/`, `.github/workflows/` | 2026-07-28 |
 
 (Entries dated 2026-07-28 land in this same session; a row here is valid only once its
 files are actually in the tree — the Librarian removes any row whose work was reverted.)

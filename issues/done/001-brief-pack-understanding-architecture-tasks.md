@@ -10,4 +10,4 @@ estimated_effort: medium
 Multiple files covering understanding, architecture, commercial model, task view, source map — pushed before any implementation work.
 
 ## Outcome
-Done 28 Jul: `docs/brief-pack/v0.1.0__00..05`. Completion report (06) tracked as issue 012.
+Done 28 Jul: `library/brief-pack/v0.1.0__00..05`. Completion report (06) tracked as issue 012.

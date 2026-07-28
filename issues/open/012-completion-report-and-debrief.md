@@ -7,4 +7,4 @@ estimated_effort: small
 
 # Session completion report + debrief
 
-At end of session: docs/brief-pack/v0.1.0__06__completion-report.md (what was done vs planned) and a debrief in team/humans/dinis_cruz/debriefs/07/28/.
+At end of session: library/brief-pack/v0.1.0__06__completion-report.md (what was done vs planned) and a debrief in team/humans/dinis_cruz/debriefs/07/28/.
