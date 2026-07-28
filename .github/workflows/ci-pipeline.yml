@@ -1,0 +1,35 @@
+name: CI Pipeline
+
+# Auto-tag on push to dev and main, mirroring the pattern used in
+# SGraph-AI__Tools (deploy-tools.yml) and SGraph-AI__App__Send (ci-pipeline.yml):
+#   dev  -> minor increment
+#   main -> major increment
+# The increment-tag action bumps the repo `version` file and pushes the tag.
+# The version file is owned by CI — never edit it by hand.
+#
+# Test and build/deploy jobs will be added as the product code lands; when they
+# do, the tag step must gate on tests (needs: [run-tests]) as in App__Send.
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: "ci-pipeline-${{ github.ref_name }}"
+  cancel-in-progress: false
+
+jobs:
+  increment-tag:
+    name: Increment Tag
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref_name == 'dev' || github.ref_name == 'main')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Increment Tag
+        uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/git__increment-tag@dev
+        with:
+          release_type: ${{ github.ref_name == 'main' && 'major' || 'minor' }}

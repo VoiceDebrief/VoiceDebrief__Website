@@ -1,0 +1,55 @@
+name: Deploy Website - GitHub Pages
+
+# Publishes website/ to GitHub Pages on push to dev (the default branch).
+# The 27 Jul arch brief: "there is no backend, so hosting is static on
+# GitHub Pages" — this is the MVP site; the domain is wired up manually.
+#
+# configure-pages runs with enablement: true so the first run enables Pages
+# with source "GitHub Actions". If that step lacks permission, enable Pages
+# once in Settings → Pages → Source: GitHub Actions, then re-run.
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'website/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          enablement: true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
