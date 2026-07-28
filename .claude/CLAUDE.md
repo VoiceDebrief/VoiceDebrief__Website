@@ -37,6 +37,11 @@ decisions, do not casually revisit:
 - **Never commit secrets**: no OpenRouter keys (management or per-user), no access
   tokens, no vault keys. A leaked key is a security incident. The beta hardcoded key,
   when it arrives, is added deliberately, capped, and documented — never by accident.
+- **The ciphertext rule** (brief v0.33.53): an *encrypted vault* MAY live in this public
+  repo, along with key-management logic, provisioning workflow code, configuration and
+  schemas. The *vault key*, any plaintext secret, and the management API key MUST NOT —
+  nothing that decrypts what is committed may ever be committed. This rule needs a
+  pre-commit control, not just this paragraph (issue 013).
 
 ## Reality Discipline
 

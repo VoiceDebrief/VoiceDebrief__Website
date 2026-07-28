@@ -53,3 +53,8 @@ All 2026-07-28 rows above are committed and pushed in this session.
 | 2026-07-27 | 90-day term from 1 Aug 2026; 25% of net; 50/50 profit split | 27 Jul strategy brief / contract draft |
 | 2026-07-28 | Default branch is `dev`; two-branch CI with auto-tag | Dinis, session instruction |
 | 2026-07-28 | Team/library/CI conventions mirrored from `__App__Send` and `__Tools` | Dinis, session instruction |
+| 2026-07-28 | Terms with the partner agreed; work is open source and published as produced | brief v0.33.53 |
+| 2026-07-28 | First milestone = the end-to-end branded experience; results stream in arrival order (progress → transcript → summary → infographic) | brief v0.33.53 |
+| 2026-07-28 | Privacy tiers to be enforced server-side via OpenRouter guardrails on the issued key (model / provider / data policy), not client logic alone | brief v0.33.53 (finding) |
+| 2026-07-28 | Hosting: GitHub Pages behind an AWS Route 53 domain | brief v0.33.53 |
+| 2026-07-28 | Second administrative vault, separate from user-facing; the ciphertext rule added to `.claude/CLAUDE.md` and needs pre-commit enforcement | brief v0.33.53 |
