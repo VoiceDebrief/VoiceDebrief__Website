@@ -14,3 +14,6 @@ Static site in `website/`, no framework, telling the user-journey story (land â†
 
 ## Acceptance criteria
 Site builds as pure static files; workflow publishes on push to dev; looks credible on mobile and desktop.
+
+## Outcome
+Done 28 Jul: website/ (index, 404, robots, .nojekyll) + deploy-pages.yml (publishes on push to dev; Pages enablement via configure-pages). Domain wiring left to Dinis.

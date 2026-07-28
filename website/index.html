@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WhatsApp Voice Note Transcription — transcript, analysis and debrief in one pass</title>
+<meta name="description" content="Drop in a WhatsApp voice note and get back a transcript, an analysis and a short debrief in one pass — with an infographic if you ask. No accounts to configure, no steps to chain.">
+<style>
+  :root{
+    --navy:#0b1f3a; --navy-2:#122c50; --ink:#1a2433; --paper:#ffffff;
+    --mist:#f2f5f9; --line:#dbe3ec; --accent:#1f7a4d; --accent-2:#2563eb;
+    --warn:#b45309; --muted:#5b6b7f; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:var(--paper);line-height:1.6}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  header{background:var(--navy);color:#fff;padding:14px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:#25d366;box-shadow:0 0 0 4px rgba(37,211,102,.18)}
+  .brand small{display:block;font-weight:400;opacity:.75;font-size:.72rem;letter-spacing:.4px}
+  nav a{color:#dbe6f5;text-decoration:none;margin-left:18px;font-size:.92rem}
+  nav a:hover{color:#fff}
+  .hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;
+        padding:64px 0 72px;text-align:left}
+  .hero h1{font-size:clamp(1.7rem,4.2vw,2.7rem);line-height:1.15;max-width:760px}
+  .hero p.lead{margin-top:18px;max-width:640px;font-size:1.08rem;color:#c8d6e8}
+  .badge{display:inline-block;background:rgba(37,211,102,.14);border:1px solid rgba(37,211,102,.45);
+         color:#8ff0b6;font-size:.78rem;padding:4px 12px;border-radius:999px;margin-bottom:18px;letter-spacing:.4px}
+  .cta-row{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:600;font-size:.95rem}
+  .btn-primary{background:#25d366;color:#07301c}
+  .btn-primary:hover{background:#2ee273}
+  .btn-ghost{border:1px solid #4b6389;color:#dbe6f5}
+  .btn-ghost:hover{border-color:#8fa8cd;color:#fff}
+  .pass{margin-top:44px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+        border-radius:var(--radius);padding:22px;max-width:760px;overflow-x:auto}
+  .pass pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem;
+            color:#bcd3ef;line-height:1.7;white-space:pre}
+  section{padding:56px 0}
+  section.alt{background:var(--mist)}
+  h2{font-size:1.5rem;margin-bottom:8px}
+  .kicker{color:var(--accent-2);font-size:.8rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
+  .sub{color:var(--muted);max-width:640px;margin-bottom:28px}
+  .grid{display:grid;gap:18px}
+  .grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .grid.cols-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  section.alt .card{box-shadow:0 1px 3px rgba(11,31,58,.06)}
+  .card h3{font-size:1.02rem;margin-bottom:6px}
+  .card p{font-size:.92rem;color:var(--muted)}
+  .step-n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;
+          align-items:center;justify-content:center;font-size:.8rem;font-weight:700;margin-bottom:10px}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+  table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:560px}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line)}
+  th{background:var(--navy);color:#fff;font-weight:600;font-size:.85rem}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;letter-spacing:.3px}
+  .tag.default{background:#e8effc;color:var(--accent-2)}
+  .tag.private{background:#e6f6ec;color:var(--accent)}
+  .tag.higher{background:#fdf1e3;color:var(--warn)}
+  .price-note{font-size:.9rem;color:var(--muted);margin-top:14px;max-width:640px}
+  .honest{border-left:4px solid var(--accent);background:#fff;border-radius:0 var(--radius) var(--radius) 0;
+          padding:18px 20px;margin-top:26px;font-size:.93rem;color:var(--muted)}
+  .honest strong{color:var(--ink)}
+  footer{background:var(--navy);color:#a9bcd6;padding:36px 0;font-size:.85rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  footer a{color:#dbe6f5}
+  @media (max-width:640px){ nav{display:none} .hero{padding:44px 0 52px} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>Voice&nbsp;Note&nbsp;Transcribe<small>by SGraph — Simple. Private. Portable.</small></span>
+    </div>
+    <nav aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy modes</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#open">Open source</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="badge">FIRST BETA — AUGUST 2026</span>
+    <h1>Your WhatsApp voice notes, turned into a transcript, an analysis and a debrief — in one pass.</h1>
+    <p class="lead">Drop in the audio. That's it. No accounts to configure, no steps to chain,
+      no guessing whether transcription will work today. An infographic too, if you ask for one.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#pricing">Get early access</a>
+      <a class="btn btn-ghost" href="#how">See how it works</a>
+    </div>
+    <div class="pass" aria-label="The one-pass pipeline">
+<pre>drop in the audio  (.opus / .ogg / .m4a)
+         |
+         v
+ONE PASS  ->  transcript
+          ->  analysis
+          ->  short debrief
+          ->  infographic (only if asked)
+         |
+         v
+done.  no accounts to configure, no steps to chain.</pre>
+    </div>
+  </div>
+</div>
+
+<section id="why">
+  <div class="wrap">
+    <span class="kicker">Why this exists</span>
+    <h2>General assistants can read your voice note. They just can't always transcribe it.</h2>
+    <p class="sub">In our tests, a mainstream AI assistant identified a genuine WhatsApp voice note
+      perfectly — codec, container, duration, sample rate — and still answered that it had no speech
+      recognition available in that session. You can't predict when it will work. We do one job,
+      and it works every time.</p>
+    <div class="grid cols-3">
+      <div class="card"><h3>Made for WhatsApp audio</h3>
+        <p>Voice notes are Opus audio in an Ogg container — and sometimes AAC when forwarded between
+           iPhone apps. We accept both and detect the format from the file's content, never the extension.</p></div>
+      <div class="card"><h3>One complete job</h3>
+        <p>Not a step in someone else's workflow. Upload a voice note, get everything you need back
+           at once: the words, the meaning, the summary — and a visual if you want it.</p></div>
+      <div class="card"><h3>Nothing to install, nothing stored</h3>
+        <p>Everything runs in your browser or app. There is no backend holding your audio —
+           your files and your credits stay with you.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="alt">
+  <div class="wrap">
+    <span class="kicker">How it works</span>
+    <h2>From voice memo to insights in seconds</h2>
+    <p class="sub">The whole journey, end to end:</p>
+    <div class="grid cols-4">
+      <div class="card"><span class="step-n">1</span><h3>Upload</h3><p>Drag in the voice note from WhatsApp — laptop download, Android export or iPhone forward.</p></div>
+      <div class="card"><span class="step-n">2</span><h3>Choose options</h3><p>Pick your privacy mode, and whether you'd like an infographic with your results.</p></div>
+      <div class="card"><span class="step-n">3</span><h3>One pass</h3><p>Transcript, analysis and a short debrief come back together. No chaining steps.</p></div>
+      <div class="card"><span class="step-n">4</span><h3>Export</h3><p>Copy, download as markdown, or save the infographic. Your results are yours.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <span class="kicker">Privacy</span>
+    <h2>Privacy is a mode you choose, not a disclaimer you scroll past</h2>
+    <p class="sub">Different voice notes deserve different handling. Pick per upload:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Mode</th><th>Where it runs</th><th>Privacy</th><th>Price</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag default">ROUTED — DEFAULT</span></td>
+              <td>Any provider via our model router</td>
+              <td>No guarantee which provider processes it — we say so up front</td>
+              <td>Cheapest</td></tr>
+          <tr><td><span class="tag higher">RESTRICTED</span></td>
+              <td>Only providers you choose</td>
+              <td>Named processors</td>
+              <td>Higher</td></tr>
+          <tr><td><span class="tag private">BROWSER-LOCAL</span></td>
+              <td>Your own device</td>
+              <td>Nothing leaves your device</td>
+              <td>Possibly free</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="honest"><strong>Honesty note:</strong> the default mode is the least private —
+      requests are routed to whichever model provider serves them, and we cannot promise which one.
+      If that matters for a recording, use restricted or browser-local mode. A full privacy notice
+      ships with the beta.</div>
+  </div>
+</section>
+
+<section id="pricing" class="alt">
+  <div class="wrap">
+    <span class="kicker">Pricing</span>
+    <h2>Pay for what you use. Around 20p per transcription.</h2>
+    <p class="sub">No subscription. Buy credits, spend them when you need them.</p>
+    <div class="grid cols-3">
+      <div class="card"><h3>Pay as you go</h3><p>Each transcription priced at or under ~20p, passed
+        through close to what the work actually costs.</p></div>
+      <div class="card"><h3>Credits from £5</h3><p>Top-ups start at £5 so card fees don't eat your
+        credit — at £1, fixed fees would take 40% of it. We'd rather tell you that than hide it.</p></div>
+      <div class="card"><h3>Your credit, your key</h3><p>Your balance is provisioned as your own
+        metered key with a hard spend cap. No invoices, no billing system, no surprises.</p></div>
+    </div>
+    <p class="price-note">Early access opens with the August 2026 beta — capped, free-to-try
+      credits for the first users. The browser-local mode may be entirely free.</p>
+  </div>
+</section>
+
+<section id="open">
+  <div class="wrap">
+    <span class="kicker">Built in the open</span>
+    <h2>Everything about this product is public</h2>
+    <p class="sub">The code, the documentation, the design decisions — even the commercial
+      arrangement behind it — are published as they are produced, under open licences
+      (docs CC BY 4.0). Openness is the strategy, not a side effect.</p>
+    <a class="btn btn-primary" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">View the repository</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom — Simple. Private. Portable.<br>
+      Site content released under CC BY 4.0.</div>
+    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a>
+      &nbsp;·&nbsp; <a href="#privacy">Privacy modes</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
