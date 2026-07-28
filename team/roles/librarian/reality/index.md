@@ -20,8 +20,7 @@
 | Project library with imported source docs | `library/` | 2026-07-28 |
 | MVP static site + GitHub Pages workflow | `website/`, `.github/workflows/` | 2026-07-28 |
 
-(Entries dated 2026-07-28 land in this same session; a row here is valid only once its
-files are actually in the tree — the Librarian removes any row whose work was reverted.)
+All 2026-07-28 rows above are committed and pushed in this session.
 
 ## EXISTS (in sibling repos, reused not rewritten)
 
