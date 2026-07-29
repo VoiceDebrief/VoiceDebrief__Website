@@ -45,6 +45,147 @@
 
 One file at a time in v1. A second drop replaces the offer, not adds a queue.
 
+## 2.1 Screen Mockups (ASCII)
+
+**State A — landing / empty (desktop ~1280px)**
+
+```
++--------------------------------------------------------------------------+
+| (o) Voice Note Transcribe          How it works  Privacy  Pricing  Open  |
+|     by SGraph - Simple. Private. Portable.                               |
++--------------------------------------------------------------------------+
+|                                                                          |
+|   Your WhatsApp voice note, turned into a transcript, a summary          |
+|   and an infographic - in one pass.                                      |
+|                                                                          |
+|   +------------------------------------------------------------------+   |
+|   |                                                                  |   |
+|   |                  [ drop your voice note here ]                   |   |
+|   |                       or tap to browse                           |   |
+|   |                                                                  |   |
+|   |                    .opus  /  .ogg  /  .m4a                       |   |
+|   +------------------------------------------------------------------+   |
+|                                                                          |
+|   > where do I find my voice note?   (laptop download / Android          |
+|     export / iPhone forward)                                             |
+|                                                                          |
++--------------------------------------------------------------------------+
+|  (c) SGraph - CC BY 4.0  -  nothing tracked  -  v0.1.1                   |
++--------------------------------------------------------------------------+
+```
+
+**State B — file landed, options row**
+
+```
++--------------------------------------------------------------------------+
+|   +------------------------------------------------------------------+   |
+|   |  [audio] voice-note-2026-07-29.opus     1m 49s   142 KB    [x]   |   |
+|   +------------------------------------------------------------------+   |
+|                                                                          |
+|   privacy:  (o) Routed - cheapest   ( ) Restricted*   ( ) On-device*     |
+|             any provider may process this - we can't promise which       |
+|             *coming with beta          *coming later                     |
+|                                                                          |
+|   [x] also make me an infographic                                        |
+|                                                                          |
+|                        +------------------+                              |
+|                        |  Transcribe  ->  |                              |
+|                        +------------------+                              |
++--------------------------------------------------------------------------+
+```
+
+**State C — working (the streaming rail)**
+
+```
++--------------------------------------------------------------------------+
+|   voice-note-2026-07-29.opus  -  1m 49s                       [ Stop ]   |
+|                                                                          |
+|   (#) decoding audio          done                                       |
+|   (#) transcribing...         12s elapsed                                |
+|   ( ) writing the summary                                                |
+|   ( ) drawing the infographic                                            |
+|                                                                          |
+|   ..........  something is always visibly happening  ..........          |
++--------------------------------------------------------------------------+
+```
+
+**State D — results, streaming in top-down (transcript first)**
+
+```
++--------------------------------------------------------------------------+
+|   TRANSCRIPT                                    [ copy ] [ download.md ] |
+|   +------------------------------------------------------------------+   |
+|   |  "...so the idea is that we agree the terms this week and       |   |
+|   |   start publishing from the first of August..."                 |   |
+|   +------------------------------------------------------------------+   |
+|                                                                          |
+|   SUMMARY                                       [ copy ] [ download.md ] |
+|   +------------------------------------------------------------------+   |
+|   |  ## Key points                                                   |   |
+|   |  - Terms agreed; 90-day term from 1 Aug ...                      |   |
+|   +------------------------------------------------------------------+   |
+|                                                                          |
+|   INFOGRAPHIC                                              [ save.svg ]  |
+|   +------------------------------------------------------------------+   |
+|   |     (svg draws itself progressively -- that IS the progress)     |   |
+|   +------------------------------------------------------------------+   |
+|                                                                          |
+|   this pass: £0.18   -   session: £0.31        [ do another voice note ] |
++--------------------------------------------------------------------------+
+```
+
+**State E — typed error (example: beta credits exhausted)**
+
+```
++--------------------------------------------------------------------------+
+|   (#) transcribing...  x  failed                                         |
+|                                                                          |
+|   +------------------------------------------------------------------+   |
+|   |  The beta credits are used up.                                   |   |
+|   |  Thanks for stress-testing us - two ways to continue:            |   |
+|   |    [ leave your email ]   [ paste your own OpenRouter key ]      |   |
+|   +------------------------------------------------------------------+   |
++--------------------------------------------------------------------------+
+```
+
+**Mobile (~390px) — same states, stacked**
+
+```
++----------------------------+
+| (o) Voice Note Transcribe  |
++----------------------------+
+| Your voice note ->         |
+| transcript, summary,       |
+| infographic. One pass.     |
+|                            |
+| +------------------------+ |
+| |  tap to choose your    | |
+| |  voice note            | |
+| |  .opus / .ogg / .m4a   | |
+| +------------------------+ |
+|                            |
+| privacy: [Routed v]        |
+| [x] infographic            |
+| [    Transcribe ->     ]   |
+|                            |
+| (#) transcribing... 12s    |
+| ( ) summary                |
+| ( ) infographic            |
+|                            |
+| TRANSCRIPT        [copy]   |
+| +------------------------+ |
+| | "...agree the terms    | |
+| |  this week..."         | |
+| +------------------------+ |
+| SUMMARY           [copy]   |
+| +------------------------+ |
+| | ## Key points ...      | |
+| +------------------------+ |
+|                            |
+| this pass: £0.18           |
++----------------------------+
+```
+
 ## 3. Progress States (map 1:1 to engine events)
 
 | Engine signal | What the user sees |

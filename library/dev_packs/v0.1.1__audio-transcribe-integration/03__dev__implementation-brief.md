@@ -26,6 +26,10 @@ website/
 Plain ES modules, no build step — the same deploy path as the landing page (CI
 publishes `website/` after tagging; version stamp available in `version.txt`).
 
+**Structure refinement:** the UI in `ui/` is built as `wa-*` Web Components extending
+the shared `SgComponent` base, and the app publishes its own `SgToolApi` — the full
+HTML/CSS/JS and API-compliance spec is [brief 05](05__dev__web-components-and-js-api.md).
+
 ## 2. M1-a: The Import Harness (the spike that decides the cut)
 
 Try in this order; stop at the first that works cleanly:

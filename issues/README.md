@@ -7,10 +7,11 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-07-29 (added 020).
+as any issue change. Last updated: 2026-07-29 (added 021).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [021](open/021-domain-https-and-org-verification.md) | Finish the custom domain: HTTPS + org verification | open | high | small |
 | [008](open/008-web-app-mvp-one-pass.md) | Web app MVP: one-pass transcript / analysis / debrief / infographic (streams in arrival order) | open | high | large |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |

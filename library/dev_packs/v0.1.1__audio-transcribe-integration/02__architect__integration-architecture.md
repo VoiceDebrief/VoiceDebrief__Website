@@ -100,7 +100,94 @@ product voice, not engine).
 constant, treated as published); the management key and any vault keys never enter
 this repo. The seeded key's revocation path must be written down before it ships.
 
-## 7. Risks And Their Controls
+## 7. Diagrams: System, Modules, Data Flow
+
+**7.1 The three origins (who serves what, who talks to whom)**
+
+```
+   OUR ORIGIN (GitHub Pages)          TOOLS ORIGIN (dev.tools.sgraph.ai)      OPENROUTER
+   sgraph-ai.github.io /  domain      CORS: Access-Control-Allow-Origin: *    openrouter.ai
+   +---------------------------+      +-------------------------------+      +-----------------+
+   | website/app/index.html    |      | /en-gb/audio-transcribe/api/* |      | /api/v1/chat/.. |
+   |   manifest.json (ours)    |      |   (the ENGINE: state, source, |      |  audio-in chat  |
+   |   app.js  pipeline.js     |      |    transcribe, batch, errors) |      |  models         |
+   |   prompts/*  skills/*     |      | /core/sg-tool-api/...        |       | /api/v1/key     |
+   | website/components/wa-*   |      | /core/sg-audio-decode/...    |       |  (key stats)    |
+   |   (OUR UI, SgComponent    |      | /core/manifest-loader/...    |       | /api/v1/        |
+   |    subclasses)            |      | /components/base/...          |      |  generation     |
+   +---------------------------+      | /components/tokens/sg-tokens  |      |  (exact cost)   |
+        |        |                    | /components/llm/sg-llm-*      |      +-----------------+
+        |        |  import() by       | /components/sg-llm-infographic|            ^
+        |        |  full URL          +-------------------------------+            |
+        |        +---------------------------^                                     |
+        |    (modules' own /core/.. imports resolve back to the tools origin)      |
+        |                                                                          |
+        +---- user's audio + prompts + Authorization: Bearer <user key> -----------+
+              (audio NEVER touches our origin's server - there is no server;
+               the only network hops are static fetches + the OpenRouter calls)
+```
+
+**7.2 One pass, as a sequence (with the streaming reveal)**
+
+```
+  user          our page (wa-* UI + pipeline.js)      engine (imported)         OpenRouter
+   |  drop file        |                                   |                        |
+   |------------------>|  addFiles({files})                |                        |
+   |                   |---------------------------------->|  decode (sg-audio-     |
+   |                   |   at:item:added                   |  decode, in-browser)   |
+   |   [file card]     |<==================================|                        |
+   |  press Go         |  transcribeItem({id})             |                        |
+   |------------------>|---------------------------------->|  POST chat/completions |
+   |                   |   at:transcribe:started           |----------------------->|
+   |   [rail: 12s..]   |<==================================|                        |
+   |                   |   at:transcribe:complete {text}   |<-----------------------|
+   |   TRANSCRIPT      |<==================================|   usage + generationId |
+   |   renders NOW     |                                   |                        |
+   |                   |  ask({text: SUMMARY_PROMPT})      |                        |
+   |                   |---------------------------------->|  POST chat/completions |
+   |   SUMMARY         |<==================================|<---------------------->|
+   |   renders NOW     |                                   |                        |
+   |                   |  infographic step (only if asked) |                        |
+   |                   |---------------------------------->|  streaming SVG         |
+   |   INFOGRAPHIC     |<== svg draws progressively =======|<---------------------->|
+   |                   |  getCostSummary()                 |                        |
+   |   [cost line]     |<==================================|  (deferred exact cost  |
+   |                   |                                   |   via /generation)     |
+```
+
+**7.3 Key and money flow (no backend anywhere)**
+
+```
+   OPERATOR (admin console, manual for beta)
+     | mints capped key: spend cap + guardrails (models/providers/data policy)
+     v
+   SEEDED KEY  --(shipped in client, treated as published)-->  user's browser
+     |                                                    localStorage['sg-openrouter-mgmt-key']
+     |  every request: Authorization: Bearer <key>
+     v
+   OPENROUTER  meters each call -> deducts key balance -> rejects at cap
+     ^                                    |
+     |   revoke/rotate (kill switch)      +--> usage/cost back to the page
+   OPERATOR                                    (per pass + session display)
+```
+
+**7.4 Component tree on our page (everything below the page is a Web Component)**
+
+```
+   app/index.html
+   ├── <sg-site-header>          imported (tools origin, pinned)   [maybe: ours later]
+   ├── <wa-drop-zone>            ours   - SgComponent subclass
+   ├── <wa-file-card>            ours
+   ├── <wa-mode-selector>        ours   - privacy tier == price axis
+   ├── <wa-progress-rail>        ours   - binds at:* + wa:* events
+   ├── <wa-transcript-card>      ours
+   ├── <wa-summary-card>         ours   - renders markdown
+   ├── <sg-llm-infographic>      imported (tools origin, pinned)
+   ├── <wa-cost-line>            ours   - getCostSummary() + at:llm:exchange
+   └── window.__tool             OUR SgToolApi ('whatsapp-transcribe') - brief 05
+```
+
+## 8. Risks And Their Controls
 
 | Risk | Control |
 |------|---------|

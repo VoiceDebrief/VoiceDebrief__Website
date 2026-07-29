@@ -23,6 +23,7 @@
 | `pyproject.toml` (version CI-owned; unblocks increment-tag) + root README with release badge and repo map | repo root | 2026-07-29 |
 | Issues READMEs: top-level table + per-folder views (maintained manually per commit) | `issues/*/README.md` | 2026-07-29 |
 | Dev pack: audio-transcribe integration briefs (PROPOSED work, pack itself exists) | `library/dev_packs/v0.1.1__audio-transcribe-integration/` | 2026-07-29 |
+| Custom domain `whatsapp-voice-transcription.sgraph.ai` (Route 53 CNAME + Pages claim; serving over HTTP, cert pending — issue 021) + GH Pages/Route 53 guide | Route 53, repo Settings, `library/guides/v0.1.1__guide__github-pages-and-route53-dns.md` | 2026-07-29 |
 
 All rows above are committed and pushed in-session on their stated date.
 
@@ -44,7 +45,6 @@ All rows above are committed and pushed in-session on their stated date.
 - OpenRouter per-user key provisioning; the key-provisioning Lambda; the beta hardcoded key.
 - Privacy mode selector (routed / restricted / browser-local); browser-local engine.
 - Credit purchase flow (Stripe), minimum top-up £5/£10; accounts (social login / local storage).
-- The domain wiring for the GitHub Pages site (Dinis, pending).
 - Everything else in the 27 July arch brief's open-questions table.
 
 ## Decision Log
