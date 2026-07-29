@@ -34,9 +34,10 @@ pipeline (transcript → summary → infographic).
 | File | Role | Contents |
 |------|------|----------|
 | [`01__conductor__scope-milestones-decisions.md`](01__conductor__scope-milestones-decisions.md) | Conductor | Scope, three milestones, decision gates, task decomposition for the implementing team |
-| [`02__architect__integration-architecture.md`](02__architect__integration-architecture.md) | Architect | The import strategy, the `SgToolApi` contract, version pinning, key & spend-cap handling, privacy-mode mapping, risks |
+| [`02__architect__integration-architecture.md`](02__architect__integration-architecture.md) | Architect | The import strategy, the `SgToolApi` contract, version pinning, key & spend-cap handling, privacy-mode mapping, ASCII system/data-flow diagrams, risks |
 | [`03__dev__implementation-brief.md`](03__dev__implementation-brief.md) | Dev | Concrete file plan, the exact APIs and events to bind, code sketches, error handling, testing |
-| [`04__designer__experience-brief.md`](04__designer__experience-brief.md) | Designer | The one-motion experience, streaming reveal order, progress states, mode selector, error/empty states, mobile |
+| [`04__designer__experience-brief.md`](04__designer__experience-brief.md) | Designer | The one-motion experience, streaming reveal order, ASCII screen mockups (desktop+mobile), progress states, mode selector, error/empty states |
+| [`05__dev__web-components-and-js-api.md`](05__dev__web-components-and-js-api.md) | Dev + Architect | The SgComponent base class (Shadow DOM, js/html/css triplets), our `wa-*` component layout, design tokens, and full `SgToolApi`/manifest/SKILL compliance from day one |
 
 ## Ground Truth (read before implementing)
 

@@ -17,3 +17,6 @@ Done 29 Jul: library/dev_packs/v0.1.1__audio-transcribe-integration/ (00 README 
 01 conductor + 02 architect + 03 dev + 04 designer). CORS verified live; engine
 contract grounded in the imported v0.1.93 integration doc and the tool source.
 Implementation itself is NOT started — tracked by issue 008 (M1-M3 now defined).
+
+## Addendum 29 Jul
+Pack extended: 05__dev__web-components-and-js-api (SgComponent base + SgToolApi/manifest/SKILL compliance from day one), ASCII screen mockups in 04, ASCII system/sequence/key-flow/component-tree diagrams in 02; 00__README renamed README.md with full relative cross-linking.
