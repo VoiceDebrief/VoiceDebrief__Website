@@ -1,5 +1,8 @@
 # Infographics
 
+*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+
+
 Seven infographics were shared into the 28 July 2026 session (issue 007 tracks adding
 the image files here). Each renders a source brief; the briefs themselves are in this
 library.

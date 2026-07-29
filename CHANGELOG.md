@@ -1,5 +1,8 @@
 # Changelog
 
+*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+
+
 What each version changed — captured jointly by the **Librarian** (accuracy,
 cross-references) and the **Journalist** (readable account, public updates).
 
@@ -13,7 +16,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ---
 
-## Unreleased (next tag)
+## Unreleased (next tag) — [diff vs v0.1.4](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.4...dev)
 
 - Journalist role joins the active roster — owns the site's **Updates** section;
   first three updates published (`website/updates/`).
@@ -22,8 +25,12 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 - This `CHANGELOG.md` + the Librarian–Journalist per-version capture discipline.
 - Landing page nav gains Library and Updates links.
 - Issue 021 closed: custom domain fully live (HTTPS enforced, verified from session).
+- Navigation sweep: brief-pack README table and cross-refs are now relative links;
+  library folder table linked; docs the Library page targets carry an absolute
+  back-link to it; changelog headings and Updates version chips link to GitHub
+  compare views (delta per version).
 
-## v0.1.4 — 29 Jul 2026
+## [v0.1.4](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.3...v0.1.4) — 29 Jul 2026
 
 - Dev pack brief 05: Web Components (SgComponent base) + full SgToolApi/manifest/SKILL
   compliance from day one.
@@ -32,19 +39,19 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 - GitHub Pages + Route 53 DNS guide; custom domain verified working; issue 021 opened
   for the HTTPS finish.
 
-## v0.1.3 — 29 Jul 2026
+## [v0.1.3](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.2...v0.1.3) — 29 Jul 2026
 
 - Dev pack navigation: `00__README.md` → `README.md`, full relative cross-linking
   between the briefs, issues, guides and workflows.
 
-## v0.1.2 — 29 Jul 2026
+## [v0.1.2](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.1...v0.1.2) — 29 Jul 2026
 
 - Dev pack `v0.1.1__audio-transcribe-integration` (Conductor / Architect / Dev /
   Designer briefs): import the proven audio-transcribe engine cross-origin, build the
   branded one-pass experience on top. Briefs only — implementation is issue 008.
 - Reality index table fix.
 
-## v0.1.1 — 29 Jul 2026
+## [v0.1.1](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.0...v0.1.1) — 29 Jul 2026
 
 First successfully tagged release; includes the bootstrap merge (PR #1) whose own tag
 run had failed on the missing `pyproject.toml`:

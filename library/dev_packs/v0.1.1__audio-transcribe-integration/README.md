@@ -7,6 +7,8 @@
 **type** Dev pack — briefs only, nothing here is implemented yet
 **status** PROPOSED — this pack describes work that does not exist yet
 
+*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+
 ---
 
 ## The Core Idea

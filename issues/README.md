@@ -1,7 +1,10 @@
 # Issues — Issues-FS-lite
 
+*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+
+
 Task tracking for this repo using **Issues-FS-lite** (spec:
-`SGraph-AI__App__Send/team/humans/dinis_cruz/briefs/05/06/email-fs-lite-v0.6.md` §7,
+[`SGraph-AI__App__Send/.../email-fs-lite-v0.6.md`](https://github.com/the-cyber-boardroom/SGraph-AI__App__Send/blob/dev/team/humans/dinis_cruz/briefs/05/06/email-fs-lite-v0.6.md) §7 (local copy: [`library/guides/email-fs-lite-v0.6.md`](../library/guides/email-fs-lite-v0.6.md)),
 adapted from the per-agent `mail/.../issues/` layout to a single repo-level queue).
 
 ## Current Issues (all folders)
