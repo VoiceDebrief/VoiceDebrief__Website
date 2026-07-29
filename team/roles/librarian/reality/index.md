@@ -1,7 +1,7 @@
 # Reality: What Exists Today
 
 **maintained by** Librarian
-**updated** 2026-07-28
+**updated** 2026-07-29
 **rule** If it is not in this document, it does not exist. Proposed items are labelled
 `PROPOSED — does not exist yet`.
 
@@ -19,7 +19,6 @@
 | Issues tracking (issues-fs-lite style) | `issues/` | 2026-07-28 |
 | Project library with imported source docs | `library/` | 2026-07-28 |
 | MVP static site (footer shows `version`; published after tagging) | `website/` | 2026-07-28 |
-
 | Tech stack & workflow guide for incoming devs | `library/guides/v0.1.0__guide__tech-stack-and-workflow.md` | 2026-07-29 |
 | `pyproject.toml` (version CI-owned; unblocks increment-tag) + root README with release badge and repo map | repo root | 2026-07-29 |
 | Issues READMEs: top-level table + per-folder views (maintained manually per commit) | `issues/*/README.md` | 2026-07-29 |
