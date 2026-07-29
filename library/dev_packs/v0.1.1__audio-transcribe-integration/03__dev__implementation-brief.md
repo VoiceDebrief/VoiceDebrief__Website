@@ -3,6 +3,8 @@
 **version** v0.1.1 · **date** 29 July 2026 · **role** Dev · **type** Dev-pack brief
 **status** PROPOSED — briefs only; code sketches are sketches, not shipped code
 
+*Part of the dev pack [v0.1.1__audio-transcribe-integration](README.md) — see the [pack README](README.md) for scope, ground truth and definition of done.*
+
 ---
 
 ## 1. Where The Code Goes
@@ -46,7 +48,7 @@ const { buildBatchMethods }     = await import(`${ORIGIN}/en-gb/audio-transcribe
 // register groups, activate → window.__tool (mirror what audio-transcribe-api.js does,
 // minus mountShell). Read that file first; keep our harness under ~100 lines.
 
-// Attempt 3 — iframe + postMessage bridge (Architect §3b). Last resort.
+// Attempt 3 — iframe + postMessage bridge ([Architect](02__architect__integration-architecture.md) §3b). Last resort.
 ```
 
 Deliverable of the spike: a one-page note in this pack's folder recording which
@@ -91,7 +93,7 @@ reviewed by the Designer, and changed via PR like code.
 
 ## 5. Errors — Bind The Typed Codes, Never String-Match
 
-| `err.code` | UI behaviour (Designer §5 has the copy) |
+| `err.code` | UI behaviour ([Designer](04__designer__experience-brief.md) §5 has the copy) |
 |------------|------------------------------------------|
 | `not-audio` / `too-large` / `empty` | rejection note on the drop zone |
 | `key-invalid` (401) | "key not accepted" + BYOK input |
@@ -118,7 +120,7 @@ slowest stage.
   `transcribeItem` round-trip completes OR skips cleanly when no key is configured.
 - **Fixtures**: real files in `tests/fixtures/` — laptop `.opus`, Android `.ogg`,
   iPhone-forward `.m4a` (Dinis supplies; QA owns the matrix).
-- When tests land, add `run-tests` to ci-pipeline.yml and gate `increment-tag` on it
+- When tests land, add `run-tests` to [ci-pipeline.yml](../../../.github/workflows/ci-pipeline.yml) and gate `increment-tag` on it
   (`needs: [run-tests]`) — as the sibling repos do.
 
 ## 8. Explicitly Not Now

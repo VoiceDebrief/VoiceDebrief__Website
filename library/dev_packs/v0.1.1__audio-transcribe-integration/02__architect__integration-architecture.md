@@ -3,6 +3,8 @@
 **version** v0.1.1 · **date** 29 July 2026 · **role** Architect · **type** Dev-pack brief
 **status** PROPOSED — briefs only
 
+*Part of the dev pack [v0.1.1__audio-transcribe-integration](README.md) — see the [pack README](README.md) for scope, ground truth and definition of done.*
+
 ---
 
 ## 1. The Strategy In One Line
@@ -22,7 +24,7 @@ same engine — applied cross-origin, which the tool's CORS policy explicitly su
 | Effort | near-zero | fork maintenance from day 1 |
 | Offline/apex independence | depends on dev.tools.sgraph.ai uptime | independent |
 
-Decision: runtime import for M1–M3, plus a **contract smoke test** (Dev §7) that fails
+Decision: runtime import for M1–M3, plus a **contract smoke test** ([Dev](03__dev__implementation-brief.md) §7) that fails
 loudly if upstream changes shape. Revisit vendoring (or a pinned tools deploy under our
 own domain) before public launch — recorded as an open question, not decided here.
 
@@ -46,7 +48,7 @@ whether the entry module can run without the tool's shell DOM present.
 seams visible. Keep as fallback only if (a) hits a hard dependency on the tool's DOM.
 
 **Contract we code against** (authoritative: `manifest.json` `api` section; documented
-in `library/tools/audio-transcribe/v0.1.93__...md`): `tool:ready` → `window.__tool`
+in the [integration & capabilities guide](../../tools/audio-transcribe/v0.1.93__audio-transcribe__integration-and-capabilities.md)): `tool:ready` → `window.__tool`
 with `setApiKey`, `addFiles`, `getItems/getItem`, `transcribeItem`, `transcribeAll`,
 `cancelItem`, `getTranscript`, `ask`, `getCostSummary`, `setSpendCap`, typed error
 codes, and `at:*` events. **We must not depend on anything not in that surface** —
@@ -86,10 +88,10 @@ product voice, not engine).
 
 | Product concept | Engine seam | Note |
 |-----------------|-------------|------|
-| Seeded beta key | `setApiKey({apiKey})` on load (persists to `localStorage['sg-openrouter-mgmt-key']`) | key must already carry OpenRouter-side cap + guardrails; conditions per brief v0.33.53 (cap, short life, revocable, narrow reach) |
+| Seeded beta key | `setApiKey({apiKey})` on load (persists to `localStorage['sg-openrouter-mgmt-key']`) | key must already carry OpenRouter-side cap + guardrails; conditions per [brief v0.33.53](../../../team/humans/dinis_cruz/briefs/07/28/v0.33.53__arch-brief__sg-send-voice-note-tool-build-status-first-milestone-experience-deliberately-leaked-key-guardrails-enforce-privacy-tiers-two-vaults-ciphertext-rule-send-secrets.md) (cap, short life, revocable, narrow reach) |
 | Client-side cap belt-and-braces | `setSpendCap({usd})` | soft cap; halts with `{code:'budget-cap'}` |
 | Routed mode (default) | key with no provider restriction | honest "no processor guarantee" copy |
-| Restricted mode | **guardrails on the key** (model/provider/data-policy) — server-enforced | issue 014; client selector switches which key/config is used |
+| Restricted mode | **guardrails on the key** (model/provider/data-policy) — server-enforced | [issue 014](../../../issues/open/014-openrouter-guardrails-exploration.md); client selector switches which key/config is used |
 | Browser-local mode | NOT in this engine (engine is OpenRouter-only) | stub honestly as "coming"; candidate: WASM whisper — separate future brief |
 | Cost display | `getCostSummary()` + `usage` on results | per-pass and session |
 | Typed failures | `key-invalid`/`budget-exceeded`/`key-exhausted`/`rate-limited`/`budget-cap` | Designer maps each to honest copy |
