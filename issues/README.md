@@ -7,7 +7,7 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-07-29.
+as any issue change. Last updated: 2026-07-29 (added 020).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
@@ -30,6 +30,7 @@ as any issue change. Last updated: 2026-07-29.
 | [017](done/017-ci-publish-after-tag-version-on-site.md) | CI: publish Pages after auto-tag, display version on the site | done | high | small |
 | [018](done/018-fix-increment-tag-pyproject.md) | Fix CI: increment-tag failed without pyproject.toml | done | high | small |
 | [019](done/019-tech-stack-workflow-guide.md) | Tech stack & workflow guide for incoming devs | done | high | medium |
+| [020](done/020-dev-pack-audio-transcribe-integration.md) | Dev pack: audio-transcribe integration briefs (Conductor/Architect/Dev/Designer) | done | high | medium |
 
 ## Layout
 

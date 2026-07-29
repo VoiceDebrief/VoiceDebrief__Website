@@ -5,6 +5,7 @@ issue change. Last updated: 2026-07-29.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [020](020-dev-pack-audio-transcribe-integration.md) | Dev pack: audio-transcribe integration briefs | `library/dev_packs/v0.1.1__audio-transcribe-integration/` (00-04) |
 | [019](019-tech-stack-workflow-guide.md) | Tech stack & workflow guide | `library/guides/v0.1.0__guide__tech-stack-and-workflow.md` |
 | [018](018-fix-increment-tag-pyproject.md) | Fix CI: increment-tag failed without pyproject.toml | Minimal `pyproject.toml` added (version CI-owned); root README release badge added |
 | [017](017-ci-publish-after-tag-version-on-site.md) | CI: publish Pages after auto-tag + version on site | `ci-pipeline.yml` chain increment-tag → build-pages → deploy-pages; footer stamped |
