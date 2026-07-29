@@ -34,6 +34,10 @@ decisions, do not casually revisit:
   folders use `MM/DD/`.
 - **Licence**: docs are CC BY 4.0 (each ends with the standard licence footer);
   code licence per the partnership contract (open source; MIT or Apache 2.0, TBD).
+- **Changelog discipline**: every version tag gets an entry in `CHANGELOG.md`
+  (Librarian + Journalist). Describe in-flight work under "Unreleased" in the same
+  commit; rename the heading once CI tags. Notable versions become posts on
+  `website/updates/`.
 - **Never commit secrets**: no OpenRouter keys (management or per-user), no access
   tokens, no vault keys. A leaked key is a security incident. The beta hardcoded key,
   when it arrives, is added deliberately, capped, and documented — never by accident.

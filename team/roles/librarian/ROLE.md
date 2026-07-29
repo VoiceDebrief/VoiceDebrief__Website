@@ -17,3 +17,6 @@
 3. Docs imported from sibling repos keep their provenance (original path + version) recorded.
 4. The version-prefix naming convention is enforced kindly but consistently.
 5. Un-indexed material (like the 27 July pack was) is the first thing to index.
+6. With the Journalist: every version tag gets a complete `CHANGELOG.md` entry, and
+   the public Library page (`website/library/`) stays a faithful front door to the
+   repo's docs — if a great doc isn't findable from it, that's a bug.

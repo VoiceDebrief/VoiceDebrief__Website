@@ -7,11 +7,10 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-07-29 (added 021).
+as any issue change. Last updated: 2026-07-29 (021 closed; added 022, 023).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [021](open/021-domain-https-and-org-verification.md) | Finish the custom domain: HTTPS + org verification | open | high | small |
 | [008](open/008-web-app-mvp-one-pass.md) | Web app MVP: one-pass transcript / analysis / debrief / infographic (streams in arrival order) | open | high | large |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
@@ -32,6 +31,9 @@ as any issue change. Last updated: 2026-07-29 (added 021).
 | [018](done/018-fix-increment-tag-pyproject.md) | Fix CI: increment-tag failed without pyproject.toml | done | high | small |
 | [019](done/019-tech-stack-workflow-guide.md) | Tech stack & workflow guide for incoming devs | done | high | medium |
 | [020](done/020-dev-pack-audio-transcribe-integration.md) | Dev pack: audio-transcribe integration briefs (Conductor/Architect/Dev/Designer) | done | high | medium |
+| [021](done/021-domain-https-and-org-verification.md) | Custom domain live: HTTPS enforced (org TXT verification recommended) | done | high | small |
+| [022](done/022-journalist-role-updates-section.md) | Journalist role + Updates section + per-version CHANGELOG | done | high | medium |
+| [023](done/023-public-library-page.md) | Public Library page (Librarian-maintained) | done | high | medium |
 
 ## Layout
 

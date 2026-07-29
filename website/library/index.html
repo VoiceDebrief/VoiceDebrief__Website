@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library — Voice Note Transcribe</title>
+<meta name="description" content="The documentation library of the WhatsApp voice note transcription tool — product briefs, developer guides, and the agentic team's working documents, all open.">
+<style>
+  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f2f5f9;--line:#dbe3ec;
+        --accent:#1f7a4d;--accent-2:#2563eb;--muted:#5b6b7f;--radius:14px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:#fff;line-height:1.6}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  header{background:var(--navy);color:#fff;padding:14px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+  .brand a{color:#fff;text-decoration:none}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:#25d366;box-shadow:0 0 0 4px rgba(37,211,102,.18)}
+  nav a{color:#dbe6f5;text-decoration:none;margin-left:18px;font-size:.92rem}
+  nav a:hover,nav a.active{color:#fff}
+  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:40px 0}
+  .page-head h1{font-size:1.8rem}
+  .page-head p{color:#c8d6e8;margin-top:8px;max-width:640px}
+  main{padding:44px 0 60px}
+  .kicker{color:var(--accent-2);font-size:.78rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin:26px 0 10px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .card{border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;background:#fff}
+  .card h3{font-size:1rem;margin-bottom:6px}
+  .card h3 a{color:var(--ink);text-decoration:none}
+  .card h3 a:hover{color:var(--accent-2)}
+  .card p{font-size:.88rem;color:var(--muted)}
+  .card .tag{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;
+             background:#e8effc;color:var(--accent-2);margin-bottom:8px;letter-spacing:.3px}
+  .note{background:var(--mist);border-radius:var(--radius);padding:14px 18px;font-size:.88rem;color:var(--muted);margin-top:30px}
+  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
+  footer a{color:#dbe6f5}
+  @media(max-width:640px){nav{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">Voice&nbsp;Note&nbsp;Transcribe</a></div>
+    <nav aria-label="Main">
+      <a href="../#how">How it works</a>
+      <a href="../#privacy">Privacy modes</a>
+      <a href="../#pricing">Pricing</a>
+      <a href="./" class="active">Library</a>
+      <a href="../updates/">Updates</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <h1>The Library</h1>
+    <p>Every document behind this product — the briefs that define it, the guides that
+       build it, and the agentic team's working records — maintained by the team's
+       Librarian and published as it is produced (CC BY 4.0).</p>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+
+    <div class="kicker">Start Here</div>
+    <div class="grid">
+      <div class="card"><span class="tag">PRODUCT</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/brief-pack/v0.1.0__00__README.md">The Brief Pack</a></h3>
+        <p>What we're building and why: the one-pass job, the availability gap, the architecture, the commercial model, and what's been done so far. Seven documents, ten minutes.</p></div>
+      <div class="card"><span class="tag">DEV</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.0__guide__tech-stack-and-workflow.md">Tech Stack &amp; Workflow Guide</a></h3>
+        <p>New to the project? The stack, the conventions, and the voice-memo → brief → agent-session → debrief working method every dev replicates. Read before your first commit.</p></div>
+      <div class="card"><span class="tag">STATUS</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/librarian/reality/index.md">Reality: What Exists Today</a></h3>
+        <p>The Librarian's ground truth — what exists vs what's PROPOSED, plus the decision log. If it's not in here, it doesn't exist.</p></div>
+    </div>
+
+    <div class="kicker">For Developers</div>
+    <div class="grid">
+      <div class="card"><span class="tag">DEV PACK</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/library/dev_packs/v0.1.1__audio-transcribe-integration">Audio-Transcribe Integration Pack</a></h3>
+        <p>The implementation briefs: import the proven engine cross-origin, Web Components on the shared base, full JS-API compliance, ASCII mockups and data-flow diagrams.</p></div>
+      <div class="card"><span class="tag">API</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/tools/audio-transcribe/v0.1.93__audio-transcribe__integration-and-capabilities.md">Audio-Transcribe API &amp; Capabilities</a></h3>
+        <p>The code-verified embedding contract of the engine we build on: the window.__tool surface, events, typed errors, cost and spend-cap seams.</p></div>
+      <div class="card"><span class="tag">INFRA</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.1__guide__github-pages-and-route53-dns.md">GitHub Pages + Route 53 Guide</a></h3>
+        <p>How this site is hosted and how the domain works — the publish chain, the DNS mechanics, and the repeatable checklist for the next project.</p></div>
+    </div>
+
+    <div class="kicker">The Defining Briefs</div>
+    <div class="grid">
+      <div class="card"><span class="tag">PRODUCT</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/library/briefs/first-product-to-market">First Product To Market (27 Jul)</a></h3>
+        <p>The founding pack: the architecture brief (no backend, OpenRouter as inference + billing, privacy modes), the commercial strategy, and the partnership contract draft.</p></div>
+      <div class="card"><span class="tag">STRATEGY</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/library/briefs/lineage">The Lineage Briefs</a></h3>
+        <p>Where the thinking came from: open source as strategy, commercialising the primitives, and the nine-tools-ready-to-productise inventory.</p></div>
+      <div class="card"><span class="tag">INFOGRAPHICS</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/infographics/README.md">The Infographics</a></h3>
+        <p>Visual one-pagers of the briefs above — generated with the same infographic engine this product reuses.</p></div>
+    </div>
+
+    <div class="kicker">The Agentic Team</div>
+    <div class="grid">
+      <div class="card"><span class="tag">TEAM</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/README.md">The Team &amp; Its Roles</a></h3>
+        <p>The roster: Conductor, Architect, Dev, Designer, DevOps, Librarian, QA, AppSec, DPO, Ambassador, Journalist — how an agentic team plus humans builds this in the open.</p></div>
+      <div class="card"><span class="tag">WORK</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/README.md">The Work Queue</a></h3>
+        <p>Issues-FS-lite: every task as a file, open/blocked/done, updated in the same commit as the work it describes.</p></div>
+      <div class="card"><span class="tag">CHANGES</span>
+        <h3><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/CHANGELOG.md">The Changelog</a></h3>
+        <p>What each version changed — captured by the Librarian and the Journalist together, one entry per tag.</p></div>
+    </div>
+
+    <div class="note">Everything above lives in the
+      <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">public repository</a>
+      and is licensed CC BY 4.0 (docs) — read it, fork it, build on it. This page is
+      maintained by the Librarian; if a great doc isn't findable from here, that's a bug.</div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 ·
+    <a href="../">Home</a> · <a href="../updates/">Updates</a> ·
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+</footer>
+</body>
+</html>

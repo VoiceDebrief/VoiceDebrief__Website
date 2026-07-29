@@ -19,3 +19,6 @@ and the repo serves the site over HTTP for the hostname. Remaining:
    version.txt matches latest tag. Then update reality + the guide's state table.
 
 Guide: library/guides/v0.1.1__guide__github-pages-and-route53-dns.md
+
+## Outcome
+Done 29 Jul: HTTPS live and enforced (HTTP 301s to HTTPS; verified in-session), site serving version-stamped releases. Remaining recommendation (not blocking): org-level verified domain TXT for sgraph.ai — recorded in the Pages/Route 53 guide §4.
