@@ -12,7 +12,7 @@ All documents are CC BY 4.0 unless stated otherwise.
 | `briefs/first-product-to-market/` | The 27 Jul pack that defines this product: day index, arch brief, strategy brief, contract draft (all v0.33.52) | `SGraph-AI__App__Send` `team/humans/dinis_cruz/briefs/07/27/` |
 | `briefs/lineage/` | The briefs the arch brief builds on: commercialising the primitives + open source as strategy (v0.33.49, 17 Jul), tools mature enough to productise (v0.33.50, 23 Jul) | `SGraph-AI__App__Send` `team/humans/dinis_cruz/briefs/07/17/`, `07/23/` |
 | `tools/audio-transcribe/` | The existing tool this product builds from: arch brief (v0.2.65), vault-integration review (v0.2.69), integration & capabilities (v0.1.93) | `SGraph-AI__Tools` `team/explorer/architect/`, `library/api/` |
-| `guides/` | Issues-FS-lite / Email-FS-lite v0.6 spec and the `.issues` agent-workflow format guide (v0.6.1) | `SGraph-AI__App__Send` `briefs/05/06/`, `library/dependencies/issues-fs/` |
+| `guides/` | Tech stack & workflow guide (start here as a new dev); Issues-FS-lite / Email-FS-lite v0.6 spec and the `.issues` format guide (v0.6.1) | created here + `SGraph-AI__App__Send` imports |
 | `infographics/` | The project infographics and their source-brief mapping | images pending (issue 007) |
 
 ## Import Rules

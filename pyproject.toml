@@ -1,0 +1,10 @@
+# Minimal project metadata. The version field is owned by the CI pipeline
+# (git__increment-tag updates it alongside the root `version` file on every
+# push to dev/main) — never edit it by hand.
+
+[project]
+name = "sgraph-ai-saas-whatsapp-audio-transcription"
+version = "v0.1.0"
+description = "WhatsApp voice note transcription tool - transcript, analysis, debrief and optional infographic in one pass"
+readme = "README.md"
+requires-python = ">=3.12"

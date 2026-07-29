@@ -20,7 +20,11 @@
 | Project library with imported source docs | `library/` | 2026-07-28 |
 | MVP static site (footer shows `version`; published after tagging) | `website/` | 2026-07-28 |
 
-All 2026-07-28 rows above are committed and pushed in this session.
+| Tech stack & workflow guide for incoming devs | `library/guides/v0.1.0__guide__tech-stack-and-workflow.md` | 2026-07-29 |
+| `pyproject.toml` (version CI-owned; unblocks increment-tag) + root README with release badge and repo map | repo root | 2026-07-29 |
+| Issues READMEs: top-level table + per-folder views (maintained manually per commit) | `issues/*/README.md` | 2026-07-29 |
+
+All rows above are committed and pushed in-session on their stated date.
 
 ## EXISTS (in sibling repos, reused not rewritten)
 
