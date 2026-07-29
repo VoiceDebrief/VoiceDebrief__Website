@@ -5,6 +5,7 @@ Last updated: 2026-07-29.
 
 | # | Title | Priority | Effort | Latest status |
 |---|-------|----------|--------|---------------|
+| [021](021-domain-https-and-org-verification.md) | Custom domain: await cert -> Enforce HTTPS; org TXT verification | high | small | DNS + Pages claim verified working 29 Jul |
 | [008](008-web-app-mvp-one-pass.md) | Web app MVP: one-pass pipeline, streaming in arrival order (progress → transcript → summary → infographic) | high | large | not started; M1-M3 defined in dev pack v0.1.1__audio-transcribe-integration |
 | [010](010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key: cap, life, revocation, narrow reach) | high | medium | waiting on account-type + model decisions |
 | [013](013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement (pre-commit) | high | medium | rule documented; enforcement pending |
