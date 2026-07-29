@@ -1,14 +1,15 @@
 name: CI Pipeline
 
-# Auto-tag on push to dev and main, mirroring the pattern used in
-# SGraph-AI__Tools (deploy-tools.yml) and SGraph-AI__App__Send (ci-pipeline.yml):
-#   dev  -> minor increment
-#   main -> major increment
-# The increment-tag action bumps the repo `version` file and pushes the tag.
-# The version file is owned by CI — never edit it by hand.
+# Order of operations on push to dev/main:
+#   1. increment-tag  — bumps the repo `version` file and pushes the tag
+#                       (dev = minor, main = major). CI owns the version file.
+#   2. publish-pages  — runs AFTER tagging, pulls the freshly bumped commit,
+#                       stamps the version into the site footer and version.txt,
+#                       and deploys website/ to GitHub Pages.
 #
-# Test and build/deploy jobs will be added as the product code lands; when they
-# do, the tag step must gate on tests (needs: [run-tests]) as in App__Send.
+# The bump commit is pushed with GITHUB_TOKEN, which does not re-trigger this
+# workflow, so there is no tag->publish loop; publishing happens in this same
+# run against the pulled bump commit.
 
 on:
   push:
@@ -25,6 +26,8 @@ jobs:
   increment-tag:
     name: Increment Tag
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: github.event_name == 'push' && (github.ref_name == 'dev' || github.ref_name == 'main')
     steps:
       - uses: actions/checkout@v4
@@ -33,3 +36,54 @@ jobs:
         uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/git__increment-tag@dev
         with:
           release_type: ${{ github.ref_name == 'main' && 'major' || 'minor' }}
+
+  build-pages:
+    name: Build Site (versioned)
+    runs-on: ubuntu-latest
+    needs: [increment-tag]
+    # Publish from dev (the Pages estate). Runs even when increment-tag is
+    # skipped (manual dispatch) so the site can be re-published on demand.
+    if: always() && (needs.increment-tag.result == 'success' || needs.increment-tag.result == 'skipped') && (github.ref_name == 'dev')
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Pull the version bump commit
+        run: git pull origin ${{ github.ref_name }}
+
+      - name: Stamp version into the site
+        run: |
+          VER=$(cat version)
+          echo "Publishing site at version: $VER"
+          cp version website/version.txt
+          sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" website/index.html
+          grep -o 'site-version">[^<]*' website/index.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          enablement: true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [build-pages]
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

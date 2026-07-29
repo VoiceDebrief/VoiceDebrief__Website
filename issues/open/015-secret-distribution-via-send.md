@@ -8,3 +8,6 @@ estimated_effort: small
 # Distribute secrets via the existing SG/Send capability
 
 No new mechanism: send a secret directly (small hand-held cohort) or hand the user a URL that retrieves and installs it (the bridge to the deferred provisioning Lambda). Prefer single-use / short-lived links — the link inherits the properties of the secret behind it.
+
+## Status 28 Jul (post-merge to dev)
+Open, not started. Needed by first cohort onboarding.

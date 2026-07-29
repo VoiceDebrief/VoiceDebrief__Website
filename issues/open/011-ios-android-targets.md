@@ -8,3 +8,6 @@ estimated_effort: large
 # iOS and Android targets from this repo
 
 Reuse the proven one-repo-to-three-apps pipeline incl. signing keys. Chrome extension deliberately later.
+
+## Status 28 Jul (post-merge to dev)
+Open, not started. After the web MVP.

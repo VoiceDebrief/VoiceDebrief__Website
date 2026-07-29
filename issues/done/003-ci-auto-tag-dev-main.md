@@ -11,3 +11,6 @@ Auto-tag on push to dev (minor) and main (major); default branch is now dev.
 
 ## Outcome
 Done 28 Jul: `.github/workflows/ci-pipeline.yml` using owasp-sbot git__increment-tag, same shape as Tools' deploy-tools.yml; root `version` file seeded at v0.1.0 (CI-owned from here). Test gating to be added when tests land.
+
+## Status 28 Jul (post-merge to dev)
+Ran on dev: tag v0.1.0 created. Pipeline restructured by issue 017 (publish now ordered after tagging).

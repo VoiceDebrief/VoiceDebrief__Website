@@ -11,3 +11,6 @@ The product itself: drop audio (.opus/.ogg/.m4a) → one pass → outputs. Build
 
 ## Alignment from brief v0.33.53 (28 Jul)
 Milestone 1 IS this issue: the end-to-end branded experience. Results STREAM in arrival order — visible progress (load-bearing, not decoration) -> transcript (first, longest wait) -> summary document -> infographic (last, the delight). Progress indication is a functional requirement; do not collapse the sequence into one atomic reveal.
+
+## Status 28 Jul (post-merge to dev)
+Open, not started. Next major build; streaming order requirement recorded from brief v0.33.53.

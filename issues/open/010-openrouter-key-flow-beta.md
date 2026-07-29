@@ -11,3 +11,6 @@ Hardcoded capped key for first beta users (hard cap, short life, revocable, trea
 
 ## Alignment from brief v0.33.53 (28 Jul)
 The seeded ("deliberately leaked") key is safe only via its properties, written down BEFORE it ships: hard spend cap, short life, easy revocation, and NARROW REACH via OpenRouter guardrails (model + provider + data-policy restriction — see issue 014). Also decide the transition point at which the seeded key stops being acceptable (cohort size, public indexing, or a date). Reuse the existing OpenRouter admin console.
+
+## Status 28 Jul (post-merge to dev)
+Open, not started. Waiting on account-type and model-allowlist decisions (brief v0.33.53 settle-first items 1-3).

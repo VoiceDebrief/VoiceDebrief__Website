@@ -8,3 +8,6 @@ estimated_effort: large
 # CRM built on the vault substrate
 
 Named in brief v0.33.53, explicitly NOT first-milestone scope. Customer records on the same encrypted, versioned vault substrate as everything else.
+
+## Status 28 Jul (post-merge to dev)
+Open backlog. Explicitly not first-milestone.

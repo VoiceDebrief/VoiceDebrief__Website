@@ -15,10 +15,10 @@
 | Brief pack: session understanding, architecture, commercial model, task plan, source map | `library/brief-pack/` | 2026-07-28 |
 | Agentic team wiring: rulebook, roster, 10 active ROLE files, humans/comms folders | `.claude/CLAUDE.md`, `team/` | 2026-07-28 |
 | This reality document | `team/roles/librarian/reality/index.md` | 2026-07-28 |
-| CI auto-tag on `dev` and `main` | `.github/workflows/` | 2026-07-28 |
+| CI: auto-tag on `dev`/`main`, then Pages publish with version stamped into the site | `.github/workflows/ci-pipeline.yml` | 2026-07-28 |
 | Issues tracking (issues-fs-lite style) | `issues/` | 2026-07-28 |
 | Project library with imported source docs | `library/` | 2026-07-28 |
-| MVP static site + GitHub Pages workflow | `website/`, `.github/workflows/` | 2026-07-28 |
+| MVP static site (footer shows `version`; published after tagging) | `website/` | 2026-07-28 |
 
 All 2026-07-28 rows above are committed and pushed in this session.
 

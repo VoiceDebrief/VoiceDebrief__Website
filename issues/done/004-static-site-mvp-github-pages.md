@@ -17,3 +17,6 @@ Site builds as pure static files; workflow publishes on push to dev; looks credi
 
 ## Outcome
 Done 28 Jul: website/ (index, 404, robots, .nojekyll) + deploy-pages.yml (publishes on push to dev; Pages enablement via configure-pages). Domain wiring left to Dinis.
+
+## Status 28 Jul (post-merge to dev)
+Merged to dev. Publishing moved into ci-pipeline.yml after the tag step (issue 017); awaiting first Pages deploy on next dev push, then domain wiring (Dinis, Route 53).

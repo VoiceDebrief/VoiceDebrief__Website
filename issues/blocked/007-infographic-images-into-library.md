@@ -11,3 +11,6 @@ Seven infographics shared in-session on 28 Jul (consulting model, commercialisin
 
 ## Blocked on
 blocked_on: the image files themselves — shared in chat as images; the actual files need to be added to the repo by Dinis (or a session that receives them as files).
+
+## Status 28 Jul (post-merge to dev)
+Still blocked: image files not yet received in a form that can be committed.
