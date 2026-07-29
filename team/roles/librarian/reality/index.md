@@ -1,5 +1,8 @@
 # Reality: What Exists Today
 
+*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+
+
 **maintained by** Librarian
 **updated** 2026-07-29
 **rule** If it is not in this document, it does not exist. Proposed items are labelled
