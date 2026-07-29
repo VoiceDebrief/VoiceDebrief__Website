@@ -3,9 +3,11 @@
 **version** v0.1.1 · **date** 29 July 2026 · **role** Designer · **type** Dev-pack brief
 **status** PROPOSED — briefs only
 
+*Part of the dev pack [v0.1.1__audio-transcribe-integration](README.md) — see the [pack README](README.md) for scope, ground truth and definition of done.*
+
 ---
 
-## 1. The Experience Contract (from the 28 Jul brief, non-negotiable)
+## 1. The Experience Contract (from the [28 Jul brief](../../../team/humans/dinis_cruz/briefs/07/28/v0.33.53__arch-brief__sg-send-voice-note-tool-build-status-first-milestone-experience-deliberately-leaked-key-guardrails-enforce-privacy-tiers-two-vaults-ciphertext-rule-send-secrets.md), non-negotiable)
 
 > "you just get the file, and then you get the visualisation that something is
 > happening, then … the transcription, and then the summary document, and then the
@@ -87,7 +89,7 @@ Never a bare spinner-then-nothing; every failure names what happened and the nex
 
 ## 6. Brand & Craft
 
-- Same visual system as the landing page (`website/index.html`): navy `#0b1f3a`,
+- Same visual system as the landing page ([`website/index.html`](../../../website/index.html)): navy `#0b1f3a`,
   WhatsApp-green accents, system font stack, self-contained CSS, no external fonts.
 - The product page must feel like the landing page's promise kept: the hero sentence
   on the landing page and the drop zone on the app page use the same words.
