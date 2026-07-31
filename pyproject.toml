@@ -4,7 +4,7 @@
 
 [project]
 name = "sgraph-ai-saas-whatsapp-audio-transcription"
-version = "v0.1.6"
+version = "v0.1.7"
 description = "WhatsApp voice note transcription tool - transcript, analysis, debrief and optional infographic in one pass"
 readme = "README.md"
 requires-python = ">=3.12"
