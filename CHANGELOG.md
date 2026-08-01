@@ -16,7 +16,37 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ---
 
-## Unreleased (next tag) — [diff vs v0.1.4](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.4...dev)
+## [v0.1.11](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.10...v0.1.11) — 31 Jul 2026
+
+- Product overview infographic settled at `library/infographics/Product-overview.png`.
+- v0.1.7–v0.1.11 are the product infographics landing one file per push; CI tags every
+  push to `dev`. Subsequent image work goes on a branch and merges once.
+
+## [v0.1.10](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.9...v0.1.10) — 31 Jul 2026
+
+- `User-journey.png` renamed to the product overview infographic (the file added in
+  v0.1.8 was labelled user-journey in error).
+
+## [v0.1.9](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.8...v0.1.9) — 31 Jul 2026
+
+- User journey infographic added (`User-journey.jpeg`).
+
+## [v0.1.8](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.7...v0.1.8) — 31 Jul 2026
+
+- Infographic added as `User-journey.png` — superseded by the v0.1.10 rename.
+
+## [v0.1.7](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.6...v0.1.7) — 31 Jul 2026
+
+- Technical architecture infographic added (`Technical-architecture.jpg.png`).
+
+## [v0.1.6](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.5...v0.1.6) — 29 Jul 2026
+
+- Navigation sweep: brief-pack README table and cross-refs are now relative links;
+  library folder table linked; docs the Library page targets carry an absolute
+  back-link to it; changelog headings and Updates version chips link to GitHub
+  compare views (delta per version).
+
+## [v0.1.5](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.4...v0.1.5) — 29 Jul 2026
 
 - Journalist role joins the active roster — owns the site's **Updates** section;
   first three updates published (`website/updates/`).
@@ -25,10 +55,6 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 - This `CHANGELOG.md` + the Librarian–Journalist per-version capture discipline.
 - Landing page nav gains Library and Updates links.
 - Issue 021 closed: custom domain fully live (HTTPS enforced, verified from session).
-- Navigation sweep: brief-pack README table and cross-refs are now relative links;
-  library folder table linked; docs the Library page targets carry an absolute
-  back-link to it; changelog headings and Updates version chips link to GitHub
-  compare views (delta per version).
 
 ## [v0.1.4](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.3...v0.1.4) — 29 Jul 2026
 
