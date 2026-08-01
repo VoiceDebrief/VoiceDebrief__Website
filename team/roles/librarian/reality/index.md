@@ -4,7 +4,7 @@
 
 
 **maintained by** Librarian
-**updated** 2026-07-29
+**updated** 2026-08-01
 **rule** If it is not in this document, it does not exist. Proposed items are labelled
 `PROPOSED — does not exist yet`.
 
@@ -31,6 +31,7 @@
 | Journalist role (active): site Updates section with first three posts | `team/roles/journalist/`, `website/updates/` | 2026-07-29 |
 | Public Library page (Librarian-maintained doc front door) | `website/library/` | 2026-07-29 |
 | CHANGELOG.md + Librarian-Journalist per-version capture discipline | `CHANGELOG.md`, both ROLE files, `.claude/CLAUDE.md` | 2026-07-29 |
+| Three product infographics (product overview, technical architecture, user journey) — created for this repo, distinct from the seven still pending under issue 007 | `library/infographics/` | 2026-07-31 |
 
 All rows above are committed and pushed in-session on their stated date.
 
