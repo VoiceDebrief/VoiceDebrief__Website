@@ -23,12 +23,21 @@ reuses for its optional infographic output.
 
 ## Product infographics (created for this repo)
 
+These are early-stage infographics produced while the project was being scoped,
+committed at Dinis's suggestion so the process and its history are tracked in the
+repo. They record how the thinking developed at that point and are not current
+architecture documentation — the canonical architecture is the
+[brief pack](../brief-pack/v0.1.0__02__architecture.md) and the
+[dev pack](../dev_packs/v0.1.1__audio-transcribe-integration/README.md).
+`Technical-architecture.png` in particular sketches an early view of the workflow
+rather than the system architecture the name suggests.
+
 Separate from the seven above: three infographics made for this product and committed
 here on 31 July 2026. They are not part of issue 007 and are the images actually in
 this folder today.
 
 | File | What it shows |
 |------|---------------|
-| [`Product-overview.png`](Product-overview.png) | The end-to-end product in eight steps — land on the site, sign up, buy credits, upload the audio, pick outputs (transcript and summary on by default, infographic optional and dearer), process, get results, export — closing on the five product claims (fast, accurate, private, pay-as-you-go, all-in-one). |
-| [`Technical-architecture.png`](Technical-architecture.png) | The workflow this product replaces and how it is built: WhatsApp voice memo → SG/Tools Audio Transcribe → AI discussion, the nine manual steps today with quality and per-transcription cost, and the recommended minimal-automation option. |
-| [`User-journey.jpeg`](User-journey.jpeg) | The user's story: the problem (voice memos are slow to transcribe, hard to share, no visual summary), the four-stage journey (receive → upload → AI processing → three outputs), and why it beats the alternative (no contract, pay per use, results in seconds). |
+| [`Product-overview.png`](Product-overview.png) | An early view of the end-to-end product in eight steps — land on the site, sign up, buy credits, upload the audio, pick outputs, process, get results, export — with the product claims as they were being pitched at the time. |
+| [`Technical-architecture.png`](Technical-architecture.png) | An early sketch of the workflow rather than the system: WhatsApp voice memo → SG/Tools Audio Transcribe → AI discussion, the manual steps as they stood, with indicative quality and cost figures and a proposed minimal-automation option. |
+| [`User-journey.jpeg`](User-journey.jpeg) | An early telling of the user's story: the problem framing, a four-stage journey (receive → upload → AI processing → three outputs), and the positioning claims explored at that point. |
