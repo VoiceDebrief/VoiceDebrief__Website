@@ -16,6 +16,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ---
 
+## Unreleased (next tag)
+
+- The three product infographics are documented rather than merely present:
+  `library/infographics/README.md` gains a section describing each one, the library
+  contents table no longer reads "images pending", the reality doc gains a row for
+  them, and `Technical-architecture.jpg.png` is renamed to
+  `Technical-architecture.png` (it is a PNG). Dinis's seven from 28 July remain
+  pending under issue 007.
+
 ## [v0.1.11](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.10...v0.1.11) — 31 Jul 2026
 
 - Product overview infographic settled at `library/infographics/Product-overview.png`.

@@ -16,7 +16,7 @@ All documents are CC BY 4.0 unless stated otherwise.
 | [`tools/audio-transcribe/`](tools/audio-transcribe/) | The existing tool this product builds from: arch brief (v0.2.65), vault-integration review (v0.2.69), integration & capabilities (v0.1.93) | `SGraph-AI__Tools` `team/explorer/architect/`, `library/api/` |
 | [`guides/`](guides/) | Tech stack & workflow guide (start here as a new dev); Issues-FS-lite / Email-FS-lite v0.6 spec and the `.issues` format guide (v0.6.1) | created here + `SGraph-AI__App__Send` imports |
 | [`dev_packs/`](dev_packs/) | Implementation brief packs for the agentic team (v0.1.1: audio-transcribe integration — Conductor/Architect/Dev/Designer) | created here |
-| [`infographics/`](infographics/README.md) | The project infographics and their source-brief mapping | images pending (issue 007) |
+| [`infographics/`](infographics/README.md) | The project infographics and their source-brief mapping: three product infographics (overview, technical architecture, user journey) are here; Dinis's seven from 28 Jul are still pending (issue 007) | created here + `SGraph-AI__App__Send` 28 Jul session (pending) |
 
 ## Import Rules
 
