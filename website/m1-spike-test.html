@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>M1-a spike — import harness validation (Attempt 1 vs Attempt 2)</title>
+<meta name="description" content="Developer harness: does the audio-transcribe entry module run without the tool's shell DOM (Attempt 1), or must we register the method-group builders on our own SgToolApi (Attempt 2)?">
+<style>
+  :root{
+    --navy:#0b1f3a; --navy-2:#122c50; --ink:#1a2433; --paper:#ffffff;
+    --mist:#f2f5f9; --line:#dbe3ec; --accent:#1f7a4d; --accent-2:#2563eb;
+    --warn:#b45309; --bad:#b91c1c; --muted:#5b6b7f; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:var(--mist);line-height:1.6}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  header{background:var(--navy);color:#fff;padding:18px 0}
+  header h1{font-size:1.15rem;letter-spacing:.2px}
+  header p{color:#c8d6e8;font-size:.88rem;margin-top:4px}
+  .badge{display:inline-block;background:rgba(180,83,9,.16);border:1px solid rgba(245,158,11,.5);
+         color:#fbbf24;font-size:.72rem;padding:3px 10px;border-radius:999px;letter-spacing:.4px;margin-bottom:8px}
+  main{padding:26px 0 60px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:18px}
+  .card h2{font-size:1.02rem;margin-bottom:6px}
+  .card p.sub{color:var(--muted);font-size:.9rem}
+  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:14px}
+  label{display:block;font-size:.76rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  input{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink)}
+  input[type=text]{min-width:290px}
+  input[type=number]{width:120px}
+  button{font:inherit;font-weight:600;padding:10px 18px;border:0;border-radius:9px;cursor:pointer}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-primary:hover{background:var(--navy-2)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:#9fb2c9}
+  button[disabled]{opacity:.5;cursor:not-allowed}
+  .attempt{border-left:4px solid var(--line)}
+  .attempt.pass{border-left-color:var(--accent)}
+  .attempt.fail{border-left-color:var(--bad)}
+  .attempt.running{border-left-color:var(--accent-2)}
+  .pill{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+        padding:3px 10px;border-radius:999px;background:var(--mist);color:var(--muted);border:1px solid var(--line)}
+  .pill.pass{background:rgba(31,122,77,.1);color:var(--accent);border-color:rgba(31,122,77,.3)}
+  .pill.fail{background:rgba(185,28,28,.09);color:var(--bad);border-color:rgba(185,28,28,.3)}
+  .pill.running{background:rgba(37,99,235,.1);color:var(--accent-2);border-color:rgba(37,99,235,.3)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .steps{margin-top:14px;border-top:1px solid var(--line)}
+  .step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem;align-items:baseline}
+  .step:last-child{border-bottom:none}
+  .step .mark{flex:0 0 20px;font-weight:700}
+  .step .mark.ok{color:var(--accent)}
+  .step .mark.no{color:var(--bad)}
+  .step .mark.info{color:var(--muted)}
+  .step .ms{margin-left:auto;color:var(--muted);font-size:.8rem;white-space:nowrap}
+  pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.8rem;line-height:1.6;
+      background:#0b1f3a;color:#bcd3ef;padding:14px;border-radius:10px;overflow-x:auto;margin-top:10px;white-space:pre-wrap;word-break:break-word}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85em;
+       background:var(--mist);padding:1px 5px;border-radius:5px}
+  header code{background:rgba(255,255,255,.12);color:#e6eefb}
+  .methods{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .m{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.76rem;padding:3px 8px;border-radius:6px;
+     background:rgba(31,122,77,.1);color:var(--accent);border:1px solid rgba(31,122,77,.28)}
+  .m.missing{background:rgba(185,28,28,.08);color:var(--bad);border-color:rgba(185,28,28,.28);text-decoration:line-through}
+  #verdict{font-size:1rem}
+  #verdict strong{font-size:1.06rem}
+  .note{background:#fff8ec;border:1px solid #f3d9a6;border-radius:10px;padding:12px 14px;font-size:.88rem;color:#7a4d09;margin-top:12px}
+  footer{color:var(--muted);font-size:.82rem;padding:18px 0 40px}
+  footer a{color:var(--accent-2)}
+  iframe.sandbox{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="badge">DEV HARNESS — NOT PART OF THE PRODUCT</span>
+    <h1>M1-a spike: the import harness</h1>
+    <p>Does the audio-transcribe entry module run without the tool's shell DOM (Attempt&nbsp;1), or must we register the method-group builders on our own <code>SgToolApi</code> (Attempt&nbsp;2)?</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="card">
+    <h2>What this page decides</h2>
+    <p class="sub">
+      Dev brief §2 lists three cuts, tried in order: <strong>Attempt 1</strong> imports
+      <code>audio-transcribe-api.js</code> and waits for <code>tool:ready</code> — free, but it calls
+      <code>mountShell</code>, so it only survives if a missing shell DOM is non-fatal.
+      <strong>Attempt 2</strong> imports the method-group builders plus <code>ui/state.js</code> and registers
+      them on our own <code>SgToolApi</code> — engine only, no UI expectations.
+      <strong>Attempt 3</strong> (iframe + postMessage bridge) is the last resort and is not automated here.
+    </p>
+    <p class="sub" style="margin-top:10px">
+      Each attempt runs inside its own throwaway same-origin iframe, so the ES-module registry and
+      <code>window.__tool</code> are fresh per run and the two attempts cannot contaminate each other.
+      Nothing here needs an OpenRouter key: the spike stops at the handshake, before any inference.
+    </p>
+    <div class="controls">
+      <div>
+        <label for="origin">Engine origin</label>
+        <input type="text" id="origin" value="https://dev.tools.sgraph.ai">
+      </div>
+      <div>
+        <label for="timeout">Timeout (ms)</label>
+        <input type="number" id="timeout" value="15000" min="1000" step="1000">
+      </div>
+      <button class="btn-primary" id="run-both">Run both attempts</button>
+      <button class="btn-ghost" id="run-1">Attempt 1 only</button>
+      <button class="btn-ghost" id="run-2">Attempt 2 only</button>
+      <button class="btn-ghost" id="copy">Copy report as markdown</button>
+    </div>
+    <div class="note">
+      Cross-origin <code>import()</code> needs CORS headers on the engine origin. A blocked import fails the
+      attempt with a network/CORS error rather than a contract error — read the raw error before concluding
+      anything about the cut.
+    </div>
+  </div>
+
+  <div class="card attempt" id="a1">
+    <div class="row">
+      <h2>Attempt 1 — entry module (<code>audio-transcribe-api.js</code>)</h2>
+      <span class="pill" id="a1-pill">not run</span>
+    </div>
+    <p class="sub">Pass condition: the module imports without throwing, <code>tool:ready</code> fires, and
+      <code>window.__tool</code> exposes the contract surface.</p>
+    <div class="steps" id="a1-steps"></div>
+    <div class="methods" id="a1-methods"></div>
+    <pre id="a1-raw" hidden></pre>
+  </div>
+
+  <div class="card attempt" id="a2">
+    <div class="row">
+      <h2>Attempt 2 — builders on our own <code>SgToolApi</code></h2>
+      <span class="pill" id="a2-pill">not run</span>
+    </div>
+    <p class="sub">Pass condition: the five modules import, the builders return method groups, and our own
+      <code>activate()</code> publishes a <code>window.__tool</code> carrying the contract surface.</p>
+    <div class="steps" id="a2-steps"></div>
+    <div class="methods" id="a2-methods"></div>
+    <pre id="a2-raw" hidden></pre>
+  </div>
+
+  <div class="card">
+    <h2>Verdict</h2>
+    <div id="verdict" class="sub">Nothing run yet.</div>
+  </div>
+
+  <footer>
+    Deliverable of this spike is a one-page note in
+    <code>library/dev_packs/v0.1.1__audio-transcribe-integration/</code> recording which attempt won and why —
+    use “Copy report as markdown” as its evidence section. Contract source of truth: the tool's
+    <code>manifest.json</code> <code>api</code> section.
+  </footer>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  // The surface the app is allowed to depend on (Architect brief §3). Anything outside
+  // this list is UI internals and explicitly unstable.
+  const CONTRACT = ['setApiKey','addFiles','getItems','getItem','transcribeItem','transcribeAll',
+                    'cancelItem','getTranscript','ask','getCostSummary','setSpendCap'];
+
+  const $ = id => document.getElementById(id);
+  const results = { 1:null, 2:null };
+
+  /* ---------- rendering ---------- */
+
+  function reset(n){
+    $(`a${n}-steps`).innerHTML = '';
+    $(`a${n}-methods`).innerHTML = '';
+    $(`a${n}-raw`).hidden = true;
+    $(`a${n}-raw`).textContent = '';
+    setPill(n, 'running', 'running…');
+    $(`a${n}`).className = 'card attempt running';
+  }
+
+  function setPill(n, kind, text){
+    const p = $(`a${n}-pill`);
+    p.className = `pill ${kind}`;
+    p.textContent = text;
+  }
+
+  function addStep(n, mark, text, ms){
+    const el = document.createElement('div');
+    el.className = 'step';
+    const cls = mark === 'ok' ? 'ok' : mark === 'no' ? 'no' : 'info';
+    const glyph = mark === 'ok' ? '✓' : mark === 'no' ? '✗' : '·';
+    el.innerHTML = `<span class="mark ${cls}">${glyph}</span><span></span>` +
+                   (ms == null ? '' : `<span class="ms">${Math.round(ms)} ms</span>`);
+    el.children[1].textContent = text;
+    $(`a${n}-steps`).appendChild(el);
+  }
+
+  function renderMethods(n, present){
+    const box = $(`a${n}-methods`);
+    box.innerHTML = '';
+    if (!present) return;
+    for (const m of CONTRACT){
+      const el = document.createElement('span');
+      el.className = present.includes(m) ? 'm' : 'm missing';
+      el.textContent = m;
+      box.appendChild(el);
+    }
+    const extra = present.filter(m => !CONTRACT.includes(m));
+    if (extra.length){
+      const el = document.createElement('span');
+      el.className = 'm';
+      el.style.opacity = '.65';
+      el.textContent = `+${extra.length} beyond contract`;
+      el.title = extra.join(', ');
+      box.appendChild(el);
+    }
+  }
+
+  function render(n, res){
+    reset(n);
+    for (const s of res.steps) addStep(n, s.mark, s.text, s.ms);
+    renderMethods(n, res.methods);
+    const ok = res.pass;
+    setPill(n, ok ? 'pass' : 'fail', ok ? `pass · ${Math.round(res.ms)} ms` : 'fail');
+    $(`a${n}`).className = `card attempt ${ok ? 'pass' : 'fail'}`;
+    if (res.errors.length){
+      $(`a${n}-raw`).hidden = false;
+      $(`a${n}-raw`).textContent = res.errors.join('\n\n');
+    }
+    verdict();
+  }
+
+  function verdict(){
+    const v = $('verdict');
+    const r1 = results[1], r2 = results[2];
+    if (!r1 && !r2){ v.textContent = 'Nothing run yet.'; return; }
+    let text;
+    if (r1 && r1.pass){
+      text = '<strong>Attempt 1 wins.</strong> The entry module runs without the tool\'s shell DOM — ' +
+             'take <code>window.__tool</code> straight off <code>tool:ready</code> and write no harness at all. ' +
+             (r2 && r2.pass ? 'Attempt 2 also works and stays available if the entry module later grows a hard DOM dependency.' : '');
+    } else if (r2 && r2.pass){
+      text = '<strong>Attempt 2 wins.</strong> The entry module could not be used as-is' +
+             (r1 ? ' (see its raw error)' : ' (not run)') +
+             ', but the method-group builders register cleanly on our own <code>SgToolApi</code>. ' +
+             'Keep the harness under ~100 lines and cover it with the contract smoke test.';
+    } else if (r1 && r2 && (r1.net || r2.net)){
+      text = '<strong>Inconclusive — the engine origin was unreachable.</strong> Every failure was a fetch/CORS error, ' +
+             'so neither cut was actually tested. Check the origin, its CORS headers and the module paths, then re-run.';
+    } else if (r1 && r2){
+      text = '<strong>Both attempts failed.</strong> Before falling back to Attempt 3 (iframe + postMessage bridge), ' +
+             're-read the raw errors — only a genuine contract or DOM failure justifies the bridge.';
+    } else {
+      text = 'One attempt still to run.';
+    }
+    v.innerHTML = text;
+  }
+
+  /* ---------- the sandbox ---------- */
+
+  // Each attempt gets a throwaway same-origin iframe: fresh module registry, fresh globals,
+  // and mountShell meets exactly the empty DOM we are testing against.
+  function runInSandbox(source, opts){
+    return new Promise(resolve => {
+      const frame = document.createElement('iframe');
+      frame.className = 'sandbox';
+      frame.src = 'about:blank';
+      let done = false;
+      const finish = res => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        try { frame.remove(); } catch (_) {}
+        resolve(res);
+      };
+      const timer = setTimeout(() => finish({
+        pass:false, ms:opts.timeout, methods:null,
+        steps:[{mark:'no', text:`timed out after ${opts.timeout} ms — no result reported`}],
+        errors:['Timed out. The import may be hanging on a slow or blocked dependency.']
+      }), opts.timeout);
+
+      const inject = () => {
+        const w = frame.contentWindow;
+        if (!w || !w.document || !w.document.body) return;
+        if (w.__spike) return;                       // load may fire more than once
+        w.__spike = { ORIGIN: opts.origin, CONTRACT, TIMEOUT: opts.timeout, report: finish };
+        const s = w.document.createElement('script');
+        s.type = 'module';
+        s.textContent = source;
+        w.document.body.appendChild(s);
+      };
+      frame.addEventListener('load', inject);
+      document.body.appendChild(frame);
+      inject();                                      // about:blank is often ready synchronously
+    });
+  }
+
+  // Shared preamble for both attempts: a tiny recorder, plus capture of errors that escape
+  // the await chain (a throw inside a microtask never reaches our try/catch).
+  const PRELUDE = `
+    const S = window.__spike, t0 = performance.now();
+    const steps = [], errors = [];
+    const step = (mark, text) => steps.push({ mark, text, ms: performance.now() - t0 });
+    const err  = e => errors.push(e && e.stack ? e.stack : String(e));
+    window.addEventListener('error', e => err(e.error || e.message));
+    window.addEventListener('unhandledrejection', e => err(e.reason));
+    // A module that never arrived says nothing about the cut — keep that failure separate.
+    const netish = e => /failed to fetch dynamically imported module|failed to resolve module|networkerror|err_[a-z_]+|cors/i.test(String((e && e.message) || e));
+    const done = pass => S.report({ pass, ms: performance.now() - t0, steps, errors,
+      methods: window.__methods || null,
+      net: errors.length > 0 && errors.every(netish) });
+    const surface = t => t ? Object.keys(t).filter(k => typeof t[k] === 'function') : null;
+    const waitFor = (test, ms) => new Promise(res => {
+      const started = performance.now();
+      (function poll(){
+        if (test()) return res(true);
+        if (performance.now() - started > ms) return res(false);
+        setTimeout(poll, 50);
+      })();
+    });
+  `;
+
+  // Module scripts forbid a top-level `return`, and the attempt bodies lean on early returns —
+  // so each body runs inside an async IIFE with a catch-all of its own.
+  const wrap = body => PRELUDE + '\n(async () => {\n' + body +
+    '\n})().catch(e => { err(e); step("no", "harness itself threw"); done(false); });\n';
+
+  const ATTEMPT_1 = wrap(`
+    let ready = null;
+    window.addEventListener('tool:ready', e => { ready = e.detail || {}; }, { once: true });
+    let fatal = false;
+    try {
+      await import(\`\${S.ORIGIN}/en-gb/audio-transcribe/api/audio-transcribe-api.js\`);
+      step('ok', 'entry module imported without throwing');
+    } catch (e) {
+      fatal = true;
+      err(e);
+      step('no', netish(e)
+        ? 'entry module could not be fetched (network / CORS / 404) — inconclusive, not a verdict on the cut'
+        : 'entry module threw on import — the shell DOM dependency is fatal, go to Attempt 2');
+    }
+    if (!fatal) {
+      const gotReady = await waitFor(() => ready !== null, Math.min(5000, S.TIMEOUT / 2));
+      step(gotReady ? 'ok' : 'no', gotReady
+        ? \`tool:ready fired\${ready.version ? ' — version ' + JSON.stringify(ready.version) : ''}\${ready.instanceId ? ', instanceId ' + ready.instanceId : ''}\`
+        : 'tool:ready never fired within the window');
+      const gotTool = await waitFor(() => !!window.__tool, 1000);
+      step(gotTool ? 'ok' : 'no', gotTool ? 'window.__tool published' : 'window.__tool absent');
+      if (gotTool) {
+        window.__methods = surface(window.__tool);
+        const missing = S.CONTRACT.filter(m => typeof window.__tool[m] !== 'function');
+        step(missing.length ? 'no' : 'ok', missing.length
+          ? \`contract incomplete — missing: \${missing.join(', ')}\`
+          : \`full contract present (\${window.__methods.length} callable methods)\`);
+        if (errors.length) step('info', \`\${errors.length} error(s) escaped during load — mount probably failed but was survivable; read them before trusting this pass\`);
+        return done(gotReady && !missing.length);
+      }
+    }
+    done(false);
+  `);
+
+  const ATTEMPT_2 = wrap(`
+    const mods = {
+      'core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js': 'sg-tool-api',
+      'en-gb/audio-transcribe/ui/state.js':             'state',
+      'en-gb/audio-transcribe/api/api-source.js':       'api-source',
+      'en-gb/audio-transcribe/api/api-transcribe.js':   'api-transcribe',
+      'en-gb/audio-transcribe/api/api-batch.js':        'api-batch',
+    };
+    const loaded = {};
+    for (const [path, label] of Object.entries(mods)) {
+      try {
+        loaded[label] = await import(\`\${S.ORIGIN}/\${path}\`);
+        step('ok', \`\${label} imported — exports: \${Object.keys(loaded[label]).join(', ') || '(none)'}\`);
+      } catch (e) {
+        err(e);
+        step('no', \`\${label} failed to import\${netish(e) ? ' — network / CORS / 404, not a contract problem' : ''}\`);
+        return done(false);
+      }
+    }
+
+    // Signatures are not documented outside the Tools repo, so probe rather than assume:
+    // report the shape we actually got, and let the spike note record it.
+    const { SgToolApi } = loaded['sg-tool-api'];
+    const createState   = loaded['state'].createState;
+    if (typeof SgToolApi !== 'function') { step('no', 'SgToolApi export is not a constructor'); return done(false); }
+    if (typeof createState !== 'function') { step('no', 'createState export is not a function'); return done(false); }
+
+    let state;
+    try {
+      state = createState({});
+      step('ok', \`createState({}) returned \${state && typeof state === 'object' ? Object.keys(state).length + ' keys' : typeof state}\`);
+    } catch (e) {
+      err(e);
+      try { state = createState(); step('ok', 'createState() (no args) returned a state object'); }
+      catch (e2) { err(e2); step('no', 'createState rejected both ({}) and () — read the source before re-running'); return done(false); }
+    }
+
+    const builders = [
+      ['buildSourceMethods',     loaded['api-source'].buildSourceMethods],
+      ['buildTranscribeMethods', loaded['api-transcribe'].buildTranscribeMethods],
+      ['buildBatchMethods',      loaded['api-batch'].buildBatchMethods],
+    ];
+    const groups = {};
+    for (const [name, fn] of builders) {
+      if (typeof fn !== 'function') { step('no', \`\${name} is not exported as a function\`); return done(false); }
+      try {
+        const g = fn(state);
+        const keys = Object.keys(g || {}).filter(k => typeof g[k] === 'function');
+        keys.forEach(k => { groups[k] = g[k]; });
+        step(keys.length ? 'ok' : 'no', \`\${name}(state) → \${keys.length ? keys.join(', ') : 'no callable methods'}\`);
+      } catch (e) {
+        err(e);
+        step('no', \`\${name}(state) threw — signature differs from the brief, inspect audio-transcribe-api.js\`);
+        return done(false);
+      }
+    }
+
+    let api;
+    try {
+      api = new SgToolApi({
+        name:    'whatsapp-transcribe-spike',
+        version: { api: '0.1.0', ui: '0.0.0-spike', content: '0.1.0' },
+      });
+      for (const [name, fn] of Object.entries(groups)) api.register(name, fn, { async: true });
+      step('ok', \`registered \${Object.keys(groups).length} methods on our own SgToolApi\`);
+    } catch (e) {
+      err(e);
+      step('no', 'constructing/registering on SgToolApi failed');
+      return done(false);
+    }
+
+    let ready = null;
+    window.addEventListener('tool:ready', e => { ready = e.detail || {}; }, { once: true });
+    try { api.activate(); step('ok', 'api.activate() called'); }
+    catch (e) { err(e); step('no', 'api.activate() threw'); return done(false); }
+
+    const gotReady = await waitFor(() => ready !== null, 2000);
+    step(gotReady ? 'ok' : 'no', gotReady ? 'tool:ready fired from our instance' : 'our activate() did not fire tool:ready');
+    const gotTool = await waitFor(() => !!window.__tool, 1000);
+    step(gotTool ? 'ok' : 'no', gotTool ? 'window.__tool published by our instance' : 'window.__tool absent after activate()');
+
+    window.__methods = surface(window.__tool);
+    const missing = S.CONTRACT.filter(m => !window.__tool || typeof window.__tool[m] !== 'function');
+    step(missing.length ? 'no' : 'ok', missing.length
+      ? \`contract incomplete — missing: \${missing.join(', ')} (some may live in groups we did not import)\`
+      : \`full contract present (\${(window.__methods || []).length} callable methods)\`);
+    done(gotReady && gotTool && !missing.length);
+  `);
+
+  /* ---------- driving ---------- */
+
+  function opts(){
+    return {
+      origin:  $('origin').value.trim().replace(/\/+$/, ''),
+      timeout: Math.max(1000, Number($('timeout').value) || 15000),
+    };
+  }
+
+  function busy(state){
+    for (const id of ['run-both','run-1','run-2']) $(id).disabled = state;
+  }
+
+  async function run(n){
+    reset(n);
+    const res = await runInSandbox(n === 1 ? ATTEMPT_1 : ATTEMPT_2, opts());
+    results[n] = res;
+    render(n, res);
+    return res;
+  }
+
+  $('run-1').addEventListener('click', async () => { busy(true); await run(1); busy(false); });
+  $('run-2').addEventListener('click', async () => { busy(true); await run(2); busy(false); });
+  $('run-both').addEventListener('click', async () => {
+    busy(true);
+    const r1 = await run(1);
+    // Attempt 2 still runs after a passing Attempt 1: knowing whether the fallback is
+    // healthy is worth one extra load, and the sandbox keeps the runs independent.
+    await run(2);
+    if (r1.pass) verdict();
+    busy(false);
+  });
+
+  $('copy').addEventListener('click', async () => {
+    const o = opts();
+    const line = (n, r) => {
+      if (!r) return `### Attempt ${n}\n\nNot run.\n`;
+      const body = r.steps.map(s => `- ${s.mark === 'ok' ? '✓' : s.mark === 'no' ? '✗' : '·'} ${s.text}`).join('\n');
+      const raw = r.errors.length ? `\n\n\`\`\`\n${r.errors.join('\n\n')}\n\`\`\`\n` : '\n';
+      return `### Attempt ${n} — ${r.pass ? 'PASS' : 'FAIL'} (${Math.round(r.ms)} ms)\n\n${body}${raw}`;
+    };
+    const md = [
+      '## M1-a import harness spike — evidence',
+      '',
+      `- run: ${new Date().toISOString()}`,
+      `- engine origin: ${o.origin}`,
+      `- browser: ${navigator.userAgent}`,
+      `- verdict: ${$('verdict').textContent.trim()}`,
+      '',
+      line(1, results[1]),
+      line(2, results[2]),
+    ].join('\n');
+    try {
+      await navigator.clipboard.writeText(md);
+      $('copy').textContent = 'copied ✓';
+      setTimeout(() => { $('copy').textContent = 'Copy report as markdown'; }, 1800);
+    } catch (_) {
+      const pre = document.createElement('pre');
+      pre.textContent = md;
+      $('verdict').parentElement.appendChild(pre);
+    }
+  });
+})();
+</script>
+</body>
+</html>
