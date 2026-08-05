@@ -16,7 +16,7 @@ disabled-key diagnosis).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [034](open/034-chat-with-materials.md) | M3: chat with the materials + drive the tool from chat (design brief ready) | open | high | large |
+| [034](open/034-chat-with-materials.md) | M3: chat with the materials + drive the tool from chat — BUILT, mock-verified; live keyed run pending | open | high | large |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |

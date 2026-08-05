@@ -47,6 +47,7 @@
 | Infographic v2 (issue 031): default model `google/gemini-3.1-flash-image-preview` returns a finished image; model picker + redraw on the card (`redrawInfographic` action); editable infographic system prompt (4th debug-pane template); spinner + elapsed heartbeat in main UX and debug pane v0.1.1; samples load into the options screen. Verified e2e (image ~850KB + SVG redraw, real key) | `website/app/infographic.js`, `website/components/wa-debug-panel/v0/v0.1/v0.1.1/` | 2026-08-05 |
 | Disabled-key diagnosis (issue 032): network-shaped LLM failures re-checked via GET /api/v1/key; rejected keys named in the error card and on the key panel | `website/app/app.js` | 2026-08-05 |
 | Versions page (issue 033): per-tag timeline with diffs (`versions.json` kept in step with CHANGELOG); version chip on every page footer; QA builds stamped `<next-version>-qa.<sha>` from the tags | `website/versions/`, both workflows | 2026-08-05 |
+| M3 chat (issue 034): 💬 `wa-chat-panel` v0.1.0 + `chat.js`/`chat-tools.js` — context composer, fenced-block tool loop (9-tool typed registry, 3 budgets), 6 new API actions, 5th prompt template, debug-audited. Mock-verified end to end incl. a tool call really redrawing the infographic (`tests/integration/chat-loop.test.mjs`, in both CI gates); LIVE keyed run still pending a fresh capped key | `website/app/chat*.js`, `website/components/wa-chat-panel/` | 2026-08-05 |
 
 All rows above are committed and pushed in-session on their stated date.
 

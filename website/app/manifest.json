@@ -27,14 +27,16 @@
       "listModels", "setModel", "transcribeItem", "cancelItem", "transcribeAll",
       "getTranscript", "getCostSummary", "setSpendCap", "ask", "runPass", "getResults", "redrawInfographic",
       "getExchanges", "clearExchanges", "getPrompts", "setPrompt", "resetPrompt",
-      "fetchGeneration", "getKeyStatus", "getModelDetails"
+      "fetchGeneration", "getKeyStatus", "getModelDetails",
+      "chat", "getChatContext", "chatExchange", "getChatHistory", "clearChat", "getChatTools"
     ],
     "events": [
       "wa:pass:started", "wa:normalised", "wa:ingested", "wa:transcript", "wa:summary", "wa:summary:error",
       "wa:infographic:started", "wa:infographic", "wa:infographic:error",
       "wa:pass:complete", "wa:pass:error", "at:item:added", "at:transcribe:started",
       "at:transcribe:progress", "at:transcribe:complete", "at:transcribe:error",
-      "wa:debug:exchange", "wa:debug:cleared", "wa:debug:prompt-changed"
+      "wa:debug:exchange", "wa:debug:cleared", "wa:debug:prompt-changed",
+      "wa:chat:update", "wa:chat:complete"
     ],
     "skills": { "human": "./skills/SKILL__human.md", "browser": "./skills/SKILL__browser.md", "api": "./skills/SKILL__api.md" }
   },

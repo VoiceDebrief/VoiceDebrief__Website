@@ -18,6 +18,21 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **M3: chat with your materials, and drive the tool from the chat (issue 034)** —
+  the 💬 pane. A context composer whose checkboxes ARE the request rows (transcript,
+  summary, infographic status, session costs, prior turns — each with a token
+  estimate); the model can act through fenced ` ```tool ` blocks against a typed
+  9-tool registry that only delegates to existing `window.__tool` actions (redraw
+  the infographic, run a sample, change prompts, read costs/exchanges/generations);
+  three budgets per exchange (8 steps, 2 money-spending calls, $0.25) told to the
+  model on every turn; every tool call visible in the thread AND audited in the
+  debug pane's exchange log; per-reply model/latency/cost, running GBP spend meter,
+  choice of three chat models, suggestions, and the chat system prompt as the fifth
+  editable template. Built to the study of the reference vault app
+  (`library/dev_packs/v0.1.18__chat-with-materials/`). Verified by a new
+  deterministic CI test that scripts OpenRouter through the whole loop — including
+  the tool call REALLY redrawing the infographic; a live keyed run follows once a
+  fresh spend-capped key is available.
 - **The Versions page (issue 033)**: `website/versions/` lists every CI tag with
   its date, headline and changes, each linking to its full GitHub diff — the
   changelog stays the complete record, the page is the per-version site view

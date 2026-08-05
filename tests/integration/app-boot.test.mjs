@@ -91,8 +91,8 @@ try {
     check('debug pane opens on toggle', await dbg.locator('.wa-dbg__panel.open').count() === 1)
     await dbg.locator('.wa-dbg__tab[data-tab="prompts"]').click()
     const prompts = await page.waitForFunction(() =>
-        document.querySelector('wa-debug-panel').shadowRoot.querySelectorAll('.prompt').length === 4, null, { timeout: 10000 }).then(() => true).catch(() => false)
-    check('prompts tab shows the four templates', prompts)
+        document.querySelector('wa-debug-panel').shadowRoot.querySelectorAll('.prompt').length === 5, null, { timeout: 10000 }).then(() => true).catch(() => false)
+    check('prompts tab shows the five templates', prompts)
     const modelOptions = await page.locator('#infographic-model option').count()
     check('infographic model picker populated', modelOptions >= 3, String(modelOptions))
     await dbg.locator('.wa-dbg__tab[data-tab="openrouter"]').click()
@@ -108,6 +108,23 @@ try {
         return { active: active.override === 'TEST OVERRIDE' && active.active === 'TEST OVERRIDE', stored: stored === 'TEST OVERRIDE', cleared }
     })
     check('setPrompt/resetPrompt round-trip via the API', overridden.active && overridden.stored && overridden.cleared, JSON.stringify(overridden))
+
+    // 6b. The chat surface (issue 034): panel opens, context rows and tools listed,
+    //     and opening it closes the debug pane (one side pane at a time).
+    const chat = page.locator('wa-chat-panel')
+    await page.waitForFunction(() => document.querySelector('wa-chat-panel')?.shadowRoot?.querySelector('.wa-chat__toggle'), null, { timeout: 10000 })
+    await chat.locator('.wa-chat__toggle').click()
+    check('chat pane opens on toggle', await chat.locator('.wa-chat__panel.open').count() === 1)
+    check('opening chat closes the debug pane', await dbg.locator('.wa-dbg__panel.open').count() === 0)
+    const chatBits = await page.evaluate(async () => ({
+        rows: (await window.__tool.getChatContext()).map(r => r.id),
+        tools: (await window.__tool.getChatTools()).length,
+        history: (await window.__tool.getChatHistory()).messages.length,
+    }))
+    check('context rows include transcript/summary/costs/history',
+        ['transcript', 'summary', 'costs', 'history'].every(id => chatBits.rows.includes(id)), chatBits.rows.join(','))
+    check('tool registry exposed with 9 tools', chatBits.tools === 9, String(chatBits.tools))
+    check('chat history starts empty', chatBits.history === 0)
 
     // 7. The exchange log is empty (no key, no LLM calls) and clearable.
     const log = await page.evaluate(async () => ({

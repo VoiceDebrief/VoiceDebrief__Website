@@ -35,6 +35,11 @@ const PROMPT_KINDS = {
         note: 'Prepended to the transcript + summary for the infographic call (./prompts/infographic-prompt.md).',
         defaultText: null,
     },
+    chat: {
+        label: 'Chat system prompt',
+        note: 'The system message for the chat panel (./prompts/chat-prompt.md). The tool-calling instructions are appended at runtime and are not editable here.',
+        defaultText: null,   // learned when the chat first fetches the site file
+    },
     'infographic-system': {
         label: 'Infographic system prompt',
         note: 'The system message for the infographic call. Used as-is by the image models; for the drawn-SVG model the style preset supplies it unless you override here.',

@@ -54,6 +54,9 @@ jobs:
       - name: Integration test (app boot against the live engine origin)
         run: node tests/integration/app-boot.test.mjs
 
+      - name: Integration test (chat loop against a scripted OpenRouter)
+        run: node tests/integration/chat-loop.test.mjs
+
   increment-tag:
     name: Increment Tag
     runs-on: ubuntu-latest

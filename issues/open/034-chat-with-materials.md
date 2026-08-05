@@ -14,6 +14,26 @@ context composer built from the same rows as the request, app-owned fenced-block
 calling against a typed registry, three told-to-the-model budgets, every tool call
 visible in the transcript, timer-driven progress, catalogue-matched model choice.
 
+## Status — 5 Aug 2026: BUILT and mock-verified; live keyed validation pending
+
+Everything below is implemented and green: `website/app/chat.js` (controller: context
+rows + the bounded exchange loop, registered as API actions), `website/app/chat-tools.js`
+(typed registry, 9 tools, three budgets, tolerant fenced-block parser), the `chat` action
+on the engine (audited `kind: chat` in the exchange log), `prompts/chat-prompt.md` (5th
+editable template), `wa-chat-panel` v0.1.0 (💬 resizable pane: composer drawer, tool
+drawer, thread with visible tool rows, suggestions, model select, spend meter, elapsed
+ticker), `wa-debug-panel` v0.1.2 (one side pane at a time).
+
+Verified: 30 unit tests (incl. the parser suite) + 17 app-boot checks + the new
+**`tests/integration/chat-loop.test.mjs`** — a deterministic, keyless CI test that
+scripts OpenRouter end to end: pass → grounded prose (0 steps) → fenced tool call →
+`redraw_infographic` REALLY runs (SVG lands on the page) → confirmation prose, with
+machinery marking, audit trail and panel rendering all asserted. Wired into both CI
+test jobs.
+
+**Outstanding**: one live keyed exchange (the session's spend-capped key was disabled
+during the issue-032 test — a fresh capped key closes this).
+
 ## Acceptance
 - `wa-chat-panel` (💬, resizable) chats over the pass results with a ticked context
   composer and live cost display (GBP).

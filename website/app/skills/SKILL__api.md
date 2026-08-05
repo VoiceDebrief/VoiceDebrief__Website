@@ -10,6 +10,16 @@ Every action returns a Promise. Authoritative list: `../manifest.json` `api` sec
 | `getResults` | `{}` | the current pass results object |
 | `redrawInfographic` | `{ model?, style? }` | regenerate just the infographic over the current pass (image models return `image` as a PNG data URL; the SVG model returns `svg`) |
 
+## Chat (issue 034 — the wa-chat-panel consumes only these)
+| Action | params | returns |
+|---|---|---|
+| `chat` | `{ messages, model?, label? }` | one raw model call over a full message array; recorded in the exchange log (`kind: chat`) |
+| `getChatContext` | `{}` | the context-composer rows (id, label, text, token estimate, default tick) — the panel's checkboxes and the request are built from these same rows |
+| `chatExchange` | `{ text, rowsOn?, model? }` | one user turn: bounded model/tool loop (8 steps, 2 money-spending calls, $0.25) — the model acts via fenced ```tool blocks against a typed registry that delegates to existing actions; emits `wa:chat:update` per message |
+| `getChatHistory` | `{}` | `{ messages, busy, spendUsd, spendGbp, calls }` — tool calls appear as visible `role: "tool"` entries |
+| `clearChat` | `{}` | start a new conversation |
+| `getChatTools` | `{}` | the registry: action, tier (`read` / `changes settings` / `spends money`), params, description |
+
 ## Debug / advanced (issue 027 — the wa-debug-panel consumes only these)
 | Action | params | returns |
 |---|---|---|

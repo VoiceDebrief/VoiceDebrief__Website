@@ -1,0 +1,36 @@
+<button type="button" class="wa-chat__toggle" title="Chat with your materials — and drive the tool from the chat">💬 chat</button>
+
+<aside class="wa-chat__panel" aria-label="Chat with your materials">
+  <div class="wa-chat__grip" title="drag to resize"></div>
+
+  <div class="wa-chat__head">
+    <span class="wa-chat__title">CHAT</span>
+    <span class="wa-chat__meter">nothing spent yet</span>
+    <button type="button" class="wa-chat__clear mini-dark">new chat</button>
+    <button type="button" class="wa-chat__close" aria-label="Close">✕</button>
+  </div>
+
+  <div class="wa-chat__body">
+    <details class="wa-chat__drawer">
+      <summary>what I send — tick the materials that travel with your question</summary>
+      <div class="wa-chat__ctx"></div>
+    </details>
+    <details class="wa-chat__drawer">
+      <summary>what it can do — the tools the model may call, all visible below when used</summary>
+      <ul class="wa-chat__tools"></ul>
+    </details>
+
+    <div class="wa-chat__thread" aria-live="polite"></div>
+
+    <div class="wa-chat__suggestions"></div>
+
+    <div class="wa-chat__composer">
+      <textarea class="wa-chat__input" rows="2"
+        placeholder="Ask about your transcript, your costs — or tell it to redraw the infographic…"></textarea>
+      <div class="wa-chat__composer-row">
+        <select class="wa-chat__model" title="Model for this chat"></select>
+        <button type="button" class="wa-chat__send">send</button>
+      </div>
+    </div>
+  </div>
+</aside>

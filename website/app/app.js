@@ -6,6 +6,7 @@ import { fmtGbp } from './config.js'
 import { bootEngine } from './engine.js'
 import { createPipeline } from './pipeline.js'
 import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
+import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 
 // Components (ours; the SgComponent base loads from the tools origin inside each).
 import '../components/wa-key-panel/v0/v0.1/v0.1.0/wa-key-panel.js'
@@ -13,7 +14,11 @@ import '../components/wa-drop-zone/v0/v0.1/v0.1.0/wa-drop-zone.js'
 import '../components/wa-progress-rail/v0/v0.1/v0.1.1/wa-progress-rail.js'
 import '../components/wa-result-card/v0/v0.1/v0.1.1/wa-result-card.js'
 import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
-import '../components/wa-debug-panel/v0/v0.1/v0.1.1/wa-debug-panel.js'
+import '../components/wa-debug-panel/v0/v0.1/v0.1.2/wa-debug-panel.js'
+import '../components/wa-chat-panel/v0/v0.1/v0.1.0/wa-chat-panel.js'
+
+// The chat panel reads these at mount time — before the engine has booted.
+window.__waChat = { models: CHAT_MODELS, suggestions: CHAT_SUGGESTIONS }
 
 const $ = (s) => document.querySelector(s)
 const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']
@@ -51,6 +56,16 @@ async function main() {
         .register('getResults', () => pipeline.results(),   { async: false })
         .register('redrawInfographic', (p) => pipeline.redrawInfographic(p), { async: true,
             events: ['wa:infographic:started', 'wa:infographic', 'wa:infographic:error'] })
+
+    // --- M3: chat with the materials (issue 034) — controller on the API, panel renders ---
+    const chatCtl = createChat({ emit: engine.emit, getResults: () => pipeline.results() })
+    engine.api
+        .register('getChatContext', () => chatCtl.getChatContext(),   { async: false })
+        .register('chatExchange',   (p) => chatCtl.chatExchange(p),   { async: true,
+            events: ['wa:chat:update', 'wa:chat:complete'] })
+        .register('getChatHistory', () => chatCtl.getChatHistory(),   { async: false })
+        .register('clearChat',      () => chatCtl.clearChat(),        { async: false })
+        .register('getChatTools',   () => chatCtl.getChatTools(),     { async: false })
     engine.api.activate()   // → window.__tool ('whatsapp-transcribe') + tool:ready
 
     const key = $('#key'), drop = $('#drop'), rail = $('#rail')

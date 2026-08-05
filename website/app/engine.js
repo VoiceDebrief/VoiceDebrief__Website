@@ -126,6 +126,35 @@ export async function bootEngine() {
         }
     }
 
+    /* One raw model call with a full message array — the chat panel's transport
+       (issue 034). Rides the same isolated LLM cell as everything else and lands
+       in the debug store, so the debug pane audits chat like any other call. */
+    async function chat(params = {}) {
+        const messages = Array.isArray(params.messages) ? params.messages : null
+        if (!messages || !messages.length) throw Object.assign(new Error('chat requires { messages }'), { code: 'bad-params' })
+        const model = params.model || CHAT_MODEL_DEFAULT
+        const rec = debugStore.record({ kind: 'chat', stage: params.label || 'chat',
+            model, status: 'pending', request: { messages } })
+        const t0 = Date.now()
+        let res
+        try { res = (await busTransport({ messages, model })) || {} }
+        catch (e) {
+            debugStore.update(rec.id, { status: 'error', error: e.message, errorCode: e.code || 'llm-error' })
+            throw e
+        }
+        const out = {
+            text: (res.content != null ? String(res.content) : '').trim(), model,
+            generationId: res.generationId,
+            usage: { promptTokens: res.promptTokens, completionTokens: res.completionTokens,
+                     costUsd: (typeof res.responseCost === 'number' ? res.responseCost : undefined) },
+        }
+        debugStore.update(rec.id, { status: 'done', response: {
+            content: out.text, promptTokens: res.promptTokens, completionTokens: res.completionTokens,
+            latencyMs: res.latencyMs || (Date.now() - t0), generationId: res.generationId,
+            costUsd: out.usage.costUsd } })
+        return out
+    }
+
     const passthrough = (p) => p
     const maskKey = (p = {}) => ({ ...p, apiKey: p.apiKey ? '••••' : p.apiKey })
 
@@ -145,6 +174,7 @@ export async function bootEngine() {
         .register('getCostSummary', transcribe.getCostSummary,{ async: false })
         .register('setSpendCap',    (p = {}) => { state.setSpendCap(p.usd != null ? p.usd : null); return { cap: state.getSpendCap() } }, { async: false })
         .register('ask',            ask,                      { async: true,  sanitiseParams: passthrough })
+        .register('chat',           chat,                     { async: true,  sanitiseParams: passthrough })
         // Debug/advanced surface (issue 027) — the pane consumes ONLY these.
         .register('getExchanges',   (p) => debugStore.getExchanges(p),   { async: false })
         .register('clearExchanges', () => debugStore.clearExchanges(),   { async: false })
