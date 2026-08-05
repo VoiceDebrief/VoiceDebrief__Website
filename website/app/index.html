@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transcribe — Voice Note Transcribe (beta)</title>
+<meta name="description" content="Drop in your WhatsApp voice note and get a transcript and a summary in one pass — everything runs in your browser with your own OpenRouter key.">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">Voice&nbsp;Note&nbsp;Transcribe</a>
+      <span class="beta">BETA</span></div>
+    <nav aria-label="Main">
+      <a href="../#privacy">Privacy modes</a>
+      <a href="../#pricing">Pricing</a>
+      <a href="../library/">Library</a>
+      <a href="../updates/">Updates</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>Drop in your voice note. That's it.</h1>
+    <p class="lead">Transcript and summary in one pass — everything runs in this browser.
+       Beta: bring your own <a href="https://openrouter.ai/keys">OpenRouter key</a>.</p>
+    <wa-drop-zone id="drop"></wa-drop-zone>
+    <details class="find-note"><summary>where do I find my voice note?</summary>
+      <p>Laptop: open WhatsApp Web/Desktop → the voice message → download (<code>.opus</code>).
+         Android: share/export the message (<code>.opus</code>/<code>.ogg</code>).
+         iPhone: forwarding between apps produces <code>.m4a</code> — that works too.</p></details>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section id="key-section">
+    <wa-key-panel id="key"></wa-key-panel>
+  </section>
+
+  <section id="file-section" hidden>
+    <div class="file-card">
+      <span class="file-icon">🎙</span>
+      <span class="file-name"></span>
+      <span class="file-size"></span>
+      <button type="button" class="file-remove" aria-label="Remove">✕</button>
+    </div>
+    <div class="options">
+      <div class="mode">
+        <span class="opt-label">privacy</span>
+        <label class="chip on"><input type="radio" name="mode" checked> Routed — cheapest</label>
+        <label class="chip off" title="Enforced on the key server-side — coming with beta"><input type="radio" name="mode" disabled> Restricted*</label>
+        <label class="chip off" title="Nothing leaves your device — coming later"><input type="radio" name="mode" disabled> On-device*</label>
+      </div>
+      <p class="mode-honest">Routed: any of our model providers may process this recording — we can't promise which.</p>
+      <label class="infog"><input type="checkbox" disabled> also make me an infographic <span class="soon">(coming)</span></label>
+      <button type="button" id="go" class="go">Transcribe →</button>
+    </div>
+  </section>
+
+  <section id="work-section" hidden>
+    <div class="working-name"></div>
+    <wa-progress-rail id="rail"></wa-progress-rail>
+  </section>
+
+  <section id="results-section" hidden>
+    <wa-result-card id="transcript-card" label="TRANSCRIPT" filename="transcript" hidden></wa-result-card>
+    <wa-result-card id="summary-card" label="SUMMARY" filename="summary" hidden></wa-result-card>
+    <div class="results-foot">
+      <wa-cost-line id="cost" hidden></wa-cost-line>
+      <button type="button" id="again" class="again">do another voice note</button>
+    </div>
+  </section>
+
+  <section id="error-section" hidden>
+    <div class="error-card"><div class="error-title"></div><div class="error-body"></div></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 SGraph / The Cyber Boardroom — nothing tracked, nothing stored server-side ·
+    <span id="site-version">dev</span> ·
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

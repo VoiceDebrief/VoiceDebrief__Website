@@ -40,6 +40,7 @@ pipeline (transcript → summary → infographic).
 | [`03__dev__implementation-brief.md`](03__dev__implementation-brief.md) | Dev | Concrete file plan, the exact APIs and events to bind, code sketches, error handling, testing |
 | [`04__designer__experience-brief.md`](04__designer__experience-brief.md) | Designer | The one-motion experience, streaming reveal order, ASCII screen mockups (desktop+mobile), progress states, mode selector, error/empty states |
 | [`05__dev__web-components-and-js-api.md`](05__dev__web-components-and-js-api.md) | Dev + Architect | The SgComponent base class (Shadow DOM, js/html/css triplets), our `wa-*` component layout, design tokens, and full `SgToolApi`/manifest/SKILL compliance from day one |
+| [`06__spike-note__m1a-import-harness.md`](06__spike-note__m1a-import-harness.md) | Dev | **The spike verdict (5 Aug): Attempt 2 wins** — why Attempt 1 is structurally unviable, the evidence, and what `engine.js` implements |
 
 ## Ground Truth (read before implementing)
 

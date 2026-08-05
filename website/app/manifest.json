@@ -1,0 +1,38 @@
+{
+  "id": "whatsapp-transcribe",
+  "name": "WhatsApp Voice Note Transcribe",
+  "slug": "whatsapp-transcribe",
+  "description": "Drop in a WhatsApp voice note (.opus/.ogg/.m4a) and get a transcript and a summary document in one pass - entirely in the browser, BYOK OpenRouter, engine imported from dev.tools.sgraph.ai.",
+  "icon": "🎙",
+  "version": "0.1.0",
+  "status": "beta",
+  "category": "media",
+  "keywords": ["whatsapp", "voice note", "transcribe", "opus", "summary", "openrouter", "browser"],
+  "locale": "en-gb",
+  "dependencies": {
+    "engine-origin": "https://dev.tools.sgraph.ai",
+    "core": [
+      { "module": "sg-tool-api",   "path": "/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js" },
+      { "module": "sg-component",  "path": "/components/base/v1/v1.0/v1.0.0/sg-component.js" },
+      { "module": "sg-llm-request","path": "/components/llm/sg-llm-request/v0/v0.1/v0.1.6/sg-llm-request.js" },
+      { "module": "audio-transcribe engine", "path": "/en-gb/audio-transcribe/api/ + ui/state.js (builders; see engine.js)" }
+    ]
+  },
+  "api": {
+    "version": "0.1.0",
+    "global": "window.__tool",
+    "note": "Published after tool:ready. Engine actions replicate the audio-transcribe v0.1.26 contract; wa-specific actions are runPass/getResults. Engine events are at:*; pipeline events are wa:*.",
+    "actions": [
+      "connect", "setApiKey", "addFiles", "getItems", "getItem", "removeItem", "clearAll",
+      "listModels", "setModel", "transcribeItem", "cancelItem", "transcribeAll",
+      "getTranscript", "getCostSummary", "setSpendCap", "ask", "runPass", "getResults"
+    ],
+    "events": [
+      "wa:pass:started", "wa:ingested", "wa:transcript", "wa:summary", "wa:summary:error",
+      "wa:pass:complete", "wa:pass:error", "at:item:added", "at:transcribe:started",
+      "at:transcribe:progress", "at:transcribe:complete", "at:transcribe:error"
+    ],
+    "skills": { "human": "./skills/SKILL__human.md", "browser": "./skills/SKILL__browser.md", "api": "./skills/SKILL__api.md" }
+  },
+  "skills": { "human": "./skills/SKILL__human.md", "browser": "./skills/SKILL__browser.md", "api": "./skills/SKILL__api.md" }
+}

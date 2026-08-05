@@ -17,3 +17,6 @@ Open, not started. Next major build; streaming order requirement recorded from b
 
 ## Status 5 Aug
 In progress: M1 build started this session. Decisions from the dev-pack review captured (identity wrap, GBP display, BYOK localStorage, prompts as markdown). Spike harness merged; verdict run next.
+
+## Status 5 Aug (later)
+M1 SHIPPED to branch: website/app/ live path drop→transcript→summary with streaming rail, BYOK, GBP costs, own SgToolApi. Verified headless (engine boot + real fixture ingest). Remaining before close: real-key round-trip on the live site, M2 infographic (needs 024), then Journalist update post.

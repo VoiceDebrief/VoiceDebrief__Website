@@ -33,6 +33,9 @@
 | CHANGELOG.md + Librarian-Journalist per-version capture discipline | `CHANGELOG.md`, both ROLE files, `.claude/CLAUDE.md` | 2026-07-29 |
 | Three product infographics (product overview, technical architecture, user journey) — created for this repo, distinct from the seven still pending under issue 007 | `library/infographics/` | 2026-07-31 |
 | M1-a spike harness: browser page that runs Attempt 1 (entry module) vs Attempt 2 (builders on our own `SgToolApi`) in isolated iframes and reports the contract surface each publishes. Dev harness only — no product code, and the spike's verdict note is not written yet | `website/m1-spike-test.html` | 2026-08-03 |
+| The product app (M1+, beta): drop → transcript → summary, streaming; BYOK key; GBP costs; own `whatsapp-transcribe` SgToolApi (18 actions, manifest, SKILLs). Verified headless vs mirrored engine + real fixture ingest; real-key round-trip pending | `website/app/`, `website/components/` | 2026-08-05 |
+| Spike verdict recorded: Attempt 2 (dev pack brief 06); engine harness in `website/app/engine.js` | dev pack 06 | 2026-08-05 |
+| Two genuine WhatsApp `.opus` fixtures (laptop-download case) + Playwright smoke script | `tests/` | 2026-08-05 |
 
 All rows above are committed and pushed in-session on their stated date.
 
@@ -49,7 +52,7 @@ All rows above are committed and pushed in-session on their stated date.
 
 ## PROPOSED — does not exist yet
 
-- The product web app itself (one-pass upload → transcript/analysis/debrief/infographic).
+- The infographic stage of the one-pass (gated on issue 024); analysis/debrief beyond the summary document.
 - iOS and Android targets; Chrome extension (deliberately later).
 - OpenRouter per-user key provisioning; the key-provisioning Lambda; the beta hardcoded key.
 - Privacy mode selector (routed / restricted / browser-local); browser-local engine.
