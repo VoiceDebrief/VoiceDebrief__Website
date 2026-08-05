@@ -4,6 +4,7 @@
 
 import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL } from './config.js'
 import { generateInfographic } from './infographic.js'
+import { normaliseAudioFile } from './audio-normalise.js'
 
 export function createPipeline({ api, emit, getKey, infographicMount }) {
     const call = (name, params) => window.__tool[name](params)
@@ -25,12 +26,19 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
        wa:infographic:started · wa:infographic {svg,usage} · wa:infographic:error ·
        wa:pass:complete · wa:pass:error {code,stage} */
     async function runPass(params = {}) {
-        const file = params.file
-        if (!file) throw Object.assign(new Error('runPass requires { file }'), { code: 'no-file' })
+        const chosen = params.file
+        if (!chosen) throw Object.assign(new Error('runPass requires { file }'), { code: 'no-file' })
 
-        const results = { name: file.name, transcript: null, summary: null, svg: null, usage: {} }
+        // Detect the format by CONTENT before the engine decides anything from the
+        // filename or the OS-supplied MIME (issue 025: a mislabelled Opus-in-Ogg
+        // reached the model undecodable and came back as a hallucinated transcript).
+        const norm = await normaliseAudioFile(chosen)
+        const file = norm.file
+        if (norm.changed) emit('wa:normalised', { from: chosen.name, to: file.name, sniffed: norm.sniffed, reason: norm.reason })
+
+        const results = { name: chosen.name, transcript: null, summary: null, svg: null, usage: {} }
         current = { itemId: null, results }
-        emit('wa:pass:started', { name: file.name, sizeBytes: file.size })
+        emit('wa:pass:started', { name: chosen.name, sizeBytes: file.size, sniffed: norm.sniffed })
 
         // Stage 1 — ingest (the engine decodes and detects format by content).
         const { added, rejected } = await call('addFiles', { files: [file] })

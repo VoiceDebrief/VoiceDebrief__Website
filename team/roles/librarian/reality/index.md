@@ -35,6 +35,7 @@
 | M1-a spike harness: browser page that runs Attempt 1 (entry module) vs Attempt 2 (builders on our own `SgToolApi`) in isolated iframes and reports the contract surface each publishes. Dev harness only — no product code, and the spike's verdict note is not written yet | `website/m1-spike-test.html` | 2026-08-03 |
 | The product app (beta): THE FULL ONE-PASS — drop → transcript → summary → infographic (streamed SVG via reused `sg-llm-infographic`, save .svg), BYOK key, GBP costs, own `whatsapp-transcribe` SgToolApi. Verified e2e 5 Aug (real key + real note): transcript 5.3s, summary 14.7s, infographic 53s, £0.003/pass, zero errors. Issues 008+024 closed | `website/app/`, `website/components/` | 2026-08-05 |
 | sg-llm-infographic verified capabilities guide (one-call shape, cell wiring, surface, sanitisation) | `library/tools/infographic-generator/` | 2026-08-05 |
+| Content-based audio normalisation (`OggS`/`OpusHead` sniffing) closing the `.ogg` hallucination bug — issue 025, verified across six file/MIME variants; upstream reported to the Tools team | `website/app/audio-normalise.js`, `team/comms/briefs/08/05/` | 2026-08-05 |
 | Spike verdict recorded: Attempt 2 (dev pack brief 06); engine harness in `website/app/engine.js` | dev pack 06 | 2026-08-05 |
 | Two genuine WhatsApp `.opus` fixtures (laptop-download case) + Playwright smoke script | `tests/` | 2026-08-05 |
 

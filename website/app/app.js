@@ -42,7 +42,7 @@ async function main() {
 
     engine.api
         .register('runPass',    (p) => pipeline.runPass(p), { async: true,
-            events: ['wa:pass:started', 'wa:ingested', 'wa:transcript', 'wa:summary', 'wa:summary:error',
+            events: ['wa:pass:started', 'wa:normalised', 'wa:ingested', 'wa:transcript', 'wa:summary', 'wa:summary:error',
                      'wa:infographic:started', 'wa:infographic', 'wa:infographic:error', 'wa:pass:complete', 'wa:pass:error'] })
         .register('getResults', () => pipeline.results(),   { async: false })
     engine.api.activate()   // → window.__tool ('whatsapp-transcribe') + tool:ready

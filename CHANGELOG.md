@@ -18,6 +18,18 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Fixed a silent data-integrity bug (issue 025, urgent)**: a `.ogg` voice note whose
+  OS MIME is `application/ogg` or `video/ogg` reached the model undecodable and came
+  back as a *hallucinated* transcript — fluent, confident, and about audio the user
+  never recorded (different fabrication per run; reproduced 4/4 with a real key). Cause:
+  the shared engine picks its decode path from the filename extension before the MIME,
+  so `.ogg` skipped the decoder that identical `.opus` bytes always take. Fix:
+  `website/app/audio-normalise.js` sniffs the leading bytes and hands the engine a File
+  whose name and type tell the truth — the 27 Jul arch brief's "detect by content, not
+  by extension" rule enforced where it matters. All six variants now transcribe
+  correctly; regression test `tests/playwright/ogg-variant-matrix.mjs`; reported
+  upstream so the live tools.sgraph.ai tool and other embedders can fix it too.
+
 - **The one-pass is complete (M2)**: the infographic stage ships — one streamed LLM
   call rendered live by the reused `sg-llm-infographic` component (the SVG drawing
   itself is the progress), behind the "also make me an infographic" toggle, with
