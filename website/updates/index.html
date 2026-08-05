@@ -63,6 +63,23 @@
   <div class="wrap">
 
     <article>
+      <h2>A bug worth telling you about: some .ogg files were transcribed wrongly</h2>
+      <div class="meta">5 August 2026 · <a class="v" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/025-ogg-mime-hallucinated-transcript.md">issue 025 — the full write-up</a></div>
+      <p>A user reported that <code>.ogg</code> voice notes "didn't work". They were worse
+         than broken: for some <code>.ogg</code> files the transcript came back fluent,
+         confident — and <strong>about audio that was never recorded</strong>. The audio
+         reached the model in a form it could not decode, and instead of failing it
+         invented something plausible.</p>
+      <p>It is fixed: we now identify the audio by reading the file's actual contents
+         rather than trusting its name or the label the operating system attached, and
+         route it through the decoder that has always worked. Verified across six
+         file-name and file-type combinations. If you transcribed a <code>.ogg</code>
+         voice note before 5 August and the result read oddly, that is why — please run
+         it again. We have also reported the underlying flaw upstream, since other tools
+         built on the same engine share it.</p>
+    </article>
+
+    <article>
       <h2>The product is live: drop a voice note, get everything back</h2>
       <div class="meta">5 August 2026 · <a class="v" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.13...dev">v0.1.14+ — what changed</a></div>
       <p><a href="../app/">The app</a> now does the whole job it was built for: drop in a

@@ -10,7 +10,7 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-05 (025 fixed: the .ogg hallucination bug).
+as any issue change. Last updated: 2026-08-05 (025 + 026 fixed).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
@@ -39,6 +39,7 @@ as any issue change. Last updated: 2026-08-05 (025 fixed: the .ogg hallucination
 | [008](done/008-web-app-mvp-one-pass.md) | Web app: the one-pass COMPLETE (transcript → summary → infographic), verified e2e | done | high | large |
 | [024](done/024-infographic-generator-capabilities-guide.md) | sg-llm-infographic verified capabilities guide | done | high | medium |
 | [025](done/025-ogg-mime-hallucinated-transcript.md) | `.ogg` returned hallucinated transcripts (silent) — fixed by content sniffing | done | **urgent** | medium |
+| [026](done/026-stale-cached-modules-after-deploy.md) | Stale cached modules after deploy (infographic box did nothing) — CI cache-busting | done | high | small |
 
 ## Layout
 

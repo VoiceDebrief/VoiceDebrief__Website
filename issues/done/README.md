@@ -5,6 +5,7 @@ issue change. Last updated: 2026-07-29.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [026](026-stale-cached-modules-after-deploy.md) | Stale modules after deploy | `scripts/stamp_cache_busters.py` + CI step |
 | [025](025-ogg-mime-hallucinated-transcript.md) | `.ogg` hallucinated transcripts (urgent) | `website/app/audio-normalise.js` + upstream report |
 | [008](008-web-app-mvp-one-pass.md) | The one-pass, complete + verified e2e | `website/app/` — transcript → summary → infographic |
 | [024](024-infographic-generator-capabilities-guide.md) | sg-llm-infographic capabilities guide | `library/tools/infographic-generator/` |

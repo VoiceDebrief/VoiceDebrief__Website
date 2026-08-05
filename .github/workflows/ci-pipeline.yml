@@ -63,6 +63,12 @@ jobs:
           sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" website/index.html
           grep -o 'site-version">[^<]*' website/index.html
 
+      - name: Cache-bust the site's own assets
+        # GitHub Pages serves our modules with max-age=600, so without this a
+        # browser can run the previous deploy's JavaScript against the new HTML
+        # for ten minutes (issue 026). Upstream tools-origin URLs are left alone.
+        run: python3 scripts/stamp_cache_busters.py --site website --version "$(cat version)"
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
