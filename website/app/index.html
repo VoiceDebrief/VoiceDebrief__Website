@@ -77,7 +77,11 @@
     <wa-result-card id="summary-card" label="SUMMARY" filename="summary" hidden></wa-result-card>
     <div id="infographic-card" class="wa-info-card" hidden>
       <div class="wa-info-card__head"><span class="wa-info-card__title">INFOGRAPHIC</span>
-        <button type="button" id="save-svg" hidden>save .svg</button></div>
+        <span class="wa-info-card__ctls">
+          <select id="infographic-model" title="Model used to draw the infographic"></select>
+          <button type="button" id="redraw-infographic" hidden>redraw</button>
+          <button type="button" id="save-svg" hidden>save</button>
+        </span></div>
       <div id="infographic-mount" class="wa-info-card__mount"></div>
       <p id="infographic-note" class="wa-info-card__note" hidden></p>
     </div>

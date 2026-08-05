@@ -18,6 +18,19 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The infographic is now a finished image (issue 031)**: the default model is
+  `google/gemini-3.1-flash-image-preview` — the one the proven Infographic Generator
+  tool uses — returning a publication-quality picture instead of a drawn SVG (that
+  was the answer to "why did we get an SVG": the old default was a text model). The
+  card gains a **model picker** (two image models + the drawn-SVG option) and a
+  **redraw** button that regenerates just the infographic over the finished pass
+  (API: `redrawInfographic`); a pass without an infographic offers "draw
+  infographic" afterwards; the system prompt is the debug pane's fourth editable
+  template. Long generations get a heartbeat — spinner + live elapsed counter on
+  the card, and live `⏳ Ns` tickers on in-flight calls in the debug pane (v0.1.1).
+- **Fixed: sample chips skipped the options screen** (issue 031) — they auto-ran
+  the pass, making the infographic toggle unreachable. A sample now loads into the
+  same options screen as a dropped file.
 - **QA estate live: the `qa` branch auto-deploys to Netlify (issue 030)**. GitHub
   Pages is the dev estate (one Pages site per repo), so `.github/workflows/qa-deploy.yml`
   gives `qa` its own: push → the same unit+integration test gate → Netlify publish

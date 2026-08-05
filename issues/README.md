@@ -10,8 +10,8 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-05 (027–030 done: debug/advanced views,
-CI tests, repeat-pass fix, QA Netlify estate live).
+as any issue change. Last updated: 2026-08-05 (027–031 done: debug/advanced views,
+CI tests, repeat-pass fix, QA Netlify estate live, infographic v2 on the image model).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
@@ -45,6 +45,7 @@ CI tests, repeat-pass fix, QA Netlify estate live).
 | [028](done/028-ci-pipeline-tests.md) | CI tests: unit + integration gate the release, QA checks the live site | done | high | medium |
 | [029](done/029-repeat-pass-same-file-not-audio.md) | Re-running the same voice note failed ("not-audio") — engine silent dedupe, reused item | done | high | small |
 | [030](done/030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify — live and verified (silver-melba-d8d883.netlify.app) | done | high | small |
+| [031](done/031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model default, redraw UX + model picker, progress heartbeat, samples keep options | done | high | medium |
 
 ## Layout
 

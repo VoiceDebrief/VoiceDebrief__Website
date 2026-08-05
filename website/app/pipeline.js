@@ -41,7 +41,7 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         const file = norm.file
         if (norm.changed) emit('wa:normalised', { from: chosen.name, to: file.name, sniffed: norm.sniffed, reason: norm.reason })
 
-        const results = { name: chosen.name, transcript: null, summary: null, svg: null, usage: {} }
+        const results = { name: chosen.name, transcript: null, summary: null, svg: null, image: null, usage: {} }
         current = { itemId: null, results }
         emit('wa:pass:started', { name: chosen.name, sizeBytes: file.size, sniffed: norm.sniffed })
 
@@ -86,25 +86,42 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
 
         // Stage 4 — infographic, only if asked (arrives last, the delight).
         if (params.infographic) {
-            emit('wa:infographic:started', {})
-            try {
-                const preamble = await loadInfographicPrompt()
-                const content = preamble + '\n## Transcript\n' + results.transcript +
-                    (results.summary ? '\n\n## Summary\n' + results.summary : '')
-                const g = await generateInfographic({
-                    mount: infographicMount(), content, apiKey: getKey(),
-                    style: params.style || 'executive' })
-                results.svg = g.svg
-                results.usage.infographic = g.usage
-                emit('wa:infographic', { svg: g.svg, usage: g.usage })
-            } catch (e) {
-                // Like the summary: an infographic failure degrades, never aborts.
-                emit('wa:infographic:error', { code: e.code || 'llm-error', message: e.message })
-            }
+            await runInfographicStage({ model: params.infographicModel, style: params.style })
         }
 
         emit('wa:pass:complete', { results })
         return results
+    }
+
+    /* One infographic generation over the CURRENT results — used by the pass and
+       by the redraw control (issue 031: recreate with a different model/prompt). */
+    async function runInfographicStage({ model, style } = {}) {
+        const results = current.results
+        emit('wa:infographic:started', { model })
+        try {
+            const preamble = await loadInfographicPrompt()
+            const content = preamble + '\n## Transcript\n' + results.transcript +
+                (results.summary ? '\n\n## Summary\n' + results.summary : '')
+            const g = await generateInfographic({
+                mount: infographicMount(), content, apiKey: getKey(),
+                style: style || 'executive', model })
+            results.svg = g.svg
+            results.image = g.image
+            results.usage.infographic = g.usage
+            emit('wa:infographic', { svg: g.svg, image: g.image, usage: g.usage })
+            return { svg: g.svg, image: g.image, usage: g.usage }
+        } catch (e) {
+            // Like the summary: an infographic failure degrades, never aborts.
+            emit('wa:infographic:error', { code: e.code || 'llm-error', message: e.message })
+            throw e
+        }
+    }
+
+    /* Redraw on demand, after a pass — different model, same transcript+summary. */
+    async function redrawInfographic(params = {}) {
+        if (!current.results || !current.results.transcript)
+            throw Object.assign(new Error('run a pass first — there is no transcript to draw from'), { code: 'no-results' })
+        return runInfographicStage({ model: params.model, style: params.style })
     }
 
     function cancel() {
@@ -112,5 +129,5 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         return { cancelled: 0 }
     }
 
-    return { runPass, cancel, results: () => current.results }
+    return { runPass, redrawInfographic, cancel, results: () => current.results }
 }

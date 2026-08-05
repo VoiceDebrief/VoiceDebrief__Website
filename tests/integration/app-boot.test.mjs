@@ -91,8 +91,10 @@ try {
     check('debug pane opens on toggle', await dbg.locator('.wa-dbg__panel.open').count() === 1)
     await dbg.locator('.wa-dbg__tab[data-tab="prompts"]').click()
     const prompts = await page.waitForFunction(() =>
-        document.querySelector('wa-debug-panel').shadowRoot.querySelectorAll('.prompt').length === 3, null, { timeout: 10000 }).then(() => true).catch(() => false)
-    check('prompts tab shows the three templates', prompts)
+        document.querySelector('wa-debug-panel').shadowRoot.querySelectorAll('.prompt').length === 4, null, { timeout: 10000 }).then(() => true).catch(() => false)
+    check('prompts tab shows the four templates', prompts)
+    const modelOptions = await page.locator('#infographic-model option').count()
+    check('infographic model picker populated', modelOptions >= 3, String(modelOptions))
     await dbg.locator('.wa-dbg__tab[data-tab="openrouter"]').click()
     check('openrouter tab reachable', await dbg.locator('[data-view="openrouter"]:not([hidden])').count() === 1)
 

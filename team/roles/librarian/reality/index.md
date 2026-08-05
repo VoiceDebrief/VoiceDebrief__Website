@@ -44,6 +44,7 @@
 | CI test gate: unit (22, node --test) + integration (11-check Playwright app boot) before tag/publish; post-deploy live-site QA job (issue 028) | `tests/unit/`, `tests/integration/`, `tests/qa/`, `ci-pipeline.yml` | 2026-08-05 |
 | Repeat-pass fix: same-file rerun reuses the engine's deduped queue item instead of failing "not-audio" (issue 029; upstream reported) | `website/app/pipeline.js`, `team/comms/briefs/08/05/` | 2026-08-05 |
 | QA estate LIVE: `qa` branch → Netlify (test gate → stamped `-qa.<sha>` build → netlify-cli publish → 16-check live verification). Secrets in place; verified serving v0.1.14-qa.cbd4382 (issue 030 closed) | `.github/workflows/qa-deploy.yml`, branch `qa`, https://silver-melba-d8d883.netlify.app | 2026-08-05 |
+| Infographic v2 (issue 031): default model `google/gemini-3.1-flash-image-preview` returns a finished image; model picker + redraw on the card (`redrawInfographic` action); editable infographic system prompt (4th debug-pane template); spinner + elapsed heartbeat in main UX and debug pane v0.1.1; samples load into the options screen. Verified e2e (image ~850KB + SVG redraw, real key) | `website/app/infographic.js`, `website/components/wa-debug-panel/v0/v0.1/v0.1.1/` | 2026-08-05 |
 
 All rows above are committed and pushed in-session on their stated date.
 

@@ -25,7 +25,7 @@
     "actions": [
       "connect", "setApiKey", "addFiles", "getItems", "getItem", "removeItem", "clearAll",
       "listModels", "setModel", "transcribeItem", "cancelItem", "transcribeAll",
-      "getTranscript", "getCostSummary", "setSpendCap", "ask", "runPass", "getResults",
+      "getTranscript", "getCostSummary", "setSpendCap", "ask", "runPass", "getResults", "redrawInfographic",
       "getExchanges", "clearExchanges", "getPrompts", "setPrompt", "resetPrompt",
       "fetchGeneration", "getKeyStatus", "getModelDetails"
     ],
