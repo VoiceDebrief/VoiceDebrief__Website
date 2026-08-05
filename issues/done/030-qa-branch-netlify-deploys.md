@@ -3,10 +3,19 @@ created: 2026-08-05T18:40:00Z
 source: Dinis — "as part of our qa workflow I would like to have a new qa branch that you can push to to deploy automatically on commits … can you add a new CI action to publish to netlify?"
 priority: high
 estimated_effort: small
-blocked_on: Netlify credentials — NETLIFY_AUTH_TOKEN + NETLIFY_SITE_ID repository secrets (human-only step)
 ---
 
 # QA branch with automatic Netlify deploys
+
+**CLOSED 5 Aug 2026.** Dinis created the Netlify site
+(https://silver-melba-d8d883.netlify.app) and added the two secrets; run #2 of the
+QA workflow then went end to end: tests → real Netlify publish (28s) → live check.
+Verified: the deployed site serves `version.txt` = `v0.1.14-qa.cbd4382` and passes
+all 16 live checks (pages, stamped assets, samples, prompts, engine origin + CORS).
+Along the way run #20 on dev exposed a bug in the QA script itself — the CORS check
+did a bare server-side fetch, and the tools-origin CDN only sends
+`access-control-allow-origin` when the request carries an `Origin` header (as
+browsers always do). Fixed by sending one; green against both estates.
 
 ## What exists (pushed, workflow live on the `qa` branch)
 
