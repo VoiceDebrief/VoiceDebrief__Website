@@ -2,9 +2,10 @@
    visible progress → TRANSCRIPT → SUMMARY → (infographic when issue 024 lands).
    Emits wa:* events; never holds a finished artefact for a slower one. */
 
-import { SUMMARY_PROMPT_URL } from './config.js'
+import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL } from './config.js'
+import { generateInfographic } from './infographic.js'
 
-export function createPipeline({ api, emit }) {
+export function createPipeline({ api, emit, getKey, infographicMount }) {
     const call = (name, params) => window.__tool[name](params)
     let current = { itemId: null, results: null }
 
@@ -14,15 +15,20 @@ export function createPipeline({ api, emit }) {
         return r.text()
     }
 
-    /* runPass({ file }) → { transcript, summary, usage } — streams via events:
-       wa:pass:started {name,sizeBytes} · wa:transcript {text,usage} ·
-       wa:summary {text,usage} · wa:pass:complete {results} ·
-       wa:pass:error {code,stage,message} */
+    async function loadInfographicPrompt() {
+        const r = await fetch(INFOGRAPHIC_PROMPT_URL, { cache: 'no-cache' })
+        return r.ok ? r.text() : 'Create an infographic of this voice note.\n---\n'
+    }
+
+    /* runPass({ file, infographic?, style? }) → { transcript, summary, svg, usage } —
+       streams via events: wa:pass:started · wa:transcript · wa:summary ·
+       wa:infographic:started · wa:infographic {svg,usage} · wa:infographic:error ·
+       wa:pass:complete · wa:pass:error {code,stage} */
     async function runPass(params = {}) {
         const file = params.file
         if (!file) throw Object.assign(new Error('runPass requires { file }'), { code: 'no-file' })
 
-        const results = { name: file.name, transcript: null, summary: null, usage: {} }
+        const results = { name: file.name, transcript: null, summary: null, svg: null, usage: {} }
         current = { itemId: null, results }
         emit('wa:pass:started', { name: file.name, sizeBytes: file.size })
 
@@ -56,7 +62,25 @@ export function createPipeline({ api, emit }) {
             emit('wa:summary:error', { code: e.code || 'llm-error', message: e.message })
         }
 
-        // Stage 4 — infographic: gated on the verified capabilities guide (issue 024).
+        // Stage 4 — infographic, only if asked (arrives last, the delight).
+        if (params.infographic) {
+            emit('wa:infographic:started', {})
+            try {
+                const preamble = await loadInfographicPrompt()
+                const content = preamble + '\n## Transcript\n' + results.transcript +
+                    (results.summary ? '\n\n## Summary\n' + results.summary : '')
+                const g = await generateInfographic({
+                    mount: infographicMount(), content, apiKey: getKey(),
+                    style: params.style || 'executive' })
+                results.svg = g.svg
+                results.usage.infographic = g.usage
+                emit('wa:infographic', { svg: g.svg, usage: g.usage })
+            } catch (e) {
+                // Like the summary: an infographic failure degrades, never aborts.
+                emit('wa:infographic:error', { code: e.code || 'llm-error', message: e.message })
+            }
+        }
+
         emit('wa:pass:complete', { results })
         return results
     }

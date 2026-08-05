@@ -5,6 +5,8 @@ issue change. Last updated: 2026-07-29.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [008](008-web-app-mvp-one-pass.md) | The one-pass, complete + verified e2e | `website/app/` — transcript → summary → infographic |
+| [024](024-infographic-generator-capabilities-guide.md) | sg-llm-infographic capabilities guide | `library/tools/infographic-generator/` |
 | [023](023-public-library-page.md) | Public Library page | `website/library/` |
 | [022](022-journalist-role-updates-section.md) | Journalist role + Updates + CHANGELOG | `team/roles/journalist/`, `website/updates/`, `CHANGELOG.md` |
 | [021](021-domain-https-and-org-verification.md) | Custom domain live, HTTPS enforced | whatsapp-voice-transcription.sgraph.ai |

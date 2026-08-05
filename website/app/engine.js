@@ -131,5 +131,5 @@ export async function bootEngine() {
     const stored = (() => { try { return localStorage.getItem(KEY_STORAGE) || '' } catch (_) { return '' } })()
     if (stored) await connect({ apiKey: stored })
 
-    return { api, state, emit, hasKey: () => !!currentApiKey }
+    return { api, state, emit, hasKey: () => !!currentApiKey, getKey: () => currentApiKey }
 }

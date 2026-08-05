@@ -9,8 +9,8 @@ import { createPipeline } from './pipeline.js'
 // Components (ours; the SgComponent base loads from the tools origin inside each).
 import '../components/wa-key-panel/v0/v0.1/v0.1.0/wa-key-panel.js'
 import '../components/wa-drop-zone/v0/v0.1/v0.1.0/wa-drop-zone.js'
-import '../components/wa-progress-rail/v0/v0.1/v0.1.0/wa-progress-rail.js'
-import '../components/wa-result-card/v0/v0.1/v0.1.0/wa-result-card.js'
+import '../components/wa-progress-rail/v0/v0.1/v0.1.1/wa-progress-rail.js'
+import '../components/wa-result-card/v0/v0.1/v0.1.1/wa-result-card.js'
 import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
 
 const $ = (s) => document.querySelector(s)
@@ -37,11 +37,13 @@ async function main() {
     fetch('../version.txt').then(r => r.ok ? r.text() : 'dev').then(v => { $('#site-version').textContent = v.trim() }).catch(() => {})
 
     const engine = await bootEngine()
-    const pipeline = createPipeline({ api: engine.api, emit: engine.emit })
+    const pipeline = createPipeline({ api: engine.api, emit: engine.emit,
+        getKey: engine.getKey, infographicMount: () => $('#infographic-mount') })
 
     engine.api
         .register('runPass',    (p) => pipeline.runPass(p), { async: true,
-            events: ['wa:pass:started', 'wa:ingested', 'wa:transcript', 'wa:summary', 'wa:summary:error', 'wa:pass:complete', 'wa:pass:error'] })
+            events: ['wa:pass:started', 'wa:ingested', 'wa:transcript', 'wa:summary', 'wa:summary:error',
+                     'wa:infographic:started', 'wa:infographic', 'wa:infographic:error', 'wa:pass:complete', 'wa:pass:error'] })
         .register('getResults', () => pipeline.results(),   { async: false })
     engine.api.activate()   // → window.__tool ('whatsapp-transcribe') + tool:ready
 
@@ -67,12 +69,14 @@ async function main() {
     $('#go').addEventListener('click', async () => {
         if (!pendingFile) return
         if (!engine.hasKey()) return showError('no-key', 'key')
+        const wantInfographic = $('#want-infographic').checked
         $('.working-name').textContent = pendingFile.name
         tCard.hidden = sCard.hidden = cost.hidden = true
+        $('#infographic-card').hidden = true; $('#save-svg').hidden = true
         show('#key-section', '#work-section', '#results-section')
-        rail.reset(); rail.start('ingest')
+        rail.reset(wantInfographic); rail.start('ingest')
         try {
-            await window.__tool.runPass({ file: pendingFile })
+            await window.__tool.runPass({ file: pendingFile, infographic: wantInfographic })
         } catch (e) {
             showError(e.code || 'llm-error', 'transcribe', e.message)
         }
@@ -91,6 +95,24 @@ async function main() {
         updateCost()
     })
     window.addEventListener('wa:summary:error', () => rail.finish('summary', false))
+    window.addEventListener('wa:infographic:started', () => {
+        rail.start('infographic')
+        $('#infographic-card').hidden = false   // the SVG drawing itself is the progress
+    })
+    window.addEventListener('wa:infographic', (e) => {
+        rail.finish('infographic')
+        $('#save-svg').hidden = !e.detail.svg
+        updateCost()
+    })
+    window.addEventListener('wa:infographic:error', () => rail.finish('infographic', false))
+    $('#save-svg').addEventListener('click', () => {
+        const svg = pipeline.results()?.svg
+        if (!svg) return
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
+        a.download = 'infographic.svg'
+        a.click(); URL.revokeObjectURL(a.href)
+    })
     window.addEventListener('wa:pass:complete', () => { $('#work-section').hidden = true; updateCost() })
     rail.addEventListener('wa:stop-requested', () => pipeline.cancel())
 

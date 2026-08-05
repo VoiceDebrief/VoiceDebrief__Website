@@ -18,6 +18,18 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The one-pass is complete (M2)**: the infographic stage ships — one streamed LLM
+  call rendered live by the reused `sg-llm-infographic` component (the SVG drawing
+  itself is the progress), behind the "also make me an infographic" toggle, with
+  save-.svg. Verified end-to-end (real key, real note): transcript 5.3s → summary
+  14.7s → infographic 53s, £0.003. Issues 008 and 024 closed.
+- `sg-llm-infographic` capabilities guide (v0.1.93-style, code-verified) in
+  `library/tools/infographic-generator/` — answers M2-a: one call, component as
+  renderer + style-prompt supplier.
+- Component updates (IFD: new versions, old immutable): `wa-progress-rail` v0.1.1
+  (fourth rail step), `wa-result-card` v0.1.1 (proper heading/bullet rendering —
+  fixes the inline-bold summary glitch).
+
 - M1-a spike harness: `website/m1-spike-test.html` runs the two candidate import cuts from
   [dev brief §2](library/dev_packs/v0.1.1__audio-transcribe-integration/03__dev__implementation-brief.md)
   — Attempt 1 (the `audio-transcribe-api.js` entry module) against Attempt 2 (the method-group

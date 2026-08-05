@@ -23,3 +23,6 @@ M1 SHIPPED to branch: website/app/ live path drop→transcript→summary with st
 
 ## Status 5 Aug (round-trip PASSED)
 Full UI flow verified with a real spend-capped key + tests/fixtures/whatsapp-voice-note-1.opus: transcript 5.4s (accurate), summary 13.2s (follows the markdown prompt), cost line £0.003, no page errors. Remaining for close: M2 infographic (issue 024), summary-card markdown heading polish (##-heading + bullets in one block render inline), live-site re-check after merge.
+
+## Outcome (CLOSED 5 Aug)
+The one-pass is COMPLETE and verified end-to-end with a real key and real WhatsApp voice note: drop -> transcript (5.3s) -> summary (14.7s, proper markdown rendering via wa-result-card v0.1.1) -> infographic (53s, streamed SVG via reused sg-llm-infographic, save .svg) -> GBP cost line (£0.003/pass). Streaming reveal order preserved throughout; failures in summary/infographic degrade, never abort. Remaining product work tracked separately: modes (009), key flows (010), mobile (011).

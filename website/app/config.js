@@ -16,3 +16,4 @@ export const fmtGbp = (usd) =>
 /* The summary prompt is a markdown file served from the site (5 Aug decision) —
    editable without touching code. */
 export const SUMMARY_PROMPT_URL = './prompts/summary-prompt.md'
+export const INFOGRAPHIC_PROMPT_URL = './prompts/infographic-prompt.md'

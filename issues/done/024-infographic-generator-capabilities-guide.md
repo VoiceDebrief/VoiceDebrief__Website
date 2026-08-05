@@ -11,3 +11,6 @@ M2-a (the infographic step) has no code-verified ground truth, unlike audio-tran
 (v0.1.93 guide). Write one the same way: verified against the Tools repo source and the
 live dev.tools.sgraph.ai origin — the component surface (sg-llm-infographic), inputs,
 events, streaming SVG behaviour, key handling, and embedding contract. Gates M2-a.
+
+## Outcome
+Done 5 Aug: library/tools/infographic-generator/v0.1.14__sg-llm-infographic__integration-and-capabilities.md — code-verified against the Tools source and PROVEN by the M2 e2e run (real key, real voice note, 10.9KB SVG). Answers M2-a: ONE streamed call; the component is a renderer supplying the style system prompt.

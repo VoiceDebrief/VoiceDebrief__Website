@@ -5,8 +5,6 @@ Last updated: 2026-08-05.
 
 | # | Title | Priority | Effort | Latest status |
 |---|-------|----------|--------|---------------|
-| [008](008-web-app-mvp-one-pass.md) | Web app MVP: one-pass pipeline, streaming in arrival order | high | large | M1 build in progress (5 Aug); review decisions captured |
-| [024](024-infographic-generator-capabilities-guide.md) | Infographic generator capabilities guide (v0.1.93-style) | high | medium | approved 5 Aug; gates M2-a |
 | [010](010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key: cap, life, revocation, narrow reach) | high | medium | waiting on account-type + model decisions |
 | [013](013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement (pre-commit) | high | medium | rule documented; enforcement pending |
 | [014](014-openrouter-guardrails-exploration.md) | Guardrails: enforce privacy tiers on the key (model/provider/data policy) | high | medium | semi-blocked on personal-vs-org account decision |

@@ -10,12 +10,10 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-05 (added 024; 008 in progress).
+as any issue change. Last updated: 2026-08-05 (008 and 024 CLOSED — the one-pass ships).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [008](open/008-web-app-mvp-one-pass.md) | Web app MVP: one-pass (M1 build in progress, 5 Aug) | open | high | large |
-| [024](open/024-infographic-generator-capabilities-guide.md) | Verified capabilities guide for the infographic generator (gates M2-a) | open | high | medium |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |
@@ -38,6 +36,8 @@ as any issue change. Last updated: 2026-08-05 (added 024; 008 in progress).
 | [021](done/021-domain-https-and-org-verification.md) | Custom domain live: HTTPS enforced (org TXT verification recommended) | done | high | small |
 | [022](done/022-journalist-role-updates-section.md) | Journalist role + Updates section + per-version CHANGELOG | done | high | medium |
 | [023](done/023-public-library-page.md) | Public Library page (Librarian-maintained) | done | high | medium |
+| [008](done/008-web-app-mvp-one-pass.md) | Web app: the one-pass COMPLETE (transcript → summary → infographic), verified e2e | done | high | large |
+| [024](done/024-infographic-generator-capabilities-guide.md) | sg-llm-infographic verified capabilities guide | done | high | medium |
 
 ## Layout
 

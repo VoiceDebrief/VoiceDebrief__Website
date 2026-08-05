@@ -29,6 +29,7 @@
     ],
     "events": [
       "wa:pass:started", "wa:ingested", "wa:transcript", "wa:summary", "wa:summary:error",
+      "wa:infographic:started", "wa:infographic", "wa:infographic:error",
       "wa:pass:complete", "wa:pass:error", "at:item:added", "at:transcribe:started",
       "at:transcribe:progress", "at:transcribe:complete", "at:transcribe:error"
     ],

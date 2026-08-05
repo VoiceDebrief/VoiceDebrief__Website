@@ -45,6 +45,13 @@ section[hidden]{display:none !important}
 .go:hover{background:#2ee273}
 .working-name{font-weight:600;margin-bottom:8px}
 #results-section{display:grid;gap:16px}
+.wa-info-card{border:1px solid var(--wa-line);border-radius:12px;background:#fff;overflow:hidden}
+.wa-info-card__head{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--wa-line);background:var(--wa-mist)}
+.wa-info-card__title{font-size:.76rem;font-weight:700;letter-spacing:1px;color:var(--wa-blue)}
+.wa-info-card__head button{font:inherit;font-size:.8rem;font-weight:600;padding:4px 10px;border:1px solid var(--wa-line);border-radius:7px;background:#fff;cursor:pointer}
+.wa-info-card__mount{min-height:340px;max-height:640px;display:flex}
+.wa-info-card__mount>div{flex:1;display:flex}
+.wa-info-card__mount sg-llm-infographic{flex:1;min-height:340px}
 .results-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .again{font:inherit;font-weight:600;font-size:.9rem;padding:9px 18px;border:1px solid var(--wa-line);border-radius:9px;background:#fff;cursor:pointer}
 .again:hover{border-color:#9fb2c9}
