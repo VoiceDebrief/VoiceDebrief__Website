@@ -18,6 +18,32 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The advanced/debug pane (issue 027)**: a "⚙ debug" tab on the right edge opens a
+  resizable side pane with three views — **LLM calls** (every request and response the
+  page makes, verbatim, audio bytes summarised by size; each row can fetch its billed
+  OpenRouter generation record), **OpenRouter** (key status, full catalogue detail for
+  the models used, generation lookup by id), and **Prompts** (the transcription,
+  summary and infographic templates — editable, overrides persisted in the browser and
+  applied from the next pass; the engine-hardcoded transcription prompt is overridden
+  at our transport layer). Everything flows through eight new `window.__tool` actions
+  (`getExchanges`/`clearExchanges`/`getPrompts`/`setPrompt`/`resetPrompt`/
+  `fetchGeneration`/`getKeyStatus`/`getModelDetails`) — the pane is just another API
+  consumer. New capture layer `website/app/debug-store.js`; component
+  `wa-debug-panel` v0.1.0.
+- **Sample voice notes on the app page (issue 027)**: three genuine fixtures served
+  from `website/app/samples/`, clickable chips under the drop zone — load the file
+  into the normal flow and auto-run the pass when a key is saved.
+- **CI now tests every release (issue 028)**: a `test` job (22 unit tests + an
+  11-check Playwright integration boot of the real app) gates the tag and the deploy;
+  a `qa-live` job checks the live site after the deploy (version stamp, cache-busted
+  assets resolve, samples/prompts reachable, engine origin + CORS). Test failure ⇒
+  no tag, no publish.
+- **Fixed (issue 029): re-running the same voice note failed** with "That doesn't look
+  like an audio file". The engine silently dedupes an identical name+size (neither
+  added nor rejected); the pipeline now reuses the existing queue item — the engine's
+  own re-transcribe path. Found by the new e2e; reported upstream alongside the `.ogg`
+  MIME report.
+
 - **Fixed: after a deploy the browser could run the previous release's JavaScript**
   (issue 026 — reported as "the infographic checkbox did nothing"). GitHub Pages serves
   our modules with `max-age=600`, and the app's own modules were the one part of the

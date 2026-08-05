@@ -21,6 +21,12 @@ nav a:hover{color:#fff}
 .hero h1{font-size:clamp(1.4rem,3.4vw,2rem)}
 .hero .lead{color:var(--wa-muted-on-dark);margin:8px 0 22px;font-size:.98rem}
 .hero .lead a{color:#8ff0b6}
+.samples{margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.samples__label{font-size:.82rem;color:var(--wa-muted-on-dark)}
+.sample-chip{font:inherit;font-size:.82rem;font-weight:600;padding:5px 13px;border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;background:rgba(255,255,255,.08);color:#dbe6f5;cursor:pointer}
+.sample-chip:hover{background:rgba(37,211,102,.18);border-color:rgba(37,211,102,.5);color:#8ff0b6}
+.sample-chip:disabled{opacity:.55;cursor:default}
 .find-note{margin-top:14px;font-size:.85rem;color:var(--wa-muted-on-dark)}
 .find-note summary{cursor:pointer}
 .find-note p{margin-top:8px;max-width:640px}

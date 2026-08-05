@@ -9,6 +9,8 @@
    native: window.__tool IS whatsapp-transcribe. */
 
 import { ORIGIN } from './config.js'
+import { debugStore } from './debug-store.js'
+import { fetchGeneration, fetchKeyStatus, fetchModelDetails } from './openrouter.js'
 
 const KEY_STORAGE = 'sg-openrouter-mgmt-key'
 const CHAT_MODEL_DEFAULT = 'google/gemini-3.5-flash'
@@ -51,6 +53,7 @@ export async function bootEngine() {
                     api: './skills/SKILL__api.md' },
     })
     const emit = (name, detail) => api._emit(name, detail || {})
+    debugStore.bindEmit(emit)   // exchange/prompt changes surface as wa:debug:* events
 
     // Our own LLM bus host — same isolated-transport pattern as the tool page.
     const host = document.createElement('div')
@@ -59,7 +62,10 @@ export async function bootEngine() {
     document.body.appendChild(host)
 
     let currentApiKey = ''
-    const busTransport = makeIsolatedTransport(host, () => currentApiKey)
+    const rawTransport = makeIsolatedTransport(host, () => currentApiKey)
+    // Every request passes through here on its way to the bus — the one place we
+    // own — so this is where a saved transcription-prompt override takes effect.
+    const busTransport = (req) => rawTransport(debugStore.applyTranscribeOverride(req))
 
     async function connect(params = {}) {
         const model = params.model || state.getActiveModel()
@@ -84,7 +90,7 @@ export async function bootEngine() {
         state, emit, sendToLlm: busTransport,
         getActiveModel: () => state.getActiveModel(),
         fetchCost: (genId) => fetchGenerationCostDeferred(genId, currentApiKey),
-        onExchange: () => {},
+        onExchange: (x) => debugStore.recordEngineExchange(x),
     })
     const batch = buildBatchMethods({ state, emit, transcribeItem: transcribe.transcribeItem })
 
@@ -98,7 +104,20 @@ export async function bootEngine() {
         const messages = []
         if (ctx) messages.push({ role: 'system', content: `You are answering questions about the following audio transcript(s).\n\n${ctx}` })
         messages.push({ role: 'user', content: text })
-        const res = (await busTransport({ messages, model })) || {}
+        const rec = debugStore.record({ kind: params.label || 'ask', stage: params.label || 'ask',
+            model, status: 'pending', request: { messages } })
+        const t0 = Date.now()
+        let res
+        try { res = (await busTransport({ messages, model })) || {} }
+        catch (e) {
+            debugStore.update(rec.id, { status: 'error', error: e.message, errorCode: e.code || 'llm-error' })
+            throw e
+        }
+        debugStore.update(rec.id, { status: 'done', response: {
+            content: (res.content != null ? String(res.content) : '').trim(),
+            promptTokens: res.promptTokens, completionTokens: res.completionTokens,
+            latencyMs: res.latencyMs || (Date.now() - t0), generationId: res.generationId,
+            costUsd: (typeof res.responseCost === 'number' ? res.responseCost : undefined) } })
         return {
             text: (res.content != null ? String(res.content) : '').trim(), model,
             generationId: res.generationId,
@@ -126,6 +145,15 @@ export async function bootEngine() {
         .register('getCostSummary', transcribe.getCostSummary,{ async: false })
         .register('setSpendCap',    (p = {}) => { state.setSpendCap(p.usd != null ? p.usd : null); return { cap: state.getSpendCap() } }, { async: false })
         .register('ask',            ask,                      { async: true,  sanitiseParams: passthrough })
+        // Debug/advanced surface (issue 027) — the pane consumes ONLY these.
+        .register('getExchanges',   (p) => debugStore.getExchanges(p),   { async: false })
+        .register('clearExchanges', () => debugStore.clearExchanges(),   { async: false })
+        .register('getPrompts',     () => debugStore.getPrompts(),       { async: false })
+        .register('setPrompt',      (p) => debugStore.setPrompt(p),      { async: false })
+        .register('resetPrompt',    (p) => debugStore.resetPrompt(p),    { async: false })
+        .register('fetchGeneration',(p = {}) => fetchGeneration({ ...p, apiKey: currentApiKey }), { async: true })
+        .register('getKeyStatus',   () => fetchKeyStatus({ apiKey: currentApiKey }),              { async: true })
+        .register('getModelDetails',(p = {}) => fetchModelDetails(p),                             { async: true })
 
     // The stored key reconnects on load — BYOK persistence (5 Aug decision).
     const stored = (() => { try { return localStorage.getItem(KEY_STORAGE) || '' } catch (_) { return '' } })()

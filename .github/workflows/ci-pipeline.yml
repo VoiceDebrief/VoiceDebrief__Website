@@ -1,11 +1,17 @@
 name: CI Pipeline
 
 # Order of operations on push to dev/main:
-#   1. increment-tag  — bumps the repo `version` file and pushes the tag
+#   1. test           — unit (node --test) + integration (Playwright boots the
+#                       real app against the live engine origin). A failure here
+#                       stops the release: no tag, no publish.
+#   2. increment-tag  — bumps the repo `version` file and pushes the tag
 #                       (dev = minor, main = major). CI owns the version file.
-#   2. publish-pages  — runs AFTER tagging, pulls the freshly bumped commit,
+#   3. publish-pages  — runs AFTER tagging, pulls the freshly bumped commit,
 #                       stamps the version into the site footer and version.txt,
 #                       and deploys website/ to GitHub Pages.
+#   4. qa-live        — after the deploy, checks the LIVE site end to end
+#                       (pages, version stamp, cache-busted assets, samples,
+#                       prompts, engine origin reachability + CORS).
 #
 # The bump commit is pushed with GITHUB_TOKEN, which does not re-trigger this
 # workflow, so there is no tag->publish loop; publishing happens in this same
@@ -23,9 +29,35 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  test:
+    name: Tests (unit + integration)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Unit tests
+        run: node --test tests/unit/*.test.mjs
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1
+          npx playwright install --with-deps chromium
+
+      - name: Integration test (app boot against the live engine origin)
+        run: node tests/integration/app-boot.test.mjs
+
   increment-tag:
     name: Increment Tag
     runs-on: ubuntu-latest
+    needs: [test]
     permissions:
       contents: write
     if: github.event_name == 'push' && (github.ref_name == 'dev' || github.ref_name == 'main')
@@ -40,10 +72,11 @@ jobs:
   build-pages:
     name: Build Site (versioned)
     runs-on: ubuntu-latest
-    needs: [increment-tag]
+    needs: [test, increment-tag]
     # Publish from dev (the Pages estate). Runs even when increment-tag is
-    # skipped (manual dispatch) so the site can be re-published on demand.
-    if: always() && (needs.increment-tag.result == 'success' || needs.increment-tag.result == 'skipped') && (github.ref_name == 'dev')
+    # skipped (manual dispatch) so the site can be re-published on demand —
+    # but never when tests failed.
+    if: always() && needs.test.result == 'success' && (needs.increment-tag.result == 'success' || needs.increment-tag.result == 'skipped') && (github.ref_name == 'dev')
     permissions:
       contents: read
     steps:
@@ -93,3 +126,26 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  qa-live:
+    name: QA (live site)
+    runs-on: ubuntu-latest
+    needs: [deploy-pages]
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Pull the version bump commit
+        run: git pull origin ${{ github.ref_name }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check the live site serves this release
+        run: EXPECT_VERSION="$(cat version)" node tests/qa/live-site-check.mjs

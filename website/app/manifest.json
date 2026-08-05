@@ -25,13 +25,16 @@
     "actions": [
       "connect", "setApiKey", "addFiles", "getItems", "getItem", "removeItem", "clearAll",
       "listModels", "setModel", "transcribeItem", "cancelItem", "transcribeAll",
-      "getTranscript", "getCostSummary", "setSpendCap", "ask", "runPass", "getResults"
+      "getTranscript", "getCostSummary", "setSpendCap", "ask", "runPass", "getResults",
+      "getExchanges", "clearExchanges", "getPrompts", "setPrompt", "resetPrompt",
+      "fetchGeneration", "getKeyStatus", "getModelDetails"
     ],
     "events": [
       "wa:pass:started", "wa:normalised", "wa:ingested", "wa:transcript", "wa:summary", "wa:summary:error",
       "wa:infographic:started", "wa:infographic", "wa:infographic:error",
       "wa:pass:complete", "wa:pass:error", "at:item:added", "at:transcribe:started",
-      "at:transcribe:progress", "at:transcribe:complete", "at:transcribe:error"
+      "at:transcribe:progress", "at:transcribe:complete", "at:transcribe:error",
+      "wa:debug:exchange", "wa:debug:cleared", "wa:debug:prompt-changed"
     ],
     "skills": { "human": "./skills/SKILL__human.md", "browser": "./skills/SKILL__browser.md", "api": "./skills/SKILL__api.md" }
   },

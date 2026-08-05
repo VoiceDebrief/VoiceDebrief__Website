@@ -10,7 +10,8 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-05 (025 + 026 fixed).
+as any issue change. Last updated: 2026-08-05 (027–029 done: debug/advanced views,
+CI tests, repeat-pass fix).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
@@ -40,6 +41,9 @@ as any issue change. Last updated: 2026-08-05 (025 + 026 fixed).
 | [024](done/024-infographic-generator-capabilities-guide.md) | sg-llm-infographic verified capabilities guide | done | high | medium |
 | [025](done/025-ogg-mime-hallucinated-transcript.md) | `.ogg` returned hallucinated transcripts (silent) — fixed by content sniffing | done | **urgent** | medium |
 | [026](done/026-stale-cached-modules-after-deploy.md) | Stale cached modules after deploy (infographic box did nothing) — CI cache-busting | done | high | small |
+| [027](done/027-debug-advanced-views-and-samples.md) | Debug/advanced views: LLM exchange log, OpenRouter details, prompt customisation, samples | done | high | large |
+| [028](done/028-ci-pipeline-tests.md) | CI tests: unit + integration gate the release, QA checks the live site | done | high | medium |
+| [029](done/029-repeat-pass-same-file-not-audio.md) | Re-running the same voice note failed ("not-audio") — engine silent dedupe, reused item | done | high | small |
 
 ## Layout
 
