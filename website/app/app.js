@@ -34,8 +34,9 @@ let pendingFile = null
 
 async function main() {
     // Version stamp (written by CI at publish time).
-    fetch('../version.txt').then(r => r.ok ? r.text() : 'dev').then(v => { $('#site-version').textContent = v.trim() }).catch(() => {})
+    fetch('../version.txt', { cache: 'no-store' }).then(r => r.ok ? r.text() : 'dev').then(v => { $('#site-version').textContent = v.trim() }).catch(() => {})
 
+    console.info('[whatsapp-transcribe] app modules loaded:', import.meta.url)
     const engine = await bootEngine()
     const pipeline = createPipeline({ api: engine.api, emit: engine.emit,
         getKey: engine.getKey, infographicMount: () => $('#infographic-mount') })
@@ -73,6 +74,7 @@ async function main() {
         $('.working-name').textContent = pendingFile.name
         tCard.hidden = sCard.hidden = cost.hidden = true
         $('#infographic-card').hidden = true; $('#save-svg').hidden = true
+        $('#infographic-note').hidden = true
         show('#key-section', '#work-section', '#results-section')
         rail.reset(wantInfographic); rail.start('ingest')
         try {
@@ -102,9 +104,14 @@ async function main() {
     window.addEventListener('wa:infographic', (e) => {
         rail.finish('infographic')
         $('#save-svg').hidden = !e.detail.svg
+        if (!e.detail.svg) infographicNote('The model replied but did not produce a drawable image. Your transcript and summary are unaffected — try again, or continue without one.', true)
         updateCost()
     })
-    window.addEventListener('wa:infographic:error', () => rail.finish('infographic', false))
+    window.addEventListener('wa:infographic:error', (e) => {
+        rail.finish('infographic', false)
+        const [title, body] = ERROR_COPY[e.detail.code] || ['The infographic could not be drawn.', 'Your transcript and summary above are unaffected.']
+        infographicNote(`${title} ${body}`, true)
+    })
     $('#save-svg').addEventListener('click', () => {
         const svg = pipeline.results()?.svg
         if (!svg) return
@@ -117,6 +124,14 @@ async function main() {
     rail.addEventListener('wa:stop-requested', () => pipeline.cancel())
 
     $('#again').addEventListener('click', () => { pendingFile = null; show('#key-section') })
+
+    function infographicNote(text, bad = false) {
+        const note = $('#infographic-note')
+        note.textContent = text
+        note.classList.toggle('bad', bad)
+        note.hidden = false
+        $('#infographic-card').hidden = false
+    }
 
     function updateCost() {
         const c = window.__tool.getCostSummary?.()

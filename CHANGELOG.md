@@ -18,6 +18,17 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Fixed: after a deploy the browser could run the previous release's JavaScript**
+  (issue 026 — reported as "the infographic checkbox did nothing"). GitHub Pages serves
+  our modules with `max-age=600`, and the app's own modules were the one part of the
+  site not versioned by path, so fresh HTML could pair with ten-minute-old JS. CI now
+  stamps `?v=<version>` onto every same-origin import, script and stylesheet in the
+  published artifact (`scripts/stamp_cache_busters.py`); upstream tools-origin URLs are
+  left alone. The footer version is now fetched with `no-store`, so it always names the
+  code actually running — ask for it first when triaging.
+- Infographic failures are no longer silent: the card explains what happened (and says
+  so when a reply contains no drawable SVG) instead of only turning a rail step red.
+
 - **Fixed a silent data-integrity bug (issue 025, urgent)**: a `.ogg` voice note whose
   OS MIME is `application/ogg` or `video/ogg` reached the model undecodable and came
   back as a *hallucinated* transcript — fluent, confident, and about audio the user

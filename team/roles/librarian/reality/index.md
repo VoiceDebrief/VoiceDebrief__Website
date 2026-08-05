@@ -36,6 +36,7 @@
 | The product app (beta): THE FULL ONE-PASS — drop → transcript → summary → infographic (streamed SVG via reused `sg-llm-infographic`, save .svg), BYOK key, GBP costs, own `whatsapp-transcribe` SgToolApi. Verified e2e 5 Aug (real key + real note): transcript 5.3s, summary 14.7s, infographic 53s, £0.003/pass, zero errors. Issues 008+024 closed | `website/app/`, `website/components/` | 2026-08-05 |
 | sg-llm-infographic verified capabilities guide (one-call shape, cell wiring, surface, sanitisation) | `library/tools/infographic-generator/` | 2026-08-05 |
 | Content-based audio normalisation (`OggS`/`OpusHead` sniffing) closing the `.ogg` hallucination bug — issue 025, verified across six file/MIME variants; upstream reported to the Tools team | `website/app/audio-normalise.js`, `team/comms/briefs/08/05/` | 2026-08-05 |
+| CI cache-busting: every deploy stamps `?v=<version>` onto same-origin JS/CSS so a browser cannot run last deploy's modules against new HTML (issue 026); infographic failures now surface a message | `scripts/stamp_cache_busters.py`, `.github/workflows/ci-pipeline.yml` | 2026-08-05 |
 | Spike verdict recorded: Attempt 2 (dev pack brief 06); engine harness in `website/app/engine.js` | dev pack 06 | 2026-08-05 |
 | Two genuine WhatsApp `.opus` fixtures (laptop-download case) + Playwright smoke script | `tests/` | 2026-08-05 |
 
