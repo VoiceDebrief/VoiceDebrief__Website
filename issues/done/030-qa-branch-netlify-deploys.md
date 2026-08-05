@@ -8,14 +8,25 @@ estimated_effort: small
 # QA branch with automatic Netlify deploys
 
 **CLOSED 5 Aug 2026.** Dinis created the Netlify site
-(https://silver-melba-d8d883.netlify.app) and added the two secrets; run #2 of the
-QA workflow then went end to end: tests → real Netlify publish (28s) → live check.
-Verified: the deployed site serves `version.txt` = `v0.1.14-qa.cbd4382` and passes
-all 16 live checks (pages, stamped assets, samples, prompts, engine origin + CORS).
-Along the way run #20 on dev exposed a bug in the QA script itself — the CORS check
-did a bare server-side fetch, and the tools-origin CDN only sends
-`access-control-allow-origin` when the request carries an `Origin` header (as
-browsers always do). Fixed by sending one; green against both estates.
+(https://silver-melba-d8d883.netlify.app) and added the two secrets; the deploys
+work: runs #2–#3 published stamped builds that pass all 16 live checks (verified
+in-session against the Netlify URL — pages, stamped assets, samples, prompts,
+engine origin + CORS).
+
+Two bugs surfaced and were fixed on the way:
+
+1. **QA CORS check** (dev run #20): the tools-origin CDN only sends
+   `access-control-allow-origin` when the request carries an `Origin` header, as
+   browsers always do — the check's bare server-side fetch read `null` and failed a
+   green site. Now sends `Origin`.
+2. **The cross-job URL handoff** (qa runs #2–#3): `NETLIFY_SITE_ID` is the site
+   *name*, so the deploy URL contains a secret value and GitHub refuses to pass it
+   between jobs ("Skip output 'url' since it may contain secret") — the separate
+   `qa-live` job got an empty URL, fell back to the Pages domain, and failed after
+   the 8-minute version wait. The live check now runs as a step **inside the deploy
+   job**, reading the URL from the deploy's own JSON output file; the standalone
+   `qa-live` job is gone from this workflow. Side benefit: the QA URL stays masked
+   in public logs.
 
 ## What exists (pushed, workflow live on the `qa` branch)
 

@@ -5,8 +5,9 @@ name: QA Deploy (Netlify)
 #
 #   push to qa  →  test (same gate as the release pipeline)
 #               →  deploy-netlify (version stamped as <version>-qa.<sha>,
-#                                  cache-busted, published with netlify-cli)
-#               →  qa-live (tests/qa/live-site-check.mjs against the Netlify URL)
+#                                  cache-busted, published with netlify-cli,
+#                                  then tests/qa/live-site-check.mjs against the
+#                                  deployed URL — in the same job, see below)
 #
 # No tagging happens here — `version` stays owned by the dev/main pipeline; QA
 # deploys are identified by the -qa.<short-sha> suffix stamped into the site.
@@ -59,10 +60,6 @@ jobs:
     needs: [test]
     permissions:
       contents: read
-    outputs:
-      deployed: ${{ steps.deploy.outputs.deployed }}
-      url: ${{ steps.deploy.outputs.url }}
-      version: ${{ steps.stamp.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -100,30 +97,18 @@ jobs:
           fi
           npx --yes netlify-cli@17 deploy --prod --dir website \
             --message "qa ${GITHUB_SHA::7}" --json > netlify-deploy.json
-          cat netlify-deploy.json
-          URL=$(jq -r '.url // .deploy_url' netlify-deploy.json)
           echo "deployed=true" >> "$GITHUB_OUTPUT"
-          echo "url=$URL" >> "$GITHUB_OUTPUT"
-          echo "### QA deployed: $URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "### QA deployed ($(jq -r '.site_name // "site"' netlify-deploy.json))" >> "$GITHUB_STEP_SUMMARY"
 
-  qa-live:
-    name: QA (live Netlify site)
-    runs-on: ubuntu-latest
-    needs: [deploy-netlify]
-    if: needs.deploy-netlify.outputs.deployed == 'true'
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
+      # Same job as the deploy on purpose: when NETLIFY_SITE_ID is the site name,
+      # the deploy URL contains a secret value and GitHub refuses to pass it
+      # between jobs ("Skip output 'url' since it may contain secret") — a
+      # separate qa-live job would receive an empty URL (runs #2–#3). Reading
+      # the URL from the deploy's own JSON file sidesteps outputs entirely.
       - name: Check the QA site serves this build
+        if: steps.deploy.outputs.deployed == 'true'
         env:
-          LIVE_URL: ${{ needs.deploy-netlify.outputs.url }}
-          EXPECT_VERSION: ${{ needs.deploy-netlify.outputs.version }}
-        run: node tests/qa/live-site-check.mjs
+          EXPECT_VERSION: ${{ steps.stamp.outputs.version }}
+        run: |
+          LIVE_URL=$(jq -r '.url // .deploy_url' netlify-deploy.json) \
+            node tests/qa/live-site-check.mjs

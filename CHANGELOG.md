@@ -24,6 +24,9 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   (build stamped `<version>-qa.<short-sha>`, cache-busted; the `version` file stays
   owned by the dev/main pipeline) → the live-site QA check against the Netlify URL.
   Verified end to end at https://silver-melba-d8d883.netlify.app (all 16 live checks).
+  One wrinkle fixed in the wiring: with `NETLIFY_SITE_ID` set to the site name, the
+  deploy URL is secret-derived and GitHub drops it from cross-job outputs — so the
+  live check now runs inside the deploy job, reading the URL from the deploy's JSON.
 - **Fixed: the QA CORS check failed on a green site** (dev run #20). The tools-origin
   CDN only sends `access-control-allow-origin` when the request carries an `Origin`
   header, as browsers always do — the check's bare server-side fetch read `null`. It
