@@ -63,6 +63,9 @@ All rows above are committed and pushed in-session on their stated date.
 
 ## PROPOSED — does not exist yet
 
+- **M3 chat-with-materials** (issue 034): design brief EXISTS
+  (`library/dev_packs/v0.1.18__chat-with-materials/`), the panel does not.
+
 - Analysis/debrief outputs beyond the summary document (if ever wanted — the arch brief's fuller set).
 - iOS and Android targets; Chrome extension (deliberately later).
 - OpenRouter per-user key provisioning; the key-provisioning Lambda; the beta hardcoded key.
