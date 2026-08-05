@@ -66,10 +66,13 @@ for (const path of ['/app/manifest.json', '/app/prompts/summary-prompt.md', '/ap
 // 5. The engine origin the app imports from at runtime.
 const originMatch = (await get('/app/config.js?qa=1')).text.match(/'(https:[^']+)'/)
 const origin = originMatch ? originMatch[1] : 'https://dev.tools.sgraph.ai'
-const engine = await fetch(origin + '/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js').catch(() => ({ ok: false, status: 'ERR' }))
+// The CDN only emits CORS headers when the request names an Origin, exactly as a
+// browser would — a bare fetch gets 200 with no header at all.
+const engine = await fetch(origin + '/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js',
+    { headers: { Origin: LIVE } }).catch(() => ({ ok: false, status: 'ERR', headers: new Headers() }))
 check(`engine origin serves modules: ${origin}`, engine.ok, `status ${engine.status}`)
 const cors = engine.ok ? engine.headers.get('access-control-allow-origin') : null
-check('engine origin allows cross-origin import', cors === '*', String(cors))
+check('engine origin allows cross-origin import', cors === '*' || cors === LIVE, String(cors))
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nlive site healthy')
 process.exit(failures ? 1 : 0)
