@@ -18,6 +18,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- M1-a spike harness: `website/m1-spike-test.html` runs the two candidate import cuts from
+  [dev brief §2](library/dev_packs/v0.1.1__audio-transcribe-integration/03__dev__implementation-brief.md)
+  — Attempt 1 (the `audio-transcribe-api.js` entry module) against Attempt 2 (the method-group
+  builders registered on our own `SgToolApi`) — each in its own throwaway iframe, and reports
+  which one publishes a `window.__tool` carrying the full contract surface. A developer harness,
+  `noindex`, not part of the product; the spike's own deliverable (the note recording which
+  attempt won) is still outstanding.
 - The three product infographics are documented rather than merely present:
   `library/infographics/README.md` gains a section describing each one, the library
   contents table no longer reads "images pending", the reality doc gains a row for
