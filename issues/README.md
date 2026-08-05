@@ -10,11 +10,12 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-07-29 (021 closed; added 022, 023).
+as any issue change. Last updated: 2026-08-05 (added 024; 008 in progress).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [008](open/008-web-app-mvp-one-pass.md) | Web app MVP: one-pass transcript / analysis / debrief / infographic (streams in arrival order) | open | high | large |
+| [008](open/008-web-app-mvp-one-pass.md) | Web app MVP: one-pass (M1 build in progress, 5 Aug) | open | high | large |
+| [024](open/024-infographic-generator-capabilities-guide.md) | Verified capabilities guide for the infographic generator (gates M2-a) | open | high | medium |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |

@@ -17,8 +17,9 @@ website/
     app.js                        bootstrap: import engine, wire UI
     pipeline.js                   the one-pass orchestration (transcript→summary→infographic)
     prompts/
-      summary-prompt.js           OUR versioned prompt for the summary document
-      infographic-prompt.js       OUR versioned prompt (if the two-call shape wins)
+      summary-prompt.md           OUR prompt for the summary document — a markdown
+      infographic-prompt.md       file fetched from the site at runtime, so prompts
+                                  are editable without code changes (5 Aug decision)
     ui/                           our branded components (drop zone, progress, results)
     app.css
 ```
@@ -57,6 +58,14 @@ const { buildBatchMethods }     = await import(`${ORIGIN}/en-gb/audio-transcribe
 
 Deliverable of the spike: a one-page note in this pack's folder recording which
 attempt won and why (future sessions must not re-derive it).
+
+**Addendum (5 Aug, resolves the review's gap 1):** whichever attempt wins,
+**our page publishes its own `SgToolApi('whatsapp-transcribe')`** — brief 05's
+mandate stands. Under Attempt 1 the upstream engine self-activates first; we capture
+that handle on its `tool:ready`, then register our actions (proxying the engine) and
+activate ours, so the final `window.__tool` and `window.__tools` entry embedders see
+is `whatsapp-transcribe`. Attempt 2 builds on our instance directly. The engine's
+`at:*` events keep flowing either way; ours are `wa:*`.
 
 ## 3. M1-b: Drop → Transcript
 

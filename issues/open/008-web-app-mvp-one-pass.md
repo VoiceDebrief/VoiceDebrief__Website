@@ -14,3 +14,6 @@ Milestone 1 IS this issue: the end-to-end branded experience. Results STREAM in 
 
 ## Status 28 Jul (post-merge to dev)
 Open, not started. Next major build; streaming order requirement recorded from brief v0.33.53.
+
+## Status 5 Aug
+In progress: M1 build started this session. Decisions from the dev-pack review captured (identity wrap, GBP display, BYOK localStorage, prompts as markdown). Spike harness merged; verdict run next.

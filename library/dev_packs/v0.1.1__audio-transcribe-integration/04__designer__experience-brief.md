@@ -40,7 +40,7 @@
       SUMMARY      (rendered markdown card, copy + download .md)
       INFOGRAPHIC  (streaming SVG renders progressively — it draws itself; that IS
                     the progress indication for this stage; save button)
-      cost line: "this pass: £0.xx  ·  session: £0.yy" ]
+      cost line: "this pass: £0.xx  ·  session: £0.yy"  (metered in USD note) ]
 ```
 
 One file at a time in v1. A second drop replaces the offer, not adds a queue.
@@ -185,6 +185,12 @@ One file at a time in v1. A second drop replaces the offer, not adds a queue.
 | this pass: £0.18           |
 +----------------------------+
 ```
+
+**Decisions (5 Aug, from the review):** costs display in **GBP**, converted from the
+engine's USD at a fixed versioned rate in app config, with a small "metered in USD"
+disclosure. And **key entry is a primary affordance**: a "paste your OpenRouter key"
+field appears with the options row the first time (stored in localStorage; the engine
+persists it under `sg-openrouter-mgmt-key`), not only in the error state.
 
 ## 3. Progress States (map 1:1 to engine events)
 

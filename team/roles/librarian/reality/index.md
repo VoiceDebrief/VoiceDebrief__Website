@@ -71,3 +71,8 @@ All rows above are committed and pushed in-session on their stated date.
 | 2026-07-28 | Privacy tiers to be enforced server-side via OpenRouter guardrails on the issued key (model / provider / data policy), not client logic alone | brief v0.33.53 (finding) |
 | 2026-07-28 | Hosting: GitHub Pages behind an AWS Route 53 domain | brief v0.33.53 |
 | 2026-07-28 | Second administrative vault, separate from user-facing; the ciphertext rule added to `.claude/CLAUDE.md` and needs pre-commit enforcement | brief v0.33.53 |
+| 2026-08-05 | `window.__tool` identity: our page always publishes its own `whatsapp-transcribe` SgToolApi; if the spike picks Attempt 1, the upstream engine handle is captured and wrapped (brief 05 wins; resolves review gap 1) | Dinis, session decision |
+| 2026-08-05 | UI currency is GBP, converted from the engine's USD metering at a fixed versioned rate in app config, with a "metered in USD" note (resolves review gap 3) | Dinis, session decision |
+| 2026-08-05 | M1 key entry: user pastes their own OpenRouter key on the page; stored in localStorage (BYOK; resolves review gap 4) | Dinis, session decision |
+| 2026-08-05 | LLM prompts (summary, infographic) live as markdown files served from the site and fetched at runtime — editable without code changes (extends review action 4) | Dinis, session decision |
+| 2026-08-05 | Scope confirmed: "tools.sgraph.ai parity" = the capabilities THIS product needs (the one-pass job, starting from a WhatsApp voice memo) — Live/TTS/Chat stay out of v1 | Dinis, session decision |
