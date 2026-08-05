@@ -124,10 +124,37 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         return runInfographicStage({ model: params.model, style: params.style })
     }
 
+    /* The assistant may edit the materials (issue 035, brief written from inside
+       the chat itself): overwrite transcript or summary, keeping the ORIGINAL the
+       first time so the user can always revert an unsatisfactory edit. */
+    const EDITABLE = ['transcript', 'summary']
+    function updateMaterial(params = {}) {
+        const { what, text } = params
+        if (!EDITABLE.includes(what)) throw Object.assign(new Error(`what must be one of: ${EDITABLE.join(', ')}`), { code: 'bad-params' })
+        if (typeof text !== 'string' || !text.trim()) throw Object.assign(new Error('updateMaterial requires { what, text }'), { code: 'bad-params' })
+        const r = current.results
+        if (!r || !r[what]) throw Object.assign(new Error(`there is no ${what} yet — run a pass first`), { code: 'no-results' })
+        r.originals ??= {}
+        if (!(what in r.originals)) r.originals[what] = r[what]
+        r[what] = text
+        emit('wa:material:updated', { what, edited: true })
+        return { ok: true, what, chars: text.length }
+    }
+    function restoreMaterial(params = {}) {
+        const { what } = params
+        if (!EDITABLE.includes(what)) throw Object.assign(new Error(`what must be one of: ${EDITABLE.join(', ')}`), { code: 'bad-params' })
+        const r = current.results
+        if (!r?.originals || !(what in r.originals)) return { ok: false, what, note: 'nothing to restore — the original is untouched' }
+        r[what] = r.originals[what]
+        delete r.originals[what]
+        emit('wa:material:updated', { what, edited: false })
+        return { ok: true, what }
+    }
+
     function cancel() {
         if (current.itemId != null) return call('cancelItem', { id: current.itemId })
         return { cancelled: 0 }
     }
 
-    return { runPass, redrawInfographic, cancel, results: () => current.results }
+    return { runPass, redrawInfographic, updateMaterial, restoreMaterial, cancel, results: () => current.results }
 }

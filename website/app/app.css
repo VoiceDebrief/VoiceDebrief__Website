@@ -66,6 +66,8 @@ section[hidden]{display:none !important}
 @keyframes wa-spin{to{transform:rotate(360deg)}}
 .wa-info-card__note{padding:12px 16px;font-size:.9rem;color:var(--wa-muted);border-top:1px solid var(--wa-line)}
 .wa-info-card__note.bad{color:#8a1f1f;background:#fff6f6}
+.edit-note{font-size:.78rem;color:var(--wa-muted);margin:-8px 2px 0;padding-left:4px}
+.edit-note a{color:var(--wa-blue)}
 .results-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .again{font:inherit;font-weight:600;font-size:.9rem;padding:9px 18px;border:1px solid var(--wa-line);border-radius:9px;background:#fff;cursor:pointer}
 .again:hover{border-color:#9fb2c9}

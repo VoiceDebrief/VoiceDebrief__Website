@@ -18,6 +18,16 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The chat can now EDIT the materials and SEE the infographic (issue 035)** — built
+  from a developer brief the chat itself wrote during Dinis's live session.
+  `update_transcript` / `update_summary` / `restore_original` tools rewrite the page
+  (clean-ups, translations) with the original always one click away ("✎ edited by
+  the assistant · restore the original" under the card); the finished infographic
+  travels as a real picture — a "The infographic image" composer row and a
+  `view_infographic` tool whose result attaches the image, so "describe my
+  infographic" genuinely works. Suggestion chips now only show on a blank thread
+  (`wa-chat-panel` v0.1.1). Registry: 13 tools. All covered by the scripted CI loop
+  (Spanish-translation edit → page updates → restore verified).
 - **M3: chat with your materials, and drive the tool from the chat (issue 034)** —
   the 💬 pane. A context composer whose checkboxes ARE the request rows (transcript,
   summary, infographic status, session costs, prior turns — each with a token
@@ -31,8 +41,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   editable template. Built to the study of the reference vault app
   (`library/dev_packs/v0.1.18__chat-with-materials/`). Verified by a new
   deterministic CI test that scripts OpenRouter through the whole loop — including
-  the tool call REALLY redrawing the infographic; a live keyed run follows once a
-  fresh spend-capped key is available.
+  the tool call REALLY redrawing the infographic; live-validated by Dinis in the
+  browser ("it worked perfectly").
 - **The Versions page (issue 033)**: `website/versions/` lists every CI tag with
   its date, headline and changes, each linking to its full GitHub diff — the
   changelog stays the complete record, the page is the per-version site view

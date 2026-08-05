@@ -18,7 +18,9 @@ Every action returns a Promise. Authoritative list: `../manifest.json` `api` sec
 | `chatExchange` | `{ text, rowsOn?, model? }` | one user turn: bounded model/tool loop (8 steps, 2 money-spending calls, $0.25) — the model acts via fenced ```tool blocks against a typed registry that delegates to existing actions; emits `wa:chat:update` per message |
 | `getChatHistory` | `{}` | `{ messages, busy, spendUsd, spendGbp, calls }` — tool calls appear as visible `role: "tool"` entries |
 | `clearChat` | `{}` | start a new conversation |
-| `getChatTools` | `{}` | the registry: action, tier (`read` / `changes settings` / `spends money`), params, description |
+| `getChatTools` | `{}` | the registry: action, tier (`read` / `changes settings` / `changes materials` / `spends money`), params, description |
+| `updateMaterial` | `{ what: "transcript"\|"summary", text }` | overwrite a material on the page (the original is kept; a "restore the original" link appears) — the chat's `update_transcript`/`update_summary` tools delegate here |
+| `restoreMaterial` | `{ what }` | undo the assistant's edit |
 
 ## Debug / advanced (issue 027 — the wa-debug-panel consumes only these)
 | Action | params | returns |

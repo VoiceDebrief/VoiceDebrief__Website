@@ -15,7 +15,7 @@ import '../components/wa-progress-rail/v0/v0.1/v0.1.1/wa-progress-rail.js'
 import '../components/wa-result-card/v0/v0.1/v0.1.1/wa-result-card.js'
 import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
 import '../components/wa-debug-panel/v0/v0.1/v0.1.2/wa-debug-panel.js'
-import '../components/wa-chat-panel/v0/v0.1/v0.1.0/wa-chat-panel.js'
+import '../components/wa-chat-panel/v0/v0.1/v0.1.1/wa-chat-panel.js'
 
 // The chat panel reads these at mount time — before the engine has booted.
 window.__waChat = { models: CHAT_MODELS, suggestions: CHAT_SUGGESTIONS }
@@ -56,6 +56,8 @@ async function main() {
         .register('getResults', () => pipeline.results(),   { async: false })
         .register('redrawInfographic', (p) => pipeline.redrawInfographic(p), { async: true,
             events: ['wa:infographic:started', 'wa:infographic', 'wa:infographic:error'] })
+        .register('updateMaterial',  (p) => pipeline.updateMaterial(p),  { async: false, events: ['wa:material:updated'] })
+        .register('restoreMaterial', (p) => pipeline.restoreMaterial(p), { async: false, events: ['wa:material:updated'] })
 
     // --- M3: chat with the materials (issue 034) — controller on the API, panel renders ---
     const chatCtl = createChat({ emit: engine.emit, getResults: () => pipeline.results() })
@@ -163,6 +165,20 @@ async function main() {
         updateCost()
     })
     window.addEventListener('wa:summary:error', () => rail.finish('summary', false))
+
+    // The assistant edited (or restored) a material — re-render the card and say so
+    // in place, with the way back always visible (issue 035).
+    window.addEventListener('wa:material:updated', (e) => {
+        const { what, edited } = e.detail
+        const r = pipeline.results() || {}
+        const card = what === 'transcript' ? tCard : sCard
+        if (r[what]) { card.show(r[what]); card.hidden = false }
+        $(`#${what}-edit-note`).hidden = !edited
+    })
+    document.querySelectorAll('[data-restore]').forEach(a => a.addEventListener('click', async (e) => {
+        e.preventDefault()
+        await window.__tool.restoreMaterial({ what: a.dataset.restore })
+    }))
 
     // The image models return nothing until the finished picture arrives (80s+ is
     // normal), so the wait needs a heartbeat: spinner + live elapsed counter

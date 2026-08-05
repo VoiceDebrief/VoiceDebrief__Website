@@ -5,6 +5,8 @@ issue change. Last updated: 2026-07-29.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [035](035-chat-edits-materials-and-sees-image.md) | Chat edits materials + sees the image | update/restore tools, image context row + view_infographic, suggestions tidy |
+| [034](034-chat-with-materials.md) | M3: chat with the materials, tool-driven | `wa-chat-panel`, `chat.js`/`chat-tools.js`, scripted-OpenRouter CI test; live-validated |
 | [033](033-versions-page-and-sitewide-version.md) | Versions page + site-wide version chip | `website/versions/` timeline per tag; QA stamped `<next>-qa.<sha>` |
 | [032](032-disabled-key-shows-failed-to-fetch.md) | Disabled key read as "Failed to fetch" | network-shaped LLM failures now diagnosed via GET /api/v1/key; key named in place |
 | [031](031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model, redraw, heartbeat | gemini-3.1-flash-image-preview default; model picker + redraw; spinner/elapsed; samples keep options |

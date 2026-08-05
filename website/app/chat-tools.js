@@ -98,6 +98,36 @@ export const TOOLS = {
                 `"${res.transcript.slice(0, 160)}${res.transcript.length > 160 ? '…' : ''}"` +
                 (res.summary ? ' A summary was also produced.' : '')
         } },
+    view_infographic: {
+        params: '{}', tier: 'read',
+        desc: 'Look at the finished infographic image — it is attached to the tool result as a picture, so you can describe or verify it.',
+        run: async () => {
+            const r = (await tool().getResults()) || {}
+            if (r.image) return { text: 'The infographic image is attached to this message — describe or verify it from the picture itself.', image: r.image }
+            if (r.svg) return { text: 'The infographic is a drawn SVG; its source starts: ' + r.svg.slice(0, 1500) }
+            throw new Error('no infographic exists yet — redraw_infographic can make one')
+        } },
+    update_transcript: {
+        params: '{text: string}', tier: 'changes materials',
+        desc: 'Overwrite the transcript shown on the page (clean-up, translation, corrections). The original is kept and the user can restore it.',
+        run: async ({ text }) => {
+            const r = await tool().updateMaterial({ what: 'transcript', text })
+            return `Transcript replaced (${r.chars} chars). The page shows the new text with a "restore the original" link.`
+        } },
+    update_summary: {
+        params: '{text: string}', tier: 'changes materials',
+        desc: 'Overwrite the summary shown on the page (rewrite, translation). The original is kept and the user can restore it.',
+        run: async ({ text }) => {
+            const r = await tool().updateMaterial({ what: 'summary', text })
+            return `Summary replaced (${r.chars} chars). The page shows the new text with a "restore the original" link.`
+        } },
+    restore_original: {
+        params: '{what: "transcript"|"summary"}', tier: 'changes materials',
+        desc: 'Undo the assistant\'s edit, returning the material to what the pass produced.',
+        run: async ({ what }) => {
+            const r = await tool().restoreMaterial({ what })
+            return r.ok ? `${what} restored to the original.` : r.note
+        } },
     set_prompt: {
         params: '{kind: "transcribe"|"summary"|"chat"|"infographic"|"infographic-system", text: string}',
         tier: 'changes settings',
@@ -151,10 +181,17 @@ export function parseToolCall(text) {
     return null
 }
 
+/* A tool may return a plain string, or { text, image } when its result carries a
+   picture the model should actually see (view_infographic). */
 export async function runTool(call) {
     const t = TOOLS[call.action]
     if (!t) return { ok: false, text: `unknown action "${call.action}"` }
-    try { return { ok: true, text: await t.run(call.params || {}) } }
+    try {
+        const out = await t.run(call.params || {})
+        return typeof out === 'object' && out !== null
+            ? { ok: true, text: out.text, image: out.image || null }
+            : { ok: true, text: out }
+    }
     catch (e) { return { ok: false, text: String(e?.message || e) } }
 }
 

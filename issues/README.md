@@ -10,13 +10,11 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-05 (027–032 done: debug/advanced views,
-CI tests, repeat-pass fix, QA Netlify estate live, infographic v2 on the image model,
-disabled-key diagnosis).
+as any issue change. Last updated: 2026-08-06 (027–035 done — latest: M3 chat live,
+chat material edits + image vision).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [034](open/034-chat-with-materials.md) | M3: chat with the materials + drive the tool from chat — BUILT, mock-verified; live keyed run pending | open | high | large |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |
@@ -50,6 +48,8 @@ disabled-key diagnosis).
 | [031](done/031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model default, redraw UX + model picker, progress heartbeat, samples keep options | done | high | medium |
 | [032](done/032-disabled-key-shows-failed-to-fetch.md) | Disabled key read as "Failed to fetch" — now diagnosed via /api/v1/key and named | done | high | small |
 | [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |
+| [034](done/034-chat-with-materials.md) | M3: chat with the materials + tool-driven workflow — live-validated by Dinis | done | high | large |
+| [035](done/035-chat-edits-materials-and-sees-image.md) | Chat edits transcript/summary (revertible), SEES the infographic image, tidy suggestions | done | high | medium |
 
 ## Layout
 

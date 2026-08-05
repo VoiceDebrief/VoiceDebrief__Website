@@ -60,6 +60,9 @@ export function createChat({ emit, getResults }) {
             text: r.image ? 'A finished infographic image exists on the page.'
                 : r.svg ? 'A drawn SVG infographic exists on the page.'
                 : 'No infographic has been generated for this pass.' })
+        if (r.image) rows.push({ id: 'image', label: 'The infographic image', on: false, kind: 'image',
+            sub: `travels as a picture the model can SEE (~${Math.round(r.image.length / 1370)} KB)`,
+            text: '(the finished infographic, attached as an image)' })
         const exchanges = debugStore.getExchanges({ limit: 20 })
         rows.push({ id: 'costs', label: 'Session calls & costs', on: false,
             sub: `${exchanges.length} LLM call(s) so far`,
@@ -83,8 +86,19 @@ export function createChat({ emit, getResults }) {
         try {
             const rows = getChatContext()
             const on = (id) => Array.isArray(params.rowsOn) ? params.rowsOn.includes(id) : rows.find(r => r.id === id)?.on
-            const context = rows.filter(r => r.kind !== 'history' && on(r.id))
+            const textRows = (list) => list.filter(r => r.kind !== 'history' && r.kind !== 'image' && on(r.id))
                 .map(r => `## ${r.label}\n${r.text}`).join('\n\n')
+            const context = textRows(rows)
+            // The infographic image row travels as a PICTURE, not prose (important
+            // workflow: "describe/verify my infographic" needs the model to see it).
+            const imagePart = () => {
+                const img = (getResults() || {}).image
+                return (on('image') && img) ? { type: 'image_url', image_url: { url: img } } : null
+            }
+            const userContent = (text_) => {
+                const img = imagePart()
+                return img ? [img, { type: 'text', text: text_ }] : text_
+            }
             const prior = on('history')
                 ? history.filter(m => (m.role === 'user' || m.role === 'bot') && !m.toolOnly && m.content && !m.pending)
                     .map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content }))
@@ -93,7 +107,7 @@ export function createChat({ emit, getResults }) {
             push({ role: 'user', content: text })
             const system = (await loadSystemPrompt()) + toolsSection()
             const messages = [{ role: 'system', content: system }, ...prior,
-                { role: 'user', content: `Context the user ticked:\n\n${context}\n\n---\n\n${text}` }]
+                { role: 'user', content: userContent(`Context the user ticked:\n\n${context}\n\n---\n\n${text}`) }]
             const ctxIndex = messages.length - 1
 
             const used = { steps: 0, spendCalls: 0, spendUsd: 0 }
@@ -130,16 +144,19 @@ export function createChat({ emit, getResults }) {
 
                 current.toolOnly = true   // the fenced block is machinery, not an answer
                 const out = await runTool(call)
-                push({ role: 'tool', ok: out.ok, did: `${call.action}(${JSON.stringify(call.params || {})})`, content: out.text })
+                push({ role: 'tool', ok: out.ok, did: `${call.action}(${JSON.stringify(call.params || {})})`,
+                    content: out.text, image: !!out.image })
 
                 messages.push({ role: 'assistant', content: current.content })
-                messages.push({ role: 'user',
-                    content: `TOOL RESULT (${call.action}): ${out.ok ? out.text : 'FAILED — ' + out.text}\n${toolBudgetLine(used)}` })
-                // the materials may have moved (a tool can run a pass or redraw)
-                const fresh = getChatContext()
-                messages[ctxIndex] = { role: 'user', content: `Context the user ticked (updated):\n\n` +
-                    fresh.filter(r => r.kind !== 'history' && on(r.id)).map(r => `## ${r.label}\n${r.text}`).join('\n\n') +
-                    `\n\n---\n\n${text}` }
+                const resultText = `TOOL RESULT (${call.action}): ${out.ok ? out.text : 'FAILED — ' + out.text}\n${toolBudgetLine(used)}`
+                // a tool result may carry a picture (view_infographic) — attach it
+                // as an image part so the model genuinely sees what it made
+                messages.push({ role: 'user', content: out.image
+                    ? [{ type: 'image_url', image_url: { url: out.image } }, { type: 'text', text: resultText }]
+                    : resultText })
+                // the materials may have moved (a tool can run a pass, redraw, or edit)
+                messages[ctxIndex] = { role: 'user',
+                    content: userContent(`Context the user ticked (updated):\n\n${textRows(getChatContext())}\n\n---\n\n${text}`) }
                 current = { role: 'bot', content: '', pending: true, model }
                 push(current)
             }

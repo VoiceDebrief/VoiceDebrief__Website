@@ -65,6 +65,7 @@ await page.route('https://openrouter.ai/**', async route => {
     else if (all.includes('answering questions about the following audio')) content = '## Key points\n- a voice memo for tests'
     else if (lastMsg.includes('TOOL RESULT')) content = 'Done — the drawn SVG infographic is now on the page.'
     else if (/generate the infographic/i.test(lastMsg)) content = 'On it.\n```tool\n{"action":"redraw_infographic","params":{"model":"google/gemini-3.5-flash"}}\n```'
+    else if (/translate the summary/i.test(lastMsg)) content = '```tool\n{"action":"update_summary","params":{"text":"## Puntos clave\\n- una nota de voz para pruebas"}}\n```'
     else content = 'The voice memo says it was recorded to be used in tests.'
     return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'application/json' }, body: jsonReply(content, id) })
 })
@@ -104,6 +105,22 @@ try {
     check('chat + infographic calls audited in the exchange log', after.chatLog === 3 && after.infogLog === 1,
         `chat=${after.chatLog} infog=${after.infogLog}`)
 
+    // The material-edit workflow (issue 035, brief written from inside the chat):
+    // update_summary rewrites the page, keeps the original, and restore undoes it.
+    const a3 = await page.evaluate(async () => window.__tool.chatExchange({ text: 'Translate the summary into Spanish.' }))
+    check('edit exchange used one tool step', a3.steps === 1, String(a3.steps))
+    const edited = await page.evaluate(async () => ({
+        summary: (await window.__tool.getResults()).summary,
+        noteShown: !document.querySelector('#summary-edit-note').hidden }))
+    check('the summary on the page IS the Spanish rewrite', /Puntos clave/.test(edited.summary), (edited.summary || '').slice(0, 40))
+    check('the "edited by the assistant" note is visible', edited.noteShown)
+    const restored = await page.evaluate(async () => {
+        await window.__tool.restoreMaterial({ what: 'summary' })
+        return { summary: (await window.__tool.getResults()).summary,
+                 noteShown: !document.querySelector('#summary-edit-note').hidden }
+    })
+    check('restore returns the original summary and hides the note', /Key points/.test(restored.summary) && !restored.noteShown)
+
     const chat = page.locator('wa-chat-panel')
     await chat.locator('.wa-chat__toggle').click()
     await page.waitForTimeout(500)
@@ -111,9 +128,11 @@ try {
         const sr = document.querySelector('wa-chat-panel').shadowRoot
         return { msgs: sr.querySelectorAll('.msg').length, tools: sr.querySelectorAll('.msg--tool').length,
                  models: sr.querySelectorAll('.wa-chat__model option').length,
-                 ctx: sr.querySelectorAll('.ctx-row').length, meter: sr.querySelector('.wa-chat__meter').textContent }
+                 ctx: sr.querySelectorAll('.ctx-row').length, meter: sr.querySelector('.wa-chat__meter').textContent,
+                 suggHidden: sr.querySelector('.wa-chat__suggestions').hidden }
     })
-    check('panel renders thread, tool rows, models, context rows', ui.msgs >= 5 && ui.tools === 1 && ui.models >= 3 && ui.ctx === 5, JSON.stringify(ui))
+    check('panel renders thread, tool rows, models, context rows', ui.msgs >= 8 && ui.tools === 2 && ui.models >= 3 && ui.ctx === 5, JSON.stringify(ui))
+    check('suggestion chips hidden once the conversation has started (issue 035)', ui.suggHidden === true)
     check('no page errors', errs.length === 0, errs.slice(0, 4).join(' | '))
 } catch (e) {
     check('test run completed', false, e.message)

@@ -123,7 +123,7 @@ try {
     }))
     check('context rows include transcript/summary/costs/history',
         ['transcript', 'summary', 'costs', 'history'].every(id => chatBits.rows.includes(id)), chatBits.rows.join(','))
-    check('tool registry exposed with 9 tools', chatBits.tools === 9, String(chatBits.tools))
+    check('tool registry exposed with 13 tools', chatBits.tools === 13, String(chatBits.tools))
     check('chat history starts empty', chatBits.history === 0)
 
     // 7. The exchange log is empty (no key, no LLM calls) and clearable.

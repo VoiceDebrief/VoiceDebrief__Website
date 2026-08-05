@@ -31,8 +31,9 @@ scripts OpenRouter end to end: pass → grounded prose (0 steps) → fenced tool
 machinery marking, audit trail and panel rendering all asserted. Wired into both CI
 test jobs.
 
-**Outstanding**: one live keyed exchange (the session's spend-capped key was disabled
-during the issue-032 test — a fresh capped key closes this).
+**CLOSED 6 Aug 2026**: Dinis validated the chat live with a real key — "it worked
+perfectly" — including tool-driven exchanges (`get_results`, `get_exchanges`) and,
+fittingly, having the chat write the developer brief that became issue 035.
 
 ## Acceptance
 - `wa-chat-panel` (💬, resizable) chats over the pass results with a ticked context
