@@ -18,6 +18,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The Versions page (issue 033)**: `website/versions/` lists every CI tag with
+  its date, headline and changes, each linking to its full GitHub diff — the
+  changelog stays the complete record, the page is the per-version site view
+  (data: `versions.json`, maintained in the same commit as this file). The version
+  chip now sits on **every** page footer (linking to the page), both CI workflows
+  stamp all HTML files, and QA builds are stamped with the **next** version number
+  read from the tags (`v0.1.19-qa.<sha>` while dev is at v0.1.18).
 - **Fixed: a disabled OpenRouter key read as a network error (issue 032)** — the
   browser gets no CORS headers on that rejection, so the app saw "Failed to fetch"
   and blamed the model side. Network-shaped LLM failures now trigger a key check

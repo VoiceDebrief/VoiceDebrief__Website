@@ -71,18 +71,22 @@ jobs:
 
       - name: Stamp QA version into the site
         id: stamp
-        # Same stamping as the release build, but the version names the QA build
-        # honestly: <version>-qa.<short-sha>. The `version` file itself is never
-        # touched — CI on dev/main owns it.
+        # A QA build previews the NEXT release, so it is stamped with the next
+        # version number (latest tag + 1) plus the -qa.<short-sha> suffix. The
+        # `version` file is never touched — CI on dev/main owns it — and branch
+        # copies of it lag dev, so the truth comes from the tags.
         run: |
-          VER="$(cat version)-qa.$(git rev-parse --short HEAD)"
-          echo "QA build version: $VER"
+          LATEST=$(git ls-remote --tags origin 'v*' | awk -F/ '{print $NF}' | grep -v '\^{}' | sort -V | tail -1)
+          NEXT="v$(echo "${LATEST#v}" | awk -F. '{print $1"."$2"."$3+1}')"
+          VER="$NEXT-qa.$(git rev-parse --short HEAD)"
+          echo "QA build version: $VER (latest release tag: $LATEST)"
           echo "$VER" > website/version.txt
-          sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" website/index.html
+          find website -name '*.html' -exec \
+            sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" {} +
           echo "version=$VER" >> "$GITHUB_OUTPUT"
 
       - name: Cache-bust the site's own assets
-        run: python3 scripts/stamp_cache_busters.py --site website --version "$(cat version)-qa.$(git rev-parse --short HEAD)"
+        run: python3 scripts/stamp_cache_busters.py --site website --version "${{ steps.stamp.outputs.version }}"
 
       - name: Deploy to Netlify
         id: deploy

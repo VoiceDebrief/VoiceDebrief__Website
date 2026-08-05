@@ -48,6 +48,7 @@ disabled-key diagnosis).
 | [030](done/030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify — live and verified (silver-melba-d8d883.netlify.app) | done | high | small |
 | [031](done/031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model default, redraw UX + model picker, progress heartbeat, samples keep options | done | high | medium |
 | [032](done/032-disabled-key-shows-failed-to-fetch.md) | Disabled key read as "Failed to fetch" — now diagnosed via /api/v1/key and named | done | high | small |
+| [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |
 
 ## Layout
 
