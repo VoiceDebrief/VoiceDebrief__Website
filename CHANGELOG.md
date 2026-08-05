@@ -18,13 +18,32 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
-- **QA estate: the `qa` branch auto-deploys to Netlify (issue 030)**. GitHub Pages is
-  the dev estate (one Pages site per repo), so `.github/workflows/qa-deploy.yml` gives
-  `qa` its own: push → the same unit+integration test gate → Netlify publish (build
-  stamped `<version>-qa.<short-sha>`, cache-busted; the `version` file stays owned by
-  the dev/main pipeline) → the live-site QA check against the Netlify URL. Blocked on
-  two repo secrets (`NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`) — until they exist the
-  deploy step skips with a warning while the tests still gate every push.
+- **The infographic is now a finished image (issue 031)**: the default model is
+  `google/gemini-3.1-flash-image-preview` — the one the proven Infographic Generator
+  tool uses — returning a publication-quality picture instead of a drawn SVG (that
+  was the answer to "why did we get an SVG": the old default was a text model). The
+  card gains a **model picker** (two image models + the drawn-SVG option) and a
+  **redraw** button that regenerates just the infographic over the finished pass
+  (API: `redrawInfographic`); a pass without an infographic offers "draw
+  infographic" afterwards; the system prompt is the debug pane's fourth editable
+  template. Long generations get a heartbeat — spinner + live elapsed counter on
+  the card, and live `⏳ Ns` tickers on in-flight calls in the debug pane (v0.1.1).
+- **Fixed: sample chips skipped the options screen** (issue 031) — they auto-ran
+  the pass, making the infographic toggle unreachable. A sample now loads into the
+  same options screen as a dropped file.
+- **QA estate live: the `qa` branch auto-deploys to Netlify (issue 030)**. GitHub
+  Pages is the dev estate (one Pages site per repo), so `.github/workflows/qa-deploy.yml`
+  gives `qa` its own: push → the same unit+integration test gate → Netlify publish
+  (build stamped `<version>-qa.<short-sha>`, cache-busted; the `version` file stays
+  owned by the dev/main pipeline) → the live-site QA check against the Netlify URL.
+  Verified end to end at https://silver-melba-d8d883.netlify.app (all 16 live checks).
+  One wrinkle fixed in the wiring: with `NETLIFY_SITE_ID` set to the site name, the
+  deploy URL is secret-derived and GitHub drops it from cross-job outputs — so the
+  live check now runs inside the deploy job, reading the URL from the deploy's JSON.
+- **Fixed: the QA CORS check failed on a green site** (dev run #20). The tools-origin
+  CDN only sends `access-control-allow-origin` when the request carries an `Origin`
+  header, as browsers always do — the check's bare server-side fetch read `null`. It
+  now sends an `Origin` header; verified green against both estates.
 - **The advanced/debug pane (issue 027)**: a "⚙ debug" tab on the right edge opens a
   resizable side pane with three views — **LLM calls** (every request and response the
   page makes, verbatim, audio bytes summarised by size; each row can fetch its billed

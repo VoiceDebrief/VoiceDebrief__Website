@@ -10,8 +10,8 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-05 (027–029 done: debug/advanced views,
-CI tests, repeat-pass fix; 030 blocked on Netlify secrets).
+as any issue change. Last updated: 2026-08-05 (027–031 done: debug/advanced views,
+CI tests, repeat-pass fix, QA Netlify estate live, infographic v2 on the image model).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
@@ -22,7 +22,6 @@ CI tests, repeat-pass fix; 030 blocked on Netlify secrets).
 | [011](open/011-ios-android-targets.md) | iOS and Android targets from this repo | open | normal | large |
 | [015](open/015-secret-distribution-via-send.md) | Distribute secrets via the existing SG/Send capability | open | normal | small |
 | [016](open/016-crm-on-vault-substrate.md) | CRM built on the vault substrate | open | low | large |
-| [030](blocked/030-qa-branch-netlify-deploys.md) | QA branch with automatic Netlify deploys | **blocked** (on Netlify secrets) | high | small |
 | [007](blocked/007-infographic-images-into-library.md) | Add the shared infographics to library/infographics/ | **blocked** (on image files) | normal | small |
 | [001](done/001-brief-pack-understanding-architecture-tasks.md) | Create and push the detailed brief pack | done | high | medium |
 | [002](done/002-wire-up-agentic-team.md) | Wire up the agentic team for this repo | done | high | medium |
@@ -45,6 +44,8 @@ CI tests, repeat-pass fix; 030 blocked on Netlify secrets).
 | [027](done/027-debug-advanced-views-and-samples.md) | Debug/advanced views: LLM exchange log, OpenRouter details, prompt customisation, samples | done | high | large |
 | [028](done/028-ci-pipeline-tests.md) | CI tests: unit + integration gate the release, QA checks the live site | done | high | medium |
 | [029](done/029-repeat-pass-same-file-not-audio.md) | Re-running the same voice note failed ("not-audio") — engine silent dedupe, reused item | done | high | small |
+| [030](done/030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify — live and verified (silver-melba-d8d883.netlify.app) | done | high | small |
+| [031](done/031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model default, redraw UX + model picker, progress heartbeat, samples keep options | done | high | medium |
 
 ## Layout
 

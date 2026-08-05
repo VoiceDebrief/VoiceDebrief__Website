@@ -5,6 +5,7 @@
 import { fmtGbp } from './config.js'
 import { bootEngine } from './engine.js'
 import { createPipeline } from './pipeline.js'
+import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
 
 // Components (ours; the SgComponent base loads from the tools origin inside each).
 import '../components/wa-key-panel/v0/v0.1/v0.1.0/wa-key-panel.js'
@@ -12,7 +13,7 @@ import '../components/wa-drop-zone/v0/v0.1/v0.1.0/wa-drop-zone.js'
 import '../components/wa-progress-rail/v0/v0.1/v0.1.1/wa-progress-rail.js'
 import '../components/wa-result-card/v0/v0.1/v0.1.1/wa-result-card.js'
 import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
-import '../components/wa-debug-panel/v0/v0.1/v0.1.0/wa-debug-panel.js'
+import '../components/wa-debug-panel/v0/v0.1/v0.1.1/wa-debug-panel.js'
 
 const $ = (s) => document.querySelector(s)
 const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']
@@ -47,6 +48,8 @@ async function main() {
             events: ['wa:pass:started', 'wa:normalised', 'wa:ingested', 'wa:transcript', 'wa:summary', 'wa:summary:error',
                      'wa:infographic:started', 'wa:infographic', 'wa:infographic:error', 'wa:pass:complete', 'wa:pass:error'] })
         .register('getResults', () => pipeline.results(),   { async: false })
+        .register('redrawInfographic', (p) => pipeline.redrawInfographic(p), { async: true,
+            events: ['wa:infographic:started', 'wa:infographic', 'wa:infographic:error'] })
     engine.api.activate()   // → window.__tool ('whatsapp-transcribe') + tool:ready
 
     const key = $('#key'), drop = $('#drop'), rail = $('#rail')
@@ -67,7 +70,8 @@ async function main() {
     }
     drop.addEventListener('wa:file-chosen', (e) => takeFile(e.detail.file))
 
-    // --- sample voice notes: click → fetch → the normal flow, auto-run with a key ---
+    // --- sample voice notes: click → fetch → the normal options screen, so the
+    // infographic toggle (and any future option) stays available (issue 031). ---
     document.querySelectorAll('.sample-chip').forEach(chip => chip.addEventListener('click', async () => {
         const path = chip.dataset.sample
         chip.disabled = true
@@ -80,11 +84,22 @@ async function main() {
             const file = new File([await r.arrayBuffer()], name,
                 { type: name.endsWith('.ogg') ? 'audio/ogg' : 'audio/opus' })
             takeFile(file)
-            if (engine.hasKey()) $('#go').click()   // a sample click IS the test run
+            $('#file-section').scrollIntoView({ behavior: 'smooth', block: 'center' })
         } catch (err) {
             showError('not-audio', 'ingest', 'sample failed to load: ' + err.message)
         } finally { chip.disabled = false; chip.textContent = label }
     }))
+
+    // --- infographic model picker (persisted) + redraw ---
+    const modelSel = $('#infographic-model'), redrawBtn = $('#redraw-infographic')
+    INFOGRAPHIC_MODELS.forEach(m => modelSel.add(new Option(m.label, m.id)))
+    try { modelSel.value = localStorage.getItem('wa-infographic-model') || INFOGRAPHIC_MODEL_DEFAULT } catch (_) { modelSel.value = INFOGRAPHIC_MODEL_DEFAULT }
+    if (!modelSel.value) modelSel.value = INFOGRAPHIC_MODEL_DEFAULT
+    modelSel.addEventListener('change', () => { try { localStorage.setItem('wa-infographic-model', modelSel.value) } catch (_) {} })
+    redrawBtn.addEventListener('click', async () => {
+        if (!engine.hasKey()) return showError('no-key', 'infographic')
+        try { await window.__tool.redrawInfographic({ model: modelSel.value }) } catch (_) { /* surfaced via events */ }
+    })
     $('.file-remove').addEventListener('click', () => { pendingFile = null; show('#key-section') })
 
     // --- go ---
@@ -99,7 +114,8 @@ async function main() {
         show('#key-section', '#work-section', '#results-section')
         rail.reset(wantInfographic); rail.start('ingest')
         try {
-            await window.__tool.runPass({ file: pendingFile, infographic: wantInfographic })
+            await window.__tool.runPass({ file: pendingFile, infographic: wantInfographic,
+                infographicModel: modelSel.value })
         } catch (e) {
             showError(e.code || 'llm-error', 'transcribe', e.message)
         }
@@ -118,37 +134,72 @@ async function main() {
         updateCost()
     })
     window.addEventListener('wa:summary:error', () => rail.finish('summary', false))
-    window.addEventListener('wa:infographic:started', () => {
+
+    // The image models return nothing until the finished picture arrives (80s+ is
+    // normal), so the wait needs a heartbeat: spinner + live elapsed counter
+    // (issue 031 — "it worked but looked stuck").
+    let drawTimer = null
+    const stopDrawTimer = () => { if (drawTimer) { clearInterval(drawTimer); drawTimer = null } }
+    window.addEventListener('wa:infographic:started', (e) => {
         rail.start('infographic')
-        $('#infographic-card').hidden = false   // the SVG drawing itself is the progress
+        $('#infographic-card').hidden = false
+        $('#redraw-infographic').disabled = true
+        const t0 = Date.now()
+        const modelName = e.detail?.model || modelSel.value
+        stopDrawTimer()
+        const tick = () => infographicNote(`<span class="wa-spin"></span>drawing with ${modelName} — ${Math.round((Date.now() - t0) / 1000)}s (a finished image typically takes 60–90s)`, false, true)
+        tick(); drawTimer = setInterval(tick, 1000)
     })
     window.addEventListener('wa:infographic', (e) => {
+        stopDrawTimer()
         rail.finish('infographic')
-        $('#save-svg').hidden = !e.detail.svg
-        if (!e.detail.svg) infographicNote('The model replied but did not produce a drawable image. Your transcript and summary are unaffected — try again, or continue without one.', true)
+        $('#redraw-infographic').disabled = false; $('#redraw-infographic').hidden = false
+        const got = e.detail.svg || e.detail.image
+        $('#save-svg').hidden = !got
+        $('#save-svg').textContent = e.detail.image ? 'save .' + imageExt(e.detail.image) : 'save .svg'
+        if (got) $('#infographic-note').hidden = true
+        else infographicNote('The model replied but did not produce a drawable image. Your transcript and summary are unaffected — try a redraw, or a different model from the selector above.', true)
         updateCost()
     })
     window.addEventListener('wa:infographic:error', (e) => {
+        stopDrawTimer()
         rail.finish('infographic', false)
-        const [title, body] = ERROR_COPY[e.detail.code] || ['The infographic could not be drawn.', 'Your transcript and summary above are unaffected.']
+        $('#redraw-infographic').disabled = false; $('#redraw-infographic').hidden = false
+        const [title, body] = ERROR_COPY[e.detail.code] || ['The infographic could not be drawn.', 'Your transcript and summary above are unaffected — try a redraw.']
         infographicNote(`${title} ${body}`, true)
     })
+    // The image models pick their own encoding (jpeg/png/webp) — name the file by
+    // what the data URL actually is.
+    const imageExt = (dataUrl) => {
+        const m = String(dataUrl).match(/^data:image\/(\w+)/)
+        const t = m ? m[1] : 'png'
+        return t === 'jpeg' ? 'jpg' : t
+    }
     $('#save-svg').addEventListener('click', () => {
-        const svg = pipeline.results()?.svg
-        if (!svg) return
+        const r = pipeline.results() || {}
         const a = document.createElement('a')
-        a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
-        a.download = 'infographic.svg'
-        a.click(); URL.revokeObjectURL(a.href)
+        if (r.image) { a.href = r.image; a.download = 'infographic.' + imageExt(r.image) }
+        else if (r.svg) { a.href = URL.createObjectURL(new Blob([r.svg], { type: 'image/svg+xml' })); a.download = 'infographic.svg' }
+        else return
+        a.click(); if (r.svg && !r.image) URL.revokeObjectURL(a.href)
     })
-    window.addEventListener('wa:pass:complete', () => { $('#work-section').hidden = true; updateCost() })
+    window.addEventListener('wa:pass:complete', () => {
+        $('#work-section').hidden = true; updateCost()
+        // No infographic asked for? Offer to draw one from the finished pass.
+        const r = pipeline.results() || {}
+        if (r.transcript && !r.svg && !r.image && drawTimer == null) {
+            $('#redraw-infographic').hidden = false
+            $('#redraw-infographic').textContent = 'draw infographic'
+            infographicNote('No infographic was requested for this pass — pick a model above and press "draw infographic" to make one now.')
+        } else { $('#redraw-infographic').textContent = 'redraw' }
+    })
     rail.addEventListener('wa:stop-requested', () => pipeline.cancel())
 
     $('#again').addEventListener('click', () => { pendingFile = null; show('#key-section') })
 
-    function infographicNote(text, bad = false) {
+    function infographicNote(text, bad = false, html = false) {
         const note = $('#infographic-note')
-        note.textContent = text
+        if (html) note.innerHTML = text; else note.textContent = text
         note.classList.toggle('bad', bad)
         note.hidden = false
         $('#infographic-card').hidden = false

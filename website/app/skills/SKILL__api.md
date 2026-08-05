@@ -6,8 +6,9 @@ Every action returns a Promise. Authoritative list: `../manifest.json` `api` sec
 ## wa-specific
 | Action | params | returns |
 |---|---|---|
-| `runPass` | `{ file, infographic?, style? }` | `{ name, transcript, summary, svg, usage }` — streams `wa:*` events per stage |
+| `runPass` | `{ file, infographic?, infographicModel?, style? }` | `{ name, transcript, summary, svg, image, usage }` — streams `wa:*` events per stage |
 | `getResults` | `{}` | the current pass results object |
+| `redrawInfographic` | `{ model?, style? }` | regenerate just the infographic over the current pass (image models return `image` as a PNG data URL; the SVG model returns `svg`) |
 
 ## Debug / advanced (issue 027 — the wa-debug-panel consumes only these)
 | Action | params | returns |

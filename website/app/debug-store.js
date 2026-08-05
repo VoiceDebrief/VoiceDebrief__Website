@@ -32,8 +32,13 @@ const PROMPT_KINDS = {
     },
     infographic: {
         label: 'Infographic content preamble',
-        note: 'Prepended to the transcript + summary for the infographic call (./prompts/infographic-prompt.md). The SVG drawing rules come from the sg-llm-infographic style preset.',
+        note: 'Prepended to the transcript + summary for the infographic call (./prompts/infographic-prompt.md).',
         defaultText: null,
+    },
+    'infographic-system': {
+        label: 'Infographic system prompt',
+        note: 'The system message for the infographic call. Used as-is by the image models; for the drawn-SVG model the style preset supplies it unless you override here.',
+        defaultText: 'You are a professional infographic designer. Create a high-quality, publication-ready infographic image. Use a clean dark navy background (#0d1b2a), white headings, teal and blue-grey accents. Clear layout with visual groupings, icons, and data callouts. Render as a landscape image.',
     },
 }
 
@@ -160,6 +165,6 @@ function applyTranscribeOverride(req) {
 export const debugStore = {
     bindEmit, record, update, recordEngineExchange,
     getExchanges, clearExchanges,
-    getPrompt, getPrompts, setPrompt, resetPrompt, setPromptDefault,
+    getPrompt, getPromptOverride: getOverride, getPrompts, setPrompt, resetPrompt, setPromptDefault,
     applyTranscribeOverride,
 }
