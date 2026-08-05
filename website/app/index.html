@@ -28,6 +28,12 @@
     <p class="lead">Transcript, summary and an infographic in one pass — everything runs in this browser.
        Beta: bring your own <a href="https://openrouter.ai/keys">OpenRouter key</a>.</p>
     <wa-drop-zone id="drop"></wa-drop-zone>
+    <div class="samples" aria-label="Sample voice notes">
+      <span class="samples__label">no voice note handy? try a sample:</span>
+      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-1.opus">▶ voice note 1 (.opus)</button>
+      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-2.opus">▶ voice note 2 (.opus)</button>
+      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-android.ogg">▶ android export (.ogg)</button>
+    </div>
     <details class="find-note"><summary>where do I find my voice note?</summary>
       <p>Laptop: open WhatsApp Web/Desktop → the voice message → download (<code>.opus</code>).
          Android: share/export the message (<code>.opus</code>/<code>.ogg</code>).
@@ -92,6 +98,8 @@
     <span id="site-version">dev</span> ·
     <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
 </footer>
+
+<wa-debug-panel id="debug"></wa-debug-panel>
 
 <script type="module" src="app.js"></script>
 </body>

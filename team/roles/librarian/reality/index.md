@@ -39,6 +39,11 @@
 | CI cache-busting: every deploy stamps `?v=<version>` onto same-origin JS/CSS so a browser cannot run last deploy's modules against new HTML (issue 026); infographic failures now surface a message | `scripts/stamp_cache_busters.py`, `.github/workflows/ci-pipeline.yml` | 2026-08-05 |
 | Spike verdict recorded: Attempt 2 (dev pack brief 06); engine harness in `website/app/engine.js` | dev pack 06 | 2026-08-05 |
 | Two genuine WhatsApp `.opus` fixtures (laptop-download case) + Playwright smoke script | `tests/` | 2026-08-05 |
+| Advanced/debug pane: `wa-debug-panel` v0.1.0 (resizable right-edge pane — LLM exchange log with full request/response, OpenRouter key/model/generation lookups, editable prompt templates with localStorage overrides incl. the engine's transcription prompt via our transport wrapper); capture layer `debug-store.js`; 8 new API actions; verified e2e with a real key (issue 027) | `website/app/debug-store.js`, `website/app/openrouter.js`, `website/components/wa-debug-panel/` | 2026-08-05 |
+| Sample voice notes clickable in the UI (load + auto-run with a saved key) | `website/app/samples/`, app page chips | 2026-08-05 |
+| CI test gate: unit (22, node --test) + integration (11-check Playwright app boot) before tag/publish; post-deploy live-site QA job (issue 028) | `tests/unit/`, `tests/integration/`, `tests/qa/`, `ci-pipeline.yml` | 2026-08-05 |
+| Repeat-pass fix: same-file rerun reuses the engine's deduped queue item instead of failing "not-audio" (issue 029; upstream reported) | `website/app/pipeline.js`, `team/comms/briefs/08/05/` | 2026-08-05 |
+| `qa` branch + Netlify deploy workflow (test gate → stamped `-qa.<sha>` build → netlify-cli publish → live check). Workflow EXISTS and runs; the deploy itself is skipping until the Netlify secrets land (issue 030, blocked) | `.github/workflows/qa-deploy.yml`, branch `qa` | 2026-08-05 |
 
 All rows above are committed and pushed in-session on their stated date.
 

@@ -5,20 +5,25 @@
 import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL } from './config.js'
 import { generateInfographic } from './infographic.js'
 import { normaliseAudioFile } from './audio-normalise.js'
+import { debugStore } from './debug-store.js'
 
 export function createPipeline({ api, emit, getKey, infographicMount }) {
     const call = (name, params) => window.__tool[name](params)
     let current = { itemId: null, results: null }
 
+    // Both prompts honour a saved debug-pane override; the site file stays the
+    // default and is registered with the store so the pane can show/diff it.
     async function loadSummaryPrompt() {
         const r = await fetch(SUMMARY_PROMPT_URL, { cache: 'no-cache' })
         if (!r.ok) throw Object.assign(new Error('summary prompt unavailable'), { code: 'prompt-missing' })
-        return r.text()
+        debugStore.setPromptDefault('summary', await r.text())
+        return debugStore.getPrompt('summary')
     }
 
     async function loadInfographicPrompt() {
         const r = await fetch(INFOGRAPHIC_PROMPT_URL, { cache: 'no-cache' })
-        return r.ok ? r.text() : 'Create an infographic of this voice note.\n---\n'
+        if (r.ok) debugStore.setPromptDefault('infographic', await r.text())
+        return debugStore.getPrompt('infographic') || 'Create an infographic of this voice note.\n---\n'
     }
 
     /* runPass({ file, infographic?, style? }) → { transcript, summary, svg, usage } —
@@ -42,13 +47,22 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
 
         // Stage 1 — ingest (the engine decodes and detects format by content).
         const { added, rejected } = await call('addFiles', { files: [file] })
-        if (!added.length) {
+        let item = added[0]
+        if (!item && !rejected.length) {
+            // The engine silently dedupes an identical name+size (addItem → null:
+            // not added, not rejected). Re-running the same voice note is a
+            // legitimate ask — reuse the existing item; transcribeItem appends a
+            // fresh version to it.
+            const existing = (await call('getItems')).find(i => i.name === file.name && i.sizeBytes === file.size)
+            if (existing) item = { id: existing.id, name: existing.name, sizeBytes: existing.sizeBytes, mimeType: existing.mimeType, reused: true }
+        }
+        if (!item) {
             const code = (rejected[0] && rejected[0].code) || 'not-audio'
             emit('wa:pass:error', { stage: 'ingest', code })
             throw Object.assign(new Error('file rejected'), { code })
         }
-        current.itemId = added[0].id
-        emit('wa:ingested', { ...added[0] })
+        current.itemId = item.id
+        emit('wa:ingested', { ...item })
 
         // Stage 2 — transcript (arrives first, never waits for later stages).
         let t
@@ -61,7 +75,7 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         // Stage 3 — summary document (prompt is a markdown file on the site).
         try {
             const prompt = await loadSummaryPrompt()
-            const s = await call('ask', { text: prompt })
+            const s = await call('ask', { text: prompt, label: 'summary' })
             results.summary = s.text
             results.usage.summary = s.usage
             emit('wa:summary', { text: s.text, usage: s.usage })

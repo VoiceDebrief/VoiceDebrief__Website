@@ -8,6 +8,7 @@
      resolve on REQUEST_COMPLETE / llm:infographic-ready; typed errors as usual. */
 
 import { ORIGIN } from './config.js'
+import { debugStore } from './debug-store.js'
 
 const INFOGRAPHIC_MODEL_DEFAULT = 'google/gemini-3.5-flash'
 
@@ -50,25 +51,36 @@ export async function generateInfographic({ mount, content, apiKey, style = 'exe
     const systemPrompt = (typeof viz.getSystemPrompt === 'function' && viz.getSystemPrompt()) ||
         'Create a single clean SVG infographic summarising the content. Output ONLY the raw SVG.'
 
+    const messages = [ { role: 'system', content: systemPrompt }, { role: 'user', content } ]
+    const rec = debugStore.record({ kind: 'infographic', stage: 'infographic', model,
+        status: 'pending', request: { messages, stylePreset: style } })
+    const t0 = Date.now()
+
     return new Promise((resolve, reject) => {
         let done = false
         let readySvg = null
         const finishOk = (r) => { if (done) return; done = true
-            resolve({ svg: readySvg || (typeof viz.getCurrentSvg === 'function' ? viz.getCurrentSvg() : null),
+            const svg = readySvg || (typeof viz.getCurrentSvg === 'function' ? viz.getCurrentSvg() : null)
+            debugStore.update(rec.id, { status: 'done', response: {
+                content: r?.content, svgBytes: svg ? svg.length : 0, drawable: !!svg,
+                promptTokens: r?.promptTokens, completionTokens: r?.completionTokens,
+                latencyMs: r?.latencyMs || (Date.now() - t0), generationId: r?.generationId,
+                costUsd: (typeof r?.responseCost === 'number' ? r.responseCost : undefined) } })
+            resolve({ svg,
                       usage: { promptTokens: r?.promptTokens, completionTokens: r?.completionTokens, costUsd: r?.responseCost },
                       generationId: r?.generationId, component: viz }) }
         cell.addEventListener(SGL_LLM.INFOGRAPHIC_READY ?? 'llm:infographic-ready', (e) => { readySvg = e.detail?.svg || null })
         cell.addEventListener(SGL_LLM.REQUEST_COMPLETE, (e) => finishOk(readComplete(e)))
         cell.addEventListener(SGL_LLM.REQUEST_ERROR, (e) => { if (done) return; done = true
             const c = classifyLlmError(e.detail || {})
+            debugStore.update(rec.id, { status: 'error', error: c.message, errorCode: c.code })
             reject(Object.assign(new Error(c.message), { code: c.code, status: c.status })) })
         cell.addEventListener(SGL_LLM.REQUEST_CANCEL, () => { if (done) return; done = true
+            debugStore.update(rec.id, { status: 'cancelled' })
             reject(Object.assign(new Error('Cancelled'), { code: 'cancelled' })) })
 
         cell.dispatchEvent(new CustomEvent(SGL_LLM.CONNECTED, { detail: { provider: 'openrouter', model, apiKey }, bubbles: true, composed: true }))
         cell.dispatchEvent(new CustomEvent(SGL_LLM.STREAMING_CHANGED, { detail: { streaming: true }, bubbles: true, composed: true }))
-        cell.dispatchEvent(new CustomEvent(SGL_LLM.SEND, { detail: {
-            messages: [ { role: 'system', content: systemPrompt }, { role: 'user', content } ],
-            model, provider: 'openrouter' }, bubbles: true, composed: true }))
+        cell.dispatchEvent(new CustomEvent(SGL_LLM.SEND, { detail: { messages, model, provider: 'openrouter' }, bubbles: true, composed: true }))
     })
 }

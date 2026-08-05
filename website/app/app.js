@@ -12,6 +12,7 @@ import '../components/wa-drop-zone/v0/v0.1/v0.1.0/wa-drop-zone.js'
 import '../components/wa-progress-rail/v0/v0.1/v0.1.1/wa-progress-rail.js'
 import '../components/wa-result-card/v0/v0.1/v0.1.1/wa-result-card.js'
 import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
+import '../components/wa-debug-panel/v0/v0.1/v0.1.0/wa-debug-panel.js'
 
 const $ = (s) => document.querySelector(s)
 const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']
@@ -58,12 +59,32 @@ async function main() {
     })
 
     // --- file chosen → options row ---
-    drop.addEventListener('wa:file-chosen', (e) => {
-        pendingFile = e.detail.file
+    const takeFile = (file) => {
+        pendingFile = file
         $('.file-name').textContent = pendingFile.name
         $('.file-size').textContent = (pendingFile.size / 1024).toFixed(0) + ' KB'
         show('#key-section', '#file-section')
-    })
+    }
+    drop.addEventListener('wa:file-chosen', (e) => takeFile(e.detail.file))
+
+    // --- sample voice notes: click → fetch → the normal flow, auto-run with a key ---
+    document.querySelectorAll('.sample-chip').forEach(chip => chip.addEventListener('click', async () => {
+        const path = chip.dataset.sample
+        chip.disabled = true
+        const label = chip.textContent
+        chip.textContent = 'loading…'
+        try {
+            const r = await fetch(path)
+            if (!r.ok) throw new Error('HTTP ' + r.status)
+            const name = path.split('/').pop()
+            const file = new File([await r.arrayBuffer()], name,
+                { type: name.endsWith('.ogg') ? 'audio/ogg' : 'audio/opus' })
+            takeFile(file)
+            if (engine.hasKey()) $('#go').click()   // a sample click IS the test run
+        } catch (err) {
+            showError('not-audio', 'ingest', 'sample failed to load: ' + err.message)
+        } finally { chip.disabled = false; chip.textContent = label }
+    }))
     $('.file-remove').addEventListener('click', () => { pendingFile = null; show('#key-section') })
 
     // --- go ---

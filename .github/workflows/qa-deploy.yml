@@ -1,0 +1,129 @@
+name: QA Deploy (Netlify)
+
+# The QA estate (issue 030). GitHub Pages is taken by dev (one site per repo),
+# so the `qa` branch publishes to Netlify instead:
+#
+#   push to qa  →  test (same gate as the release pipeline)
+#               →  deploy-netlify (version stamped as <version>-qa.<sha>,
+#                                  cache-busted, published with netlify-cli)
+#               →  qa-live (tests/qa/live-site-check.mjs against the Netlify URL)
+#
+# No tagging happens here — `version` stays owned by the dev/main pipeline; QA
+# deploys are identified by the -qa.<short-sha> suffix stamped into the site.
+#
+# Requires two repository secrets (Settings → Secrets → Actions):
+#   NETLIFY_AUTH_TOKEN  a Netlify personal access token
+#   NETLIFY_SITE_ID     the site's API ID (create the site once in the Netlify UI)
+# Until they exist the deploy step is skipped with a warning instead of failing,
+# so the test gate still reports on every qa push.
+
+on:
+  push:
+    branches:
+      - qa
+  workflow_dispatch:
+
+concurrency:
+  group: "qa-deploy"
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Tests (unit + integration)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Unit tests
+        run: node --test tests/unit/*.test.mjs
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1
+          npx playwright install --with-deps chromium
+
+      - name: Integration test (app boot against the live engine origin)
+        run: node tests/integration/app-boot.test.mjs
+
+  deploy-netlify:
+    name: Deploy to Netlify (QA)
+    runs-on: ubuntu-latest
+    needs: [test]
+    permissions:
+      contents: read
+    outputs:
+      deployed: ${{ steps.deploy.outputs.deployed }}
+      url: ${{ steps.deploy.outputs.url }}
+      version: ${{ steps.stamp.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Stamp QA version into the site
+        id: stamp
+        # Same stamping as the release build, but the version names the QA build
+        # honestly: <version>-qa.<short-sha>. The `version` file itself is never
+        # touched — CI on dev/main owns it.
+        run: |
+          VER="$(cat version)-qa.$(git rev-parse --short HEAD)"
+          echo "QA build version: $VER"
+          echo "$VER" > website/version.txt
+          sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" website/index.html
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+
+      - name: Cache-bust the site's own assets
+        run: python3 scripts/stamp_cache_busters.py --site website --version "$(cat version)-qa.$(git rev-parse --short HEAD)"
+
+      - name: Deploy to Netlify
+        id: deploy
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ] || [ -z "$NETLIFY_SITE_ID" ]; then
+            echo "::warning::NETLIFY_AUTH_TOKEN / NETLIFY_SITE_ID secrets not set — QA deploy skipped. Add them in Settings → Secrets → Actions (see .github/workflows/qa-deploy.yml header)."
+            echo "deployed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          npx --yes netlify-cli@17 deploy --prod --dir website \
+            --message "qa ${GITHUB_SHA::7}" --json > netlify-deploy.json
+          cat netlify-deploy.json
+          URL=$(jq -r '.url // .deploy_url' netlify-deploy.json)
+          echo "deployed=true" >> "$GITHUB_OUTPUT"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "### QA deployed: $URL" >> "$GITHUB_STEP_SUMMARY"
+
+  qa-live:
+    name: QA (live Netlify site)
+    runs-on: ubuntu-latest
+    needs: [deploy-netlify]
+    if: needs.deploy-netlify.outputs.deployed == 'true'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check the QA site serves this build
+        env:
+          LIVE_URL: ${{ needs.deploy-netlify.outputs.url }}
+          EXPECT_VERSION: ${{ needs.deploy-netlify.outputs.version }}
+        run: node tests/qa/live-site-check.mjs
