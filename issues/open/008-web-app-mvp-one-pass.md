@@ -20,3 +20,6 @@ In progress: M1 build started this session. Decisions from the dev-pack review c
 
 ## Status 5 Aug (later)
 M1 SHIPPED to branch: website/app/ live path drop→transcript→summary with streaming rail, BYOK, GBP costs, own SgToolApi. Verified headless (engine boot + real fixture ingest). Remaining before close: real-key round-trip on the live site, M2 infographic (needs 024), then Journalist update post.
+
+## Status 5 Aug (round-trip PASSED)
+Full UI flow verified with a real spend-capped key + tests/fixtures/whatsapp-voice-note-1.opus: transcript 5.4s (accurate), summary 13.2s (follows the markdown prompt), cost line £0.003, no page errors. Remaining for close: M2 infographic (issue 024), summary-card markdown heading polish (##-heading + bullets in one block render inline), live-site re-check after merge.
