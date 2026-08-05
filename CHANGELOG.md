@@ -33,6 +33,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   deterministic CI test that scripts OpenRouter through the whole loop — including
   the tool call REALLY redrawing the infographic; a live keyed run follows once a
   fresh spend-capped key is available.
+- **Updates page caught up (Journalist)**: five new posts on `website/updates/`
+  covering everything since the 5 Aug "product is live" post — the debug pane,
+  sample notes and the stale-JavaScript/re-run fixes (v0.1.16–v0.1.17); the
+  infographic becoming a finished image, on by default, with model picker, redraw
+  and a progress heartbeat (v0.1.18); the disabled-key diagnosis (issue 032); the
+  Versions page and the site-wide version chip, including what the `-qa` suffix
+  means to a reader on the QA estate (issue 033); and the M3 chat panel now on the
+  QA estate, stated with its honest caveat (scripted-test verified, live keyed run
+  pending — issue 034).
 - **The Versions page (issue 033)**: `website/versions/` lists every CI tag with
   its date, headline and changes, each linking to its full GitHub diff — the
   changelog stays the complete record, the page is the per-version site view

@@ -28,7 +28,7 @@
 | Dev pack: audio-transcribe integration briefs (PROPOSED work, pack itself exists) | `library/dev_packs/v0.1.1__audio-transcribe-integration/` | 2026-07-29 |
 | GH Pages + Route 53 DNS guide | `library/guides/v0.1.1__guide__github-pages-and-route53-dns.md` | 2026-07-29 |
 | Custom domain LIVE: Route 53 CNAME + Pages claim, HTTPS enforced, HTTP 301s, version-stamped (issue 021 closed) | https://whatsapp-voice-transcription.sgraph.ai | 2026-07-29 |
-| Journalist role (active): site Updates section with first three posts | `team/roles/journalist/`, `website/updates/` | 2026-07-29 |
+| Journalist role (active): site Updates section — 10 posts, current through v0.1.18 plus the QA-only work (M3 chat panel, versions page, key diagnosis); the chat post is labelled "QA first — live-key run pending" | `team/roles/journalist/`, `website/updates/` | 2026-07-29 (posts current to 2026-08-05) |
 | Public Library page (Librarian-maintained doc front door) | `website/library/` | 2026-07-29 |
 | CHANGELOG.md + Librarian-Journalist per-version capture discipline | `CHANGELOG.md`, both ROLE files, `.claude/CLAUDE.md` | 2026-07-29 |
 | Three product infographics (product overview, technical architecture, user journey) — created for this repo, distinct from the seven still pending under issue 007 | `library/infographics/` | 2026-07-31 |
@@ -64,8 +64,9 @@ All rows above are committed and pushed in-session on their stated date.
 
 ## PROPOSED — does not exist yet
 
-- **M3 chat-with-materials** (issue 034): design brief EXISTS
-  (`library/dev_packs/v0.1.18__chat-with-materials/`), the panel does not.
+- **M3 chat-with-materials on the LIVE site** (issue 034): the panel now EXISTS on
+  `qa` (row above) — what does not exist yet is a keyed live run and the merge to
+  `dev`/`main`.
 
 - Analysis/debrief outputs beyond the summary document (if ever wanted — the arch brief's fuller set).
 - iOS and Android targets; Chrome extension (deliberately later).
