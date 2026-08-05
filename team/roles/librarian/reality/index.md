@@ -43,6 +43,7 @@
 | Sample voice notes clickable in the UI (load + auto-run with a saved key) | `website/app/samples/`, app page chips | 2026-08-05 |
 | CI test gate: unit (22, node --test) + integration (11-check Playwright app boot) before tag/publish; post-deploy live-site QA job (issue 028) | `tests/unit/`, `tests/integration/`, `tests/qa/`, `ci-pipeline.yml` | 2026-08-05 |
 | Repeat-pass fix: same-file rerun reuses the engine's deduped queue item instead of failing "not-audio" (issue 029; upstream reported) | `website/app/pipeline.js`, `team/comms/briefs/08/05/` | 2026-08-05 |
+| `qa` branch + Netlify deploy workflow (test gate → stamped `-qa.<sha>` build → netlify-cli publish → live check). Workflow EXISTS and runs; the deploy itself is skipping until the Netlify secrets land (issue 030, blocked) | `.github/workflows/qa-deploy.yml`, branch `qa` | 2026-08-05 |
 
 All rows above are committed and pushed in-session on their stated date.
 

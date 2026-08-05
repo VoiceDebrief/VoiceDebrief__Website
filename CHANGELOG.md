@@ -18,6 +18,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **QA estate: the `qa` branch auto-deploys to Netlify (issue 030)**. GitHub Pages is
+  the dev estate (one Pages site per repo), so `.github/workflows/qa-deploy.yml` gives
+  `qa` its own: push → the same unit+integration test gate → Netlify publish (build
+  stamped `<version>-qa.<short-sha>`, cache-busted; the `version` file stays owned by
+  the dev/main pipeline) → the live-site QA check against the Netlify URL. Blocked on
+  two repo secrets (`NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`) — until they exist the
+  deploy step skips with a warning while the tests still gate every push.
 - **The advanced/debug pane (issue 027)**: a "⚙ debug" tab on the right edge opens a
   resizable side pane with three views — **LLM calls** (every request and response the
   page makes, verbatim, audio bytes summarised by size; each row can fetch its billed
