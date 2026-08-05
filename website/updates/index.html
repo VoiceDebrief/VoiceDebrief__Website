@@ -46,6 +46,7 @@
       <a href="../#pricing">Pricing</a>
       <a href="../library/">Library</a>
       <a href="./" class="active">Updates</a>
+      <a href="../versions/">Versions</a>
     </nav>
   </div>
 </header>
@@ -138,7 +139,9 @@
 <footer>
   <div class="wrap">© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 ·
     <a href="../">Home</a> · <a href="../library/">Library</a> ·
-    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a> ·
+    <a href="../versions/"><span id="site-version">dev</span></a></div>
 </footer>
+<script>fetch('/version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'dev').then(v=>{document.getElementById('site-version').textContent=v.trim()}).catch(()=>{})</script>
 </body>
 </html>

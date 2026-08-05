@@ -93,8 +93,10 @@ jobs:
           VER=$(cat version)
           echo "Publishing site at version: $VER"
           cp version website/version.txt
-          sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" website/index.html
-          grep -o 'site-version">[^<]*' website/index.html
+          # The version chip appears on every page's footer (issue 033).
+          find website -name '*.html' -exec \
+            sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" {} +
+          grep -rho 'site-version">[^<]*' website --include='*.html' | sort | uniq -c
 
       - name: Cache-bust the site's own assets
         # GitHub Pages serves our modules with max-age=600, so without this a

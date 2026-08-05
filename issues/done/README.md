@@ -5,6 +5,8 @@ issue change. Last updated: 2026-07-29.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [033](033-versions-page-and-sitewide-version.md) | Versions page + site-wide version chip | `website/versions/` timeline per tag; QA stamped `<next>-qa.<sha>` |
+| [032](032-disabled-key-shows-failed-to-fetch.md) | Disabled key read as "Failed to fetch" | network-shaped LLM failures now diagnosed via GET /api/v1/key; key named in place |
 | [031](031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model, redraw, heartbeat | gemini-3.1-flash-image-preview default; model picker + redraw; spinner/elapsed; samples keep options |
 | [030](030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify | `qa-deploy.yml` verified e2e → silver-melba-d8d883.netlify.app |
 | [029](029-repeat-pass-same-file-not-audio.md) | Repeat pass on same file failed ("not-audio") | pipeline reuses the deduped item + upstream report |

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versions — Voice Note Transcribe</title>
+<meta name="description" content="Every released version of the WhatsApp voice note transcription tool and what changed in it — one entry per CI tag, each linking to its full diff.">
+<style>
+  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f2f5f9;--line:#dbe3ec;
+        --accent-2:#2563eb;--muted:#5b6b7f;--green:#25d366;--radius:14px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:#fff;line-height:1.65}
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px}
+  header{background:var(--navy);color:#fff;padding:14px 0}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+  .brand a{color:#fff;text-decoration:none}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(37,211,102,.18)}
+  nav a{color:#dbe6f5;text-decoration:none;margin-left:18px;font-size:.92rem}
+  nav a:hover,nav a.active{color:#fff}
+  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:40px 0}
+  .page-head h1{font-size:1.8rem}
+  .page-head p{color:#c8d6e8;margin-top:8px;max-width:640px}
+  .live-chip{display:inline-block;margin-top:14px;font-size:.8rem;font-weight:600;
+    background:rgba(37,211,102,.16);border:1px solid rgba(37,211,102,.45);color:#8ff0b6;
+    padding:4px 12px;border-radius:999px}
+  main{padding:40px 0 60px}
+  .version{display:grid;grid-template-columns:130px 1fr;gap:18px;margin-bottom:8px;position:relative}
+  .v-rail{position:relative;padding-top:4px}
+  .v-rail::after{content:"";position:absolute;left:6px;top:30px;bottom:-12px;width:2px;background:var(--line)}
+  .version:last-child .v-rail::after{display:none}
+  .v-dot{position:absolute;left:0;top:8px;width:14px;height:14px;border-radius:50%;
+    background:#fff;border:3px solid var(--accent-2)}
+  .v-tag{margin-left:24px;font-weight:700;color:var(--accent-2);text-decoration:none;font-size:.95rem}
+  .v-tag:hover{text-decoration:underline}
+  .v-date{margin-left:24px;display:block;font-size:.76rem;color:var(--muted)}
+  .v-card{border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px;background:#fff}
+  .v-card h2{font-size:1.02rem;margin-bottom:6px}
+  .v-card ul{margin:0 0 4px 18px;font-size:.9rem}
+  .v-card li{margin-bottom:4px}
+  .v-card .cmp{font-size:.78rem}
+  .v-card .cmp a{color:var(--accent-2)}
+  .note{font-size:.85rem;color:var(--muted);border:1px dashed var(--line);border-radius:var(--radius);
+    padding:14px 18px;margin-bottom:26px}
+  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
+  footer a{color:#dbe6f5}
+  @media(max-width:640px){nav{display:none}.version{grid-template-columns:1fr}
+    .v-rail::after{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">Voice&nbsp;Note&nbsp;Transcribe</a></div>
+    <nav aria-label="Main">
+      <a href="../#how">How it works</a>
+      <a href="../app/">App</a>
+      <a href="../library/">Library</a>
+      <a href="../updates/">Updates</a>
+      <a href="./" class="active">Versions</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <h1>Every version, every change</h1>
+    <p>CI tags each release automatically; this page records what each tag changed,
+       with a link to its complete diff. The <a style="color:#8ff0b6" href="../updates/">Updates page</a>
+       tells the story — this is the ledger.</p>
+    <span class="live-chip">this site is running <span id="site-version">dev</span></span>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <p class="note">QA builds deploy from the <code>qa</code> branch and are stamped
+      <code>&lt;next-version&gt;-qa.&lt;commit&gt;</code> — they preview the next release and are
+      never listed here until tagged on <code>dev</code>.</p>
+    <div id="timeline">loading…</div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 ·
+    <a href="../">Home</a> · <a href="../library/">Library</a> · <a href="../updates/">Updates</a> ·
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+</footer>
+
+<script>
+const REPO = 'https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription'
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))
+
+fetch('/version.txt', { cache: 'no-store' })
+  .then(r => r.ok ? r.text() : 'dev')
+  .then(v => { document.getElementById('site-version').textContent = v.trim() })
+  .catch(() => {})
+
+fetch('versions.json', { cache: 'no-cache' }).then(r => r.json()).then(({ versions }) => {
+  document.getElementById('timeline').innerHTML = versions.map((e, i) => {
+    const prev = versions[i + 1]
+    const cmp = prev
+      ? `${REPO}/compare/${prev.v}...${e.v}`
+      : `${REPO}/releases/tag/${e.v}`
+    return `<div class="version">
+      <div class="v-rail"><span class="v-dot"></span>
+        <a class="v-tag" href="${cmp}">${esc(e.v)}</a>
+        <span class="v-date">${esc(e.date)}</span></div>
+      <div class="v-card">
+        <h2>${esc(e.title)}</h2>
+        <ul>${e.changes.map(c => `<li>${esc(c)}</li>`).join('')}</ul>
+        <span class="cmp"><a href="${cmp}">${prev ? 'full diff against ' + esc(prev.v) : 'the initial tag'} →</a></span>
+      </div>
+    </div>`
+  }).join('')
+}).catch(() => { document.getElementById('timeline').textContent = 'The version list failed to load — see CHANGELOG.md in the repository.' })
+</script>
+</body>
+</html>
