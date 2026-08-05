@@ -29,6 +29,7 @@ const ERROR_COPY = {
     'rate-limited':    ['Busy moment at the model provider.', 'Wait a few seconds and press Transcribe again.'],
     'budget-cap':      ["You've hit this session's spend cap.", 'Raise or clear the cap to continue.'],
     'no-key':          ['Save your OpenRouter key first.', 'Paste it in the key box above — it stays in this browser.'],
+    'network':         ['OpenRouter could not be reached.', 'Check your connection (and any ad-blocker), then try again — nothing was stored.'],
     'prompt-missing':  ['The summary prompt failed to load.', 'The transcript is unaffected; try again for the summary.'],
 }
 
@@ -117,9 +118,22 @@ async function main() {
             await window.__tool.runPass({ file: pendingFile, infographic: wantInfographic,
                 infographicModel: modelSel.value })
         } catch (e) {
-            showError(e.code || 'llm-error', 'transcribe', e.message)
+            const code = await diagnoseLlmFailure(e)
+            if (code === 'key-invalid') key.confirmSaved(false, 'OpenRouter rejected this key — it may be disabled or out of credit. Paste a fresh one.')
+            showError(code, 'transcribe', e.message)
         }
     })
+
+    // A disabled/revoked key surfaces as a bare "Failed to fetch" (the browser
+    // gets no CORS headers on the rejection), which reads as a network problem.
+    // When an LLM call dies that way, ask OpenRouter about the key itself so the
+    // error names the real cause (issue 032 — found live via the debug pane).
+    async function diagnoseLlmFailure(e) {
+        const looksNetwork = (e?.code === 'llm-error' || e?.code == null) && /failed to fetch|networkerror|load failed/i.test(e?.message || '')
+        if (!looksNetwork) return e?.code || 'llm-error'
+        try { await window.__tool.getKeyStatus(); return 'network' }
+        catch (ke) { return (ke?.code === 'key-invalid' || ke?.status === 401 || ke?.status === 403) ? 'key-invalid' : 'network' }
+    }
 
     // --- streaming reveal, bound to wa:* events ---
     window.addEventListener('wa:ingested',   () => { rail.finish('ingest'); rail.start('transcribe') })

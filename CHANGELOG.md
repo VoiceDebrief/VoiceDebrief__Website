@@ -18,6 +18,14 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Fixed: a disabled OpenRouter key read as a network error (issue 032)** — the
+  browser gets no CORS headers on that rejection, so the app saw "Failed to fetch"
+  and blamed the model side. Network-shaped LLM failures now trigger a key check
+  (`GET /api/v1/key`): a rejected key is named in the error card AND flagged on the
+  key panel; a healthy key gets an honest "OpenRouter could not be reached". Found
+  live by Dinis via the debug pane's exchange log — its first real save.
+- The "also make me an infographic" option is now ticked by default (Dinis, 5 Aug —
+  "for now"), so a plain run produces the full set: transcript, summary, infographic.
 - **The infographic is now a finished image (issue 031)**: the default model is
   `google/gemini-3.1-flash-image-preview` — the one the proven Infographic Generator
   tool uses — returning a publication-quality picture instead of a drawn SVG (that
