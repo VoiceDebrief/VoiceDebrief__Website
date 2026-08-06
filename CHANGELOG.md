@@ -18,6 +18,14 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Updates + Versions caught up through v0.1.20 (Journalist)**: a new post on
+  `website/updates/` for issue 035 (the chat rewriting the transcript/summary with the
+  original one click away, seeing the finished infographic as a real image, and the
+  suggestion-chip tidy); the M3 chat post's "live-key run pending" caveat resolved
+  (Dinis validated it live) and its issue link repointed to `issues/done/`; the Versions
+  post now links to the released `v0.1.18...v0.1.19` diff instead of the QA branch; and
+  `website/versions/versions.json` gains the v0.1.19 and v0.1.20 entries so the public
+  per-version list matches the tags CI has minted.
 - **The chat can now EDIT the materials and SEE the infographic (issue 035)** — built
   from a developer brief the chat itself wrote during Dinis's live session.
   `update_transcript` / `update_summary` / `restore_original` tools rewrite the page

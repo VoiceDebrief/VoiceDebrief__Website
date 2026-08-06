@@ -67,8 +67,36 @@
   <div class="wrap">
 
     <article>
-      <h2>Talk to your results — and tell the tool what to do next <span class="tag">QA first — live-key run pending</span></h2>
-      <div class="meta">5 August 2026 · <a class="v" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/qa/issues/open/034-chat-with-materials.md">issue 034 — the full write-up</a></div>
+      <h2>The chat can now rewrite what's on the page — and look at your infographic</h2>
+      <div class="meta">6 August 2026 · <a class="v" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.19...v0.1.20">v0.1.20 — what changed</a></div>
+      <p>Ask the chat to tidy up the transcript or translate the summary into another
+         language, and it now changes the page itself — the card re-renders with the new
+         text. Nothing is lost: the original is kept the first time anything is edited, and
+         a "✎ edited by the assistant · restore the original" link sits under the card for
+         as long as the edit stands.</p>
+      <ul>
+        <li><strong>It can see your infographic.</strong> The finished picture can travel
+            with your question as a real image — tick "The infographic image" in the
+            composer, or simply ask ("describe my infographic") and it fetches the image
+            itself. Any message carrying a picture is marked in the thread, so you always
+            know what the model was actually looking at. (A drawn-SVG infographic goes
+            across as its source instead.)</li>
+        <li><strong>Thirteen things it can do</strong> — the tools it can use now include
+            rewriting the transcript, rewriting the summary and putting either back, on top
+            of redrawing the infographic, running a sample and reading your costs. Same
+            rules as before: every action shows up in the conversation and in the debug
+            pane's log, and each exchange stays inside its step and spend limits.</li>
+        <li><strong>Less clutter:</strong> the suggested-question chips now disappear once
+            you start talking, and come back when you start a new chat.</li>
+      </ul>
+      <p>A footnote worth telling you: the specification for this change was written by the
+         chat itself, during a live session — asked what it was missing, it answered that it
+         could not edit the page or see the infographic, and wrote the brief for both.</p>
+    </article>
+
+    <article>
+      <h2>Talk to your results — and tell the tool what to do next</h2>
+      <div class="meta">5 August 2026 · <a class="v" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/034-chat-with-materials.md">issue 034 — the full write-up</a></div>
       <p>The 💬 tab opens a chat about the voice note you just processed. Ask it anything
          — "what did they actually agree?", "turn the summary into three bullets" — and it
          answers from the material in front of it. You choose what goes into each question
@@ -86,15 +114,15 @@
         <li>Choice of three chat models, with the chat's own instructions editable in the
             debug pane like every other prompt.</li>
       </ul>
-      <p>Honest status, 5 August: it landed on the QA estate first, verified end to end by
+      <p>Status, updated 6 August: this went to the QA estate first, verified end to end by
          an automated test that drives the whole loop — including a chat instruction really
-         redrawing an infographic. A run against a live key follows before we call it
-         done.</p>
+         redrawing an infographic — and has since been run against a live key in the browser.
+         It shipped in <a href="../versions/">v0.1.20</a>.</p>
     </article>
 
     <article>
       <h2>Every release now has a page — and you can see which one you're running</h2>
-      <div class="meta">5 August 2026 · <a class="v" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.18...qa">in QA for v0.1.19 — what changed</a></div>
+      <div class="meta">5 August 2026 · <a class="v" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.18...v0.1.19">v0.1.19 — what changed</a></div>
       <p>There is now a <a href="../versions/">Versions page</a>: every release we have
          ever cut, newest first, with its date, a plain-English headline, what it changed
          and a link to the exact code diff. Updates tell the story; Versions is the

@@ -1,6 +1,20 @@
 {
   "note": "One entry per CI tag, newest first. Maintained by the Librarian + Journalist in the same commit as CHANGELOG.md — the changelog is the full record, this file is the per-version site view. QA builds are stamped <next-version>-qa.<sha> and never appear here until released.",
   "versions": [
+    { "v": "v0.1.20", "date": "2026-08-06", "title": "Chat with your materials — and let it do the work",
+      "changes": [
+        "The 💬 chat pane: ask about the voice note you just processed, choosing what goes into each question (transcript, summary, infographic status, costs, earlier turns) with a cost estimate on every row (issue 034)",
+        "The chat can operate the tool — a 13-tool registry covering redraw the infographic, run a sample, change a prompt, read costs — with every action shown in the conversation and audited in the debug pane, and hard caps per exchange (8 steps, 2 spending calls, ~20p)",
+        "The chat can rewrite the transcript or summary on the page, with the original always one click away, and can see the finished infographic as a real image (issue 035)",
+        "Suggestion chips only appear on a blank thread (wa-chat-panel v0.1.1)"
+      ] },
+    { "v": "v0.1.19", "date": "2026-08-05", "title": "A page per release, and honest key errors",
+      "changes": [
+        "Versions page: every release we have cut, newest first, with its changes and a link to the exact diff; the version number now sits in every page footer and links to it (issue 033)",
+        "Fixed: a disabled or out-of-credit OpenRouter key was reported as a model-side network failure; failures are now checked against your key, which is named in the error and flagged on the key panel (issue 032)",
+        "The \"also make me an infographic\" option is ticked by default, so a plain run returns transcript, summary and infographic",
+        "Design brief for the chat pane (issue 034)"
+      ] },
     { "v": "v0.1.18", "date": "2026-08-05", "title": "The infographic becomes a finished image",
       "changes": [
         "Infographic default model is now google/gemini-3.1-flash-image-preview — a finished, publication-quality picture instead of a drawn SVG; model picker (two image models + drawn-SVG option) and a redraw button on the card; system prompt editable in the debug pane",
