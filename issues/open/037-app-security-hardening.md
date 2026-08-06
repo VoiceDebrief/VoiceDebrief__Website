@@ -32,3 +32,19 @@ the AppSec seeded-key conditions doc + SECURITY.md is issue 010's first delivera
 
 ## Status 6 Aug (created)
 Open, not started. Items 1–2 are the highest-value hours in the repo right now.
+
+## Status 6 Aug (later) — items 1 and 2 SHIPPED
+- **Item 1 done**: `config.js` validates `?origin=` against an allowlist
+  (`dev.tools.sgraph.ai`, `tools.sgraph.ai`, `localhost`, `127.0.0.1`; http/https
+  only, origin-only — paths stripped) and falls back to the default origin with a
+  console warning. Unit-tested including evil-host, suffix-spoof
+  (`dev.tools.sgraph.ai.evil.example`) and `javascript:` cases.
+- **Item 2 done**: meta CSP on the app page — `script-src`/`connect-src` pinned to
+  self + the two tools origins + OpenRouter + the pinned jsdelivr decoder
+  (`blob:` and `'wasm-unsafe-eval'` are required by sg-wasm-cache's blob-URL
+  import of the inlined-WASM opus decoder); `object-src 'none'`, `base-uri 'self'`.
+  Verified against the full real decode chain (fixture → sg-audio-decode →
+  cachedImport → WASM opus decode → WAV) and both integration gates.
+- Also: `scripts/mirror_engine.mjs` builds a local engine mirror for the
+  integration tests' MIRROR_DIR mode (review E4 — sandboxed/pinned runs).
+- Items 3–5 remain open.

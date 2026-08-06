@@ -50,6 +50,9 @@
 | M3 chat LIVE (issue 034): 💬 `wa-chat-panel` + `chat.js`/`chat-tools.js` — context composer, fenced-block tool loop (typed registry, 3 budgets), debug-audited; validated live by Dinis (tool-driven exchanges, and the chat authored the issue-035 brief) | `website/app/chat*.js`, `website/components/wa-chat-panel/` | 2026-08-05 |
 | Chat material edits + image vision (issue 035): `updateMaterial`/`restoreMaterial` actions, `update_transcript`/`update_summary`/`restore_original`/`view_infographic` tools (13 total), revert note under the cards, infographic image as a multimodal part (composer row + tool attachment), suggestions only on a blank thread (`wa-chat-panel` v0.1.1) | `website/app/pipeline.js`, `chat*.js`, panel v0.1.1 | 2026-08-06 |
 | Review pack v0.1.20: full project review (code/security, testing+CI, docs, live site) + two proposals — the open engineering hub (doc 06) and QA-to-docs screenshot-verified user docs (doc 08, pattern from Dinis); issues 036 (hub), 037 (security hardening, urgent) and 038 (QA-to-docs) opened from it | `library/review-packs/v0.1.20__project-review/` | 2026-08-06 |
+| Security hardening, first slice (issue 037 items 1–2): `?origin=` allowlisted in `config.js` (unit-tested incl. spoof cases); meta CSP on the app page pinning script/connect sources — verified against the full real decode chain and both integration gates | `website/app/config.js`, `website/app/index.html`, `tests/unit/config.test.mjs` | 2026-08-06 |
+| Engine mirror builder for the integration tests' MIRROR_DIR mode (sandboxed/pinned runs — review E4): crawls the app's tools-origin imports recursively, 32 modules | `scripts/mirror_engine.mjs` | 2026-08-06 |
+| Live-QA outbound link check: GitHub + same-origin links on Updates/Library must resolve (third-party hosts warn only) | `tests/qa/live-site-check.mjs` §6 | 2026-08-06 |
 
 All rows above are committed and pushed in-session on their stated date.
 

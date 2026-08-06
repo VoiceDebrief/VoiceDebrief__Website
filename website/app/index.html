@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Transcribe — Voice Note Transcribe (beta)</title>
 <meta name="description" content="Drop in your WhatsApp voice note and get a transcript and a summary in one pass — everything runs in your browser with your own OpenRouter key.">
+<!-- Issue 037 (S2): pin where code can load from and where data can go. Mirrors
+     config.js's ?origin= allowlist (the localhost entries are the dev/test hook),
+     plus OpenRouter for the API calls and cdn.jsdelivr.net for the pinned
+     ogg-opus-decoder (sg-wasm-cache fetches its text and imports it as a blob:
+     URL, and its inlined WASM needs 'wasm-unsafe-eval'). GitHub Pages cannot
+     set headers, so this rides in the page. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'wasm-unsafe-eval' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://cdn.jsdelivr.net http://localhost:* http://127.0.0.1:*; connect-src 'self' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://openrouter.ai https://cdn.jsdelivr.net http://localhost:* http://127.0.0.1:*; style-src 'self' 'unsafe-inline' https://dev.tools.sgraph.ai https://tools.sgraph.ai; img-src 'self' data: blob:; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <link rel="stylesheet" href="app.css">
 </head>
 <body>

@@ -25,6 +25,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   landing page copy corrected (privacy-mode step removed, pricing labelled
   PROPOSED, beta tense fixed). Outbound link-checking of the site's Updates and
   Library links added to the live-QA job so dead links cannot recur silently.
+- **Security hardening, first slice (issue 037, items 1–2)** — the `?origin=`
+  query parameter is now validated against an allowlist (`dev.tools.sgraph.ai`,
+  `tools.sgraph.ai`, localhost) before anything is imported from it, closing the
+  review pack's highest-priority finding (S1, key-exfiltration via a crafted
+  link); the app page carries a meta Content-Security-Policy pinning `script-src`
+  and `connect-src` to the origins the app actually uses (S2) — verified against
+  the full real decode chain (WASM opus decoder included) and both integration
+  gates. New `scripts/mirror_engine.mjs` builds a local engine mirror for the
+  integration tests' `MIRROR_DIR` mode (review E4).
 ## [v0.1.21](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.20...v0.1.21) — 6 Aug 2026
 
 - **The four review-pack decisions, decided and landed (Dinis, 6 Aug)** — D1: the
