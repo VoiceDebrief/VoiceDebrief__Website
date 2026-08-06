@@ -18,6 +18,12 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The qa branch merged in** (two same-day workstreams converged): the qa side's
+  issues 036/037/038 were minted in parallel with dev's and collided — renumbered
+  on merge to **039** (content architecture), **040** (videos page) and **041**
+  (`?origin=` allow-list; its fix and dev's issue-037 item 1 turned out to be two
+  independent discoveries of the same vulnerability — the stricter merge survives,
+  with both test suites). The qa bullets below appear under their new numbers.
 - **The record caught up (review-pack group A)**: the changelog's Unreleased block
   split into its real tag headings (v0.1.12–v0.1.21 below), `versions.json` caught up,
   the Updates page's dead/moving links fixed and pinned to tags, reality-doc and
@@ -43,8 +49,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   ciphertext-rule table, doubling as the interim trust page. Landing nav gains
   Engineering; live-QA checks all six pages + the three JSON files. Plus the
   story-travel slice of M-hub-3: OG/Twitter tags on the share targets and an
-  RSS feed of Updates (`website/updates/feed.xml`); the chat post's stale
-  "live-key run pending" tag corrected.
+  RSS feed of Updates (superseded on merge by `build_content.py`'s generated
+  feed); the chat post's stale "live-key run pending" tag corrected.
 - **QA-to-docs, first slice (issue 038, M-qtd-1)** — `tests/qa-to-docs/`: the
   key user journeys (the one pass; the chat) replayed deterministically against
   the scripted OpenRouter and screenshotted at 7 manifest-named story moments
@@ -60,6 +66,49 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   infographics from 28 Jul never landed (the source files' whereabouts are
   unknown) and the three 31-Jul product infographics cover the library's
   visual needs. The queue's only blocked issue; `issues/blocked/` is now empty.
+- **Security: `?origin=` no longer accepts any URL (issue 041, from qa)**. The parameter picks
+  which server the transcription engine is imported from — so it decided which
+  JavaScript ran inside the page, beside the user's OpenRouter key in localStorage. A
+  link on our own trusted domain (`…/app/?origin=https://somewhere-else`) was enough to
+  run someone else's code and take the key; there is no CSP to catch it. The value is
+  now checked against an anchored allow-list (`(dev.)tools.sgraph.ai`, localhost for
+  development and tests) and anything else falls back to the default with a loud
+  warning. Both development uses are unaffected. Found while writing the briefing doc
+  that explains the parameter:
+  `library/guides/v0.1.20__guide__the-origin-parameter.md`.
+
+- **Publishing is now adding one file (issue 039, from qa)**. The Updates page was being edited
+  as raw HTML — a fragile job for a person and a worse one for the 5am Journalist
+  routine, which had to splice an `<article>` into a 145-line file and perform surgery
+  on another to drop a stale caveat. Now `content/updates|versions|videos/*.md` are the
+  source of truth and `scripts/build_content.py` generates the pages,
+  `updates.json`, `videos.json`, `feed.xml` and `versions.json` (all gitignored build
+  output). Links are **derived** — `version:` gives the diff against the previous
+  released tag, `issues: 035` finds the issue file wherever it now lives — which retires
+  the whole class of stale-link bugs the routine had to fix by hand. The build validates
+  and refuses (bad date, duplicate slug, missing issue, dead video id…), gating both CI
+  workflows before the tag and the deploy. 11 posts and 21 versions migrated with no
+  content loss.
+- **A Videos page (issue 040, from qa)**: `/videos/`, grouped into demos, explainers and shorts,
+  fed by `content/videos/*.md`. Cards, not embeds — **nothing is requested from YouTube
+  until you press play**, and playback uses `youtube-nocookie.com`; a test asserts the
+  served HTML contains no iframe, because on a product that promises not to track you an
+  auto-loading third-party player would be a quiet lie. Three of Dinis's videos are live on it —
+  the chat feature, the QA site tour and the first MVP demo, each tied to the release it
+  shows — with a fourth held as a draft until its id arrives. Mapping for what comes next (landing-page card,
+  videos inside release posts, local posters, transcripts of our own videos made with our
+  own tool) in `library/dev_packs/v0.1.20__video-on-the-site/`.
+
+- **Updates + Versions caught up through v0.1.20 (Journalist)**: a new post on
+  `website/updates/` for issue 035 (the chat rewriting the transcript/summary with the
+  original one click away, seeing the finished infographic as a real image, and the
+  suggestion-chip tidy); the M3 chat post's "live-key run pending" caveat resolved
+  (Dinis validated it live) and its issue link repointed to `issues/done/`; the Versions
+  post now links to the released `v0.1.18...v0.1.19` diff instead of the QA branch; and
+  `website/versions/versions.json` gains the v0.1.19 and v0.1.20 entries so the public
+  per-version list matches the tags CI has minted (now `content/versions/*.md`;
+  v0.1.21 added on merge).
+
 ## [v0.1.21](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.20...v0.1.21) — 6 Aug 2026
 
 - **The four review-pack decisions, decided and landed (Dinis, 6 Aug)** — D1: the
@@ -86,6 +135,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   documents that this changelog's tag-heading discipline is behind since v0.1.11 and
   `versions.json` is two tags stale — the record fixes are its group-A
   recommendation.
+
 ## [v0.1.20](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.19...v0.1.20) — 6 Aug 2026
 
 - **The chat can now EDIT the materials and SEE the infographic (issue 035)** — built
@@ -169,8 +219,9 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   gives `qa` its own: push → the same unit+integration test gate → Netlify publish
   (build stamped `<version>-qa.<short-sha>`, cache-busted; the `version` file stays
   owned by the dev/main pipeline) → the live-site QA check against the Netlify URL.
-  Verified end to end at https://silver-melba-d8d883.netlify.app (all 16 live
-  checks); the live-check wiring fixes followed in v0.1.18.
+  Verified end to end (all 16 live checks) — now at
+  https://qa.whatsapp-voice-transcription.sgraph.ai; the live-check wiring
+  fixes followed in v0.1.18.
 - **The advanced/debug pane (issue 027)**: a "⚙ debug" tab on the right edge opens a
   resizable side pane with three views — **LLM calls** (every request and response the
   page makes, verbatim, audio bytes summarised by size; each row can fetch its billed

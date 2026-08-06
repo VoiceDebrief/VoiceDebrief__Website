@@ -221,3 +221,13 @@ node_modules
 # QA-to-docs run output (issue 038): candidate baselines and diff reports are
 # CI artifacts, never committed from a local run
 tests/qa-to-docs/output/
+
+# Built from content/ by scripts/build_content.py — never edit or commit these.
+# Run `python3 scripts/build_content.py` to produce them locally; CI builds them
+# into the deploy artifact.
+website/updates/index.html
+website/updates/updates.json
+website/updates/feed.xml
+website/versions/versions.json
+website/videos/index.html
+website/videos/videos.json

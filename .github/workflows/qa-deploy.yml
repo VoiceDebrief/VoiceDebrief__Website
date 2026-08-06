@@ -43,6 +43,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Validate published content
+        run: python3 scripts/build_content.py --check
+
       - name: Unit tests
         shell: bash
         run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log
@@ -109,6 +112,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Build the site's content (updates, videos, versions)
+        # content/*.md -> the rendered pages + manifests. Runs FIRST so the
+        # generated pages get the version stamp and the cache-buster like
+        # every other page.
+        run: python3 scripts/build_content.py
 
       - name: Stamp QA version into the site
         id: stamp

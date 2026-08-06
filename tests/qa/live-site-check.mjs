@@ -37,6 +37,7 @@ if (EXPECT_VERSION) {
 // 1. The pages of the product.
 for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/updates/', 'Updates'],
                               ['/versions/', 'Every version'], ['/library/', 'Library'],
+                              ['/videos/', 'See it work'],
                               ['/engineering/', 'engine room'], ['/engineering/pipeline/', 'live QA'],
                               ['/engineering/testing/', 'Three layers'], ['/engineering/docs/', 'reality doc'],
                               ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles']]) {
@@ -62,6 +63,7 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
+                    '/updates/updates.json', '/updates/feed.xml', '/videos/videos.json',
                     '/app/prompts/summary-prompt.md', '/app/prompts/infographic-prompt.md',
                     '/app/samples/whatsapp-voice-note-1.opus', '/app/samples/whatsapp-voice-note-2.opus',
                     '/app/samples/whatsapp-voice-note-android.ogg']) {
