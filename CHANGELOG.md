@@ -18,18 +18,20 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
-- **Security: `?origin=` no longer accepts any URL (issue 038)**. The parameter picks
-  which server the transcription engine is imported from — so it decided which
-  JavaScript ran inside the page, beside the user's OpenRouter key in localStorage. A
-  link on our own trusted domain (`…/app/?origin=https://somewhere-else`) was enough to
-  run someone else's code and take the key; there is no CSP to catch it. The value is
-  now checked against an anchored allow-list (`(dev.)tools.sgraph.ai`, localhost for
-  development and tests) and anything else falls back to the default with a loud
-  warning. Both development uses are unaffected. Found while writing the briefing doc
-  that explains the parameter:
+- **Security: `?origin=` is gone (issue 041)**. The parameter chose which server the
+  transcription engine was imported from — so a URL parameter decided which JavaScript
+  ran inside the page, beside the user's OpenRouter key in localStorage. A link on our
+  own trusted domain (`…/app/?origin=https://somewhere-else`) was enough to run someone
+  else's code and take the key. It was first fixed with an allow-list (independently on
+  the review-pack branch too, as its issue 037); the version that shipped **removes the
+  parameter entirely** — Dinis's call, and the better one, since it existed only for
+  development and development never needed it (the tests reach a local engine by
+  intercepting requests to the real origin, not by rewriting it). `ORIGIN` is now a
+  constant, and a test asserts `config.js` never reads the query string at all, because
+  an allow-list can be widened by a later edit while deleted code cannot. Briefing:
   `library/guides/v0.1.20__guide__the-origin-parameter.md`.
 
-- **Publishing is now adding one file (issue 036)**. The Updates page was being edited
+- **Publishing is now adding one file (issue 039)**. The Updates page was being edited
   as raw HTML — a fragile job for a person and a worse one for the 5am Journalist
   routine, which had to splice an `<article>` into a 145-line file and perform surgery
   on another to drop a stale caveat. Now `content/updates|versions|videos/*.md` are the
@@ -41,7 +43,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   and refuses (bad date, duplicate slug, missing issue, dead video id…), gating both CI
   workflows before the tag and the deploy. 11 posts and 21 versions migrated with no
   content loss.
-- **A Videos page (issue 037)**: `/videos/`, grouped into demos, explainers and shorts,
+- **A Videos page (issue 040)**: `/videos/`, grouped into demos, explainers and shorts,
   fed by `content/videos/*.md`. Cards, not embeds — **nothing is requested from YouTube
   until you press play**, and playback uses `youtube-nocookie.com`; a test asserts the
   served HTML contains no iframe, because on a product that promises not to track you an

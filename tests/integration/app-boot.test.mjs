@@ -6,7 +6,6 @@
 
    Environment:
      SITE_DIR       website dir to serve      (default: <repo>/website)
-     TOOLS_ORIGIN   engine origin             (default: https://dev.tools.sgraph.ai)
      MIRROR_DIR     if set, requests to the tools origin are served from this
                     local directory instead of the network (sandboxed runs)
      CHROMIUM_PATH  explicit browser binary   (default: playwright's own)
@@ -20,7 +19,9 @@ import path from 'node:path'
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const SITE_DIR = process.env.SITE_DIR || path.join(repo, 'website')
-const TOOLS_ORIGIN = process.env.TOOLS_ORIGIN || 'https://dev.tools.sgraph.ai'
+// The engine origin is hardcoded in config.js (issue 041). MIRROR_DIR mode
+// serves it locally by intercepting requests to it, not by rewriting it.
+const TOOLS_ORIGIN = 'https://dev.tools.sgraph.ai'
 const MIRROR_DIR = process.env.MIRROR_DIR || ''
 const PORT = 8123
 
@@ -55,7 +56,7 @@ if (MIRROR_DIR) {
 }
 
 try {
-    await page.goto(`http://127.0.0.1:${PORT}/app/?origin=${encodeURIComponent(TOOLS_ORIGIN)}`, { waitUntil: 'domcontentloaded' })
+    await page.goto(`http://127.0.0.1:${PORT}/app/`, { waitUntil: 'domcontentloaded' })
 
     // 1. The engine boots and our SgToolApi publishes.
     const booted = await page.waitForFunction(() => !!window.__tool, null, { timeout: 30000 }).then(() => true).catch(() => false)

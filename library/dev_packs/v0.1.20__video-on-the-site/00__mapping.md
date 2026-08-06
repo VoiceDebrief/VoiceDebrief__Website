@@ -2,7 +2,7 @@
 
 *Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
 
-**status** Substrate EXISTS (issue 037): `content/videos/`, a Videos page and
+**status** Substrate EXISTS (issue 040): `content/videos/`, a Videos page and
 `videos.json` ship in v0.1.20, with Dinis's four existing videos staged as drafts.
 Everything marked PROPOSED below is design, not code.
 **source** Dinis, 6 Aug 2026 — four shorts published, wanting longer demos and

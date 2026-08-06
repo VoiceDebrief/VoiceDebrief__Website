@@ -10,12 +10,14 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-06 (038 done: ?origin= allow-list;
-036 content architecture; 037 videos awaiting one id).
+as any issue change. Last updated: 2026-08-06 (039 content architecture, 041 ?origin=
+removed; 040 videos awaiting one id). NOTE: 036–038 belong to the review-pack branch
+(engineering hub / security hardening / QA-to-docs) — this branch renumbered to 039–041
+to clear the collision.
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [037](open/037-videos-on-the-site.md) | Videos on the site — page + content type shipped; needs 4 YouTube ids | **blocked** (on ids) | high | medium |
+| [040](open/040-videos-on-the-site.md) | Videos on the site — three live; one clip awaiting its YouTube id | **blocked** (on one id) | high | medium |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |
@@ -51,8 +53,8 @@ as any issue change. Last updated: 2026-08-06 (038 done: ?origin= allow-list;
 | [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |
 | [034](done/034-chat-with-materials.md) | M3: chat with the materials + tool-driven workflow — live-validated by Dinis | done | high | large |
 | [035](done/035-chat-edits-materials-and-sees-image.md) | Chat edits transcript/summary (revertible), SEES the infographic image, tidy suggestions | done | high | medium |
-| [036](done/036-content-architecture-markdown-per-post.md) | Content architecture: markdown per post, generated pages/manifests, atomic agent writes | done | high | medium |
-| [038](done/038-origin-parameter-allowlist.md) | `?origin=` accepted any URL — credential-theft vector; now allow-listed | done | **high** | small |
+| [039](done/039-content-architecture-markdown-per-post.md) | Content architecture: markdown per post, generated pages/manifests, atomic agent writes | done | high | medium |
+| [041](done/041-remove-origin-parameter.md) | `?origin=` removed entirely — the engine origin is hardcoded | done | **high** | small |
 
 ## Layout
 
