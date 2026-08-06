@@ -18,6 +18,17 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Review pack v0.1.20 (`library/review-packs/v0.1.20__project-review/`)** — a full
+  project review commissioned by Dinis: state of the project, code + security
+  findings, testing/CI assessment, documentation-estate audit, live-site review, and
+  the **open engineering hub proposal** (public `/engineering/` pages rendering the
+  CI/testing/docs/security/team estate from CI-emitted JSON — the NFRs made visible,
+  aimed at collaborators and at GenAI entrepreneurs growing up a vibe-coded service).
+  Issues opened from it: **036** (the hub) and **037** (app security hardening —
+  urgent: `?origin=` allowlist, CSP, chat prompt-tool gating). The pack also
+  documents that this changelog's tag-heading discipline is behind since v0.1.11 and
+  `versions.json` is two tags stale — the record fixes are its group-A
+  recommendation.
 - **The chat can now EDIT the materials and SEE the infographic (issue 035)** — built
   from a developer brief the chat itself wrote during Dinis's live session.
   `update_transcript` / `update_summary` / `restore_original` tools rewrite the page
