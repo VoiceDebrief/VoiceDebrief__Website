@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team — Engineering</title>
+<meta name="description" content="The agentic team behind the WhatsApp voice note transcription tool: eleven active roles, one human, and an issue queue worked in public.">
+<link rel="stylesheet" href="../eng.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">← Engineering</a></div>
+    <nav aria-label="Main">
+      <a href="../pipeline/">Pipeline</a>
+      <a href="../testing/">Testing</a>
+      <a href="../docs/">Docs</a>
+      <a href="../security/">Security</a>
+      <a href="../team/">Team</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="../">engineering</a> / team</div>
+    <h1>Eleven agent roles, one human, and a queue worked in public.</h1>
+    <p class="lead">The product is built by AI agent sessions playing defined roles under a
+      written rulebook, with a human (Dinis Cruz) making the decisions only a human can.
+      Every role's outputs are committed; the queue below is live.</p>
+    <div class="status-strip">
+      <div class="stat"><div class="k">open</div><div class="v" id="c-open">…</div></div>
+      <div class="stat"><div class="k">blocked</div><div class="v" id="c-blocked">…</div></div>
+      <div class="stat"><div class="k">done</div><div class="v" id="c-done">…</div></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The principle</span>
+    <h2>Roles, not vibes</h2>
+    <p class="sub">An agentic team without structure produces the same mess as a human team
+      without structure — faster. The structure here is simple: each role has a written ROLE
+      file (mandate, boundaries, outputs), a folder for its reviews, and the rulebook binds
+      them all to the reality discipline. When a role has produced nothing, its empty folder
+      says so — the structure is honest about its own exercise.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Role</th><th>Owns</th></tr></thead>
+        <tbody>
+          <tr><td>Conductor</td><td>Routing every task across roles; priorities</td></tr>
+          <tr><td>Architect</td><td>The load-bearing decisions: no backend, key-as-billing, privacy modes</td></tr>
+          <tr><td>Dev</td><td>The product front end, built from the existing SGraph tools</td></tr>
+          <tr><td>Designer</td><td>The one-motion experience — form, function, intention</td></tr>
+          <tr><td>DevOps</td><td>The two-branch CI, auto-tagging, both deploy estates</td></tr>
+          <tr><td>Librarian</td><td>Reality vs proposed; the library; the master index</td></tr>
+          <tr><td>QA</td><td>Test strategy; the audio-format matrix is test surface #1</td></tr>
+          <tr><td>AppSec</td><td>Key handling: caps, rotation, revocation, the seeded-key abuse model</td></tr>
+          <tr><td>DPO</td><td>The privacy-mode claims — routed / restricted / browser-local must be true</td></tr>
+          <tr><td>Ambassador</td><td>Growth and positioning: sell the availability gap, honestly</td></tr>
+          <tr><td>Journalist</td><td>The site's Updates section; the per-version changelog, with the Librarian</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">Live</span>
+    <h2>What the team is working on</h2>
+    <p class="sub">Open and blocked issues as of this deploy. Each is a markdown file in the
+      repo — click through for the full brief, status history and outcome criteria.</p>
+    <div class="tablewrap">
+      <table id="issue-table">
+        <thead><tr><th>#</th><th>Title</th><th>State</th><th>Priority</th><th>Created</th></tr></thead>
+        <tbody><tr><td colspan="5" class="loading">loading issues.json…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="sub" style="margin-top:14px"><span id="done-note"></span>
+      The full queue including everything done is on the <a href="../">hub page</a>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="receipts"><strong>Receipts</strong>
+      <ul>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/README.md">team/README.md</a> — the roster and the three-team model</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/.claude/CLAUDE.md">The rulebook</a> every agent session starts from</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/issues">issues/</a> — the queue itself, files in folders, no tracker service</li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom · Site content CC BY 4.0 &nbsp;·&nbsp;
+      <a href="../../versions/"><span id="site-version">dev</span></a></div>
+    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+  </div>
+</footer>
+
+<script type="module">
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+try {
+    const q = await (await fetch('../issues.json', { cache: 'no-store' })).json()
+    document.getElementById('c-open').textContent = String(q.counts.open)
+    document.getElementById('c-blocked').textContent = String(q.counts.blocked)
+    document.getElementById('c-done').textContent = String(q.counts.done)
+    const rows = q.issues.filter(i => i.state !== 'done').sort((a, b) => b.id - a.id)
+    document.querySelector('#issue-table tbody').innerHTML = rows.map(i => `
+        <tr><td>${esc(i.id)}</td>
+            <td><a href="${esc(i.url)}">${esc(i.title)}</a></td>
+            <td><span class="tag ${i.state === 'blocked' ? 'warn' : 'info'}">${esc(i.state.toUpperCase())}</span></td>
+            <td>${esc(i.priority || '—')}</td>
+            <td>${esc(i.created || '—')}</td></tr>`).join('')
+    document.getElementById('done-note').textContent = `${q.counts.done} issues are done. `
+} catch { document.querySelector('#issue-table tbody').innerHTML = '<tr><td colspan="5">issues.json unavailable</td></tr>' }
+</script>
+
+</body>
+</html>

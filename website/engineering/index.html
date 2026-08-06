@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engineering — how this product is built, live</title>
+<meta name="description" content="The engine room of the WhatsApp voice note transcription tool: CI, tests, docs, security and the issue queue — the non-functional requirements made visible, rendered live from CI-emitted JSON.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Voice Note Transcribe">
+<meta property="og:title" content="The engine room — how this product is built, live">
+<meta property="og:description" content="CI, tests, docs, security and the issue queue, rendered from CI-emitted JSON on a static site. A live worked example of growing up a vibe-coded service.">
+<meta property="og:url" content="https://whatsapp-voice-transcription.sgraph.ai/engineering/">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="eng.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">Voice&nbsp;Note&nbsp;Transcribe</a></div>
+    <nav aria-label="Main">
+      <a href="pipeline/">Pipeline</a>
+      <a href="testing/">Testing</a>
+      <a href="docs/">Docs</a>
+      <a href="security/">Security</a>
+      <a href="team/">Team</a>
+      <a href="../library/">Library</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb">The engine room</div>
+    <h1>Everything behind this product, live: the pipeline, the tests, the docs, the queue.</h1>
+    <p class="lead">This page and its sections render JSON that CI writes at every deploy —
+      no dashboard service, no backend, just a static site telling the truth about itself.
+      If you have vibe-coded a working service and are wondering what growing it up looks
+      like, this is a live worked example.</p>
+    <div class="status-strip" id="status-strip">
+      <div class="stat"><div class="k">version</div><div class="v" id="s-version">…</div></div>
+      <div class="stat"><div class="k">deployed</div><div class="v" id="s-date">…</div></div>
+      <div class="stat"><div class="k">branch → target</div><div class="v" id="s-target">…</div></div>
+      <div class="stat"><div class="k">commit</div><div class="v" id="s-commit">…</div></div>
+      <div class="stat"><div class="k">test gate</div><div class="v" id="s-tests">…</div></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The sections</span>
+    <h2>Five views of the admin estate</h2>
+    <p class="sub">Each one follows the same shape: the principle (why this matters), the live
+      view (real numbers from this deploy), and the receipts (links to the actual files).</p>
+    <div class="grid cols-3">
+      <div class="card"><h3>Pipeline</h3>
+        <p>Push → tests → auto-tag → publish → live QA. Two workflows, two estates, and why
+           the version file is CI-owned.</p>
+        <a class="more" href="pipeline/">The CI/CD story →</a></div>
+      <div class="card"><h3>Testing</h3>
+        <p>Three layers — unit, integration, live QA — and the real bugs each one caught.
+           No release without a green gate.</p>
+        <a class="more" href="testing/">The test pyramid →</a></div>
+      <div class="card"><h3>Docs</h3>
+        <p>A reality doc that cannot lie, a changelog with one entry per tag, and the
+           brief → build → debrief loop that produces them.</p>
+        <a class="more" href="docs/">The documentation system →</a></div>
+      <div class="card"><h3>Security</h3>
+        <p>No backend, your key stays in your browser, and a public line between what may
+           be published and what must never be.</p>
+        <a class="more" href="security/">The security posture →</a></div>
+      <div class="card"><h3>Team</h3>
+        <p>Eleven agent roles, one human, and an issue queue worked in public — rendered
+           live below.</p>
+        <a class="more" href="team/">The agentic team →</a></div>
+      <div class="card"><h3>Versions</h3>
+        <p>Every CI tag with its date, headline and diff — the per-version ledger this hub's
+           pattern is borrowed from.</p>
+        <a class="more" href="../versions/">The release ledger →</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">Live</span>
+    <h2>The issue queue, as of this deploy</h2>
+    <p class="sub">Work is tracked as markdown files in the repo (<code>issues/</code>) — created,
+      worked, and closed in the same commits as the code. CI renders the queue here at deploy time.</p>
+    <p id="issue-counts" class="loading">loading…</p>
+    <div class="tablewrap">
+      <table id="issue-table">
+        <thead><tr><th>#</th><th>Title</th><th>State</th><th>Priority</th><th>Created</th></tr></thead>
+        <tbody><tr><td colspan="5" class="loading">loading issues.json…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">Why publish this?</span>
+    <h2>The pipeline is the credibility story</h2>
+    <p class="sub">The product's privacy story is its architecture (no backend — nothing to
+      store your audio on). The engineering story works the same way: instead of telling you
+      the service is looked after, this hub shows you the gate every release passes, the
+      queue being worked, and the docs that record it — with links to the source of every
+      claim. Nothing aspirational appears here without a PROPOSED label.</p>
+    <div class="receipts"><strong>Receipts for this page itself</strong>
+      <ul>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/scripts/emit_engineering_json.py">scripts/emit_engineering_json.py</a> — the script that writes <a href="status.json">status.json</a>, <a href="issues.json">issues.json</a> and <a href="docs.json">docs.json</a> at deploy</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__06__proposal__open-engineering-hub.md">The proposal this hub implements</a> (review pack v0.1.20, doc 06)</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/036-open-engineering-hub.md">Issue 036</a> — the work item</li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom — Simple. Private. Portable.<br>
+      Site content released under CC BY 4.0. &nbsp;·&nbsp; <a href="../versions/"><span id="site-version">dev</span></a></div>
+    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a>
+      &nbsp;·&nbsp; <a href="../library/">Library</a> &nbsp;·&nbsp; <a href="../updates/">Updates</a></div>
+  </div>
+</footer>
+
+<script type="module">
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+
+try {
+    const s = await (await fetch('status.json', { cache: 'no-store' })).json()
+    document.getElementById('s-version').textContent = s.version
+    document.getElementById('s-date').textContent = (s.generated_at || '').slice(0, 10)
+    document.getElementById('s-target').textContent = `${s.branch} → ${s.deploy_target}`
+    const c = document.getElementById('s-commit')
+    c.innerHTML = s.commit_url ? `<a href="${esc(s.commit_url)}">${esc((s.commit || '').slice(0, 7))}</a>` : esc((s.commit || '').slice(0, 7))
+    const t = document.getElementById('s-tests')
+    if (s.tests) {
+        const layers = Object.entries(s.tests).map(([k, v]) => `${k} ${v.pass}/${v.total}`)
+        const allGreen = Object.values(s.tests).every(v => v.pass === v.total)
+        t.innerHTML = s.run_url ? `<a href="${esc(s.run_url)}">${esc(layers.join(' · '))}${allGreen ? ' ✓' : ' ✗'}</a>` : esc(layers.join(' · '))
+    } else t.textContent = 'see Actions'
+} catch { document.getElementById('s-version').textContent = 'status.json unavailable' }
+
+try {
+    const q = await (await fetch('issues.json', { cache: 'no-store' })).json()
+    document.getElementById('issue-counts').textContent =
+        `${q.counts.open} open · ${q.counts.blocked} blocked · ${q.counts.done} done (as of ${(q.generated_at || '').slice(0, 10)})`
+    const order = { open: 0, blocked: 1, done: 2 }
+    const rows = [...q.issues].sort((a, b) => (order[a.state] - order[b.state]) || (b.id - a.id))
+    document.querySelector('#issue-table tbody').innerHTML = rows.map(i => `
+        <tr><td>${esc(i.id)}</td>
+            <td><a href="${esc(i.url)}">${esc(i.title)}</a></td>
+            <td><span class="tag ${i.state === 'done' ? 'ok' : i.state === 'blocked' ? 'warn' : 'info'}">${esc(i.state.toUpperCase())}</span></td>
+            <td>${esc(i.priority || '—')}</td>
+            <td>${esc(i.created || '—')}</td></tr>`).join('')
+} catch { document.getElementById('issue-counts').textContent = 'issues.json unavailable' }
+</script>
+
+</body>
+</html>

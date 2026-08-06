@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline — Engineering</title>
+<meta name="description" content="The CI/CD pipeline behind the WhatsApp voice note transcription tool: push → tests → auto-tag → publish → live QA, across two estates, with no manual steps.">
+<link rel="stylesheet" href="../eng.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">← Engineering</a></div>
+    <nav aria-label="Main">
+      <a href="../pipeline/">Pipeline</a>
+      <a href="../testing/">Testing</a>
+      <a href="../docs/">Docs</a>
+      <a href="../security/">Security</a>
+      <a href="../team/">Team</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="../">engineering</a> / pipeline</div>
+    <h1>Push → tests → tag → publish → live QA. Nobody touches a version number.</h1>
+    <p class="lead">Every merge to <code>dev</code> becomes a numbered, tested, published release
+      without a human in the loop — and the pipeline checks its own work after deploying.</p>
+    <div class="status-strip">
+      <div class="stat"><div class="k">this deploy</div><div class="v" id="s-version">…</div></div>
+      <div class="stat"><div class="k">commit</div><div class="v" id="s-commit">…</div></div>
+      <div class="stat"><div class="k">pipeline run</div><div class="v" id="s-run">…</div></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The principle</span>
+    <h2>If releasing takes effort, you stop releasing</h2>
+    <p class="sub">A vibe-coded service usually dies one of two deaths: it stops shipping
+      (because deploys became scary) or it ships broken (because deploys were manual).
+      The fix for both is the same and it is cheap: make the pipeline own the release.
+      Here the <code>version</code> file is written only by CI — a rule the team's own
+      agents must obey — so every push to <code>dev</code> produces exactly one tag, one
+      changelog anchor, one published site, in order, every time.</p>
+    <pre>push to dev
+   │
+   ▼
+ test        31 unit tests + 2 Playwright integration suites — red gate = no release
+   │
+   ▼
+ tag         version bumped + git tag pushed by CI (minor on dev, major on main)
+   │
+   ▼
+ publish     version stamped into every page footer + version.txt,
+             every same-origin asset URL cache-busted with ?v=&lt;version&gt;,
+             engineering JSON emitted, site deployed to GitHub Pages
+   │
+   ▼
+ live QA     the pipeline then fetches the LIVE site: right version? every stamped
+             asset resolves? samples, prompts, engine origin + CORS, outbound links?</pre>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">The estates</span>
+    <h2>Two branches, two estates, one gate</h2>
+    <div class="grid cols-2">
+      <div class="card"><h3>dev → GitHub Pages (production, for now)</h3>
+        <p><code>dev</code> publishes <a href="https://whatsapp-voice-transcription.sgraph.ai">the live domain</a>
+        after the full gate. Decision of 6 Aug 2026: <code>dev</code> and <code>main</code> go to the same
+        place for now, and <code>dev</code> is treated as production; a separate <code>main</code> estate is
+        a future split, stated publicly rather than implied.</p></div>
+      <div class="card"><h3>qa → Netlify (preview)</h3>
+        <p>The <code>qa</code> branch runs the same test gate, then deploys to Netlify stamped
+        <code>&lt;next-version&gt;-qa.&lt;sha&gt;</code> — the next release previewed under an honest name.
+        The <code>version</code> file is never touched here; the truth comes from the tags.</p></div>
+    </div>
+    <div class="story"><span class="t">A caught bug that shaped this pipeline</span>
+      <p>After one deploy, the page offered a new checkbox while the browser was still running
+      the previous release's JavaScript — GitHub Pages caches modules for ten minutes (issue 026).
+      Since then CI stamps <code>?v=&lt;version&gt;</code> onto every same-origin asset URL, so fresh HTML
+      can never pair with stale code, and the live-QA job verifies every stamped URL resolves.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="receipts"><strong>Receipts</strong>
+      <ul>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/.github/workflows/ci-pipeline.yml">ci-pipeline.yml</a> — the release pipeline (test → tag → publish → live QA)</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/.github/workflows/qa-deploy.yml">qa-deploy.yml</a> — the QA estate (same gate, Netlify publish, in-job live check)</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/scripts/stamp_cache_busters.py">stamp_cache_busters.py</a> — the issue-026 fix, in code</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions">The Actions history</a> — every run of both, public</li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom · Site content CC BY 4.0 &nbsp;·&nbsp;
+      <a href="../../versions/"><span id="site-version">dev</span></a></div>
+    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+  </div>
+</footer>
+
+<script type="module">
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+try {
+    const s = await (await fetch('../status.json', { cache: 'no-store' })).json()
+    document.getElementById('s-version').textContent = `${s.version} · ${(s.generated_at || '').slice(0, 10)}`
+    document.getElementById('s-commit').innerHTML = s.commit_url ? `<a href="${esc(s.commit_url)}">${esc((s.commit || '').slice(0, 7))}</a>` : '—'
+    document.getElementById('s-run').innerHTML = s.run_url ? `<a href="${esc(s.run_url)}">view on Actions</a>` : '—'
+} catch { document.getElementById('s-version').textContent = 'status.json unavailable' }
+</script>
+
+</body>
+</html>

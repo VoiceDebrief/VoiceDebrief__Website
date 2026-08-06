@@ -1,0 +1,11 @@
+{
+  "note": "Written by CI at deploy time (scripts/emit_engineering_json.py). The tests block is the gate this deploy passed \u2014 a deploy cannot happen over a red gate. Live-QA runs after the deploy; its result lives on the Actions run, not in this file.",
+  "version": "v0.1.21",
+  "generated_at": "2026-08-06T15:04:42+00:00",
+  "branch": "claude/project-review-brief-packs-oxtw7n",
+  "commit": "adc65b4c75ccf833e4a4383cce820c084f7c6a22",
+  "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/adc65b4c75ccf833e4a4383cce820c084f7c6a22",
+  "run_url": "",
+  "deploy_target": "github-pages (dev)",
+  "tests": null
+}

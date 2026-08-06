@@ -34,6 +34,17 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   the full real decode chain (WASM opus decoder included) and both integration
   gates. New `scripts/mirror_engine.mjs` builds a local engine mirror for the
   integration tests' `MIRROR_DIR` mode (review E4).
+- **The open engineering hub (issue 036, M-hub-1 + M-hub-2)** — `/engineering/`
+  and five section pages (pipeline, testing, docs, security, team), each
+  principle → live view → receipts, rendered client-side from JSON CI emits at
+  deploy (`scripts/emit_engineering_json.py`: status, issue queue, doc
+  inventory; per-layer test results travel from the test job by artifact). The
+  security page carries the S1–S5 hardening state honestly and the
+  ciphertext-rule table, doubling as the interim trust page. Landing nav gains
+  Engineering; live-QA checks all six pages + the three JSON files. Plus the
+  story-travel slice of M-hub-3: OG/Twitter tags on the share targets and an
+  RSS feed of Updates (`website/updates/feed.xml`); the chat post's stale
+  "live-key run pending" tag corrected.
 ## [v0.1.21](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.20...v0.1.21) — 6 Aug 2026
 
 - **The four review-pack decisions, decided and landed (Dinis, 6 Aug)** — D1: the

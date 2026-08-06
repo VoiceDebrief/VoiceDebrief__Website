@@ -44,7 +44,8 @@ jobs:
           node-version: '22'
 
       - name: Unit tests
-        run: node --test tests/unit/*.test.mjs
+        shell: bash
+        run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log
 
       - name: Install Playwright Chromium
         run: |
@@ -52,10 +53,31 @@ jobs:
           npx playwright install --with-deps chromium
 
       - name: Integration test (app boot against the live engine origin)
-        run: node tests/integration/app-boot.test.mjs
+        shell: bash
+        run: node tests/integration/app-boot.test.mjs 2>&1 | tee int-boot.log
 
       - name: Integration test (chat loop against a scripted OpenRouter)
-        run: node tests/integration/chat-loop.test.mjs
+        shell: bash
+        run: node tests/integration/chat-loop.test.mjs 2>&1 | tee int-chat.log
+
+      # The engineering hub (issue 036) renders the gate this deploy passed —
+      # collect the per-layer counts for scripts/emit_engineering_json.py.
+      - name: Collect test results for the engineering hub
+        shell: bash
+        run: |
+          UNIT_PASS=$(grep -oP '^# pass \K\d+' unit.log)
+          UNIT_FAIL=$(grep -oP '^# fail \K\d+' unit.log)
+          BOOT=$(grep -c '^ok ' int-boot.log)
+          CHAT=$(grep -c '^ok ' int-chat.log)
+          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s}\n}\n' \
+            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BOOT" "$BOOT" "$CHAT" "$CHAT" > test-results.json
+          cat test-results.json
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.json
 
   increment-tag:
     name: Increment Tag
@@ -100,6 +122,20 @@ jobs:
           find website -name '*.html' -exec \
             sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" {} +
           grep -rho 'site-version">[^<]*' website --include='*.html' | sort | uniq -c
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: test-results
+
+      - name: Emit engineering JSON (issue 036)
+        # status.json / issues.json / docs.json — the /engineering/ pages'
+        # entire data layer, written at deploy time like version.txt.
+        run: |
+          python3 scripts/emit_engineering_json.py --site website \
+            --version "$(cat version)" --target "github-pages (dev)" \
+            --results test-results.json
 
       - name: Cache-bust the site's own assets
         # GitHub Pages serves our modules with max-age=600, so without this a

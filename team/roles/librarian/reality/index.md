@@ -53,6 +53,8 @@
 | Security hardening, first slice (issue 037 items 1–2): `?origin=` allowlisted in `config.js` (unit-tested incl. spoof cases); meta CSP on the app page pinning script/connect sources — verified against the full real decode chain and both integration gates | `website/app/config.js`, `website/app/index.html`, `tests/unit/config.test.mjs` | 2026-08-06 |
 | Engine mirror builder for the integration tests' MIRROR_DIR mode (sandboxed/pinned runs — review E4): crawls the app's tools-origin imports recursively, 32 modules | `scripts/mirror_engine.mjs` | 2026-08-06 |
 | Live-QA outbound link check: GitHub + same-origin links on Updates/Library must resolve (third-party hosts warn only) | `tests/qa/live-site-check.mjs` §6 | 2026-08-06 |
+| The open engineering hub (issue 036, M-hub-1+2): `/engineering/` + five section pages (pipeline/testing/docs/security/team) rendering CI-emitted `status.json`/`issues.json`/`docs.json`; both workflows emit at deploy (test results travel by artifact); hub pages in the live-QA check | `website/engineering/`, `scripts/emit_engineering_json.py`, both workflows | 2026-08-06 |
+| Story-travel plumbing (M-hub-3 slice): OG/Twitter tags on landing, Updates and the hub; RSS feed of Updates posts (Journalist-maintained per post) | `website/updates/feed.xml`, page heads | 2026-08-06 |
 
 All rows above are committed and pushed in-session on their stated date.
 

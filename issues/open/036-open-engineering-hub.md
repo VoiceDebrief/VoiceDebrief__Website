@@ -29,3 +29,21 @@ renders a record that is true.
 
 ## Status 6 Aug (created)
 Open, not started. Proposal accepted into the queue from the v0.1.20 review pack.
+
+## Status 6 Aug (later) — M-hub-1 and M-hub-2 SHIPPED, M-hub-3 partially
+- **M-hub-1 done**: `scripts/emit_engineering_json.py` writes `status.json`
+  (version, commit, branch, deploy target, per-layer test results passed from the
+  test job via artifact), `issues.json` (the whole queue parsed from `issues/`) and
+  `docs.json` (the library/team doc inventory, `team/humans/` excluded); both
+  workflows wired (collect → artifact → emit before cache-bust). `/engineering/`
+  renders the status strip + full issue queue.
+- **M-hub-2 done**: the five section pages (pipeline, testing, docs, security,
+  team), each principle → live view → receipts. The security page carries the
+  S1–S5 state honestly (2 shipped / 3 open) and the ciphertext-rule table — it
+  doubles as the interim trust page until the DPO privacy notice ships.
+- **M-hub-3 partial**: OG tags on landing/updates/hub, RSS feed
+  (`website/updates/feed.xml`, Journalist-maintained per post). The
+  "You vibe-coded a service. Now what?" series itself remains open — Journalist
+  cadence, one instalment per week.
+- Live-QA extended: all six hub pages + the three JSON files checked per deploy.
+- The record precondition was met first (group A landed earlier today).

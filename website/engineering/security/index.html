@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security — Engineering</title>
+<meta name="description" content="The security posture of the WhatsApp voice note transcription tool: no backend, your key stays in your browser, and a public line between what may be published and what must never be.">
+<link rel="stylesheet" href="../eng.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">← Engineering</a></div>
+    <nav aria-label="Main">
+      <a href="../pipeline/">Pipeline</a>
+      <a href="../testing/">Testing</a>
+      <a href="../docs/">Docs</a>
+      <a href="../security/">Security</a>
+      <a href="../team/">Team</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="../">engineering</a> / security</div>
+    <h1>The strongest security control here is architecture: there is nothing to breach.</h1>
+    <p class="lead">No backend means no server holding your audio, your transcripts or your
+      key. What remains to secure is the page itself — and that work is done in public,
+      including the parts still open.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The threat model</span>
+    <h2>What we hold, what we never see</h2>
+    <div class="grid cols-3">
+      <div class="card"><h3>Your audio &amp; transcripts</h3>
+        <p>Processed in your browser and sent by your browser directly to the model provider
+        via OpenRouter, under your key. Nothing is uploaded to us — there is no "us" to
+        upload to. In routed mode we honestly cannot promise WHICH provider processes a
+        recording; the landing page says so rather than hiding it.</p></div>
+      <div class="card"><h3>Your OpenRouter key</h3>
+        <p>Bring-your-own-key: pasted by you, stored only in your browser's localStorage,
+        sent only to OpenRouter. The page's job is to make sure no other code can ever run
+        where that key lives — see the hardening below.</p></div>
+      <div class="card"><h3>What we collect</h3>
+        <p>Nothing. No analytics, no accounts, no cookies, no server logs of your content.
+        The footer's claim — "nothing tracked, nothing stored server-side" — is an
+        architectural fact, not a policy promise.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">Hardening, in public</span>
+    <h2>The app page's own defences</h2>
+    <p class="sub">A public review (v0.1.20, 6 Aug 2026) graded the app's security findings
+      S1–S5. The state below is kept honest — shipped means shipped, open means open.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Finding</th><th>Defence</th><th>State</th></tr></thead>
+        <tbody>
+          <tr><td>S1 — a crafted <code>?origin=</code> link could load attacker code into the page that holds the key</td>
+              <td>The engine origin is validated against an allowlist before anything is imported</td>
+              <td><span class="tag ok">SHIPPED</span></td></tr>
+          <tr><td>S2 — no Content-Security-Policy</td>
+              <td>Meta CSP pinning script and connection sources to exactly the origins the app uses</td>
+              <td><span class="tag ok">SHIPPED</span></td></tr>
+          <tr><td>S3 — the chat model can persist prompt overrides across sessions</td>
+              <td>Human confirmation (or de-scoping) of the prompt-writing chat tools</td>
+              <td><span class="tag warn">OPEN</span></td></tr>
+          <tr><td>S4 — model-generated SVG enters the DOM</td>
+              <td>Verify upstream sanitisation or strip event handlers locally; hostile-content render tests</td>
+              <td><span class="tag warn">OPEN</span></td></tr>
+          <tr><td>S5 — key-name hygiene, key validation on save, one unescaped interpolation</td>
+              <td>Rename + migrate the localStorage key; validate via key status; escape</td>
+              <td><span class="tag warn">OPEN</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sub" style="margin-top:14px">The full findings, with file-and-line citations, are
+      <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__02__code-and-architecture-review.md">published in the repo</a> —
+      publishing your own security review is unusual; for a no-backend product, openness genuinely
+      shrinks the attack surface rather than growing it.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The line</span>
+    <h2>The ciphertext rule: what may be public, what must never be</h2>
+    <p class="sub">This repo is public and always will be. The line between publishable and
+      secret is written down and enforced as a rule, not left to judgement per commit:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>MAY live in this public repo</th><th>MUST NEVER be committed</th></tr></thead>
+        <tbody>
+          <tr><td>An <em>encrypted</em> vault (ciphertext)</td><td>The vault key</td></tr>
+          <tr><td>Key-management logic and provisioning workflow code</td><td>Any plaintext secret</td></tr>
+          <tr><td>Configuration and schemas</td><td>The OpenRouter management API key</td></tr>
+          <tr><td>The security review itself</td><td>Anything that decrypts what is committed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sub" style="margin-top:14px">Automated enforcement (a secrets scanner in CI and a
+      pre-commit hook) is tracked as
+      <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/013-admin-vault-and-ciphertext-rule.md">issue 013</a>
+      <span class="tag warn">OPEN</span> — the rule currently lives in the rulebook and in review.</p>
+    <div class="receipts"><strong>Receipts</strong>
+      <ul>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/037-app-security-hardening.md">Issue 037</a> — the hardening queue, with what shipped when</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/appsec/reviews/08/06/">The AppSec model-allowlist review</a> — the five models the app may call, verified in code</li>
+        <li>A full privacy notice is being written (tracked with the DPO role) — until it ships, this page and the open repo are the record</li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom · Site content CC BY 4.0 &nbsp;·&nbsp;
+      <a href="../../versions/"><span id="site-version">dev</span></a></div>
+    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
