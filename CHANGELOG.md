@@ -34,8 +34,9 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   fed by `content/videos/*.md`. Cards, not embeds — **nothing is requested from YouTube
   until you press play**, and playback uses `youtube-nocookie.com`; a test asserts the
   served HTML contains no iframe, because on a product that promises not to track you an
-  auto-loading third-party player would be a quiet lie. Dinis's four existing videos are
-  staged as drafts awaiting their ids. Mapping for what comes next (landing-page card,
+  auto-loading third-party player would be a quiet lie. Three of Dinis's videos are live on it —
+  the chat feature, the QA site tour and the first MVP demo, each tied to the release it
+  shows — with a fourth held as a draft until its id arrives. Mapping for what comes next (landing-page card,
   videos inside release posts, local posters, transcripts of our own videos made with our
   own tool) in `library/dev_packs/v0.1.20__video-on-the-site/`.
 

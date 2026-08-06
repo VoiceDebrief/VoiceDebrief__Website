@@ -39,7 +39,7 @@ DAYS_RFC = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 MONTHS_RFC = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 LIST_KEYS = {'issues', 'tags'}
-VIDEO_KINDS = ('demo', 'explainer', 'short')
+VIDEO_KINDS = ('short', 'demo', 'explainer')   # also the display order
 # A YouTube id is 11 chars of [A-Za-z0-9_-]. Validated so a typo fails the build
 # rather than shipping a dead embed.
 YT_ID_RE = re.compile(r'^[A-Za-z0-9_-]{11}$')
@@ -259,7 +259,9 @@ def load_videos(problems):
             'status': status, 'blurb': md_to_text(body)[:400],
             'html': md_to_html(body, where), 'source': where,
         })
-    videos.sort(key=lambda v: v['date'], reverse=True)
+    # same-day videos tie on date; the version they demo restores publishing order
+    videos.sort(key=lambda v: (v['date'], [int(n) for n in (v['version'] or 'v0.0.0')[1:].split('.')]),
+                reverse=True)
     return videos
 
 
@@ -343,11 +345,13 @@ def render_index(posts, template):
     return template.replace('<!--POSTS-->', '\n\n'.join(articles))
 
 
-KIND_LABEL = {'demo': 'Watch it work', 'explainer': 'How it works, explained', 'short': 'Shorts'}
+# Grouped by editorial role rather than by YouTube's format: a "short" here is a
+# quick look at one thing, whatever the platform calls it.
+KIND_LABEL = {'short': 'Quick looks', 'demo': 'Full demos', 'explainer': 'How it works, explained'}
 KIND_BLURB = {
-    'demo': 'The product doing the job, recorded end to end.',
-    'explainer': 'What it does, why it is built this way, and what it costs.',
-    'short': 'A minute or less, one idea each.',
+    'short': 'A couple of minutes each — one feature, working, start to finish.',
+    'demo': 'The product doing the whole job, end to end.',
+    'explainer': 'Why it is built this way, what it costs, and what happens to your audio.',
 }
 
 

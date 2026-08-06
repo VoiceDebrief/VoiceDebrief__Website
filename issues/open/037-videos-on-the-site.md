@@ -3,7 +3,7 @@ created: 2026-08-06T09:30:00Z
 source: Dinis — "do another mapping on the best way to add the videos that I have been creating in YouTube to the site … I would like to also create more (non shorts videos) with me showing the product and others with explanations of the product"
 priority: high
 estimated_effort: medium
-blocked_on: four YouTube ids (see "To unblock") — everything else is built
+blocked_on: one YouTube id (the 0:42 one-click recording clip); the other three are live
 ---
 
 # Videos on the site
@@ -19,15 +19,18 @@ Mapping: [`library/dev_packs/v0.1.20__video-on-the-site/00__mapping.md`](../../l
   until the visitor presses play, and playback uses `youtube-nocookie.com`. A test
   asserts the served HTML contains no `<iframe>` — on a product that promises it does
   not track you, an auto-loading third-party player would be a quiet lie.
-- **Dinis's four existing videos written up as drafts**, each needing only its id. A
-  published video without a valid 11-character id fails the build rather than shipping a
-  dead player.
+- **Three videos live** (Dinis supplied the ids the same day): the chat feature (2:23,
+  v0.1.20), the QA site tour (2:52, v0.1.19) and the first MVP demo (1:11, v0.1.14),
+  each written up from his own descriptions and tied to the release it shows.
+  `kind` groups by editorial role rather than YouTube's format: these three are
+  **quick looks**, leaving `demo` for the longer walkthroughs and `explainer` for the
+  why-it-works-this-way videos still to be made.
 
-## To unblock (Dinis, ~2 minutes)
-For each file in `content/videos/`, paste the 11 characters after `watch?v=` into
-`youtube_id:` and change `status: draft` to `status: published`. Push — CI does the rest.
-Titles were read from the channel screenshot and are truncated in places; correct them in
-the same edit if needed.
+## To unblock
+One video remains a draft: the 0:42 "One-Click Recording, Transcription & Publishing"
+clip, which had no id in the batch. Paste it into `content/videos/` and flip
+`status: draft` → `published`. A published video without a valid 11-character id fails
+the build rather than shipping a dead player.
 
 ## Then (proposed, in value order)
 1. Landing-page hero card showing the newest `demo` (read from `videos.json`).
