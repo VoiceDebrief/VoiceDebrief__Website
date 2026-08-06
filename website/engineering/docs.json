@@ -1,7 +1,7 @@
 {
   "note": "The public doc estate as of this release (team/humans excluded).",
-  "generated_at": "2026-08-06T15:26:52+00:00",
-  "count": 59,
+  "generated_at": "2026-08-06T15:38:56+00:00",
+  "count": 63,
   "docs": [
     {
       "path": "library/README.md",
@@ -142,6 +142,12 @@
       "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.1__audio-transcribe-integration/README.md"
     },
     {
+      "path": "library/dev_packs/v0.1.20__video-on-the-site/00__mapping.md",
+      "title": "Mapping: putting the YouTube videos on the site",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.20__video-on-the-site/00__mapping.md"
+    },
+    {
       "path": "library/guides/email-fs-lite-v0.6.md",
       "title": "Email-FS-lite \u2014 Agent Manual",
       "area": "library",
@@ -158,6 +164,18 @@
       "title": "Guide: GitHub Pages Hosting And Route 53 DNS \u2014 How It Works And How To Repeat It",
       "area": "library",
       "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.1__guide__github-pages-and-route53-dns.md"
+    },
+    {
+      "path": "library/guides/v0.1.20__guide__content-architecture-for-agents.md",
+      "title": "Content architecture: how agents publish without breaking things",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.20__guide__content-architecture-for-agents.md"
+    },
+    {
+      "path": "library/guides/v0.1.20__guide__the-origin-parameter.md",
+      "title": "What `?origin=` does",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.20__guide__the-origin-parameter.md"
     },
     {
       "path": "library/guides/v0.6.1__guide__agent-workflow-issues-format.md",
@@ -332,6 +350,12 @@
       "title": "ROLE: Journalist",
       "area": "team",
       "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/journalist/ROLE.md"
+    },
+    {
+      "path": "team/roles/journalist/ROUTINE.md",
+      "title": "The daily Journalist routine \u2014 standing brief",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/journalist/ROUTINE.md"
     },
     {
       "path": "team/roles/librarian/ROLE.md",

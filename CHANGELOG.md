@@ -21,9 +21,9 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 - **The qa branch merged in** (two same-day workstreams converged): the qa side's
   issues 036/037/038 were minted in parallel with dev's and collided — renumbered
   on merge to **039** (content architecture), **040** (videos page) and **041**
-  (`?origin=` allow-list; its fix and dev's issue-037 item 1 turned out to be two
-  independent discoveries of the same vulnerability — the stricter merge survives,
-  with both test suites). The qa bullets below appear under their new numbers.
+  (`?origin=`; both branches independently allow-listed the same vulnerability
+  the same day, then Dinis called the better fix — remove the parameter entirely,
+  see the 041 bullet). The qa bullets below appear under their new numbers.
 - **The record caught up (review-pack group A)**: the changelog's Unreleased block
   split into its real tag headings (v0.1.12–v0.1.21 below), `versions.json` caught up,
   the Updates page's dead/moving links fixed and pinned to tags, reality-doc and
@@ -32,11 +32,11 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   PROPOSED, beta tense fixed). Outbound link-checking of the site's Updates and
   Library links added to the live-QA job so dead links cannot recur silently.
 - **Security hardening, first slice (issue 037, items 1–2)** — the `?origin=`
-  query parameter is now validated against an allowlist (`dev.tools.sgraph.ai`,
-  `tools.sgraph.ai`, localhost) before anything is imported from it, closing the
-  review pack's highest-priority finding (S1, key-exfiltration via a crafted
-  link); the app page carries a meta Content-Security-Policy pinning `script-src`
-  and `connect-src` to the origins the app actually uses (S2) — verified against
+  query parameter was validated against an allowlist, closing the review pack's
+  highest-priority finding (S1, key-exfiltration via a crafted link) — later the
+  same day superseded by 041's removal of the parameter altogether; and the app
+  page carries a meta Content-Security-Policy pinning `script-src` and
+  `connect-src` to the origins the app actually uses (S2) — verified against
   the full real decode chain (WASM opus decoder included) and both integration
   gates. New `scripts/mirror_engine.mjs` builds a local engine mirror for the
   integration tests' `MIRROR_DIR` mode (review E4).
@@ -66,18 +66,20 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   infographics from 28 Jul never landed (the source files' whereabouts are
   unknown) and the three 31-Jul product infographics cover the library's
   visual needs. The queue's only blocked issue; `issues/blocked/` is now empty.
-- **Security: `?origin=` no longer accepts any URL (issue 041, from qa)**. The parameter picks
-  which server the transcription engine is imported from — so it decided which
-  JavaScript ran inside the page, beside the user's OpenRouter key in localStorage. A
-  link on our own trusted domain (`…/app/?origin=https://somewhere-else`) was enough to
-  run someone else's code and take the key; there is no CSP to catch it. The value is
-  now checked against an anchored allow-list (`(dev.)tools.sgraph.ai`, localhost for
-  development and tests) and anything else falls back to the default with a loud
-  warning. Both development uses are unaffected. Found while writing the briefing doc
-  that explains the parameter:
+- **Security: `?origin=` is gone (issue 041)**. The parameter chose which server the
+  transcription engine was imported from — so a URL parameter decided which JavaScript
+  ran inside the page, beside the user's OpenRouter key in localStorage. A link on our
+  own trusted domain (`…/app/?origin=https://somewhere-else`) was enough to run someone
+  else's code and take the key. It was first fixed with an allow-list (independently on
+  the review-pack branch too, as its issue 037); the version that shipped **removes the
+  parameter entirely** — Dinis's call, and the better one, since it existed only for
+  development and development never needed it (the tests reach a local engine by
+  intercepting requests to the real origin, not by rewriting it). `ORIGIN` is now a
+  constant, and a test asserts `config.js` never reads the query string at all, because
+  an allow-list can be widened by a later edit while deleted code cannot. Briefing:
   `library/guides/v0.1.20__guide__the-origin-parameter.md`.
 
-- **Publishing is now adding one file (issue 039, from qa)**. The Updates page was being edited
+- **Publishing is now adding one file (issue 039)**. The Updates page was being edited
   as raw HTML — a fragile job for a person and a worse one for the 5am Journalist
   routine, which had to splice an `<article>` into a 145-line file and perform surgery
   on another to drop a stale caveat. Now `content/updates|versions|videos/*.md` are the
@@ -89,7 +91,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   and refuses (bad date, duplicate slug, missing issue, dead video id…), gating both CI
   workflows before the tag and the deploy. 11 posts and 21 versions migrated with no
   content loss.
-- **A Videos page (issue 040, from qa)**: `/videos/`, grouped into demos, explainers and shorts,
+- **A Videos page (issue 040)**: `/videos/`, grouped into demos, explainers and shorts,
   fed by `content/videos/*.md`. Cards, not embeds — **nothing is requested from YouTube
   until you press play**, and playback uses `youtube-nocookie.com`; a test asserts the
   served HTML contains no iframe, because on a product that promises not to track you an

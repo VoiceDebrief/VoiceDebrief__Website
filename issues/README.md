@@ -10,16 +10,16 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-06 (qa branch merged: its parallel
-036–038 renumbered to 039–041 — dev's 036–038 from the v0.1.20 review pack keep
-their numbers; 007 closed as superseded — Dinis).
+as any issue change. Last updated: 2026-08-06 (qa branch merged into dev's line:
+its parallel 036–038 renumbered to 039–041; 041 = ?origin= removed entirely,
+superseding both branches' allow-list fixes; 007 closed as superseded — Dinis).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [037](open/037-app-security-hardening.md) | App security hardening: ?origin= allowlist, CSP, chat prompt-tool gating | open | **urgent** | medium |
+| [037](open/037-app-security-hardening.md) | App security hardening: CSP shipped; chat prompt-tool gating, SVG sanitisation, key hygiene open (S1 closed by 041's removal) | open | **urgent** | medium |
 | [036](open/036-open-engineering-hub.md) | Open engineering hub: public /engineering/ pages for the NFRs | open | high | medium |
 | [038](open/038-qa-to-docs-screenshot-pipeline.md) | QA-to-docs: journey tests that QA features AND maintain the user docs (image-diff gate) | open | high | medium |
-| [040](open/040-videos-on-the-site.md) | Videos on the site — page + content type shipped; needs 1 YouTube id (renumbered from qa's 037) | open | high | medium |
+| [040](open/040-videos-on-the-site.md) | Videos on the site — three live; one clip awaiting its YouTube id | **blocked** (on one id) | high | medium |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |
@@ -55,8 +55,8 @@ their numbers; 007 closed as superseded — Dinis).
 | [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |
 | [034](done/034-chat-with-materials.md) | M3: chat with the materials + tool-driven workflow — live-validated by Dinis | done | high | large |
 | [035](done/035-chat-edits-materials-and-sees-image.md) | Chat edits transcript/summary (revertible), SEES the infographic image, tidy suggestions | done | high | medium |
-| [036](done/036-content-architecture-markdown-per-post.md) | Content architecture: markdown per post, generated pages/manifests, atomic agent writes | done | high | medium |
-| [038](done/038-origin-parameter-allowlist.md) | `?origin=` accepted any URL — credential-theft vector; now allow-listed | done | **high** | small |
+| [039](done/039-content-architecture-markdown-per-post.md) | Content architecture: markdown per post, generated pages/manifests, atomic agent writes | done | high | medium |
+| [041](done/041-remove-origin-parameter.md) | `?origin=` removed entirely — the engine origin is hardcoded | done | **high** | small |
 
 ## Layout
 

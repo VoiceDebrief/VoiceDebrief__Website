@@ -5,7 +5,7 @@
    that REALLY runs (redraw_infographic lands an SVG on the page), machinery
    marking, the audit trail, and the panel rendering.
 
-   Environment: SITE_DIR, TOOLS_ORIGIN, MIRROR_DIR, CHROMIUM_PATH as app-boot. */
+   Environment: SITE_DIR, MIRROR_DIR, CHROMIUM_PATH as app-boot. */
 import { chromium } from 'playwright'
 import { spawn } from 'node:child_process'
 import { readFileSync } from 'node:fs'
@@ -14,7 +14,9 @@ import path from 'node:path'
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const SITE_DIR = process.env.SITE_DIR || path.join(repo, 'website')
-const TOOLS_ORIGIN = process.env.TOOLS_ORIGIN || 'https://dev.tools.sgraph.ai'
+// The engine origin is hardcoded in config.js (issue 041). MIRROR_DIR mode
+// serves it locally by intercepting requests to it, not by rewriting it.
+const TOOLS_ORIGIN = 'https://dev.tools.sgraph.ai'
 const MIRROR_DIR = process.env.MIRROR_DIR || ''
 const PORT = 8125
 
@@ -71,7 +73,7 @@ await page.route('https://openrouter.ai/**', async route => {
 })
 
 try {
-    await page.goto(`http://127.0.0.1:${PORT}/app/?origin=${encodeURIComponent(TOOLS_ORIGIN)}`, { waitUntil: 'domcontentloaded' })
+    await page.goto(`http://127.0.0.1:${PORT}/app/`, { waitUntil: 'domcontentloaded' })
     await page.waitForFunction(() => !!window.__tool, null, { timeout: 30000 })
     await page.evaluate(async () => { await window.__tool.setApiKey({ apiKey: 'sk-or-v1-mock' }) })
 

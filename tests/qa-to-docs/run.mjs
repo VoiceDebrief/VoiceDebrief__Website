@@ -121,7 +121,9 @@ async function capture(id) {
 
 try {
     // ── Journey 1: the one pass ────────────────────────────────────────────
-    await page.goto(`http://127.0.0.1:${PORT}/app/?origin=${encodeURIComponent(TOOLS_ORIGIN)}`, { waitUntil: 'domcontentloaded' })
+    // No ?origin= — the parameter is gone (issue 041); the MIRROR_DIR route
+    // intercepts requests to the real hardcoded origin instead.
+    await page.goto(`http://127.0.0.1:${PORT}/app/`, { waitUntil: 'domcontentloaded' })
     await page.waitForFunction(() => !!window.__tool, null, { timeout: 30000 })
     check('one-pass: app boots', true)
     await capture('01-app-start')

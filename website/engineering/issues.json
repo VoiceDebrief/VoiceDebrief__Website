@@ -1,10 +1,10 @@
 {
   "note": "Rendered from issues/ by CI at deploy time \u2014 the queue as of this release.",
-  "generated_at": "2026-08-06T15:26:52+00:00",
+  "generated_at": "2026-08-06T15:38:56+00:00",
   "counts": {
-    "open": 10,
+    "open": 11,
     "blocked": 0,
-    "done": 28
+    "done": 30
   },
   "issues": [
     {
@@ -310,6 +310,30 @@
       "priority": "high",
       "created": "2026-08-06",
       "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/038-qa-to-docs-screenshot-pipeline.md"
+    },
+    {
+      "id": "039",
+      "title": "Content architecture: markdown per post, generated pages, atomic agent writes",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/039-content-architecture-markdown-per-post.md"
+    },
+    {
+      "id": "040",
+      "title": "Videos on the site",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/040-videos-on-the-site.md"
+    },
+    {
+      "id": "041",
+      "title": "`?origin=` removed \u2014 the engine origin is hardcoded",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/041-remove-origin-parameter.md"
     }
   ]
 }

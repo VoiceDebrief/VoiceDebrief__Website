@@ -65,7 +65,7 @@
         <thead><tr><th>Finding</th><th>Defence</th><th>State</th></tr></thead>
         <tbody>
           <tr><td>S1 — a crafted <code>?origin=</code> link could load attacker code into the page that holds the key</td>
-              <td>The engine origin is validated against an allowlist before anything is imported</td>
+              <td>The parameter was removed entirely — the engine origin is a hardcoded constant, and a test asserts the config never reads the query string (two teams allow-listed it independently the same day; deleting the feature beat both)</td>
               <td><span class="tag ok">SHIPPED</span></td></tr>
           <tr><td>S2 — no Content-Security-Policy</td>
               <td>Meta CSP pinning script and connection sources to exactly the origins the app uses</td>

@@ -5,8 +5,8 @@ issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|
-| [041](041-origin-parameter-allowlist.md) | `?origin=` accepted any URL (renumbered from qa's 038 on merge) | anchored allow-list in `config.js`; converged with issue 037 item 1 — two independent same-day fixes, stricter merge kept |
-| [039](039-content-architecture-markdown-per-post.md) | Content architecture for agents (renumbered from qa's 036 on merge) | `content/*.md` + `scripts/build_content.py`; pages/manifests generated, validated in CI |
+| [041](041-remove-origin-parameter.md) | `?origin=` removed entirely | engine origin hardcoded in `config.js`; a URL parameter no longer decides which JS runs — supersedes both branches' same-day allow-list fixes (dev 037 item 1, qa) |
+| [039](039-content-architecture-markdown-per-post.md) | Content architecture for agents | `content/*.md` + `scripts/build_content.py`; pages/manifests generated, validated in CI |
 | [007](007-infographic-images-into-library.md) | Add the seven shared infographics to the library | closed as superseded (Dinis, 6 Aug): files' whereabouts unknown, the three 31-Jul product infographics cover the need |
 | [035](035-chat-edits-materials-and-sees-image.md) | Chat edits materials + sees the image | update/restore tools, image context row + view_infographic, suggestions tidy |
 | [034](034-chat-with-materials.md) | M3: chat with the materials, tool-driven | `wa-chat-panel`, `chat.js`/`chat-tools.js`, scripted-OpenRouter CI test; live-validated |

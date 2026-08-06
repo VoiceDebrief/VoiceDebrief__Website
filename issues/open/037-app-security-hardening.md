@@ -48,3 +48,11 @@ Open, not started. Items 1–2 are the highest-value hours in the repo right now
 - Also: `scripts/mirror_engine.mjs` builds a local engine mirror for the
   integration tests' MIRROR_DIR mode (review E4 — sandboxed/pinned runs).
 - Items 3–5 remain open.
+
+## Status 6 Aug (qa merge) — item 1 superseded by issue 041
+The qa branch independently found and allow-listed the same `?origin=` vector the
+same day; Dinis then called the better fix — **remove the parameter entirely**
+(issue 041, merged): `ORIGIN` is a hardcoded constant and a unit test asserts
+`config.js` never reads the query string. S1 is closed by removal, not by
+allow-list. Item 2 (the CSP) stands and its localhost allowances were tightened
+away with the parameter. Items 3–5 remain open.
