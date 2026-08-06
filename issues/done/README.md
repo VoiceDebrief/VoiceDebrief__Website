@@ -1,7 +1,7 @@
 # Done Issues
 
 Completed tasks, newest first. Maintained manually, in the same commit as any
-issue change. Last updated: 2026-07-29.
+issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|

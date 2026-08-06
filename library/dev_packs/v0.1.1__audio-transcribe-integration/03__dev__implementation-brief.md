@@ -1,7 +1,7 @@
 # Dev Brief: Implementation Plan — Wire The Engine, Bind The Events, Ship Thin
 
 **version** v0.1.1 · **date** 29 July 2026 · **role** Dev · **type** Dev-pack brief
-**status** PROPOSED — briefs only; code sketches are sketches, not shipped code
+**status** SHIPPED — the work this brief proposed landed as M1–M2 (issues 008/024, Aug 2026); the code sketches were sketches, the shipped code lives in `website/app/`
 
 *Part of the dev pack [v0.1.1__audio-transcribe-integration](README.md) — see the [pack README](README.md) for scope, ground truth and definition of done.*
 

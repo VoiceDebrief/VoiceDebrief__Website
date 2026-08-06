@@ -76,5 +76,25 @@ check(`engine origin serves modules: ${origin}`, engine.ok, `status ${engine.sta
 const cors = engine.ok ? engine.headers.get('access-control-allow-origin') : null
 check('engine origin allows cross-origin import', cors === '*' || cors === LIVE, String(cors))
 
+// 6. Outbound links on the record pages (review pack v0.1.20, group A): every
+//    GitHub link the Updates and Library pages publish must resolve — dead blob/
+//    compare links are exactly how the public record rotted before. Same-origin
+//    links are checked too; other hosts are reported but only GitHub/self fail
+//    the job (third parties may rate-limit CI).
+const seen = new Set()
+for (const page of ['/updates/', '/library/']) {
+    const html = (await get(page)).text
+    for (const m of html.matchAll(/href="(https?:[^"#]+)/g)) {
+        const url = m[1]
+        if (seen.has(url)) continue
+        seen.add(url)
+        const strict = url.startsWith('https://github.com/') || url.startsWith(LIVE)
+        const r = await fetch(url, { method: 'GET', redirect: 'follow',
+            headers: { 'user-agent': 'sgraph-live-qa-link-check' } }).catch(() => ({ ok: false, status: 'ERR' }))
+        if (strict) check(`link resolves (${page}): ${url}`, r.ok, `status ${r.status}`)
+        else if (!r.ok) console.log(`warn  link ${url} → ${r.status} (non-blocking: third-party host)`)
+    }
+}
+
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nlive site healthy')
 process.exit(failures ? 1 : 0)

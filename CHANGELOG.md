@@ -18,6 +18,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The record caught up (review-pack group A)**: the changelog's Unreleased block
+  split into its real tag headings (v0.1.12–v0.1.21 below), `versions.json` caught up,
+  the Updates page's dead/moving links fixed and pinned to tags, reality-doc and
+  issue-README contradictions resolved, open-issue status notes re-dated, and the
+  landing page copy corrected (privacy-mode step removed, pricing labelled
+  PROPOSED, beta tense fixed). Outbound link-checking of the site's Updates and
+  Library links added to the live-QA job so dead links cannot recur silently.
+## [v0.1.21](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.20...v0.1.21) — 6 Aug 2026
+
 - **The four review-pack decisions, decided and landed (Dinis, 6 Aug)** — D1: the
   OpenRouter account is personal for now (issues 010/014 unblocked). D2: the model
   allowlist is the five models the app actually calls, verified in code and recorded
@@ -42,6 +51,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   documents that this changelog's tag-heading discipline is behind since v0.1.11 and
   `versions.json` is two tags stale — the record fixes are its group-A
   recommendation.
+## [v0.1.20](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.19...v0.1.20) — 6 Aug 2026
+
 - **The chat can now EDIT the materials and SEE the infographic (issue 035)** — built
   from a developer brief the chat itself wrote during Dinis's live session.
   `update_transcript` / `update_summary` / `restore_original` tools rewrite the page
@@ -76,6 +87,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   means to a reader on the QA estate (issue 033); and the M3 chat panel (issue 034
   — its "live keyed run pending" caveat has since been resolved: Dinis validated
   the chat live).
+## [v0.1.19](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.18...v0.1.19) — 5 Aug 2026
+
 - **The Versions page (issue 033)**: `website/versions/` lists every CI tag with
   its date, headline and changes, each linking to its full GitHub diff — the
   changelog stays the complete record, the page is the per-version site view
@@ -91,6 +104,11 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   live by Dinis via the debug pane's exchange log — its first real save.
 - The "also make me an infographic" option is now ticked by default (Dinis, 5 Aug —
   "for now"), so a plain run produces the full set: transcript, summary, infographic.
+- M3 design brief filed (`library/dev_packs/v0.1.18__chat-with-materials/`) — the
+  study of the reference vault app that issue 034's build was made to.
+
+## [v0.1.18](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.17...v0.1.18) — 5 Aug 2026
+
 - **The infographic is now a finished image (issue 031)**: the default model is
   `google/gemini-3.1-flash-image-preview` — the one the proven Infographic Generator
   tool uses — returning a publication-quality picture instead of a drawn SVG (that
@@ -104,19 +122,20 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 - **Fixed: sample chips skipped the options screen** (issue 031) — they auto-ran
   the pass, making the infographic toggle unreachable. A sample now loads into the
   same options screen as a dropped file.
+- Issue 030 closed: the QA Netlify estate verified live end to end; the QA live
+  check moved inside the deploy job (the secret-derived URL is dropped from
+  cross-job outputs), and the QA CORS check now sends an `Origin` header like a
+  browser would — it had failed on a green site (dev run #20).
+
+## [v0.1.17](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.16...v0.1.17) — 5 Aug 2026
+
 - **QA estate live: the `qa` branch auto-deploys to Netlify (issue 030)**. GitHub
   Pages is the dev estate (one Pages site per repo), so `.github/workflows/qa-deploy.yml`
   gives `qa` its own: push → the same unit+integration test gate → Netlify publish
   (build stamped `<version>-qa.<short-sha>`, cache-busted; the `version` file stays
   owned by the dev/main pipeline) → the live-site QA check against the Netlify URL.
-  Verified end to end at https://silver-melba-d8d883.netlify.app (all 16 live checks).
-  One wrinkle fixed in the wiring: with `NETLIFY_SITE_ID` set to the site name, the
-  deploy URL is secret-derived and GitHub drops it from cross-job outputs — so the
-  live check now runs inside the deploy job, reading the URL from the deploy's JSON.
-- **Fixed: the QA CORS check failed on a green site** (dev run #20). The tools-origin
-  CDN only sends `access-control-allow-origin` when the request carries an `Origin`
-  header, as browsers always do — the check's bare server-side fetch read `null`. It
-  now sends an `Origin` header; verified green against both estates.
+  Verified end to end at https://silver-melba-d8d883.netlify.app (all 16 live
+  checks); the live-check wiring fixes followed in v0.1.18.
 - **The advanced/debug pane (issue 027)**: a "⚙ debug" tab on the right edge opens a
   resizable side pane with three views — **LLM calls** (every request and response the
   page makes, verbatim, audio bytes summarised by size; each row can fetch its billed
@@ -143,6 +162,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   own re-transcribe path. Found by the new e2e; reported upstream alongside the `.ogg`
   MIME report.
 
+## [v0.1.16](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.15...v0.1.16) — 5 Aug 2026
+
 - **Fixed: after a deploy the browser could run the previous release's JavaScript**
   (issue 026 — reported as "the infographic checkbox did nothing"). GitHub Pages serves
   our modules with `max-age=600`, and the app's own modules were the one part of the
@@ -153,6 +174,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   code actually running — ask for it first when triaging.
 - Infographic failures are no longer silent: the card explains what happened (and says
   so when a reply contains no drawable SVG) instead of only turning a rail step red.
+
+## [v0.1.15](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.14...v0.1.15) — 5 Aug 2026
 
 - **Fixed a silent data-integrity bug (issue 025, urgent)**: a `.ogg` voice note whose
   OS MIME is `application/ogg` or `video/ogg` reached the model undecodable and came
@@ -178,6 +201,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   (fourth rail step), `wa-result-card` v0.1.1 (proper heading/bullet rendering —
   fixes the inline-bold summary glitch).
 
+## [v0.1.14](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.13...v0.1.14) — 5 Aug 2026
+
+- **M1 shipped: the product app** — drop a voice note → transcript (about five
+  seconds) → structured summary, streaming in arrival order; bring-your-own
+  OpenRouter key, stored only in your browser; costs shown in GBP. Built by
+  importing the proven audio-transcribe engine cross-origin onto our own
+  `whatsapp-transcribe` API (the M1-a spike's Attempt-2 verdict). Issue 008.
+- Repo debrief covering the 29 Jul – 5 Aug contributions; the 5 Aug build decisions
+  captured; review + spike branches merged; issue 024 opened.
 - M1-a spike harness: `website/m1-spike-test.html` runs the two candidate import cuts from
   [dev brief §2](library/dev_packs/v0.1.1__audio-transcribe-integration/03__dev__implementation-brief.md)
   — Attempt 1 (the `audio-transcribe-api.js` entry module) against Attempt 2 (the method-group
@@ -185,12 +217,19 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   which one publishes a `window.__tool` carrying the full contract surface. A developer harness,
   `noindex`, not part of the product; the spike's own deliverable (the note recording which
   attempt won) is still outstanding.
+## [v0.1.13](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.12...v0.1.13) — 1 Aug 2026
+
 - The three product infographics are documented rather than merely present:
   `library/infographics/README.md` gains a section describing each one, the library
   contents table no longer reads "images pending", the reality doc gains a row for
   them, and `Technical-architecture.jpg.png` is renamed to
   `Technical-architecture.png` (it is a PNG). Dinis's seven from 28 July remain
   pending under issue 007.
+- The infographics labelled as early-stage visions rather than current architecture.
+
+## [v0.1.12](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.11...v0.1.12) — 1 Aug 2026
+
+- CHANGELOG brought up to date through v0.1.11.
 
 ## [v0.1.11](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.10...v0.1.11) — 31 Jul 2026
 

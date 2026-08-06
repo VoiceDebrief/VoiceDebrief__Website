@@ -2,7 +2,7 @@
 
 *Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
 
-**status** PROPOSED — does not exist yet. This brief is the study output; implementation is issue 034.
+**status** SHIPPED — implemented as issues 034 + 035 (merged to `dev`, live-validated by Dinis 5–6 Aug 2026). This brief was the study output that preceded the build.
 **source** Dinis, 5 Aug 2026: "add the ability to 'chat' with the materials created and to
 control the tool workflow from the chat environment (via tools)" — one of the strongest
 commercial opportunities for the product.

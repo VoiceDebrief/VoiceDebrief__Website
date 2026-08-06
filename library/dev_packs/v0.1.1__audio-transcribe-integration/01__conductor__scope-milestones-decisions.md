@@ -1,7 +1,7 @@
 # Conductor Brief: Scope, Milestones, And The Decisions That Gate Them
 
 **version** v0.1.1 · **date** 29 July 2026 · **role** Conductor · **type** Dev-pack brief
-**status** PROPOSED — briefs only
+**status** SHIPPED — the work this brief proposed landed as M1–M2 (issues 008/024, Aug 2026)
 
 *Part of the dev pack [v0.1.1__audio-transcribe-integration](README.md) — see the [pack README](README.md) for scope, ground truth and definition of done.*
 

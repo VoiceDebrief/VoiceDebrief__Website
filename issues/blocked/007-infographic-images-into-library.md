@@ -14,3 +14,9 @@ blocked_on: the image files themselves — shared in chat as images; the actual 
 
 ## Status 28 Jul (post-merge to dev)
 Still blocked: image files not yet received in a form that can be committed.
+
+## Status 6 Aug (review-pack group A) — nudge
+Blocked on the same thing for nine days: the seven image files only Dinis can supply.
+Decision requested: either drop the files into a session (they land under
+`library/infographics/` the same day) or close this issue as superseded — the three
+product infographics created on 31 Jul now cover the library's visual needs.

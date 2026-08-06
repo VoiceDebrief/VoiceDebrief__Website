@@ -25,10 +25,10 @@
 | Tech stack & workflow guide for incoming devs | `library/guides/v0.1.0__guide__tech-stack-and-workflow.md` | 2026-07-29 |
 | `pyproject.toml` (version CI-owned; unblocks increment-tag) + root README with release badge and repo map | repo root | 2026-07-29 |
 | Issues READMEs: top-level table + per-folder views (maintained manually per commit) | `issues/*/README.md` | 2026-07-29 |
-| Dev pack: audio-transcribe integration briefs (PROPOSED work, pack itself exists) | `library/dev_packs/v0.1.1__audio-transcribe-integration/` | 2026-07-29 |
+| Dev pack: audio-transcribe integration briefs (the work they proposed shipped as M1–M2, issues 008/024) | `library/dev_packs/v0.1.1__audio-transcribe-integration/` | 2026-07-29 |
 | GH Pages + Route 53 DNS guide | `library/guides/v0.1.1__guide__github-pages-and-route53-dns.md` | 2026-07-29 |
 | Custom domain LIVE: Route 53 CNAME + Pages claim, HTTPS enforced, HTTP 301s, version-stamped (issue 021 closed) | https://whatsapp-voice-transcription.sgraph.ai | 2026-07-29 |
-| Journalist role (active): site Updates section — 10 posts, current through v0.1.18 plus the QA-only work (M3 chat panel, versions page, key diagnosis); the chat post is labelled "QA first — live-key run pending" | `team/roles/journalist/`, `website/updates/` | 2026-07-29 (posts current to 2026-08-05) |
+| Journalist role (active): site Updates section — 10 posts, current through the M3 chat work (chat panel, versions page, key diagnosis); the chat's live-key run has since been validated by Dinis and the post's links are pinned to tags | `team/roles/journalist/`, `website/updates/` | 2026-07-29 (posts current to 2026-08-05) |
 | Public Library page (Librarian-maintained doc front door) | `website/library/` | 2026-07-29 |
 | CHANGELOG.md + Librarian-Journalist per-version capture discipline | `CHANGELOG.md`, both ROLE files, `.claude/CLAUDE.md` | 2026-07-29 |
 | Three product infographics (product overview, technical architecture, user journey) — created for this repo, distinct from the seven still pending under issue 007 | `library/infographics/` | 2026-07-31 |

@@ -11,3 +11,9 @@ Second vault, separate from anything user-facing, for admin logic, key managemen
 
 ## Status 28 Jul (post-merge to dev)
 Open, not started. Ciphertext rule documented in .claude/CLAUDE.md; enforcement (pre-commit control) and vault creation pending.
+
+## Status 6 Aug (review-pack group A)
+Still not started, and now urgent: the key era is approaching (issues 010/014
+unblocked by decisions D1/D2 today). The review pack's B4 recommendation names the
+first slice — a secrets scanner (gitleaks or trufflehog) in CI plus a pre-commit
+hook — enforcement of the ciphertext rule rather than the vault itself.

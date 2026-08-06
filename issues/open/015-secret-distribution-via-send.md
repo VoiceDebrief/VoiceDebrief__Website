@@ -11,3 +11,8 @@ No new mechanism: send a secret directly (small hand-held cohort) or hand the us
 
 ## Status 28 Jul (post-merge to dev)
 Open, not started. Needed by first cohort onboarding.
+
+## Status 6 Aug (review-pack group A)
+Unchanged and correctly parked: a dependency of issue 010's rollout, which today's
+D1/D2 decisions unblocked. Becomes active when the first seeded/provisioned key needs
+delivering to a real user.

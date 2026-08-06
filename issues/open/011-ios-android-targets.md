@@ -11,3 +11,9 @@ Reuse the proven one-repo-to-three-apps pipeline incl. signing keys. Chrome exte
 
 ## Status 28 Jul (post-merge to dev)
 Open, not started. After the web MVP.
+
+## Status 6 Aug (review-pack group A)
+The "after the web MVP" gate has passed (M1–M3 shipped, beta live 5 Aug). Not yet
+scheduled: the open queue is the commercial/security layer (010/013/014) plus the
+review pack's hub and QA-to-docs proposals. Re-scope or schedule consciously rather
+than letting this ride as "after MVP".
