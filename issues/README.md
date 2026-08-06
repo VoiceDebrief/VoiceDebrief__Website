@@ -11,7 +11,7 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
 as any issue change. Last updated: 2026-08-06 (036–038 opened from the v0.1.20
-review pack: open engineering hub; app security hardening; QA-to-docs).
+review pack; 007 closed as superseded — Dinis, the queue's last blocked issue).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
@@ -25,7 +25,7 @@ review pack: open engineering hub; app security hardening; QA-to-docs).
 | [011](open/011-ios-android-targets.md) | iOS and Android targets from this repo | open | normal | large |
 | [015](open/015-secret-distribution-via-send.md) | Distribute secrets via the existing SG/Send capability | open | normal | small |
 | [016](open/016-crm-on-vault-substrate.md) | CRM built on the vault substrate | open | low | large |
-| [007](blocked/007-infographic-images-into-library.md) | Add the shared infographics to library/infographics/ | **blocked** (on image files) | normal | small |
+| [007](done/007-infographic-images-into-library.md) | Add the shared infographics to library/infographics/ | done (closed as superseded) | normal | small |
 | [001](done/001-brief-pack-understanding-architecture-tasks.md) | Create and push the detailed brief pack | done | high | medium |
 | [002](done/002-wire-up-agentic-team.md) | Wire up the agentic team for this repo | done | high | medium |
 | [003](done/003-ci-auto-tag-dev-main.md) | CI pipeline step to auto-tag on dev and main | done | high | small |

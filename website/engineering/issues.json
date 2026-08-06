@@ -1,10 +1,10 @@
 {
   "note": "Rendered from issues/ by CI at deploy time \u2014 the queue as of this release.",
-  "generated_at": "2026-08-06T15:21:05+00:00",
+  "generated_at": "2026-08-06T15:26:52+00:00",
   "counts": {
     "open": 10,
-    "blocked": 1,
-    "done": 27
+    "blocked": 0,
+    "done": 28
   },
   "issues": [
     {
@@ -58,10 +58,10 @@
     {
       "id": "007",
       "title": "Add the shared infographics to library/infographics/",
-      "state": "blocked",
+      "state": "done",
       "priority": "normal",
       "created": "2026-07-28",
-      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/blocked/007-infographic-images-into-library.md"
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/007-infographic-images-into-library.md"
     },
     {
       "id": "008",

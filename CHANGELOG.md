@@ -56,6 +56,10 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   gate on it and upload candidates/diffs as an artifact; baselines arm on the
   first CI run per the CI-only baseline policy. The hub's testing page shows
   the journey layer.
+- **Issue 007 closed as superseded (Dinis)** — the seven strategy-level
+  infographics from 28 Jul never landed (the source files' whereabouts are
+  unknown) and the three 31-Jul product infographics cover the library's
+  visual needs. The queue's only blocked issue; `issues/blocked/` is now empty.
 ## [v0.1.21](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.20...v0.1.21) — 6 Aug 2026
 
 - **The four review-pack decisions, decided and landed (Dinis, 6 Aug)** — D1: the
