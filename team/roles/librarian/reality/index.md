@@ -93,3 +93,7 @@ All rows above are committed and pushed in-session on their stated date.
 | 2026-08-05 | M1 key entry: user pastes their own OpenRouter key on the page; stored in localStorage (BYOK; resolves review gap 4) | Dinis, session decision |
 | 2026-08-05 | LLM prompts (summary, infographic) live as markdown files served from the site and fetched at runtime — editable without code changes (extends review action 4) | Dinis, session decision |
 | 2026-08-05 | Scope confirmed: "tools.sgraph.ai parity" = the capabilities THIS product needs (the one-pass job, starting from a WhatsApp voice memo) — Live/TTS/Chat stay out of v1 | Dinis, session decision |
+| 2026-08-06 | OpenRouter account: personal, for now | Dinis, review-pack decision D1 |
+| 2026-08-06 | Model allowlist fixed to the five models the app calls (gemini-3.5-flash, the two gemini image models, claude-sonnet-4.5, gpt-5-mini); key guardrails to restrict to it — Dinis also configuring directly on OpenRouter | Dinis, review-pack decision D2; AppSec review 08/06 |
+| 2026-08-06 | Licences settled: code Apache 2.0 (LICENSE canonical), written material CC BY 4.0 — closes the contract draft's licence open point | Dinis, review-pack decision D3 |
+| 2026-08-06 | Branch topology: `dev` and `main` go to the same place for now; `dev` is treated as production (it publishes the live domain). A separate `main` estate is a future split | Dinis, review-pack decision D4 |

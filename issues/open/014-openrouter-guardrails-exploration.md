@@ -11,3 +11,11 @@ Guardrails can restrict a key by model, provider and data policy, not only spend
 
 ## Status 28 Jul (post-merge to dev)
 Open, not started. Blocked-ish on personal-vs-organisation account decision (Dinis); exploration of automation via management API can start regardless.
+
+## Status 6 Aug — UNBLOCKED by decision D1 (account: personal, for now)
+The allowlist input is settled (AppSec review 08/06). Open questions narrow to:
+which guardrail controls (model allowlist, provider restriction, data policy) the
+**personal** dashboard actually exposes — OpenRouter documents some administration
+as organisation-account features — and whether they can be set via the management
+API alongside key creation. Dinis is configuring directly on OpenRouter; record
+what the dashboard offers while doing so.

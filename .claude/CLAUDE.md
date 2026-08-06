@@ -21,19 +21,23 @@ decisions, do not casually revisit:
    margin is the issued key's credit limit. No billing system is built here.
 3. **Privacy is a mode, not a disclaimer**: routed (default) / restricted / browser-local.
 4. **One repo, three targets**: web, iOS, Android (Chrome extension deliberately later).
-5. **Two branches, two estates**: `dev` → dev estate, `main` → production.
+5. **Two branches, one estate for now** (decided 6 Aug 2026): `dev` and `main` go to
+   the same place, and `dev` is treated as production — it is the branch that
+   publishes https://whatsapp-voice-transcription.sgraph.ai. A separate `main`
+   estate is a future split, not current reality.
 
 ## Repository Rules
 
 - **Default branch is `dev`.** Feature branches: `claude/{description}-{session-id}`.
-  `main` is production. At session start: `git fetch origin dev && git merge origin/dev`.
+  `dev` is treated as production for now — it publishes the live site (decision
+  6 Aug 2026). At session start: `git fetch origin dev && git merge origin/dev`.
 - **Version file**: `version` at repo root. **NEVER touch it — it is owned exclusively
   by the CI pipeline** (auto-tag on push to `dev` and `main`).
 - **File naming**: `v{MAJOR}.{MINOR}.{PATCH}__{type}__{kebab-slug}.md`, double-underscore
   separated, version taken from the `version` file at time of writing. Date-bucketed
   folders use `MM/DD/`.
 - **Licence**: docs are CC BY 4.0 (each ends with the standard licence footer);
-  code licence per the partnership contract (open source; MIT or Apache 2.0, TBD).
+  code is **Apache 2.0** (decided 6 Aug 2026; the root `LICENSE` file is canonical).
 - **Changelog discipline**: every version tag gets an entry in `CHANGELOG.md`
   (Librarian + Journalist). Describe in-flight work under "Unreleased" in the same
   commit; rename the heading once CI tags. Notable versions become posts on

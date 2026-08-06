@@ -18,6 +18,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The four review-pack decisions, decided and landed (Dinis, 6 Aug)** — D1: the
+  OpenRouter account is personal for now (issues 010/014 unblocked). D2: the model
+  allowlist is the five models the app actually calls, verified in code and recorded
+  in the first AppSec review (`team/roles/appsec/reviews/08/06/`), with key
+  guardrails to restrict to it. D3: licences settled — code **Apache 2.0** (LICENSE
+  canonical), written material **CC BY 4.0**; README, CLAUDE.md and the tech-stack
+  guide updated, closing the contract draft's licence open point. D4: `dev` and
+  `main` go to the same place for now and `dev` is treated as production (it
+  publishes the live domain) — the rulebook, README and guide now say so.
 - **Review pack v0.1.20 (`library/review-packs/v0.1.20__project-review/`)** — a full
   project review commissioned by Dinis: state of the project, code + security
   findings, testing/CI assessment, documentation-estate audit, live-site review, and
