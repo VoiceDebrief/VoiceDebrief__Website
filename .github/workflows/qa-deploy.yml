@@ -32,6 +32,7 @@ jobs:
   test:
     name: Tests (unit + integration)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -101,6 +102,7 @@ jobs:
   deploy-netlify:
     name: Deploy to Netlify (QA)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [test]
     permissions:
       contents: read

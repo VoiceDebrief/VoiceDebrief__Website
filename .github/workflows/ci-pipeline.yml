@@ -32,6 +32,7 @@ jobs:
   test:
     name: Tests (unit + integration)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -101,6 +102,7 @@ jobs:
   increment-tag:
     name: Increment Tag
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [test]
     permissions:
       contents: write
@@ -116,6 +118,7 @@ jobs:
   build-pages:
     name: Build Site (versioned)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [test, increment-tag]
     # Publish from dev (the Pages estate). Runs even when increment-tag is
     # skipped (manual dispatch) so the site can be re-published on demand —
@@ -181,6 +184,7 @@ jobs:
   deploy-pages:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [build-pages]
     permissions:
       pages: write
@@ -196,6 +200,7 @@ jobs:
   qa-live:
     name: QA (live site)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [deploy-pages]
     permissions:
       contents: read

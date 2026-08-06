@@ -18,6 +18,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Every CI job now carries an explicit `timeout-minutes`** (test 10, deploys
+  10, tag 5, live-QA 15 — sized from healthy runs) so a genuine hang fails fast
+  with an honest "timed out" instead of running toward GitHub's 6-hour default.
+  Investigated after two qa runs died at exactly ~15m: those never executed a
+  step at all — the jobs sat queued with no runner assigned (runner_id 0, empty
+  logs) and GitHub cancelled them at its own queue limit; a hosted-runner
+  capacity blip, not a test hang, and not something a job timeout governs.
 - **The workflow is now a declared state machine (issues 042–043, human brief
   v0.33.56)** — the one-pass executes from `website/app/workflows/standard.json`:
   each step declares what it requires and produces, its pinned model, its
