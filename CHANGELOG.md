@@ -24,8 +24,12 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   the **open engineering hub proposal** (public `/engineering/` pages rendering the
   CI/testing/docs/security/team estate from CI-emitted JSON — the NFRs made visible,
   aimed at collaborators and at GenAI entrepreneurs growing up a vibe-coded service).
-  Issues opened from it: **036** (the hub) and **037** (app security hardening —
-  urgent: `?origin=` allowlist, CSP, chat prompt-tool gating). The pack also
+  A second proposal (doc 08, pattern briefed by Dinis): **QA-to-docs** — Playwright
+  journeys in CI that QA the key user workflows AND capture the screenshots that
+  maintain the user docs, with an image-diff gate telling pixel noise from real
+  UI/UX change. Issues opened from the pack: **036** (the hub), **037** (app
+  security hardening — urgent: `?origin=` allowlist, CSP, chat prompt-tool gating)
+  and **038** (QA-to-docs). The pack also
   documents that this changelog's tag-heading discipline is behind since v0.1.11 and
   `versions.json` is two tags stale — the record fixes are its group-A
   recommendation.
