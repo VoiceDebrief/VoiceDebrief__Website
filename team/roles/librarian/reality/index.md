@@ -28,7 +28,7 @@
 | Dev pack: audio-transcribe integration briefs (PROPOSED work, pack itself exists) | `library/dev_packs/v0.1.1__audio-transcribe-integration/` | 2026-07-29 |
 | GH Pages + Route 53 DNS guide | `library/guides/v0.1.1__guide__github-pages-and-route53-dns.md` | 2026-07-29 |
 | Custom domain LIVE: Route 53 CNAME + Pages claim, HTTPS enforced, HTTP 301s, version-stamped (issue 021 closed) | https://whatsapp-voice-transcription.sgraph.ai | 2026-07-29 |
-| Journalist role (active): site Updates section — 10 posts, current through v0.1.18 plus the QA-only work (M3 chat panel, versions page, key diagnosis); the chat post is labelled "QA first — live-key run pending" | `team/roles/journalist/`, `website/updates/` | 2026-07-29 (posts current to 2026-08-05) |
+| Journalist role (active): owns the public record — 11 Updates posts, the Versions list and the Videos page, all authored as markdown under `content/` (one file per post; see issue 036) | `team/roles/journalist/`, `content/updates/` | 2026-07-29 (posts current to 2026-08-06) |
 | Public Library page (Librarian-maintained doc front door) | `website/library/` | 2026-07-29 |
 | CHANGELOG.md + Librarian-Journalist per-version capture discipline | `CHANGELOG.md`, both ROLE files, `.claude/CLAUDE.md` | 2026-07-29 |
 | Three product infographics (product overview, technical architecture, user journey) — created for this repo, distinct from the seven still pending under issue 007 | `library/infographics/` | 2026-07-31 |
@@ -48,6 +48,8 @@
 | Disabled-key diagnosis (issue 032): network-shaped LLM failures re-checked via GET /api/v1/key; rejected keys named in the error card and on the key panel | `website/app/app.js` | 2026-08-05 |
 | Versions page (issue 033): per-tag timeline with diffs (`versions.json` kept in step with CHANGELOG); version chip on every page footer; QA builds stamped `<next-version>-qa.<sha>` from the tags | `website/versions/`, both workflows | 2026-08-05 |
 | M3 chat LIVE (issue 034): 💬 `wa-chat-panel` + `chat.js`/`chat-tools.js` — context composer, fenced-block tool loop (typed registry, 3 budgets), debug-audited; validated live by Dinis (tool-driven exchanges, and the chat authored the issue-035 brief) | `website/app/chat*.js`, `website/components/wa-chat-panel/` | 2026-08-05 |
+| Content architecture (issue 036): `content/updates|versions|videos/*.md` are the source of truth; `scripts/build_content.py` renders the Updates + Videos pages, `updates.json`, `videos.json`, `feed.xml` and `versions.json` as gitignored build output; links derived from `version:`/`issues:`; validation gates both CI workflows | `content/`, `scripts/build_content.py`, `scripts/templates/` | 2026-08-06 |
+| Videos page + content type (issue 037): `/videos/`, grouped by kind, click-to-load players (no third-party request before play, asserted by test); four real videos staged as drafts pending their YouTube ids | `website/videos/` (generated), `content/videos/` | 2026-08-06 |
 | Chat material edits + image vision (issue 035): `updateMaterial`/`restoreMaterial` actions, `update_transcript`/`update_summary`/`restore_original`/`view_infographic` tools (13 total), revert note under the cards, infographic image as a multimodal part (composer row + tool attachment), suggestions only on a blank thread (`wa-chat-panel` v0.1.1) | `website/app/pipeline.js`, `chat*.js`, panel v0.1.1 | 2026-08-06 |
 
 All rows above are committed and pushed in-session on their stated date.

@@ -217,3 +217,13 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 node_modules
+
+# Built from content/ by scripts/build_content.py — never edit or commit these.
+# Run `python3 scripts/build_content.py` to produce them locally; CI builds them
+# into the deploy artifact.
+website/updates/index.html
+website/updates/updates.json
+website/updates/feed.xml
+website/versions/versions.json
+website/videos/index.html
+website/videos/videos.json

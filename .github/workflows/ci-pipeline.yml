@@ -43,6 +43,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Validate published content
+        run: python3 scripts/build_content.py --check
+
       - name: Unit tests
         run: node --test tests/unit/*.test.mjs
 
@@ -90,6 +93,12 @@ jobs:
 
       - name: Pull the version bump commit
         run: git pull origin ${{ github.ref_name }}
+
+      - name: Build the site's content (updates, videos, versions)
+        # content/*.md -> the rendered pages + manifests. Runs FIRST so the
+        # generated pages get the version stamp and the cache-buster like
+        # every other page.
+        run: python3 scripts/build_content.py
 
       - name: Stamp version into the site
         run: |

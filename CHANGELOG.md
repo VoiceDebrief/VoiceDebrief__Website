@@ -18,6 +18,27 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Publishing is now adding one file (issue 036)**. The Updates page was being edited
+  as raw HTML — a fragile job for a person and a worse one for the 5am Journalist
+  routine, which had to splice an `<article>` into a 145-line file and perform surgery
+  on another to drop a stale caveat. Now `content/updates|versions|videos/*.md` are the
+  source of truth and `scripts/build_content.py` generates the pages,
+  `updates.json`, `videos.json`, `feed.xml` and `versions.json` (all gitignored build
+  output). Links are **derived** — `version:` gives the diff against the previous
+  released tag, `issues: 035` finds the issue file wherever it now lives — which retires
+  the whole class of stale-link bugs the routine had to fix by hand. The build validates
+  and refuses (bad date, duplicate slug, missing issue, dead video id…), gating both CI
+  workflows before the tag and the deploy. 11 posts and 21 versions migrated with no
+  content loss.
+- **A Videos page (issue 037)**: `/videos/`, grouped into demos, explainers and shorts,
+  fed by `content/videos/*.md`. Cards, not embeds — **nothing is requested from YouTube
+  until you press play**, and playback uses `youtube-nocookie.com`; a test asserts the
+  served HTML contains no iframe, because on a product that promises not to track you an
+  auto-loading third-party player would be a quiet lie. Dinis's four existing videos are
+  staged as drafts awaiting their ids. Mapping for what comes next (landing-page card,
+  videos inside release posts, local posters, transcripts of our own videos made with our
+  own tool) in `library/dev_packs/v0.1.20__video-on-the-site/`.
+
 - **Updates + Versions caught up through v0.1.20 (Journalist)**: a new post on
   `website/updates/` for issue 035 (the chat rewriting the transcript/summary with the
   original one click away, seeing the finished infographic as a real image, and the

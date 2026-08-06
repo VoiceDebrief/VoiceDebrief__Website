@@ -10,11 +10,12 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-06 (027–035 done — latest: M3 chat live,
-chat material edits + image vision).
+as any issue change. Last updated: 2026-08-06 (036 done: content architecture;
+037 videos awaiting ids).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [037](open/037-videos-on-the-site.md) | Videos on the site — page + content type shipped; needs 4 YouTube ids | **blocked** (on ids) | high | medium |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |
@@ -50,6 +51,7 @@ chat material edits + image vision).
 | [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |
 | [034](done/034-chat-with-materials.md) | M3: chat with the materials + tool-driven workflow — live-validated by Dinis | done | high | large |
 | [035](done/035-chat-edits-materials-and-sees-image.md) | Chat edits transcript/summary (revertible), SEES the infographic image, tidy suggestions | done | high | medium |
+| [036](done/036-content-architecture-markdown-per-post.md) | Content architecture: markdown per post, generated pages/manifests, atomic agent writes | done | high | medium |
 
 ## Layout
 
