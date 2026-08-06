@@ -1,9 +1,37 @@
-/* App configuration — the only file with tunable constants.
-   The engine origin can be overridden for dev/tests with ?origin=<url>. */
+/* App configuration — the only file with tunable constants. */
 
 const qs = new URLSearchParams(location.search)
 
-export const ORIGIN = qs.get('origin') || 'https://dev.tools.sgraph.ai'
+/* Where the audio-transcribe engine's ES modules are imported from at runtime.
+   `?origin=` overrides it for development and tests — but ONLY to an origin on
+   the allow-list below (issue 038).
+
+   Why the allow-list: whatever this resolves to, engine.js does `import()` on
+   it, so the value decides which JavaScript executes inside this page — with
+   access to the user's OpenRouter key in localStorage. Without the check, a link
+   carrying OUR OWN trusted domain
+   (…/app/?origin=https://somewhere-else) would run someone else's code and could
+   post the key anywhere. That is a credential-theft vector wearing a legitimate
+   URL, so an unrecognised origin is ignored rather than trusted. */
+const ALLOWED_ORIGINS = [
+    /^https:\/\/(dev\.)?tools\.sgraph\.ai$/,              // the real engine, dev + prod
+    /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/,       // local dev and the test mirror
+]
+
+export const DEFAULT_ORIGIN = 'https://dev.tools.sgraph.ai'
+
+export function resolveOrigin(requested) {
+    if (!requested) return DEFAULT_ORIGIN
+    const clean = String(requested).replace(/\/+$/, '')
+    if (ALLOWED_ORIGINS.some(re => re.test(clean))) return clean
+    // Loud, because a blocked override means the page is not running what the
+    // link asked for — and because it may be someone else's attempt, not a typo.
+    console.warn(`[whatsapp-transcribe] ignoring ?origin=${requested} — not an allowed engine origin. ` +
+                 `Using ${DEFAULT_ORIGIN}.`)
+    return DEFAULT_ORIGIN
+}
+
+export const ORIGIN = resolveOrigin(qs.get('origin'))
 
 /* Costs: the engine meters in USD; the product speaks GBP (5 Aug decision).
    Fixed, versioned rate — reviewed when pricing goes live, not a live feed. */

@@ -5,6 +5,7 @@ issue change. Last updated: 2026-07-29.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [038](038-origin-parameter-allowlist.md) | `?origin=` accepted any URL | anchored allow-list in `config.js`; the parameter chose which JS ran beside the user's key |
 | [036](036-content-architecture-markdown-per-post.md) | Content architecture for agents | `content/*.md` + `scripts/build_content.py`; pages/manifests generated, validated in CI |
 | [035](035-chat-edits-materials-and-sees-image.md) | Chat edits materials + sees the image | update/restore tools, image context row + view_infographic, suggestions tidy |
 | [034](034-chat-with-materials.md) | M3: chat with the materials, tool-driven | `wa-chat-panel`, `chat.js`/`chat-tools.js`, scripted-OpenRouter CI test; live-validated |

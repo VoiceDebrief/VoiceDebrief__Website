@@ -18,6 +18,17 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Security: `?origin=` no longer accepts any URL (issue 038)**. The parameter picks
+  which server the transcription engine is imported from — so it decided which
+  JavaScript ran inside the page, beside the user's OpenRouter key in localStorage. A
+  link on our own trusted domain (`…/app/?origin=https://somewhere-else`) was enough to
+  run someone else's code and take the key; there is no CSP to catch it. The value is
+  now checked against an anchored allow-list (`(dev.)tools.sgraph.ai`, localhost for
+  development and tests) and anything else falls back to the default with a loud
+  warning. Both development uses are unaffected. Found while writing the briefing doc
+  that explains the parameter:
+  `library/guides/v0.1.20__guide__the-origin-parameter.md`.
+
 - **Publishing is now adding one file (issue 036)**. The Updates page was being edited
   as raw HTML — a fragile job for a person and a worse one for the 5am Journalist
   routine, which had to splice an `<article>` into a 145-line file and perform surgery

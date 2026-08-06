@@ -10,8 +10,8 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-06 (036 done: content architecture;
-037 videos awaiting ids).
+as any issue change. Last updated: 2026-08-06 (038 done: ?origin= allow-list;
+036 content architecture; 037 videos awaiting one id).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
@@ -52,6 +52,7 @@ as any issue change. Last updated: 2026-08-06 (036 done: content architecture;
 | [034](done/034-chat-with-materials.md) | M3: chat with the materials + tool-driven workflow — live-validated by Dinis | done | high | large |
 | [035](done/035-chat-edits-materials-and-sees-image.md) | Chat edits transcript/summary (revertible), SEES the infographic image, tidy suggestions | done | high | medium |
 | [036](done/036-content-architecture-markdown-per-post.md) | Content architecture: markdown per post, generated pages/manifests, atomic agent writes | done | high | medium |
+| [038](done/038-origin-parameter-allowlist.md) | `?origin=` accepted any URL — credential-theft vector; now allow-listed | done | **high** | small |
 
 ## Layout
 
