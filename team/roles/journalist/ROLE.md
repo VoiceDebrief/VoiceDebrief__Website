@@ -34,6 +34,7 @@ is renamed to the tag once CI mints it.
 ## Working Surface
 
 **Publish by adding ONE markdown file. Never edit `website/` — it is build output.**
+The unattended daily brief is [`ROUTINE.md`](ROUTINE.md) (5am Claude Routine, pushes to `qa`).
 The authoring contract is [`content/README.md`](../../../content/README.md); the
 reasoning is in the
 [content architecture guide](../../../library/guides/v0.1.20__guide__content-architecture-for-agents.md).

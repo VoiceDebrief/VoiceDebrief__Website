@@ -45,7 +45,7 @@ as any issue change. Last updated: 2026-08-06 (036 done: content architecture;
 | [027](done/027-debug-advanced-views-and-samples.md) | Debug/advanced views: LLM exchange log, OpenRouter details, prompt customisation, samples | done | high | large |
 | [028](done/028-ci-pipeline-tests.md) | CI tests: unit + integration gate the release, QA checks the live site | done | high | medium |
 | [029](done/029-repeat-pass-same-file-not-audio.md) | Re-running the same voice note failed ("not-audio") — engine silent dedupe, reused item | done | high | small |
-| [030](done/030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify — live and verified (silver-melba-d8d883.netlify.app) | done | high | small |
+| [030](done/030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify — live and verified (qa.whatsapp-voice-transcription.sgraph.ai) | done | high | small |
 | [031](done/031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model default, redraw UX + model picker, progress heartbeat, samples keep options | done | high | medium |
 | [032](done/032-disabled-key-shows-failed-to-fetch.md) | Disabled key read as "Failed to fetch" — now diagnosed via /api/v1/key and named | done | high | small |
 | [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |

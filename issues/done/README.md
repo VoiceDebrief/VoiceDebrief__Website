@@ -11,7 +11,7 @@ issue change. Last updated: 2026-07-29.
 | [033](033-versions-page-and-sitewide-version.md) | Versions page + site-wide version chip | `website/versions/` timeline per tag; QA stamped `<next>-qa.<sha>` |
 | [032](032-disabled-key-shows-failed-to-fetch.md) | Disabled key read as "Failed to fetch" | network-shaped LLM failures now diagnosed via GET /api/v1/key; key named in place |
 | [031](031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model, redraw, heartbeat | gemini-3.1-flash-image-preview default; model picker + redraw; spinner/elapsed; samples keep options |
-| [030](030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify | `qa-deploy.yml` verified e2e → silver-melba-d8d883.netlify.app |
+| [030](030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify | `qa-deploy.yml` verified e2e → qa.whatsapp-voice-transcription.sgraph.ai |
 | [029](029-repeat-pass-same-file-not-audio.md) | Repeat pass on same file failed ("not-audio") | pipeline reuses the deduped item + upstream report |
 | [028](028-ci-pipeline-tests.md) | CI tests gate the release | `tests/{unit,integration,qa}/` + test/qa-live jobs in `ci-pipeline.yml` |
 | [027](027-debug-advanced-views-and-samples.md) | Debug/advanced views + sample files | `wa-debug-panel`, `debug-store.js`, `openrouter.js`, `website/app/samples/` |

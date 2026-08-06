@@ -115,7 +115,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   gives `qa` its own: push → the same unit+integration test gate → Netlify publish
   (build stamped `<version>-qa.<short-sha>`, cache-busted; the `version` file stays
   owned by the dev/main pipeline) → the live-site QA check against the Netlify URL.
-  Verified end to end at https://silver-melba-d8d883.netlify.app (all 16 live checks).
+  Verified end to end at https://qa.whatsapp-voice-transcription.sgraph.ai (all 16 live checks).
   One wrinkle fixed in the wiring: with `NETLIFY_SITE_ID` set to the site name, the
   deploy URL is secret-derived and GitHub drops it from cross-job outputs — so the
   live check now runs inside the deploy job, reading the URL from the deploy's JSON.
