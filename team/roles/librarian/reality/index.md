@@ -55,6 +55,7 @@
 | Live-QA outbound link check: GitHub + same-origin links on Updates/Library must resolve (third-party hosts warn only) | `tests/qa/live-site-check.mjs` §6 | 2026-08-06 |
 | The open engineering hub (issue 036, M-hub-1+2): `/engineering/` + five section pages (pipeline/testing/docs/security/team) rendering CI-emitted `status.json`/`issues.json`/`docs.json`; both workflows emit at deploy (test results travel by artifact); hub pages in the live-QA check | `website/engineering/`, `scripts/emit_engineering_json.py`, both workflows | 2026-08-06 |
 | Story-travel plumbing (M-hub-3 slice): OG/Twitter tags on landing, Updates and the hub; RSS feed of Updates posts (Journalist-maintained per post) | `website/updates/feed.xml`, page heads | 2026-08-06 |
+| QA-to-docs harness (issue 038, M-qtd-1): 2 journeys / 7 manifest-named shots with masks, deterministic scripted-OpenRouter replay, pixelmatch diff gate (0.000% self-diff verified; perturbation caught at 0.954%); gating in both workflows with candidates/diffs as the `qa-to-docs` artifact. Baselines NOT yet committed — first CI run produces the candidates (CI-only baseline policy) | `tests/qa-to-docs/`, both workflows | 2026-08-06 |
 
 All rows above are committed and pushed in-session on their stated date.
 

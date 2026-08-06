@@ -217,3 +217,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 node_modules
+
+# QA-to-docs run output (issue 038): candidate baselines and diff reports are
+# CI artifacts, never committed from a local run
+tests/qa-to-docs/output/

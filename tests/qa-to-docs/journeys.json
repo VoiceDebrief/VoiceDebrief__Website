@@ -1,0 +1,80 @@
+{
+  "note": "QA-to-docs manifest (issue 038). One entry per named screenshot: which journey takes it, the caption the user guide will use, the user-guide slot it fills, CSS selectors masked before capture (legitimately dynamic regions), and an optional per-shot diff threshold overriding the global default (fraction of pixels after masks, default 0.001). Baselines live in website/user-guide/screenshots/ and are only ever produced by CI \u2014 never on a laptop.",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "threshold": 0.001,
+  "shots": [
+    {
+      "id": "01-app-start",
+      "journey": "one-pass",
+      "caption": "The app as you arrive: drop zone, sample notes, and the key panel.",
+      "slot": "getting-started/arrival",
+      "masks": [
+        "#site-version"
+      ]
+    },
+    {
+      "id": "02-key-saved",
+      "journey": "one-pass",
+      "caption": "Paste your OpenRouter key once \u2014 it stays in your browser.",
+      "slot": "getting-started/key",
+      "masks": [
+        "#site-version"
+      ]
+    },
+    {
+      "id": "03-options",
+      "journey": "one-pass",
+      "caption": "A loaded voice note: choose whether you want an infographic, then transcribe.",
+      "slot": "one-pass/options",
+      "masks": [
+        "#site-version"
+      ]
+    },
+    {
+      "id": "04-results",
+      "journey": "one-pass",
+      "caption": "The one pass, done: transcript, summary and the infographic together.",
+      "slot": "one-pass/results",
+      "masks": [
+        "#site-version",
+        "wa-cost-line"
+      ]
+    },
+    {
+      "id": "05-chat-open",
+      "journey": "chat",
+      "caption": "The chat pane: tick what the assistant may see \u2014 the rows ARE the request.",
+      "slot": "chat/open",
+      "masks": [
+        "#site-version",
+        "wa-chat-panel .msg-meta",
+        "wa-chat-panel .wa-chat__meter"
+      ]
+    },
+    {
+      "id": "06-chat-thread",
+      "journey": "chat",
+      "caption": "Ask for work, not just answers: the assistant drives the tool, every call visible in the thread.",
+      "slot": "chat/tools",
+      "masks": [
+        "#site-version",
+        "wa-chat-panel .msg-meta",
+        "wa-chat-panel .wa-chat__meter"
+      ]
+    },
+    {
+      "id": "07-chat-edited",
+      "journey": "chat",
+      "caption": "The assistant edited the summary \u2014 the original is always one click away.",
+      "slot": "chat/edit-restore",
+      "masks": [
+        "#site-version",
+        "wa-chat-panel .msg-meta",
+        "wa-chat-panel .wa-chat__meter"
+      ]
+    }
+  ]
+}

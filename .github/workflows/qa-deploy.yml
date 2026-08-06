@@ -49,7 +49,7 @@ jobs:
 
       - name: Install Playwright Chromium
         run: |
-          npm install --no-save playwright@1
+          npm install --no-save playwright@1 pixelmatch pngjs
           npx playwright install --with-deps chromium
 
       - name: Integration test (app boot against the live engine origin)
@@ -60,6 +60,21 @@ jobs:
         shell: bash
         run: node tests/integration/chat-loop.test.mjs 2>&1 | tee int-chat.log
 
+      # QA-to-docs (issue 038): same journeys and diff gate as the release
+      # pipeline — a QA push that changes the UI is caught (or its baseline
+      # refreshed) before the change reaches dev.
+      - name: QA-to-docs journeys (screenshot QA + docs capture)
+        shell: bash
+        run: node tests/qa-to-docs/run.mjs 2>&1 | tee qa-docs.log
+
+      - name: Upload QA-to-docs captures (candidate baselines / diff reports)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-to-docs
+          path: tests/qa-to-docs/output/
+          if-no-files-found: ignore
+
       # Same collection as the release pipeline — the QA estate's /engineering/
       # pages render the gate this QA build passed (issue 036).
       - name: Collect test results for the engineering hub
@@ -69,8 +84,9 @@ jobs:
           UNIT_FAIL=$(grep -oP '^# fail \K\d+' unit.log)
           BOOT=$(grep -c '^ok ' int-boot.log)
           CHAT=$(grep -c '^ok ' int-chat.log)
-          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s}\n}\n' \
-            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BOOT" "$BOOT" "$CHAT" "$CHAT" > test-results.json
+          QTD=$(grep -c '^ok ' qa-docs.log)
+          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
+            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$QTD" "$QTD" > test-results.json
           cat test-results.json
 
       - name: Upload test results

@@ -31,6 +31,7 @@
     <div class="status-strip" id="layers">
       <div class="stat"><div class="k">unit</div><div class="v" id="l-unit">…</div></div>
       <div class="stat"><div class="k">integration</div><div class="v" id="l-int">…</div></div>
+      <div class="stat"><div class="k">qa-to-docs journeys</div><div class="v" id="l-qtd">…</div></div>
       <div class="stat"><div class="k">live QA</div><div class="v" id="l-qa">post-deploy</div></div>
     </div>
   </div>
@@ -57,6 +58,13 @@
         <p>After the deploy, plain fetches against the live site: the version it claims,
         every cache-busted asset, the samples and prompts, the engine origin + CORS, and
         every GitHub/self link on the record pages. The pipeline checks its own work.</p></div>
+      <div class="card"><h3>+ · QA-to-docs journeys</h3>
+        <p>The key user journeys — key setup, the one pass, the chat — replayed with a
+        scripted, deterministic model and screenshotted at each story moment. An
+        image-diff gate compares every shot to its committed baseline: pixel noise is
+        ignored, a real UI change either fails the run (a caught visual regression) or
+        refreshes the baseline with the feature — and those screenshots ARE the user
+        docs' images. One run, three outputs.</p></div>
     </div>
   </div>
 </section>
@@ -112,6 +120,8 @@ try {
         if (u) document.getElementById('l-unit').textContent = `${u.pass}/${u.total}`
         if (i1 || i2) document.getElementById('l-int').textContent =
             [i1 && `boot ${i1.pass}/${i1.total}`, i2 && `chat ${i2.pass}/${i2.total}`].filter(Boolean).join(' · ')
+        const q = s.tests['qa-to-docs']
+        document.getElementById('l-qtd').textContent = q ? `${q.pass}/${q.total}` : 'arming'
     } else {
         document.getElementById('l-unit').textContent = 'see Actions'
         document.getElementById('l-int').textContent = 'see Actions'

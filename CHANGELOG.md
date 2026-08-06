@@ -45,6 +45,17 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   story-travel slice of M-hub-3: OG/Twitter tags on the share targets and an
   RSS feed of Updates (`website/updates/feed.xml`); the chat post's stale
   "live-key run pending" tag corrected.
+- **QA-to-docs, first slice (issue 038, M-qtd-1)** — `tests/qa-to-docs/`: the
+  key user journeys (the one pass; the chat) replayed deterministically against
+  the scripted OpenRouter and screenshotted at 7 manifest-named story moments
+  (masks over the version chip, costs and latencies), with a pixelmatch
+  image-diff gate against committed baselines — pixel noise ignored, real UI
+  change fails the run with side-by-side diff reports, and the same screenshots
+  become the user docs' images. Verified in-session: 0.000% self-diff across
+  all shots on rerun; a perturbed baseline caught at 0.954%. Both workflows
+  gate on it and upload candidates/diffs as an artifact; baselines arm on the
+  first CI run per the CI-only baseline policy. The hub's testing page shows
+  the journey layer.
 ## [v0.1.21](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.20...v0.1.21) — 6 Aug 2026
 
 - **The four review-pack decisions, decided and landed (Dinis, 6 Aug)** — D1: the
