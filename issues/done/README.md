@@ -5,6 +5,8 @@ issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [043](043-flow-panel-visualisation.md) | The 🧭 flow panel | `wa-flow-panel` v0.1.0 — the declaration + live execution trace, cost vs ceiling per step |
+| [042](042-workflow-declared-state-machine.md) | The workflow declared as a JSON state machine | `workflows/standard.json` + `workflow.js` validator/quote/runner; budget entry gate; quotable max pre-run; provenance trace |
 | [041](041-remove-origin-parameter.md) | `?origin=` removed entirely | engine origin hardcoded in `config.js`; a URL parameter no longer decides which JS runs — supersedes both branches' same-day allow-list fixes (dev 037 item 1, qa) |
 | [039](039-content-architecture-markdown-per-post.md) | Content architecture for agents | `content/*.md` + `scripts/build_content.py`; pages/manifests generated, validated in CI |
 | [007](007-infographic-images-into-library.md) | Add the seven shared infographics to the library | closed as superseded (Dinis, 6 Aug): files' whereabouts unknown, the three 31-Jul product infographics cover the need |

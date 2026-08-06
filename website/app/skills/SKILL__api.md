@@ -22,6 +22,12 @@ Every action returns a Promise. Authoritative list: `../manifest.json` `api` sec
 | `updateMaterial` | `{ what: "transcript"\|"summary", text }` | overwrite a material on the page (the original is kept; a "restore the original" link appears) — the chat's `update_transcript`/`update_summary` tools delegate here |
 | `restoreMaterial` | `{ what }` | undo the assistant's edit |
 
+## The declared workflow (issue 042 — the wa-flow-panel consumes only these)
+| Action | params | returns |
+|---|---|---|
+| `getWorkflow` | `{ options? }` | `{ definition, maxUsd, quoteUsd }` — the state machine `runPass` executes (`app/workflows/standard.json`) and the quotable budget ceiling for the given options |
+| `getWorkflowTrace` | `{}` | the current/last run's execution trace (per-step status, cost vs declared budget, duration — the provenance record; also on `results.trace`); `null` before any run. Live stream: `wa:workflow:started` / `wa:workflow:step` / `wa:workflow:complete` |
+
 ## Debug / advanced (issue 027 — the wa-debug-panel consumes only these)
 | Action | params | returns |
 |---|---|---|

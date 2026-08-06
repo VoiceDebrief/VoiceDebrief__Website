@@ -75,6 +75,17 @@
         "wa-chat-panel .msg-meta",
         "wa-chat-panel .wa-chat__meter"
       ]
+    },
+    {
+      "id": "08-flow-run",
+      "journey": "one-pass",
+      "caption": "The \ud83e\udded flow tab: the declared workflow \u2014 every step's model and spending ceiling, and what this run actually did and cost.",
+      "slot": "one-pass/workflow",
+      "masks": [
+        "#site-version",
+        "wa-flow-panel .step__cost",
+        "wa-cost-line"
+      ]
     }
   ]
 }

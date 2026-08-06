@@ -18,6 +18,27 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The workflow is now a declared state machine (issues 042–043, human brief
+  v0.33.56)** — the one-pass executes from `website/app/workflows/standard.json`:
+  each step declares what it requires and produces, its pinned model, its
+  **spending ceiling**, its permitted transitions and its failure behaviour.
+  A validator refuses declarations that lie (unknown transitions, unreachable
+  steps, missing failure paths); the runner enforces the budget at every step
+  boundary — a run that overruns is stopped, and the overrun itself is recorded,
+  never absorbed. The maximum cost is quoted on the options screen before
+  anything runs ("max cost for this run ≈ £0.21" — the sum of the declared
+  ceilings for the chosen options). A new **🧭 flow panel** (third right-edge
+  tab) renders the declaration before a run and the live execution trace during
+  and after — per-step status, actual cost against ceiling, durations, the
+  skipped branch dimmed — the "what actually happened" provenance record, which
+  also rides on `results.trace`. Deleting the declaration breaks the tool: there
+  is deliberately no code fallback. One declared-behaviour fix: infographic
+  failures now genuinely degrade (the code claimed they did, but aborted).
+  Consensus transcription (two models, disagreement marked not resolved) is
+  issue 044, blocked on a second audio-model family (D2 amendment); named
+  purchasable workflows are issue 045. Dev pack:
+  `library/dev_packs/v0.1.21__workflow-state-machine/`.
+
 - **The qa branch merged in** (two same-day workstreams converged): the qa side's
   issues 036/037/038 were minted in parallel with dev's and collided — renumbered
   on merge to **039** (content architecture), **040** (videos page) and **041**

@@ -1,7 +1,7 @@
 {
   "note": "The public doc estate as of this release (team/humans excluded).",
-  "generated_at": "2026-08-06T15:38:56+00:00",
-  "count": 63,
+  "generated_at": "2026-08-06T17:28:15+00:00",
+  "count": 64,
   "docs": [
     {
       "path": "library/README.md",
@@ -146,6 +146,12 @@
       "title": "Mapping: putting the YouTube videos on the site",
       "area": "library",
       "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.20__video-on-the-site/00__mapping.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.21__workflow-state-machine/00__design-brief.md",
+      "title": "Design Brief: The Workflow Declared \u2014 A JSON State Machine With The Budget On The Step",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.21__workflow-state-machine/00__design-brief.md"
     },
     {
       "path": "library/guides/email-fs-lite-v0.6.md",

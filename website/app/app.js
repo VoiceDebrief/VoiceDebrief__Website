@@ -16,9 +16,12 @@ import '../components/wa-result-card/v0/v0.1/v0.1.1/wa-result-card.js'
 import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
 import '../components/wa-debug-panel/v0/v0.1/v0.1.2/wa-debug-panel.js'
 import '../components/wa-chat-panel/v0/v0.1/v0.1.1/wa-chat-panel.js'
+import '../components/wa-flow-panel/v0/v0.1/v0.1.0/wa-flow-panel.js'
 
 // The chat panel reads these at mount time — before the engine has booted.
 window.__waChat = { models: CHAT_MODELS, suggestions: CHAT_SUGGESTIONS }
+// Same idiom for the flow panel: it displays budgets/costs in GBP.
+window.__waFlow = { fmtGbp }
 
 const $ = (s) => document.querySelector(s)
 const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']
@@ -58,6 +61,11 @@ async function main() {
             events: ['wa:infographic:started', 'wa:infographic', 'wa:infographic:error'] })
         .register('updateMaterial',  (p) => pipeline.updateMaterial(p),  { async: false, events: ['wa:material:updated'] })
         .register('restoreMaterial', (p) => pipeline.restoreMaterial(p), { async: false, events: ['wa:material:updated'] })
+        // The declared workflow (issue 042): the definition + quotable ceilings,
+        // and the execution trace of the current/last run (the provenance record).
+        .register('getWorkflow',      (p) => pipeline.getWorkflow(p), { async: true })
+        .register('getWorkflowTrace', () => pipeline.trace(),         { async: false,
+            events: ['wa:workflow:started', 'wa:workflow:step', 'wa:workflow:complete'] })
 
     // --- M3: chat with the materials (issue 034) — controller on the API, panel renders ---
     const chatCtl = createChat({ emit: engine.emit, getResults: () => pipeline.results() })
@@ -119,6 +127,19 @@ async function main() {
         try { await window.__tool.redrawInfographic({ model: modelSel.value }) } catch (_) { /* surfaced via events */ }
     })
     $('.file-remove').addEventListener('click', () => { pendingFile = null; show('#key-section') })
+
+    // --- the quotable maximum (issue 042): sum of the declared step budgets on
+    // the path the current options select — known before anything runs. ---
+    const wantInfog = $('#want-infographic')
+    async function updateQuote() {
+        try {
+            const w = await window.__tool.getWorkflow({ options: { infographic: wantInfog.checked } })
+            $('#max-cost').textContent = `max cost for this run ≈ ${fmtGbp(w.quoteUsd)}`
+            $('#max-cost').title = `The "${w.definition.title}" workflow declares a spending ceiling per step — this is their sum for the options chosen. The 🧭 flow tab shows the steps.`
+        } catch (_) { $('#max-cost').textContent = '' }
+    }
+    wantInfog.addEventListener('change', updateQuote)
+    updateQuote()
 
     // --- go ---
     $('#go').addEventListener('click', async () => {

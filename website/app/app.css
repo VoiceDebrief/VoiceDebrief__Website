@@ -47,6 +47,7 @@ section[hidden]{display:none !important}
 .mode-honest{font-size:.82rem;color:var(--wa-muted)}
 .infog{font-size:.9rem;color:var(--wa-muted)}
 .infog .soon{font-size:.75rem}
+.max-cost{font-size:.82rem;color:var(--wa-muted);cursor:help}
 .go{justify-self:start;font:inherit;font-weight:700;font-size:1rem;padding:11px 26px;border:0;border-radius:10px;cursor:pointer;background:var(--wa-green);color:#07301c}
 .go:hover{background:#2ee273}
 .working-name{font-weight:600;margin-bottom:8px}

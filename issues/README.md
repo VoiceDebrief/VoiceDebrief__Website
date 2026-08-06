@@ -10,12 +10,14 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-06 (qa branch merged into dev's line:
+as any issue change. Last updated: 2026-08-06 (042/043 done: the workflow declared as a JSON state machine + the flow panel; 044/045 opened. Earlier: qa branch merged into dev's line:
 its parallel 036–038 renumbered to 039–041; 041 = ?origin= removed entirely,
 superseding both branches' allow-list fixes; 007 closed as superseded — Dinis).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [044](open/044-consensus-transcription.md) | Consensus transcription: two models, disagreement marked not resolved | **blocked** (on a D2 allowlist amendment — second audio model) | high | large |
+| [045](open/045-named-purchasable-workflows.md) | Named workflows at price points (Quick/Standard/Consensus) | open | normal | medium |
 | [037](open/037-app-security-hardening.md) | App security hardening: CSP shipped; chat prompt-tool gating, SVG sanitisation, key hygiene open (S1 closed by 041's removal) | open | **urgent** | medium |
 | [036](open/036-open-engineering-hub.md) | Open engineering hub: public /engineering/ pages for the NFRs | open | high | medium |
 | [038](open/038-qa-to-docs-screenshot-pipeline.md) | QA-to-docs: journey tests that QA features AND maintain the user docs (image-diff gate) | open | high | medium |
@@ -55,6 +57,8 @@ superseding both branches' allow-list fixes; 007 closed as superseded — Dinis)
 | [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |
 | [034](done/034-chat-with-materials.md) | M3: chat with the materials + tool-driven workflow — live-validated by Dinis | done | high | large |
 | [035](done/035-chat-edits-materials-and-sees-image.md) | Chat edits transcript/summary (revertible), SEES the infographic image, tidy suggestions | done | high | medium |
+| [042](done/042-workflow-declared-state-machine.md) | The workflow declared: JSON state machine, budget on the step | done | high | medium |
+| [043](done/043-flow-panel-visualisation.md) | The 🧭 flow panel: declaration + live execution trace | done | high | medium |
 | [039](done/039-content-architecture-markdown-per-post.md) | Content architecture: markdown per post, generated pages/manifests, atomic agent writes | done | high | medium |
 | [041](done/041-remove-origin-parameter.md) | `?origin=` removed entirely — the engine origin is hardcoded | done | **high** | small |
 

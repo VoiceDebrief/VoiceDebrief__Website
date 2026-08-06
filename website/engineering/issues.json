@@ -1,10 +1,10 @@
 {
   "note": "Rendered from issues/ by CI at deploy time \u2014 the queue as of this release.",
-  "generated_at": "2026-08-06T15:38:56+00:00",
+  "generated_at": "2026-08-06T17:28:15+00:00",
   "counts": {
-    "open": 11,
+    "open": 13,
     "blocked": 0,
-    "done": 30
+    "done": 32
   },
   "issues": [
     {
@@ -334,6 +334,38 @@
       "priority": "high",
       "created": "2026-08-06",
       "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/041-remove-origin-parameter.md"
+    },
+    {
+      "id": "042",
+      "title": "The workflow declared: a JSON state machine with the budget on the step",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/042-workflow-declared-state-machine.md"
+    },
+    {
+      "id": "043",
+      "title": "The flow panel: what will happen, what it may cost, what actually happened",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/043-flow-panel-visualisation.md"
+    },
+    {
+      "id": "044",
+      "title": "Consensus transcription: two models, and disagreement marked, not resolved",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/044-consensus-transcription.md"
+    },
+    {
+      "id": "045",
+      "title": "Named workflows at price points: Quick / Standard / Consensus",
+      "state": "open",
+      "priority": "normal",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/045-named-purchasable-workflows.md"
     }
   ]
 }

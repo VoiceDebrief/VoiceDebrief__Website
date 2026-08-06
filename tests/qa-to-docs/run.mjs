@@ -164,6 +164,15 @@ try {
     check('one-pass: infographic drawn', !!results?.svg)
     await capture('04-results')
 
+    // The flow panel over the finished run (issue 043): the declared workflow
+    // with the execution trace — "what actually happened".
+    await page.locator('wa-flow-panel .wa-flow__toggle').click()
+    await page.waitForFunction(() =>
+        document.querySelector('wa-flow-panel').shadowRoot.querySelectorAll('.step--done').length >= 4,
+        null, { timeout: 10000 })
+    check('flow panel shows the executed steps', true)
+    await capture('08-flow-run')
+
     // ── Journey 2: chat with the materials ─────────────────────────────────
     await page.locator('wa-chat-panel .wa-chat__toggle').click()
     await page.waitForFunction(() => document.querySelector('wa-chat-panel').shadowRoot
