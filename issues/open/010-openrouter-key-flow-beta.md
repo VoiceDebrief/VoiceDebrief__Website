@@ -14,3 +14,10 @@ The seeded ("deliberately leaked") key is safe only via its properties, written 
 
 ## Status 28 Jul (post-merge to dev)
 Open, not started. Waiting on account-type and model-allowlist decisions (brief v0.33.53 settle-first items 1-3).
+
+## Status 6 Aug — UNBLOCKED by decisions D1/D2
+Account decided: **personal, for now**. Model allowlist decided and verified in code
+(five models — see `team/roles/appsec/reviews/08/06/v0.1.20__appsec-review__model-allowlist-and-guardrails.md`);
+guardrails to restrict keys to it (Dinis also configuring directly on OpenRouter).
+Remaining before any key ships: the seeded-key conditions doc (cap value, lifetime,
+revocation trigger + drill, transition point) — the next AppSec deliverable.

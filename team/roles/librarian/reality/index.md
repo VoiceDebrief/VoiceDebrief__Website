@@ -4,7 +4,7 @@
 
 
 **maintained by** Librarian
-**updated** 2026-08-03
+**updated** 2026-08-06
 **rule** If it is not in this document, it does not exist. Proposed items are labelled
 `PROPOSED — does not exist yet`.
 
@@ -49,6 +49,7 @@
 | Versions page (issue 033): per-tag timeline with diffs (`versions.json` kept in step with CHANGELOG); version chip on every page footer; QA builds stamped `<next-version>-qa.<sha>` from the tags | `website/versions/`, both workflows | 2026-08-05 |
 | M3 chat LIVE (issue 034): 💬 `wa-chat-panel` + `chat.js`/`chat-tools.js` — context composer, fenced-block tool loop (typed registry, 3 budgets), debug-audited; validated live by Dinis (tool-driven exchanges, and the chat authored the issue-035 brief) | `website/app/chat*.js`, `website/components/wa-chat-panel/` | 2026-08-05 |
 | Chat material edits + image vision (issue 035): `updateMaterial`/`restoreMaterial` actions, `update_transcript`/`update_summary`/`restore_original`/`view_infographic` tools (13 total), revert note under the cards, infographic image as a multimodal part (composer row + tool attachment), suggestions only on a blank thread (`wa-chat-panel` v0.1.1) | `website/app/pipeline.js`, `chat*.js`, panel v0.1.1 | 2026-08-06 |
+| Review pack v0.1.20: full project review (code/security, testing+CI, docs, live site) + two proposals — the open engineering hub (doc 06) and QA-to-docs screenshot-verified user docs (doc 08, pattern from Dinis); issues 036 (hub), 037 (security hardening, urgent) and 038 (QA-to-docs) opened from it | `library/review-packs/v0.1.20__project-review/` | 2026-08-06 |
 
 All rows above are committed and pushed in-session on their stated date.
 
@@ -64,10 +65,6 @@ All rows above are committed and pushed in-session on their stated date.
 | Mobile deployment path incl. Apple/Android signing | prior SGraph project (per 27 Jul arch brief) |
 
 ## PROPOSED — does not exist yet
-
-- **M3 chat-with-materials on the LIVE site** (issue 034): the panel now EXISTS on
-  `qa` (row above) — what does not exist yet is a keyed live run and the merge to
-  `dev`/`main`.
 
 - Analysis/debrief outputs beyond the summary document (if ever wanted — the arch brief's fuller set).
 - iOS and Android targets; Chrome extension (deliberately later).
@@ -96,3 +93,7 @@ All rows above are committed and pushed in-session on their stated date.
 | 2026-08-05 | M1 key entry: user pastes their own OpenRouter key on the page; stored in localStorage (BYOK; resolves review gap 4) | Dinis, session decision |
 | 2026-08-05 | LLM prompts (summary, infographic) live as markdown files served from the site and fetched at runtime — editable without code changes (extends review action 4) | Dinis, session decision |
 | 2026-08-05 | Scope confirmed: "tools.sgraph.ai parity" = the capabilities THIS product needs (the one-pass job, starting from a WhatsApp voice memo) — Live/TTS/Chat stay out of v1 | Dinis, session decision |
+| 2026-08-06 | OpenRouter account: personal, for now | Dinis, review-pack decision D1 |
+| 2026-08-06 | Model allowlist fixed to the five models the app calls (gemini-3.5-flash, the two gemini image models, claude-sonnet-4.5, gpt-5-mini); key guardrails to restrict to it — Dinis also configuring directly on OpenRouter | Dinis, review-pack decision D2; AppSec review 08/06 |
+| 2026-08-06 | Licences settled: code Apache 2.0 (LICENSE canonical), written material CC BY 4.0 — closes the contract draft's licence open point | Dinis, review-pack decision D3 |
+| 2026-08-06 | Branch topology: `dev` and `main` go to the same place for now; `dev` is treated as production (it publishes the live domain). A separate `main` estate is a future split | Dinis, review-pack decision D4 |

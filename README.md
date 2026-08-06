@@ -1,6 +1,6 @@
 # SGraph-AI — WhatsApp Audio Transcription
 
-![release](https://img.shields.io/badge/release-v0.1.20-blue) ![licence-docs](https://img.shields.io/badge/docs-CC%20BY%204.0-green)
+![release](https://img.shields.io/badge/release-v0.1.20-blue) ![licence-docs](https://img.shields.io/badge/docs-CC%20BY%204.0-green) ![licence-code](https://img.shields.io/badge/code-Apache%202.0-blue)
 
 The WhatsApp voice note transcription tool — the first SGraph product going to market.
 One job, one pass: drop in the audio (`.opus` / `.ogg` / `.m4a`) → transcript, analysis,
@@ -25,8 +25,10 @@ arrangement — is built in the open and published as it is produced.
 
 ## Working Here
 
-- Default branch is **`dev`** (→ dev estate); `main` is production. CI auto-tags both
-  and publishes the site after tagging.
+- Default branch is **`dev`** — and for now it is production: it is the branch that
+  publishes https://whatsapp-voice-transcription.sgraph.ai. `dev` and `main` go to
+  the same place until a separate production estate is split out (decision, 6 Aug
+  2026). CI auto-tags both and publishes the site after tagging.
 - The `version` file (and the version in `pyproject.toml`) are **owned by CI** — never
   edit them by hand.
 - Work is tracked in [`issues/`](issues/README.md); issue updates land in the same
@@ -36,6 +38,6 @@ arrangement — is built in the open and published as it is produced.
 
 ## Licence
 
-Documentation is CC BY 4.0 (each doc carries its footer). Code licence per the
-partnership contract: open source, MIT or Apache 2.0 — final choice pending
-(tracked in the contract draft's open points).
+Documentation is CC BY 4.0 (each doc carries its footer). Code is **Apache 2.0**
+(decided 6 Aug 2026 — see [`LICENSE`](LICENSE)); this closes the contract draft's
+licence open point.

@@ -10,11 +10,14 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-06 (027–035 done — latest: M3 chat live,
-chat material edits + image vision).
+as any issue change. Last updated: 2026-08-06 (036–038 opened from the v0.1.20
+review pack: open engineering hub; app security hardening; QA-to-docs).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [037](open/037-app-security-hardening.md) | App security hardening: ?origin= allowlist, CSP, chat prompt-tool gating | open | **urgent** | medium |
+| [036](open/036-open-engineering-hub.md) | Open engineering hub: public /engineering/ pages for the NFRs | open | high | medium |
+| [038](open/038-qa-to-docs-screenshot-pipeline.md) | QA-to-docs: journey tests that QA features AND maintain the user docs (image-diff gate) | open | high | medium |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |
