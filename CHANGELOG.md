@@ -18,6 +18,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Browser unit tests (issue 049, requested by Dinis)** — the app's JS modules
+  re-tested under REAL browser semantics with QUnit (vendored 2.24.1, MIT):
+  genuine `File`/`Blob` for the audio sniffer, genuine localStorage for the
+  debug store, genuine custom-element upgrade for `wa-site-nav`, and the
+  declared workflow machine end to end with stub executors — 11 tests / 35
+  assertions. The visual runner SHIPS with the site at `/tests/browser/`
+  (linked from `/engineering/testing/`), so anyone can watch the suite pass
+  against the deployed modules; CI runs the identical page headless in both
+  pipelines and reports it as the `browser-unit` layer on the engineering hub.
 - Live-QA fix: the stamped-asset check assumed every asset on the app page was
   relative to `/app/` and built `/app//components/...` for the new site-absolute
   `wa-site-nav` ref — a 404 in the check, not on the site (the file served 200

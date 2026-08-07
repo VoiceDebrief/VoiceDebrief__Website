@@ -5,6 +5,7 @@ issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [049](049-browser-unit-tests.md) | Browser unit tests (QUnit) | `website/tests/browser/` runs live/local/CI — 11 tests, real File/localStorage/custom elements; `browser-unit` layer in both pipelines |
 | [048](048-single-source-site-nav.md) | One nav, one source | `wa-site-nav` v0.1.0 on all 12 surfaces; five drifted menus retired; dead CSS stripped |
 | [047](047-llm-friendly-and-seo.md) | LLM-friendly + SEO | llms.txt, generated sitemap, canonicals, JSON-LD, QA-estate noindex, live-QA coverage |
 | [046](046-run-completes-into-hidden-page.md) | A finished run could be invisible | reset now cancels the pass; wa:pass:complete re-shows orphaned results |

@@ -56,6 +56,14 @@ jobs:
           npm install --no-save playwright@1 pixelmatch pngjs
           npx playwright install --with-deps chromium
 
+      # Browser unit tests (issue 049): the same modules as the Node suite,
+      # under REAL browser semantics (File/Blob, localStorage, custom elements).
+      # The page SHIPS with the site - humans can run the identical suite at
+      # /tests/browser/ on the live estate, or locally against website/.
+      - name: Browser unit tests (QUnit in Chromium)
+        shell: bash
+        run: node tests/browser/run.mjs 2>&1 | tee browser.log
+
       - name: Integration test (app boot against the live engine origin)
         shell: bash
         run: node tests/integration/app-boot.test.mjs 2>&1 | tee int-boot.log
@@ -89,8 +97,9 @@ jobs:
           BOOT=$(grep -c '^ok ' int-boot.log)
           CHAT=$(grep -c '^ok ' int-chat.log)
           QTD=$(grep -c '^ok ' qa-docs.log)
-          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
-            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$QTD" "$QTD" > test-results.json
+          BUNIT=$(grep -c '^ok ' browser.log)
+          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "browser-unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
+            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BUNIT" "$BUNIT" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$QTD" "$QTD" > test-results.json
           cat test-results.json
 
       - name: Upload test results

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!-- Browser unit tests (issue 049): the app's JS modules exercised IN a real
+     browser — real File/Blob, real localStorage, real custom elements — with
+     QUnit's visual runner (vendored, MIT; see vendor/README.md).
+
+     This page SHIPS with the site, so the same suite runs three ways:
+       live      https://<estate>/tests/browser/   — against the deployed modules
+       local     python3 -m http.server 8130 -d website  →  /tests/browser/
+       CI        node tests/browser/run.mjs (headless Chromium, same page)
+
+     Not user content: noindex, and deliberately absent from the sitemap. -->
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Browser unit tests — Voice Note Transcribe</title>
+<link rel="stylesheet" href="vendor/qunit.css">
+<style>
+  .site-note { font: 13px/1.5 system-ui, sans-serif; background: #0b3d2e; color: #eafff5;
+               padding: 10px 16px; }
+  .site-note a { color: #7fe0b8; }
+</style>
+</head>
+<body>
+<div class="site-note">These are the site's own unit tests, running in <em>your</em> browser
+  against the modules this very deploy serves — genuine File/Blob, localStorage and
+  custom elements. Part of the <a href="/engineering/testing/">testing layers</a> ·
+  <a href="/engineering/">engineering hub</a> ·
+  <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">source on GitHub</a></div>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<script src="vendor/qunit.js"></script>
+<!-- tests.mjs top-level-awaits the workflow declaration, so autostart would
+     fire before any test is registered — start explicitly at the end. -->
+<script>QUnit.config.autostart = false</script>
+<script type="module" src="tests.mjs"></script>
+</body>
+</html>

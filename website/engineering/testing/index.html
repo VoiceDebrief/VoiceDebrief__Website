@@ -21,6 +21,7 @@
       badge from some earlier good day.</p>
     <div class="status-strip" id="layers">
       <div class="stat"><div class="k">unit</div><div class="v" id="l-unit">…</div></div>
+      <div class="stat"><div class="k">browser unit</div><div class="v" id="l-bunit">…</div></div>
       <div class="stat"><div class="k">integration</div><div class="v" id="l-int">…</div></div>
       <div class="stat"><div class="k">qa-to-docs journeys</div><div class="v" id="l-qtd">…</div></div>
       <div class="stat"><div class="k">live QA</div><div class="v" id="l-qa">post-deploy</div></div>
@@ -37,9 +38,15 @@
       cover that spread — three small ones can.</p>
     <div class="grid cols-3">
       <div class="card"><h3>1 · Unit (node --test)</h3>
-        <p>Pure-logic tests of the app modules: audio content-sniffing, config and its
-        origin allowlist, the chat tool registry's validation, the debug store. Fast enough
-        to run on every change.</p></div>
+        <p>Pure-logic tests of the app modules: audio content-sniffing, config, the chat
+        tool registry's validation, the declared workflow machine, the debug store. Fast
+        enough to run on every change.</p></div>
+      <div class="card"><h3>1b · Browser unit (QUnit in Chromium)</h3>
+        <p>The same modules re-tested under REAL browser semantics — genuine File/Blob
+        objects, genuine localStorage, genuine custom-element upgrade for the site nav.
+        The page ships with the site, so you can watch the suite pass against this very
+        deploy, in your own browser: <a href="/tests/browser/">run the browser unit
+        tests now</a>.</p></div>
       <div class="card"><h3>2 · Integration (Playwright)</h3>
         <p>Headless Chromium boots the REAL app: the engine imports cross-origin, the full
         action contract publishes, a real voice-note fixture ingests, the debug and chat
@@ -89,6 +96,7 @@
     <div class="receipts"><strong>Receipts</strong>
       <ul>
         <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/tests/unit">tests/unit/</a> · <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/tests/integration">tests/integration/</a> · <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/tests/qa">tests/qa/</a> — all of it, public</li>
+        <li><a href="/tests/browser/">/tests/browser/</a> — the browser unit suite, runnable by anyone, against the deployed modules</li>
         <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/tests/fixtures">Real WhatsApp voice-note fixtures</a> — the tests run genuine audio, not synthetic stubs</li>
         <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/025-ogg-mime-hallucinated-transcript.md">Issue 025's full write-up</a> — reproduction, cause, fix, upstream reports</li>
       </ul></div>
@@ -109,6 +117,8 @@ try {
     if (s.tests) {
         const u = s.tests.unit, i1 = s.tests['integration-boot'], i2 = s.tests['integration-chat']
         if (u) document.getElementById('l-unit').textContent = `${u.pass}/${u.total}`
+        const b = s.tests['browser-unit']
+        document.getElementById('l-bunit').textContent = b ? `${b.pass}/${b.total}` : 'arming'
         if (i1 || i2) document.getElementById('l-int').textContent =
             [i1 && `boot ${i1.pass}/${i1.total}`, i2 && `chat ${i2.pass}/${i2.total}`].filter(Boolean).join(' · ')
         const q = s.tests['qa-to-docs']

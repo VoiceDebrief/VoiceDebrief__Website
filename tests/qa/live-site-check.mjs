@@ -40,7 +40,8 @@ for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/upda
                               ['/videos/', 'See it work'],
                               ['/engineering/', 'engine room'], ['/engineering/pipeline/', 'live QA'],
                               ['/engineering/testing/', 'Three layers'], ['/engineering/docs/', 'reality doc'],
-                              ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles']]) {
+                              ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles'],
+                              ['/tests/browser/', 'qunit']]) {
     const r = await get(path)
     check(`GET ${path} → 200 + expected content`, r.ok && r.text.includes(marker), `status ${r.status}`)
 }
@@ -72,7 +73,8 @@ for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/updates/updates.json', '/updates/feed.xml', '/videos/videos.json',
                     '/app/prompts/summary-prompt.md', '/app/prompts/infographic-prompt.md',
                     '/app/samples/whatsapp-voice-note-1.opus', '/app/samples/whatsapp-voice-note-2.opus',
-                    '/app/samples/whatsapp-voice-note-android.ogg']) {
+                    '/app/samples/whatsapp-voice-note-android.ogg',
+                    '/tests/browser/tests.mjs', '/tests/browser/vendor/qunit.js']) {
     const r = await fetch(LIVE + path, { method: 'HEAD' }).catch(() => ({ ok: false, status: 'ERR' }))
     check(`asset reachable: ${path}`, r.ok, `status ${r.status}`)
 }
