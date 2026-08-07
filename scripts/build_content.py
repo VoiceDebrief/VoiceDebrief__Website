@@ -483,6 +483,25 @@ def build(out_dir, check_only=False):
                    'versions': versions}, f, indent=2, ensure_ascii=False)
         f.write('\n')
 
+    # sitemap.xml — the pages a crawler should know about, lastmod derived from
+    # the content (never from the clock: same content, same sitemap). URLs always
+    # name the production domain; the QA estate is noindexed at deploy anyway.
+    site = 'https://whatsapp-voice-transcription.sgraph.ai'
+    content_mod = max([p['date'] for p in published] + [v['date'] for v in versions])
+    pages = [('/', content_mod), ('/app/', None), ('/updates/', max(p['date'] for p in published)),
+             ('/versions/', max(v['date'] for v in versions)),
+             ('/videos/', max((v['date'] for v in live_videos), default=None)),
+             ('/library/', None), ('/engineering/', None), ('/engineering/pipeline/', None),
+             ('/engineering/testing/', None), ('/engineering/docs/', None),
+             ('/engineering/security/', None), ('/engineering/team/', None)]
+    with open(os.path.join(out_dir, 'sitemap.xml'), 'w', encoding='utf-8') as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+        for path, lastmod in pages:
+            f.write(f'  <url><loc>{site}{path}</loc>'
+                    + (f'<lastmod>{lastmod}</lastmod>' if lastmod else '') + '</url>\n')
+        f.write('</urlset>\n')
+
     print(f'built {len(published)} post(s), {len(live_videos)} video(s)'
           f'{f" (+{drafts} draft held back)" if drafts else ""} and {len(versions)} version(s) '
           f'into {os.path.relpath(out_dir, ROOT)}/')

@@ -126,7 +126,17 @@ async function main() {
         if (!engine.hasKey()) return showError('no-key', 'infographic')
         try { await window.__tool.redrawInfographic({ model: modelSel.value }) } catch (_) { /* surfaced via events */ }
     })
-    $('.file-remove').addEventListener('click', () => { pendingFile = null; show('#key-section') })
+    // Resetting the page must also stop the machine (issue 046): without the
+    // cancel, a pass kept running headless after "do another voice note" /
+    // remove-file — the flow panel showed a completed run whose results the
+    // page never displayed.
+    let passActive = false
+    const resetToStart = () => {
+        if (passActive) pipeline.cancel()
+        pendingFile = null
+        show('#key-section')
+    }
+    $('.file-remove').addEventListener('click', resetToStart)
 
     // --- the quotable maximum (issue 042): sum of the declared step budgets on
     // the path the current options select — known before anything runs. ---
@@ -250,7 +260,17 @@ async function main() {
         a.click(); if (r.svg && !r.image) URL.revokeObjectURL(a.href)
     })
     window.addEventListener('wa:pass:complete', () => {
+        passActive = false
         $('#work-section').hidden = true; updateCost()
+        // Self-healing guard (issue 046): a finished run the user paid for must
+        // never be invisible. If results exist but both the results and error
+        // sections are hidden (the page was reset mid-run), bring them back.
+        const done = pipeline.results() || {}
+        if (done.transcript && $('#results-section').hidden && $('#error-section').hidden) {
+            $('#results-section').hidden = false
+            tCard.show(done.transcript); tCard.hidden = false
+            if (done.summary) { sCard.show(done.summary); sCard.hidden = false }
+        }
         // No infographic asked for? Offer to draw one from the finished pass.
         const r = pipeline.results() || {}
         if (r.transcript && !r.svg && !r.image && drawTimer == null) {
@@ -261,7 +281,9 @@ async function main() {
     })
     rail.addEventListener('wa:stop-requested', () => pipeline.cancel())
 
-    $('#again').addEventListener('click', () => { pendingFile = null; show('#key-section') })
+    $('#again').addEventListener('click', resetToStart)
+    window.addEventListener('wa:pass:started', () => { passActive = true })
+    window.addEventListener('wa:pass:error',   () => { passActive = false })
 
     function infographicNote(text, bad = false, html = false) {
         const note = $('#infographic-note')

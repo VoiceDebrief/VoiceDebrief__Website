@@ -150,6 +150,16 @@ jobs:
             --version "${{ steps.stamp.outputs.version }}" --target "netlify (qa)" \
             --results test-results.json
 
+      # The QA estate must never compete with production in search results —
+      # same content, different domain, is classic duplicate-content damage.
+      # Canonical tags on every page already point at production; this makes
+      # the intent explicit to crawlers. Production (ci-pipeline) is untouched.
+      - name: Mark the QA estate noindex
+        run: |
+          find website -name '*.html' -exec \
+            sed -i 's|<meta name="viewport"[^>]*>|&\n<meta name="robots" content="noindex">|' {} +
+          grep -rl 'name="robots" content="noindex"' website --include='*.html' | wc -l
+
       - name: Cache-bust the site's own assets
         run: python3 scripts/stamp_cache_busters.py --site website --version "${{ steps.stamp.outputs.version }}"
 

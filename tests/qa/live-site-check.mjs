@@ -62,6 +62,8 @@ for (const ref of stamped) {
 
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
+                    '/llms.txt', '/sitemap.xml', '/robots.txt',
+                    '/app/skills/SKILL__api.md', '/app/workflows/standard.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
                     '/updates/updates.json', '/updates/feed.xml', '/videos/videos.json',
                     '/app/prompts/summary-prompt.md', '/app/prompts/infographic-prompt.md',

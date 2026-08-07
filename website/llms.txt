@@ -1,0 +1,45 @@
+# Voice Note Transcribe
+
+> Drop in a WhatsApp voice note (.opus / .ogg / .m4a) and get back a transcript, a
+> structured summary and an infographic in one pass. Everything runs in the
+> browser with the user's own OpenRouter key — there is no backend, nothing is
+> uploaded to us, and nothing is tracked or stored server-side. Free beta;
+> a typical pass costs the key holder well under £0.01, with a declared maximum
+> shown before each run. Built in the open by an agentic team; every claim on
+> this site links to its source in the public repository.
+
+The app is a JavaScript tool published as `window.__tool` (an SgToolApi named
+`whatsapp-transcribe`). If you are an agent operating the app or explaining it,
+the machine-readable surfaces below are maintained for you and are always in
+step with the deployed build.
+
+## The app, for agents
+
+- [API skill](https://whatsapp-voice-transcription.sgraph.ai/app/skills/SKILL__api.md): every `window.__tool` action with params and returns — run a pass, read results, drive the chat, read the workflow and its execution trace
+- [Browser-use skill](https://whatsapp-voice-transcription.sgraph.ai/app/skills/SKILL__browser.md): operating the app through its UI
+- [Human guide](https://whatsapp-voice-transcription.sgraph.ai/app/skills/SKILL__human.md): the app explained for people
+- [Action manifest](https://whatsapp-voice-transcription.sgraph.ai/app/manifest.json): the full action list, machine-readable
+- [The declared workflow](https://whatsapp-voice-transcription.sgraph.ai/app/workflows/standard.json): the one-pass as a JSON state machine — steps, models, per-step spending ceilings, transitions, failure behaviour. The app executes from this file
+
+## Live state, machine-readable
+
+- [status.json](https://whatsapp-voice-transcription.sgraph.ai/engineering/status.json): the deployed version, commit, and the per-layer test results this deploy passed
+- [issues.json](https://whatsapp-voice-transcription.sgraph.ai/engineering/issues.json): the full issue queue (open/blocked/done) as of this deploy
+- [docs.json](https://whatsapp-voice-transcription.sgraph.ai/engineering/docs.json): the public documentation inventory
+- [versions.json](https://whatsapp-voice-transcription.sgraph.ai/versions/versions.json): every release with date, headline and changes
+- [updates.json](https://whatsapp-voice-transcription.sgraph.ai/updates/updates.json): every Updates post, structured
+- [videos.json](https://whatsapp-voice-transcription.sgraph.ai/videos/videos.json): the demo videos
+- [RSS feed](https://whatsapp-voice-transcription.sgraph.ai/updates/feed.xml)
+
+## Pages
+
+- [How it works + pricing](https://whatsapp-voice-transcription.sgraph.ai/): the landing page — today's beta is bring-your-own-key; the credit product is labelled PROPOSED
+- [The app](https://whatsapp-voice-transcription.sgraph.ai/app/)
+- [Engineering](https://whatsapp-voice-transcription.sgraph.ai/engineering/): how it is built — pipeline, testing, docs, security posture (including open findings, honestly labelled), team
+- [Updates](https://whatsapp-voice-transcription.sgraph.ai/updates/): the dated build-in-public record
+- [Library](https://whatsapp-voice-transcription.sgraph.ai/library/): every document behind the product
+
+## Source
+
+- [Repository](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription): everything — code, briefs, decisions, reviews, this file
+- [Reality doc](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/librarian/reality/index.md): what exists today vs what is proposed — the honesty contract this site is written under

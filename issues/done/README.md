@@ -5,6 +5,8 @@ issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [047](047-llm-friendly-and-seo.md) | LLM-friendly + SEO | llms.txt, generated sitemap, canonicals, JSON-LD, QA-estate noindex, live-QA coverage |
+| [046](046-run-completes-into-hidden-page.md) | A finished run could be invisible | reset now cancels the pass; wa:pass:complete re-shows orphaned results |
 | [043](043-flow-panel-visualisation.md) | The 🧭 flow panel | `wa-flow-panel` v0.1.0 — the declaration + live execution trace, cost vs ceiling per step |
 | [042](042-workflow-declared-state-machine.md) | The workflow declared as a JSON state machine | `workflows/standard.json` + `workflow.js` validator/quote/runner; budget entry gate; quotable max pre-run; provenance trace |
 | [041](041-remove-origin-parameter.md) | `?origin=` removed entirely | engine origin hardcoded in `config.js`; a URL parameter no longer decides which JS runs — supersedes both branches' same-day allow-list fixes (dev 037 item 1, qa) |

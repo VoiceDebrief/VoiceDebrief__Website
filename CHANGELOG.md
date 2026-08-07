@@ -18,6 +18,21 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Fixed: a finished run could be invisible (issue 046, found live by Dinis)**
+  — "do another voice note" and remove-file reset the page but did not cancel
+  an in-flight pass, which then completed headless into hidden sections (the
+  flow panel truthfully showed a completed run the page never displayed). Both
+  reset paths now cancel the active pass, and a completing pass re-shows its
+  results if the page lost them — a finished run the user paid for can no
+  longer be invisible.
+- **LLM-friendly + SEO (issue 047)** — `/llms.txt` indexes the site's
+  agent-facing surfaces (the `window.__tool` skills docs, action manifest, the
+  declared workflow, and every CI-emitted JSON manifest); `build_content.py`
+  now also generates `/sitemap.xml` (lastmod from content dates);
+  canonical tags on every page point at production; JSON-LD on the landing
+  (SoftwareApplication) and Updates (Blog) pages; the QA estate is noindexed
+  at deploy so the preview never competes with production in search; live-QA
+  checks the new surfaces on every deploy.
 - **Each estate's derived links now point at itself** — `build_content.py` gains
   `--ref`: the qa build links `blob/qa/...`, the dev build `blob/dev/...`. The
   live-QA link check caught the gap (its first real save): three 7-Aug posts
