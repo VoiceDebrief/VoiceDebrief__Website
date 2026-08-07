@@ -37,7 +37,7 @@ if (EXPECT_VERSION) {
 // 1. The pages of the product.
 for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/updates/', 'Updates'],
                               ['/versions/', 'Every version'], ['/library/', 'Library'],
-                              ['/videos/', 'See it work'],
+                              ['/videos/', 'See it work'], ['/user-guide/', 'step by step'],
                               ['/engineering/', 'engine room'], ['/engineering/pipeline/', 'live QA'],
                               ['/engineering/testing/', 'Three layers'], ['/engineering/docs/', 'reality doc'],
                               ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles']]) {

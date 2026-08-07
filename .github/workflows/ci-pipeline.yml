@@ -47,6 +47,9 @@ jobs:
       - name: Validate published content
         run: python3 scripts/build_content.py --check
 
+      - name: Validate the user-guide manifest
+        run: python3 scripts/build_user_guide.py --check
+
       - name: Unit tests
         shell: bash
         run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log
@@ -140,6 +143,9 @@ jobs:
         # generated pages get the version stamp and the cache-buster like
         # every other page. Links point at dev — the branch this estate serves.
         run: python3 scripts/build_content.py --ref dev
+
+      - name: Build the user guide from the QA captures (issue 038)
+        run: python3 scripts/build_user_guide.py
 
       - name: Stamp version into the site
         run: |

@@ -80,7 +80,15 @@ async function capture(id) {
     if (!spec) throw new Error(`shot ${id} not in journeys.json`)
     await page.waitForTimeout(350)   // let the last DOM change settle
     const masks = (spec.masks || []).map(sel => page.locator(sel))
-    const png = await page.screenshot({ fullPage: true, mask: masks, maskColor: '#0b1f3a', animations: 'disabled' })
+    /* Framing (manifest "clip"): absent = the whole page, "viewport" = the first
+       screen, any other value = that element. These shots are the user guide, and
+       a full-page capture of a long app page buries the thing being taught under
+       the hero; framing on the relevant region also shrinks the diff surface, so
+       the gate stops reacting to changes elsewhere on the page. */
+    const shotOpts = { mask: masks, maskColor: '#0b1f3a', animations: 'disabled' }
+    const png = spec.clip && spec.clip !== 'viewport'
+        ? await page.locator(spec.clip).screenshot(shotOpts)
+        : await page.screenshot({ ...shotOpts, fullPage: spec.clip !== 'viewport' })
     const baseline = path.join(BASELINE_DIR, `${id}.png`)
 
     if (UPDATE) {
