@@ -21,7 +21,7 @@ superseding both branches' allow-list fixes; 007 closed as superseded — Dinis)
 | [045](open/045-named-purchasable-workflows.md) | Named workflows at price points (Quick/Standard/Consensus) | open | normal | medium |
 | [037](open/037-app-security-hardening.md) | App security hardening: CSP shipped; chat prompt-tool gating, SVG sanitisation, key hygiene open (S1 closed by 041's removal) | open | **urgent** | medium |
 | [036](open/036-open-engineering-hub.md) | Open engineering hub: public /engineering/ pages for the NFRs | open | high | medium |
-| [038](open/038-qa-to-docs-screenshot-pipeline.md) | QA-to-docs: journey tests that QA features AND maintain the user docs (image-diff gate) | open | high | medium |
+| [038](open/038-qa-to-docs-screenshot-pipeline.md) | QA-to-docs: journey tests that QA features AND maintain the user docs (image-diff gate) — M-qtd-1+2 shipped (guide generated, baselines armed by CI); M-qtd-3 open | open | high | medium |
 | [040](open/040-videos-on-the-site.md) | Videos on the site — three live; one clip awaiting its YouTube id | **blocked** (on one id) | high | medium |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |

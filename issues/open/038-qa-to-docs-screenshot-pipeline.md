@@ -49,3 +49,45 @@ Open, not started. Proposal accepted into the queue from review pack doc 08.
   gate. `UPDATE_BASELINES=1` is the refresh flow for intended UI changes.
 - M-qtd-2 (full journey set + user-guide pages embedding the shots) and
   M-qtd-3 (intended-change auto-refresh + richer hub surfacing) remain open.
+
+## Status 7 Aug — M-qtd-2 SHIPPED (the docs half; baselines now arm themselves)
+
+The gap M-qtd-1 left, found by Dinis reading the green runs: *"both qa and dev
+pipelines executed, but I don't see the files"*. Correct — the captures were
+uploaded as an artifact and died with the container. `website/user-guide/` did
+not exist, `tests/qa-to-docs/output/` is gitignored, and the harness's own
+"commit it to arm the gate" line was an instruction to a human who would have had
+to download a zip. **Nothing in CI could ever write a baseline**, so the gate
+could not arm and the guide had no pictures. Two green runs proved the QA half
+and delivered none of the docs half.
+
+- **`commit-baselines` job** (`qa-deploy.yml`, qa pushes only, `contents: write`):
+  downloads the run's `qa-to-docs` artifact and commits **only shots with no
+  existing baseline**. A shot whose baseline exists and differs is the gate
+  firing — the test job is red, this job never runs, and nothing overwrites the
+  evidence. Auto-blessing a diff would turn the gate into a recorder that files
+  every regression as the new truth. Intended changes stay deliberate
+  (`UPDATE_BASELINES=1`, M-qtd-3).
+- **No CI loop**: the push uses `GITHUB_TOKEN`, whose pushes do not start
+  workflows — the property the version bump on dev/main already depends on —
+  plus `paths-ignore: website/user-guide/screenshots/**` as a second guard that
+  survives someone swapping in a PAT. `deploy-netlify` pulls the commit so the
+  shots ship in the same run (the pattern `build-pages` uses for the version bump).
+- **The guide itself**: `scripts/build_user_guide.py` +
+  `scripts/templates/user-guide.html` render `/user-guide/` from `journeys.json`
+  and the committed baselines — three sections (getting started / the one pass /
+  chatting with your materials), one figure per shot, captions from the manifest.
+  A shot with no baseline renders an honest placeholder, never a broken image, so
+  the page builds on the very first run. Generated, not committed (gitignored);
+  `guide.json` published alongside for agents. Linked from every page's nav and
+  checked by the live-QA job. Six unit tests in `tests/unit/user-guide.test.mjs`.
+- **Per-shot framing** (`clip` in `journeys.json`): `viewport`, a page section, or
+  a panel inside the shadow DOM (`wa-chat-panel .wa-chat__panel` — the custom
+  element host has no layout box, its children are fixed-position, so clipping to
+  the host times out). Full-page captures buried the subject under the hero and
+  made the entire page the diff surface. Done before any baseline was armed, so
+  nothing needed re-arming. 8 shots: 1280x800 → 148–940px tall, framed on subject.
+
+M-qtd-3 (intended-change refresh flow + richer hub surfacing) remains open. The
+first qa push after this lands arms all 8 baselines and the guide gains its
+pictures on the same deploy.

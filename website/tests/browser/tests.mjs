@@ -151,12 +151,12 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('renders the nine links, the badge, and no engineering row off /engineering/', assert => {
+    QUnit.test('renders the ten links, the badge, and no engineering row off /engineering/', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
-        assert.strictEqual(sr.querySelectorAll('nav[aria-label="Main"] a').length, 9, 'nine links, everywhere')
+        assert.strictEqual(sr.querySelectorAll('nav[aria-label="Main"] a').length, 10, 'ten links, everywhere')
         assert.strictEqual(sr.querySelector('.badge').textContent, 'BETA')
         assert.strictEqual(sr.querySelector('.sub'), null, 'no section row outside /engineering/')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/app/'),

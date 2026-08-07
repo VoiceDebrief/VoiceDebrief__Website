@@ -17,6 +17,7 @@ const LINKS = [
     ['/#privacy',     'Privacy'],
     ['/#pricing',     'Pricing'],
     ['/app/',         'App'],
+    ['/user-guide/',  'User guide'],
     ['/library/',     'Library'],
     ['/updates/',     'Updates'],
     ['/versions/',    'Versions'],

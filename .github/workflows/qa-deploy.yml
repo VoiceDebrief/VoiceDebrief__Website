@@ -22,6 +22,11 @@ on:
   push:
     branches:
       - qa
+    # Belt-and-braces against a re-trigger loop from the commit-baselines job
+    # below. The primary guard is that GITHUB_TOKEN pushes do not start
+    # workflows; this second guard survives someone swapping in a PAT.
+    paths-ignore:
+      - 'website/user-guide/screenshots/**'
   workflow_dispatch:
 
 concurrency:
@@ -46,6 +51,9 @@ jobs:
 
       - name: Validate published content
         run: python3 scripts/build_content.py --check
+
+      - name: Validate the user-guide manifest
+        run: python3 scripts/build_user_guide.py --check
 
       - name: Unit tests
         shell: bash
@@ -108,16 +116,93 @@ jobs:
           name: test-results
           path: test-results.json
 
+  # The docs half of QA-to-docs (issue 038). The test job captures screenshots
+  # into an artifact and the container dies with them; this job is the only way
+  # a capture ever becomes a committed baseline — and therefore a picture in the
+  # user guide.
+  #
+  # It commits ONLY shots that have no baseline yet. A shot whose baseline exists
+  # and differs is the gate firing: the test job is already red, this job does not
+  # run, and nothing overwrites the evidence. Auto-blessing a diff would turn the
+  # gate into a recorder that faithfully files every regression as the new truth.
+  # Refreshing an intended change stays deliberate (UPDATE_BASELINES=1, M-qtd-3).
+  #
+  # The push uses GITHUB_TOKEN, whose pushes do not trigger workflows — the same
+  # property the version bump on dev/main already relies on, so no loop.
+  commit-baselines:
+    name: Commit new screenshot baselines
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [test]
+    if: github.event_name == 'push' && github.ref_name == 'qa'
+    permissions:
+      contents: write
+    outputs:
+      committed: ${{ steps.commit.outputs.committed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: qa
+
+      - name: Download the QA-to-docs captures
+        uses: actions/download-artifact@v4
+        with:
+          name: qa-to-docs
+          path: qa-to-docs-artifact
+
+      - name: Commit candidates that have no baseline yet
+        id: commit
+        run: |
+          mkdir -p website/user-guide/screenshots
+          added=0
+          for f in qa-to-docs-artifact/candidates/*.png; do
+            [ -e "$f" ] || continue                       # no candidates: nothing to arm
+            dest="website/user-guide/screenshots/$(basename "$f")"
+            if [ -e "$dest" ]; then
+              echo "skip $(basename "$f") — baseline exists (a change here must go through UPDATE_BASELINES)"
+              continue
+            fi
+            cp "$f" "$dest"
+            added=$((added + 1))
+          done
+          if [ "$added" -eq 0 ]; then
+            echo "no new baselines — the guide's pictures are already current"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add website/user-guide/screenshots
+          printf '%s\n\n%s\n' \
+            "QA-to-docs: arm $added screenshot baseline(s) from CI run ${GITHUB_RUN_NUMBER}" \
+            "Captured by the qa-to-docs journeys in this run and committed by CI — baselines are never produced on a laptop (font rendering differs). From here they are both the diff gate's reference and the user guide's illustrations." \
+            > /tmp/baseline-commit-msg
+          git commit -F /tmp/baseline-commit-msg
+          git push origin qa
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+          echo "### Armed $added screenshot baseline(s)" >> "$GITHUB_STEP_SUMMARY"
+
   deploy-netlify:
     name: Deploy to Netlify (QA)
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [test]
+    needs: [test, commit-baselines]
+    # commit-baselines is skipped on workflow_dispatch; deploy still must run.
+    if: always() && needs.test.result == 'success' && needs.commit-baselines.result != 'failure'
     permissions:
       contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Pull any baselines committed by this run
+        # Same pattern as build-pages pulling the version bump on dev: the
+        # checkout above predates commit-baselines' push, so without this the
+        # new screenshots would not ship until the next deploy. Guarded on the
+        # branch so a workflow_dispatch elsewhere never merges qa into it.
+        if: github.ref_name == 'qa'
+        run: git pull --ff-only origin qa
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -130,6 +215,11 @@ jobs:
         # every other page. --ref qa: the QA estate's derived links point at
         # the qa branch — files can exist here before they exist on dev.
         run: python3 scripts/build_content.py --ref qa
+
+      - name: Build the user guide from the QA captures (issue 038)
+        # Renders website/user-guide/ from tests/qa-to-docs/journeys.json plus
+        # whatever baselines are committed — including any armed moments ago.
+        run: python3 scripts/build_user_guide.py
 
       - name: Stamp QA version into the site
         id: stamp
