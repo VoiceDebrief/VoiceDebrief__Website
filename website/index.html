@@ -39,13 +39,6 @@
   body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
        color:var(--ink);background:var(--paper);line-height:1.6}
   .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
-  header{background:var(--navy);color:#fff;padding:14px 0}
-  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
-  .brand .dot{width:12px;height:12px;border-radius:50%;background:#25d366;box-shadow:0 0 0 4px rgba(37,211,102,.18)}
-  .brand small{display:block;font-weight:400;opacity:.75;font-size:.72rem;letter-spacing:.4px}
-  nav a{color:#dbe6f5;text-decoration:none;margin-left:18px;font-size:.92rem}
-  nav a:hover{color:#fff}
   .hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;
         padding:64px 0 72px;text-align:left}
   .hero h1{font-size:clamp(1.7rem,4.2vw,2.7rem);line-height:1.15;max-width:760px}
@@ -92,29 +85,13 @@
   footer{background:var(--navy);color:#a9bcd6;padding:36px 0;font-size:.85rem}
   footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
   footer a{color:#dbe6f5}
-  @media (max-width:640px){ nav{display:none} .hero{padding:44px 0 52px} }
+  @media (max-width:640px){ .hero{padding:44px 0 52px} }
 </style>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.0/wa-site-nav.js"></script>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <div class="brand">
-      <span class="dot"></span>
-      <span>Voice&nbsp;Note&nbsp;Transcribe<small>by SGraph — Simple. Private. Portable.</small></span>
-    </div>
-    <nav aria-label="Main">
-      <a href="#how">How it works</a>
-      <a href="#privacy">Privacy modes</a>
-      <a href="#pricing">Pricing</a>
-      <a href="library/">Library</a>
-      <a href="updates/">Updates</a>
-      <a href="versions/">Versions</a>
-      <a href="videos/">Videos</a>
-      <a href="engineering/">Engineering</a>
-    </nav>
-  </div>
-</header>
+<wa-site-nav></wa-site-nav>
 
 <div class="hero">
   <div class="wrap">

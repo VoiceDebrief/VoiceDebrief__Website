@@ -14,21 +14,11 @@
      so this rides in the page. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'wasm-unsafe-eval' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://cdn.jsdelivr.net; connect-src 'self' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://openrouter.ai https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://dev.tools.sgraph.ai https://tools.sgraph.ai; img-src 'self' data: blob:; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <link rel="stylesheet" href="app.css">
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.0/wa-site-nav.js"></script>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <div class="brand"><span class="dot"></span><a href="../">Voice&nbsp;Note&nbsp;Transcribe</a>
-      <span class="beta">BETA</span></div>
-    <nav aria-label="Main">
-      <a href="../#privacy">Privacy modes</a>
-      <a href="../#pricing">Pricing</a>
-      <a href="../library/">Library</a>
-      <a href="../updates/">Updates</a>
-    </nav>
-  </div>
-</header>
+<wa-site-nav badge="BETA"></wa-site-nav>
 
 <div class="hero">
   <div class="wrap">

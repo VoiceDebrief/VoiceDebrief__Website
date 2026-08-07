@@ -13,13 +13,6 @@
   body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
        color:var(--ink);background:#fff;line-height:1.6}
   .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
-  header{background:var(--navy);color:#fff;padding:14px 0}
-  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:700}
-  .brand a{color:#fff;text-decoration:none}
-  .brand .dot{width:12px;height:12px;border-radius:50%;background:#25d366;box-shadow:0 0 0 4px rgba(37,211,102,.18)}
-  nav a{color:#dbe6f5;text-decoration:none;margin-left:18px;font-size:.92rem}
-  nav a:hover,nav a.active{color:#fff}
   .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:40px 0}
   .page-head h1{font-size:1.8rem}
   .page-head p{color:#c8d6e8;margin-top:8px;max-width:640px}
@@ -36,24 +29,12 @@
   .note{background:var(--mist);border-radius:var(--radius);padding:14px 18px;font-size:.88rem;color:var(--muted);margin-top:30px}
   footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
   footer a{color:#dbe6f5}
-  @media(max-width:640px){nav{display:none}}
+  
 </style>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.0/wa-site-nav.js"></script>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <div class="brand"><span class="dot"></span><a href="../">Voice&nbsp;Note&nbsp;Transcribe</a></div>
-    <nav aria-label="Main">
-      <a href="../#how">How it works</a>
-      <a href="../#privacy">Privacy modes</a>
-      <a href="../#pricing">Pricing</a>
-      <a href="./" class="active">Library</a>
-      <a href="../updates/">Updates</a>
-      <a href="../versions/">Versions</a>
-      <a href="../videos/">Videos</a>
-    </nav>
-  </div>
-</header>
+<wa-site-nav></wa-site-nav>
 
 <div class="page-head">
   <div class="wrap">

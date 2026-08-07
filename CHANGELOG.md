@@ -18,6 +18,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **One menu, one source (issue 048)** — the site header is now `wa-site-nav`,
+  a single dependency-free web component on every page and template. The five
+  drifted variants are gone (the app page never linked Videos or Engineering;
+  only Versions linked the App; the templates differed from the landing page).
+  Active link derived from the path, engineering pages get their section row,
+  the app page its BETA badge; dead header CSS stripped from every stylesheet.
+  Render-verified on all pages; live-QA checks the component resolves.
 - **Fixed: a finished run could be invisible (issue 046, found live by Dinis)**
   — "do another voice note" and remove-file reset the page but did not cancel
   an in-flight pass, which then completed headless into hidden sections (the

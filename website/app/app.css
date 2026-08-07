@@ -9,14 +9,6 @@
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
      color:var(--wa-ink);background:var(--wa-mist);line-height:1.6}
 .wrap{max-width:860px;margin:0 auto;padding:0 20px}
-header{background:var(--wa-navy);color:#fff;padding:14px 0}
-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700}
-.brand a{color:#fff;text-decoration:none}
-.brand .dot{width:12px;height:12px;border-radius:50%;background:var(--wa-green);box-shadow:0 0 0 4px rgba(37,211,102,.18)}
-.beta{font-size:.66rem;font-weight:700;letter-spacing:.8px;background:rgba(37,211,102,.16);border:1px solid rgba(37,211,102,.45);color:#8ff0b6;padding:2px 8px;border-radius:999px}
-nav a{color:#dbe6f5;text-decoration:none;margin-left:16px;font-size:.9rem}
-nav a:hover{color:#fff}
 .hero{background:linear-gradient(180deg,var(--wa-navy),var(--wa-navy-2));color:#fff;padding:40px 0 44px}
 .hero h1{font-size:clamp(1.4rem,3.4vw,2rem)}
 .hero .lead{color:var(--wa-muted-on-dark);margin:8px 0 22px;font-size:.98rem}
@@ -77,4 +69,3 @@ section[hidden]{display:none !important}
 .error-body{font-size:.92rem;color:var(--wa-muted)}
 footer{background:var(--wa-navy);color:#a9bcd6;padding:26px 0;font-size:.84rem}
 footer a{color:#dbe6f5}
-@media (max-width:640px){ nav{display:none} }

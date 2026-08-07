@@ -10,7 +10,7 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-07 (046 fixed + 047 shipped. Earlier: 042/043 done: the workflow declared as a JSON state machine + the flow panel; 044/045 opened. Earlier: qa branch merged into dev's line:
+as any issue change. Last updated: 2026-08-07 (046-048 done. Earlier: 042/043 done: the workflow declared as a JSON state machine + the flow panel; 044/045 opened. Earlier: qa branch merged into dev's line:
 its parallel 036–038 renumbered to 039–041; 041 = ?origin= removed entirely,
 superseding both branches' allow-list fixes; 007 closed as superseded — Dinis).
 
@@ -57,6 +57,7 @@ superseding both branches' allow-list fixes; 007 closed as superseded — Dinis)
 | [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |
 | [034](done/034-chat-with-materials.md) | M3: chat with the materials + tool-driven workflow — live-validated by Dinis | done | high | large |
 | [035](done/035-chat-edits-materials-and-sees-image.md) | Chat edits transcript/summary (revertible), SEES the infographic image, tidy suggestions | done | high | medium |
+| [048](done/048-single-source-site-nav.md) | One nav, one source: wa-site-nav on every page | done | normal | small |
 | [046](done/046-run-completes-into-hidden-page.md) | A finished run could be invisible — page reset did not stop the machine | done | high | small |
 | [047](done/047-llm-friendly-and-seo.md) | LLM-friendly + SEO: llms.txt, sitemap, canonicals, JSON-LD, QA noindex | done | high | medium |
 | [042](done/042-workflow-declared-state-machine.md) | The workflow declared: JSON state machine, budget on the step | done | high | medium |

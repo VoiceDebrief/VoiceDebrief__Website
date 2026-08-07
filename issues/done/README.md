@@ -5,6 +5,7 @@ issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [048](048-single-source-site-nav.md) | One nav, one source | `wa-site-nav` v0.1.0 on all 12 surfaces; five drifted menus retired; dead CSS stripped |
 | [047](047-llm-friendly-and-seo.md) | LLM-friendly + SEO | llms.txt, generated sitemap, canonicals, JSON-LD, QA-estate noindex, live-QA coverage |
 | [046](046-run-completes-into-hidden-page.md) | A finished run could be invisible | reset now cancels the pass; wa:pass:complete re-shows orphaned results |
 | [043](043-flow-panel-visualisation.md) | The 🧭 flow panel | `wa-flow-panel` v0.1.0 — the declaration + live execution trace, cost vs ceiling per step |
