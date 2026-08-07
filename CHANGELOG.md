@@ -18,6 +18,11 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- Live-QA fix: the stamped-asset check assumed every asset on the app page was
+  relative to `/app/` and built `/app//components/...` for the new site-absolute
+  `wa-site-nav` ref — a 404 in the check, not on the site (the file served 200
+  all along). Site-absolute refs now resolve from the root; verified green
+  against the deployed QA estate.
 - **One menu, one source (issue 048)** — the site header is now `wa-site-nav`,
   a single dependency-free web component on every page and template. The five
   drifted variants are gone (the app page never linked Videos or Engineering;

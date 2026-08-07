@@ -56,7 +56,10 @@ const app = await get('/app/')
 const stamped = [...app.text.matchAll(/(?:src|href)="([^"]+\?v=[^"]+)"/g)].map(m => m[1])
 check('app assets carry ?v= stamps', stamped.length >= 2, `${stamped.length} stamped refs`)
 for (const ref of stamped) {
-    const r = await get('/app/' + ref.replace(/^\.\//, ''))
+    // Site-absolute refs (the shared wa-site-nav) resolve from the root;
+    // everything else is relative to the app page.
+    const path = ref.startsWith('/') ? ref : '/app/' + ref.replace(/^\.\//, '')
+    const r = await get(path)
     check(`stamped asset resolves: ${ref}`, r.ok, `status ${r.status}`)
 }
 
