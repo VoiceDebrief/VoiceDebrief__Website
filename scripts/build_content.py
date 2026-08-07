@@ -157,6 +157,12 @@ def md_to_text(md):
 
 # --- links the author never has to write --------------------------------------
 
+# The branch the generated blob/ links point at. Each estate builds links to
+# ITSELF (--ref): the qa preview must not link dev for files that only exist on
+# qa yet — the live-QA link check caught exactly that (three 404s, 7 Aug).
+REF = 'dev'
+
+
 def issue_links(numbers, problems, where):
     """Resolve `issues: 035` to the file wherever it lives NOW. Hand-written issue
     URLs went stale the moment an issue moved open/ -> done/ (and one shipped
@@ -171,7 +177,7 @@ def issue_links(numbers, problems, where):
             problems.append(f'{where}: issue {n} does not exist under issues/')
             continue
         rel = os.path.relpath(sorted(hits)[0], ROOT)
-        links.append({'n': n, 'href': f'{REPO_URL}/blob/dev/{rel}',
+        links.append({'n': n, 'href': f'{REPO_URL}/blob/{REF}/{rel}',
                       'label': f'issue {n} — the full write-up'})
     return links
 
@@ -487,7 +493,11 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--out', default=os.path.join(ROOT, 'website'), help='site directory to write into')
     ap.add_argument('--check', action='store_true', help='validate content, write nothing')
+    ap.add_argument('--ref', default='dev',
+                    help='branch the generated blob/ links point at — the branch being built (dev|qa)')
     args = ap.parse_args()
+    global REF
+    REF = args.ref
     try:
         return build(args.out, check_only=args.check)
     except ContentError as e:

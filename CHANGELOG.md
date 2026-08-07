@@ -18,6 +18,11 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Each estate's derived links now point at itself** — `build_content.py` gains
+  `--ref`: the qa build links `blob/qa/...`, the dev build `blob/dev/...`. The
+  live-QA link check caught the gap (its first real save): three 7-Aug posts
+  linked issues 041/042/043 at `blob/dev/` while those files existed only on
+  the qa branch — three honest 404s on the QA estate.
 - **Every CI job now carries an explicit `timeout-minutes`** (test 10, deploys
   10, tag 5, live-QA 15 — sized from healthy runs) so a genuine hang fails fast
   with an honest "timed out" instead of running toward GitHub's 6-hour default.

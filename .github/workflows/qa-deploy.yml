@@ -118,8 +118,9 @@ jobs:
       - name: Build the site's content (updates, videos, versions)
         # content/*.md -> the rendered pages + manifests. Runs FIRST so the
         # generated pages get the version stamp and the cache-buster like
-        # every other page.
-        run: python3 scripts/build_content.py
+        # every other page. --ref qa: the QA estate's derived links point at
+        # the qa branch — files can exist here before they exist on dev.
+        run: python3 scripts/build_content.py --ref qa
 
       - name: Stamp QA version into the site
         id: stamp

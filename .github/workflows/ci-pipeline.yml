@@ -138,8 +138,8 @@ jobs:
       - name: Build the site's content (updates, videos, versions)
         # content/*.md -> the rendered pages + manifests. Runs FIRST so the
         # generated pages get the version stamp and the cache-buster like
-        # every other page.
-        run: python3 scripts/build_content.py
+        # every other page. Links point at dev — the branch this estate serves.
+        run: python3 scripts/build_content.py --ref dev
 
       - name: Stamp version into the site
         run: |
