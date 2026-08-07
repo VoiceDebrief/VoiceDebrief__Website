@@ -1,9 +1,19 @@
-/* App configuration — the only file with tunable constants.
-   The engine origin can be overridden for dev/tests with ?origin=<url>. */
+/* App configuration — the only file with tunable constants. */
 
-const qs = new URLSearchParams(location.search)
+/* The audio-transcribe engine's ES modules are imported from here at runtime
+   (website/app/engine.js). This is HARDCODED and deliberately not overridable.
 
-export const ORIGIN = qs.get('origin') || 'https://dev.tools.sgraph.ai'
+   It used to accept a `?origin=` query parameter for development. That made a URL
+   parameter decide which JavaScript executes inside this page — beside the user's
+   OpenRouter key in localStorage — so a link carrying our own trusted domain
+   (…/app/?origin=https://somewhere-else) could run someone else's code and take
+   the key. An allow-list would close that, but the parameter earned its keep only
+   in development, and the tests get there by intercepting requests to this origin
+   rather than by rewriting it. A capability that exists for nobody is best removed
+   (issue 041; Dinis, 6 Aug: "the solution is not to have that feature at all").
+
+   To point a local checkout at a different engine build, change this line. */
+export const ORIGIN = 'https://dev.tools.sgraph.ai'
 
 /* Costs: the engine meters in USD; the product speaks GBP (5 Aug decision).
    Fixed, versioned rate — reviewed when pricing goes live, not a live feed. */

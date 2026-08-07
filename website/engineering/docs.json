@@ -1,0 +1,391 @@
+{
+  "note": "The public doc estate as of this release (team/humans excluded).",
+  "generated_at": "2026-08-06T17:28:15+00:00",
+  "count": 64,
+  "docs": [
+    {
+      "path": "library/README.md",
+      "title": "Library \u2014 WhatsApp Audio Transcription",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/README.md"
+    },
+    {
+      "path": "library/brief-pack/v0.1.0__00__README.md",
+      "title": "Brief Pack: WhatsApp Audio Transcription \u2014 Session Understanding",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/brief-pack/v0.1.0__00__README.md"
+    },
+    {
+      "path": "library/brief-pack/v0.1.0__01__project-understanding.md",
+      "title": "Project Understanding: The WhatsApp Audio Transcription Tool",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/brief-pack/v0.1.0__01__project-understanding.md"
+    },
+    {
+      "path": "library/brief-pack/v0.1.0__02__architecture.md",
+      "title": "Architecture View: One Repo, Three Targets, No Backend",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/brief-pack/v0.1.0__02__architecture.md"
+    },
+    {
+      "path": "library/brief-pack/v0.1.0__03__commercial-model.md",
+      "title": "Commercial Model: Ninety Days, Twenty-Five Percent Of Net, Split Evenly",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/brief-pack/v0.1.0__03__commercial-model.md"
+    },
+    {
+      "path": "library/brief-pack/v0.1.0__04__task-plan.md",
+      "title": "Task Plan: First Set Of Tasks For This Repo",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/brief-pack/v0.1.0__04__task-plan.md"
+    },
+    {
+      "path": "library/brief-pack/v0.1.0__05__source-map.md",
+      "title": "Source Map: Where This Understanding Comes From",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/brief-pack/v0.1.0__05__source-map.md"
+    },
+    {
+      "path": "library/brief-pack/v0.1.0__06__completion-report.md",
+      "title": "Completion Report: What Was Done This Session",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/brief-pack/v0.1.0__06__completion-report.md"
+    },
+    {
+      "path": "library/briefs/first-product-to-market/v0.33.52__arch-brief__sg-send-voice-note-transcription-tool-one-repo-three-apps-no-backend-openrouter-inference-and-billing-privacy-modes-single-lambda.md",
+      "title": "The Voice Note Transcription Tool: One Repo To Web, iOS And Android, No Backend, OpenRouter For Both Inference And Billing, And A Single Lambda For Keys",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/briefs/first-product-to-market/v0.33.52__arch-brief__sg-send-voice-note-transcription-tool-one-repo-three-apps-no-backend-openrouter-inference-and-billing-privacy-modes-single-lambda.md"
+    },
+    {
+      "path": "library/briefs/first-product-to-market/v0.33.52__contract-draft__sg-send-voice-note-transcription-tool-partnership-ninety-days-twenty-five-percent-net-fifty-fifty-profit-split.md",
+      "title": "Product Partnership Agreement: Voice Note Transcription Tool",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/briefs/first-product-to-market/v0.33.52__contract-draft__sg-send-voice-note-transcription-tool-partnership-ninety-days-twenty-five-percent-net-fifty-fifty-profit-split.md"
+    },
+    {
+      "path": "library/briefs/first-product-to-market/v0.33.52__index__2026-07-27.md",
+      "title": "Day Index, 27 July 2026 (v0.33.52): The First Product Goes To Market, And An Agent Escapes Its Sandbox",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/briefs/first-product-to-market/v0.33.52__index__2026-07-27.md"
+    },
+    {
+      "path": "library/briefs/first-product-to-market/v0.33.52__strategy-brief__sg-send-first-product-to-market-fifty-fifty-profit-share-contract-made-simple-by-openness-markup-expressed-as-the-key.md",
+      "title": "First Product To Market: A Fifty-Fifty Profit Share, A Contract Made Simple By Openness, And A Markup Expressed As The Key",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/briefs/first-product-to-market/v0.33.52__strategy-brief__sg-send-first-product-to-market-fifty-fifty-profit-share-contract-made-simple-by-openness-markup-expressed-as-the-key.md"
+    },
+    {
+      "path": "library/briefs/lineage/v0.33.49__strategy-brief__sg-send-commercialising-the-primitives-freelance-network-mini-budgets-consumption-plus-markup-three-partnership-models.md",
+      "title": "Commercialising The Primitives: The Freelance Network Turned Inward, Mini Budgets, Consumption Plus Markup, And Three Partnership Models",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/briefs/lineage/v0.33.49__strategy-brief__sg-send-commercialising-the-primitives-freelance-network-mini-budgets-consumption-plus-markup-three-partnership-models.md"
+    },
+    {
+      "path": "library/briefs/lineage/v0.33.49__strategy-brief__sg-send-open-source-as-strategy-not-charity-gen-ai-startups-no-tech-moat-lock-in-in-quality-and-certification-share-across-companies.md",
+      "title": "Open Source As Strategy, Not Charity: No Tech Moat, Lock-In In Quality And Certification, Shared Across Companies",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/briefs/lineage/v0.33.49__strategy-brief__sg-send-open-source-as-strategy-not-charity-gen-ai-startups-no-tech-moat-lock-in-in-quality-and-certification-share-across-companies.md"
+    },
+    {
+      "path": "library/briefs/lineage/v0.33.50__strategy-brief__sg-send-tools-mature-enough-to-productise-candidates-shared-gap-token-purchase-page-users-two-billing-shapes.md",
+      "title": "The Tools Mature Enough To Productise: Nine Candidates, One Identical Missing Piece (Token Purchase, A Page, Users), And Two Billing Shapes",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/briefs/lineage/v0.33.50__strategy-brief__sg-send-tools-mature-enough-to-productise-candidates-shared-gap-token-purchase-page-users-two-billing-shapes.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.18__chat-with-materials/00__design-brief.md",
+      "title": "M3 design brief \u2014 chat with the materials, drive the tool from the chat",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.18__chat-with-materials/00__design-brief.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.1__audio-transcribe-integration/01__conductor__scope-milestones-decisions.md",
+      "title": "Conductor Brief: Scope, Milestones, And The Decisions That Gate Them",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.1__audio-transcribe-integration/01__conductor__scope-milestones-decisions.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.1__audio-transcribe-integration/02__architect__integration-architecture.md",
+      "title": "Architect Brief: Integration Architecture \u2014 Import The Engine, Own The Experience",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.1__audio-transcribe-integration/02__architect__integration-architecture.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.1__audio-transcribe-integration/03__dev__implementation-brief.md",
+      "title": "Dev Brief: Implementation Plan \u2014 Wire The Engine, Bind The Events, Ship Thin",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.1__audio-transcribe-integration/03__dev__implementation-brief.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.1__audio-transcribe-integration/04__designer__experience-brief.md",
+      "title": "Designer Brief: The One-Motion Experience \u2014 Progress Is The Product",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.1__audio-transcribe-integration/04__designer__experience-brief.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.1__audio-transcribe-integration/05__dev__web-components-and-js-api.md",
+      "title": "Dev Brief: Web Components And The JS API \u2014 Build It The SGraph Way From Day One",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.1__audio-transcribe-integration/05__dev__web-components-and-js-api.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.1__audio-transcribe-integration/06__spike-note__m1a-import-harness.md",
+      "title": "Spike Note: M1-a Import Harness \u2014 Attempt 2 Wins",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.1__audio-transcribe-integration/06__spike-note__m1a-import-harness.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.1__audio-transcribe-integration/README.md",
+      "title": "Dev Pack: Leveraging The Existing Audio-Transcribe Tool To The Max",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.1__audio-transcribe-integration/README.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.20__video-on-the-site/00__mapping.md",
+      "title": "Mapping: putting the YouTube videos on the site",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.20__video-on-the-site/00__mapping.md"
+    },
+    {
+      "path": "library/dev_packs/v0.1.21__workflow-state-machine/00__design-brief.md",
+      "title": "Design Brief: The Workflow Declared \u2014 A JSON State Machine With The Budget On The Step",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.21__workflow-state-machine/00__design-brief.md"
+    },
+    {
+      "path": "library/guides/email-fs-lite-v0.6.md",
+      "title": "Email-FS-lite \u2014 Agent Manual",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/email-fs-lite-v0.6.md"
+    },
+    {
+      "path": "library/guides/v0.1.0__guide__tech-stack-and-workflow.md",
+      "title": "Guide: The Tech Stack And Workflow Of This Project",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.0__guide__tech-stack-and-workflow.md"
+    },
+    {
+      "path": "library/guides/v0.1.1__guide__github-pages-and-route53-dns.md",
+      "title": "Guide: GitHub Pages Hosting And Route 53 DNS \u2014 How It Works And How To Repeat It",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.1__guide__github-pages-and-route53-dns.md"
+    },
+    {
+      "path": "library/guides/v0.1.20__guide__content-architecture-for-agents.md",
+      "title": "Content architecture: how agents publish without breaking things",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.20__guide__content-architecture-for-agents.md"
+    },
+    {
+      "path": "library/guides/v0.1.20__guide__the-origin-parameter.md",
+      "title": "What `?origin=` does",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.1.20__guide__the-origin-parameter.md"
+    },
+    {
+      "path": "library/guides/v0.6.1__guide__agent-workflow-issues-format.md",
+      "title": "Agent Workflow Guide: .issues File Format",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/guides/v0.6.1__guide__agent-workflow-issues-format.md"
+    },
+    {
+      "path": "library/infographics/README.md",
+      "title": "Infographics",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/infographics/README.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__00__README.md",
+      "title": "Review Pack: The Project At v0.1.20 \u2014 Findings And Suggestions",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__00__README.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__01__state-of-the-project.md",
+      "title": "State Of The Project: Nine Days In, Honestly",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__01__state-of-the-project.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__02__code-and-architecture-review.md",
+      "title": "Code And Architecture Review",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__02__code-and-architecture-review.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__03__testing-ci-and-qa-review.md",
+      "title": "Testing, CI And QA Review",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__03__testing-ci-and-qa-review.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__04__documentation-and-knowledge-review.md",
+      "title": "Documentation And Knowledge Review",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__04__documentation-and-knowledge-review.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__05__public-site-and-story-review.md",
+      "title": "Public Site And Story Review",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__05__public-site-and-story-review.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__06__proposal__open-engineering-hub.md",
+      "title": "Proposal: The Open Engineering Hub \u2014 Making The NFRs Public",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__06__proposal__open-engineering-hub.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__07__prioritised-recommendations.md",
+      "title": "Prioritised Recommendations",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__07__prioritised-recommendations.md"
+    },
+    {
+      "path": "library/review-packs/v0.1.20__project-review/v0.1.20__08__proposal__qa-to-docs.md",
+      "title": "Proposal: QA-To-Docs \u2014 Screenshot-Verified Features, Self-Maintaining User Docs",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/review-packs/v0.1.20__project-review/v0.1.20__08__proposal__qa-to-docs.md"
+    },
+    {
+      "path": "library/tools/audio-transcribe/v0.1.93__audio-transcribe__integration-and-capabilities.md",
+      "title": "Audio Transcribe + Live Transcribe \u2014 Integration & Capabilities Guide",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/tools/audio-transcribe/v0.1.93__audio-transcribe__integration-and-capabilities.md"
+    },
+    {
+      "path": "library/tools/audio-transcribe/v0.2.65__arch-brief__audio-transcribe-tool.md",
+      "title": "Architecture Brief: Audio Transcribe Tool (OpenRouter)",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/tools/audio-transcribe/v0.2.65__arch-brief__audio-transcribe-tool.md"
+    },
+    {
+      "path": "library/tools/audio-transcribe/v0.2.69__review__audio-transcribe__vault-integration-and-experience-briefs.md",
+      "title": "Review \u2014 audio-transcribe vs the two v0.33.27 briefs (vault integration + experience)",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/tools/audio-transcribe/v0.2.69__review__audio-transcribe__vault-integration-and-experience-briefs.md"
+    },
+    {
+      "path": "library/tools/infographic-generator/v0.1.14__sg-llm-infographic__integration-and-capabilities.md",
+      "title": "sg-llm-infographic \u2014 Integration & Capabilities Guide",
+      "area": "library",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/tools/infographic-generator/v0.1.14__sg-llm-infographic__integration-and-capabilities.md"
+    },
+    {
+      "path": "team/README.md",
+      "title": "The Agentic Team \u2014 WhatsApp Audio Transcription",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/README.md"
+    },
+    {
+      "path": "team/comms/briefs/08/05/v0.1.14__bug-report__addfiles-silent-dedupe.md",
+      "title": "Bug report for the Tools team: `addFiles` silently drops duplicate files",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/comms/briefs/08/05/v0.1.14__bug-report__addfiles-silent-dedupe.md"
+    },
+    {
+      "path": "team/comms/briefs/08/05/v0.1.14__bug-report__ogg-mime-passthrough-causes-hallucinated-transcripts.md",
+      "title": "Bug Report (upstream): A Mislabelled `.ogg` Produces A HALLUCINATED Transcript, Silently",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/comms/briefs/08/05/v0.1.14__bug-report__ogg-mime-passthrough-causes-hallucinated-transcripts.md"
+    },
+    {
+      "path": "team/comms/dev-pack-code-review-feedback.md",
+      "title": "MVP Dev Pack \u2014 Code Review Feedback",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/comms/dev-pack-code-review-feedback.md"
+    },
+    {
+      "path": "team/roles/ambassador/ROLE.md",
+      "title": "ROLE: Ambassador",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/ambassador/ROLE.md"
+    },
+    {
+      "path": "team/roles/appsec/ROLE.md",
+      "title": "ROLE: AppSec",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/appsec/ROLE.md"
+    },
+    {
+      "path": "team/roles/appsec/reviews/08/06/v0.1.20__appsec-review__model-allowlist-and-guardrails.md",
+      "title": "AppSec Review: The Model Allowlist And The Key Guardrails",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/appsec/reviews/08/06/v0.1.20__appsec-review__model-allowlist-and-guardrails.md"
+    },
+    {
+      "path": "team/roles/architect/ROLE.md",
+      "title": "ROLE: Architect",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/architect/ROLE.md"
+    },
+    {
+      "path": "team/roles/conductor/ROLE.md",
+      "title": "ROLE: Conductor",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/conductor/ROLE.md"
+    },
+    {
+      "path": "team/roles/designer/ROLE.md",
+      "title": "ROLE: Designer",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/designer/ROLE.md"
+    },
+    {
+      "path": "team/roles/dev/ROLE.md",
+      "title": "ROLE: Dev",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/dev/ROLE.md"
+    },
+    {
+      "path": "team/roles/devops/ROLE.md",
+      "title": "ROLE: DevOps",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/devops/ROLE.md"
+    },
+    {
+      "path": "team/roles/dpo/ROLE.md",
+      "title": "ROLE: DPO",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/dpo/ROLE.md"
+    },
+    {
+      "path": "team/roles/journalist/ROLE.md",
+      "title": "ROLE: Journalist",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/journalist/ROLE.md"
+    },
+    {
+      "path": "team/roles/journalist/ROUTINE.md",
+      "title": "The daily Journalist routine \u2014 standing brief",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/journalist/ROUTINE.md"
+    },
+    {
+      "path": "team/roles/librarian/ROLE.md",
+      "title": "ROLE: Librarian",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/librarian/ROLE.md"
+    },
+    {
+      "path": "team/roles/librarian/reality/index.md",
+      "title": "Reality: What Exists Today",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/librarian/reality/index.md"
+    },
+    {
+      "path": "team/roles/librarian/reviews/07/28/v0.1.0__librarian-review__brief-v0.33.53-indexed-and-actioned.md",
+      "title": "Librarian Review: Brief v0.33.53 Indexed And Actioned",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/librarian/reviews/07/28/v0.1.0__librarian-review__brief-v0.33.53-indexed-and-actioned.md"
+    },
+    {
+      "path": "team/roles/qa/ROLE.md",
+      "title": "ROLE: QA",
+      "area": "team",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/qa/ROLE.md"
+    }
+  ]
+}

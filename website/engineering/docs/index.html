@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docs — Engineering</title>
+<meta name="description" content="The documentation system behind the WhatsApp voice note transcription tool: a reality doc that cannot lie, a per-tag changelog, and the brief → build → debrief loop.">
+<link rel="stylesheet" href="../eng.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">← Engineering</a></div>
+    <nav aria-label="Main">
+      <a href="../pipeline/">Pipeline</a>
+      <a href="../testing/">Testing</a>
+      <a href="../docs/">Docs</a>
+      <a href="../security/">Security</a>
+      <a href="../team/">Team</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="../">engineering</a> / docs</div>
+    <h1>Docs that cannot lie: if it isn't in the reality doc, it doesn't exist.</h1>
+    <p class="lead">Documentation drifts unless something forces it to stay true. Here the
+      forcing function is a rule, applied in the same commit as every change.</p>
+    <div class="status-strip">
+      <div class="stat"><div class="k">public docs</div><div class="v" id="d-count">…</div></div>
+      <div class="stat"><div class="k">library</div><div class="v" id="d-lib">…</div></div>
+      <div class="stat"><div class="k">team</div><div class="v" id="d-team">…</div></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The principle</span>
+    <h2>Three instruments, one discipline</h2>
+    <div class="grid cols-3">
+      <div class="card"><h3>The reality doc</h3>
+        <p>One file lists everything that exists, with where and since when. Anything not yet
+        built is labelled <strong>PROPOSED — does not exist yet</strong>, and briefs are treated as
+        aspirations, not facts. Updated in the same commit as the change it records.</p>
+        <a class="more" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/librarian/reality/index.md">reality/index.md →</a></div>
+      <div class="card"><h3>The changelog triad</h3>
+        <p>CHANGELOG.md is the complete record (one entry per CI tag), the site's
+        <a href="../../versions/">Versions page</a> is the per-version ledger, and
+        <a href="../../updates/">Updates</a> is the readable story. Same facts, three altitudes.</p>
+        <a class="more" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/CHANGELOG.md">CHANGELOG.md →</a></div>
+      <div class="card"><h3>Brief → build → debrief</h3>
+        <p>Work starts from a written brief, lands as issues worked in public, and ends in a
+        debrief. When this loop reviewed itself it produced a full project review pack — the
+        document this very hub was proposed in.</p>
+        <a class="more" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/library/review-packs/v0.1.20__project-review">the review pack →</a></div>
+    </div>
+    <p class="sub" style="margin-top:22px">Why it matters to a growing service: every incident,
+      decision and reversal is findable later. When a <code>.ogg</code> bug resurfaces in six months,
+      the write-up, the fix commit, and the regression test are one search away — that is the
+      compounding value a vibe-coded service usually throws away.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">Live</span>
+    <h2>The doc estate, as of this deploy</h2>
+    <p class="sub">Every markdown doc in <code>library/</code> and <code>team/</code>, indexed by CI at
+      deploy time. (The <code>team/humans/</code> area is human-only and deliberately unindexed.)</p>
+    <div class="tablewrap">
+      <table id="docs-table">
+        <thead><tr><th>Doc</th><th>Area</th><th>Path</th></tr></thead>
+        <tbody><tr><td colspan="3" class="loading">loading docs.json…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="receipts"><strong>Receipts</strong>
+      <ul>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/.claude/CLAUDE.md">CLAUDE.md</a> — the rulebook that encodes the discipline (reality rule, changelog rule, licence rules)</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/librarian/reality/index.md">The reality doc</a> · <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/CHANGELOG.md">the changelog</a> · <a href="../../library/">the public Library page</a></li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom · Site content CC BY 4.0 &nbsp;·&nbsp;
+      <a href="../../versions/"><span id="site-version">dev</span></a></div>
+    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+  </div>
+</footer>
+
+<script type="module">
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+try {
+    const d = await (await fetch('../docs.json', { cache: 'no-store' })).json()
+    const lib = d.docs.filter(x => x.area === 'library').length
+    const team = d.docs.filter(x => x.area === 'team').length
+    document.getElementById('d-count').textContent = String(d.count)
+    document.getElementById('d-lib').textContent = String(lib)
+    document.getElementById('d-team').textContent = String(team)
+    document.querySelector('#docs-table tbody').innerHTML = d.docs.map(x => `
+        <tr><td><a href="${esc(x.url)}">${esc(x.title)}</a></td>
+            <td><span class="tag ${x.area === 'library' ? 'info' : 'ok'}">${esc(x.area.toUpperCase())}</span></td>
+            <td><code>${esc(x.path)}</code></td></tr>`).join('')
+} catch { document.getElementById('d-count').textContent = 'docs.json unavailable' }
+</script>
+
+</body>
+</html>

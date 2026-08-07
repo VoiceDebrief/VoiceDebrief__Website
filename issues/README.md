@@ -10,14 +10,18 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-06 (036–038 opened from the v0.1.20
-review pack: open engineering hub; app security hardening; QA-to-docs).
+as any issue change. Last updated: 2026-08-06 (042/043 done: the workflow declared as a JSON state machine + the flow panel; 044/045 opened. Earlier: qa branch merged into dev's line:
+its parallel 036–038 renumbered to 039–041; 041 = ?origin= removed entirely,
+superseding both branches' allow-list fixes; 007 closed as superseded — Dinis).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [037](open/037-app-security-hardening.md) | App security hardening: ?origin= allowlist, CSP, chat prompt-tool gating | open | **urgent** | medium |
+| [044](open/044-consensus-transcription.md) | Consensus transcription: two models, disagreement marked not resolved | **blocked** (on a D2 allowlist amendment — second audio model) | high | large |
+| [045](open/045-named-purchasable-workflows.md) | Named workflows at price points (Quick/Standard/Consensus) | open | normal | medium |
+| [037](open/037-app-security-hardening.md) | App security hardening: CSP shipped; chat prompt-tool gating, SVG sanitisation, key hygiene open (S1 closed by 041's removal) | open | **urgent** | medium |
 | [036](open/036-open-engineering-hub.md) | Open engineering hub: public /engineering/ pages for the NFRs | open | high | medium |
 | [038](open/038-qa-to-docs-screenshot-pipeline.md) | QA-to-docs: journey tests that QA features AND maintain the user docs (image-diff gate) | open | high | medium |
+| [040](open/040-videos-on-the-site.md) | Videos on the site — three live; one clip awaiting its YouTube id | **blocked** (on one id) | high | medium |
 | [010](open/010-openrouter-key-flow-beta.md) | OpenRouter key flow for beta (seeded key conditions) | open | high | medium |
 | [013](open/013-admin-vault-and-ciphertext-rule.md) | Administrative vault + ciphertext rule enforcement | open | high | medium |
 | [014](open/014-openrouter-guardrails-exploration.md) | OpenRouter guardrails: enforce privacy tiers on the key | open | high | medium |
@@ -25,7 +29,7 @@ review pack: open engineering hub; app security hardening; QA-to-docs).
 | [011](open/011-ios-android-targets.md) | iOS and Android targets from this repo | open | normal | large |
 | [015](open/015-secret-distribution-via-send.md) | Distribute secrets via the existing SG/Send capability | open | normal | small |
 | [016](open/016-crm-on-vault-substrate.md) | CRM built on the vault substrate | open | low | large |
-| [007](blocked/007-infographic-images-into-library.md) | Add the shared infographics to library/infographics/ | **blocked** (on image files) | normal | small |
+| [007](done/007-infographic-images-into-library.md) | Add the shared infographics to library/infographics/ | done (closed as superseded) | normal | small |
 | [001](done/001-brief-pack-understanding-architecture-tasks.md) | Create and push the detailed brief pack | done | high | medium |
 | [002](done/002-wire-up-agentic-team.md) | Wire up the agentic team for this repo | done | high | medium |
 | [003](done/003-ci-auto-tag-dev-main.md) | CI pipeline step to auto-tag on dev and main | done | high | small |
@@ -47,12 +51,16 @@ review pack: open engineering hub; app security hardening; QA-to-docs).
 | [027](done/027-debug-advanced-views-and-samples.md) | Debug/advanced views: LLM exchange log, OpenRouter details, prompt customisation, samples | done | high | large |
 | [028](done/028-ci-pipeline-tests.md) | CI tests: unit + integration gate the release, QA checks the live site | done | high | medium |
 | [029](done/029-repeat-pass-same-file-not-audio.md) | Re-running the same voice note failed ("not-audio") — engine silent dedupe, reused item | done | high | small |
-| [030](done/030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify — live and verified (silver-melba-d8d883.netlify.app) | done | high | small |
+| [030](done/030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify — live and verified (qa.whatsapp-voice-transcription.sgraph.ai) | done | high | small |
 | [031](done/031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model default, redraw UX + model picker, progress heartbeat, samples keep options | done | high | medium |
 | [032](done/032-disabled-key-shows-failed-to-fetch.md) | Disabled key read as "Failed to fetch" — now diagnosed via /api/v1/key and named | done | high | small |
 | [033](done/033-versions-page-and-sitewide-version.md) | Versions page (per-tag changes + diffs); version chip on every page; QA stamped with next version | done | high | small |
 | [034](done/034-chat-with-materials.md) | M3: chat with the materials + tool-driven workflow — live-validated by Dinis | done | high | large |
 | [035](done/035-chat-edits-materials-and-sees-image.md) | Chat edits transcript/summary (revertible), SEES the infographic image, tidy suggestions | done | high | medium |
+| [042](done/042-workflow-declared-state-machine.md) | The workflow declared: JSON state machine, budget on the step | done | high | medium |
+| [043](done/043-flow-panel-visualisation.md) | The 🧭 flow panel: declaration + live execution trace | done | high | medium |
+| [039](done/039-content-architecture-markdown-per-post.md) | Content architecture: markdown per post, generated pages/manifests, atomic agent writes | done | high | medium |
+| [041](done/041-remove-origin-parameter.md) | `?origin=` removed entirely — the engine origin is hardcoded | done | **high** | small |
 
 ## Layout
 

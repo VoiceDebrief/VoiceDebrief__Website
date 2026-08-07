@@ -8,7 +8,7 @@ estimated_effort: small
 # QA branch with automatic Netlify deploys
 
 **CLOSED 5 Aug 2026.** Dinis created the Netlify site
-(https://silver-melba-d8d883.netlify.app) and added the two secrets; the deploys
+(https://qa.whatsapp-voice-transcription.sgraph.ai) and added the two secrets; the deploys
 work: runs #2–#3 published stamped builds that pass all 16 live checks (verified
 in-session against the Netlify URL — pages, stamped assets, samples, prompts,
 engine origin + CORS).

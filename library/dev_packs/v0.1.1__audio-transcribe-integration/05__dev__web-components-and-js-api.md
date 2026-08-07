@@ -1,7 +1,7 @@
 # Dev Brief: Web Components And The JS API — Build It The SGraph Way From Day One
 
 **version** v0.1.1 · **date** 29 July 2026 · **role** Dev (with Architect) · **type** Dev-pack brief
-**status** PROPOSED — briefs only
+**status** SHIPPED — the work this brief proposed landed as M1–M2 (issues 008/024, Aug 2026)
 
 *Part of the dev pack [v0.1.1__audio-transcribe-integration](README.md) — see the [pack README](README.md) for scope, ground truth and definition of done. This brief refines [03 — implementation](03__dev__implementation-brief.md) §1: the HTML/CSS/JS structure is Web-Component-based, and the app itself speaks the SG JS API from day one.*
 

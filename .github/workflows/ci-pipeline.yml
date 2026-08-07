@@ -32,6 +32,7 @@ jobs:
   test:
     name: Tests (unit + integration)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -43,23 +44,65 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Validate published content
+        run: python3 scripts/build_content.py --check
+
       - name: Unit tests
-        run: node --test tests/unit/*.test.mjs
+        shell: bash
+        run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log
 
       - name: Install Playwright Chromium
         run: |
-          npm install --no-save playwright@1
+          npm install --no-save playwright@1 pixelmatch pngjs
           npx playwright install --with-deps chromium
 
       - name: Integration test (app boot against the live engine origin)
-        run: node tests/integration/app-boot.test.mjs
+        shell: bash
+        run: node tests/integration/app-boot.test.mjs 2>&1 | tee int-boot.log
 
       - name: Integration test (chat loop against a scripted OpenRouter)
-        run: node tests/integration/chat-loop.test.mjs
+        shell: bash
+        run: node tests/integration/chat-loop.test.mjs 2>&1 | tee int-chat.log
+
+      # QA-to-docs (issue 038): the user journeys as screenshot-verified QA.
+      # Missing baselines produce candidates (uploaded below) and pass; a
+      # baseline diff over threshold fails the gate like any other test.
+      - name: QA-to-docs journeys (screenshot QA + docs capture)
+        shell: bash
+        run: node tests/qa-to-docs/run.mjs 2>&1 | tee qa-docs.log
+
+      - name: Upload QA-to-docs captures (candidate baselines / diff reports)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-to-docs
+          path: tests/qa-to-docs/output/
+          if-no-files-found: ignore
+
+      # The engineering hub (issue 036) renders the gate this deploy passed —
+      # collect the per-layer counts for scripts/emit_engineering_json.py.
+      - name: Collect test results for the engineering hub
+        shell: bash
+        run: |
+          UNIT_PASS=$(grep -oP '^# pass \K\d+' unit.log)
+          UNIT_FAIL=$(grep -oP '^# fail \K\d+' unit.log)
+          BOOT=$(grep -c '^ok ' int-boot.log)
+          CHAT=$(grep -c '^ok ' int-chat.log)
+          QTD=$(grep -c '^ok ' qa-docs.log)
+          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
+            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$QTD" "$QTD" > test-results.json
+          cat test-results.json
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.json
 
   increment-tag:
     name: Increment Tag
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [test]
     permissions:
       contents: write
@@ -75,6 +118,7 @@ jobs:
   build-pages:
     name: Build Site (versioned)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [test, increment-tag]
     # Publish from dev (the Pages estate). Runs even when increment-tag is
     # skipped (manual dispatch) so the site can be re-published on demand —
@@ -91,6 +135,12 @@ jobs:
       - name: Pull the version bump commit
         run: git pull origin ${{ github.ref_name }}
 
+      - name: Build the site's content (updates, videos, versions)
+        # content/*.md -> the rendered pages + manifests. Runs FIRST so the
+        # generated pages get the version stamp and the cache-buster like
+        # every other page. Links point at dev — the branch this estate serves.
+        run: python3 scripts/build_content.py --ref dev
+
       - name: Stamp version into the site
         run: |
           VER=$(cat version)
@@ -100,6 +150,20 @@ jobs:
           find website -name '*.html' -exec \
             sed -i "s|<span id=\"site-version\">[^<]*</span>|<span id=\"site-version\">$VER</span>|" {} +
           grep -rho 'site-version">[^<]*' website --include='*.html' | sort | uniq -c
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: test-results
+
+      - name: Emit engineering JSON (issue 036)
+        # status.json / issues.json / docs.json — the /engineering/ pages'
+        # entire data layer, written at deploy time like version.txt.
+        run: |
+          python3 scripts/emit_engineering_json.py --site website \
+            --version "$(cat version)" --target "github-pages (dev)" \
+            --results test-results.json
 
       - name: Cache-bust the site's own assets
         # GitHub Pages serves our modules with max-age=600, so without this a
@@ -120,6 +184,7 @@ jobs:
   deploy-pages:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [build-pages]
     permissions:
       pages: write
@@ -135,6 +200,7 @@ jobs:
   qa-live:
     name: QA (live site)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [deploy-pages]
     permissions:
       contents: read

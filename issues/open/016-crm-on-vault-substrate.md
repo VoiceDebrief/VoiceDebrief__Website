@@ -11,3 +11,6 @@ Named in brief v0.33.53, explicitly NOT first-milestone scope. Customer records 
 
 ## Status 28 Jul (post-merge to dev)
 Open backlog. Explicitly not first-milestone.
+
+## Status 6 Aug (review-pack group A)
+Unchanged: correctly parked backlog, still not first-milestone scope.

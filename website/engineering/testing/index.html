@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testing — Engineering</title>
+<meta name="description" content="The three test layers behind the WhatsApp voice note transcription tool — unit, integration, live QA — with the real bugs each layer caught.">
+<link rel="stylesheet" href="../eng.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><a href="../">← Engineering</a></div>
+    <nav aria-label="Main">
+      <a href="../pipeline/">Pipeline</a>
+      <a href="../testing/">Testing</a>
+      <a href="../docs/">Docs</a>
+      <a href="../security/">Security</a>
+      <a href="../team/">Team</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="../">engineering</a> / testing</div>
+    <h1>Three layers, none optional. Every release passed all of them.</h1>
+    <p class="lead">The numbers below are the gate this exact deploy went through — not a
+      badge from some earlier good day.</p>
+    <div class="status-strip" id="layers">
+      <div class="stat"><div class="k">unit</div><div class="v" id="l-unit">…</div></div>
+      <div class="stat"><div class="k">integration</div><div class="v" id="l-int">…</div></div>
+      <div class="stat"><div class="k">qa-to-docs journeys</div><div class="v" id="l-qtd">…</div></div>
+      <div class="stat"><div class="k">live QA</div><div class="v" id="l-qa">post-deploy</div></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The principle</span>
+    <h2>Each layer catches what the one below cannot see</h2>
+    <p class="sub">A service with no backend still has plenty to break: audio parsing, a
+      cross-origin engine import, an LLM API, a CDN's caching rules. One test layer cannot
+      cover that spread — three small ones can.</p>
+    <div class="grid cols-3">
+      <div class="card"><h3>1 · Unit (node --test)</h3>
+        <p>Pure-logic tests of the app modules: audio content-sniffing, config and its
+        origin allowlist, the chat tool registry's validation, the debug store. Fast enough
+        to run on every change.</p></div>
+      <div class="card"><h3>2 · Integration (Playwright)</h3>
+        <p>Headless Chromium boots the REAL app: the engine imports cross-origin, the full
+        action contract publishes, a real voice-note fixture ingests, the debug and chat
+        panes work. A second suite scripts OpenRouter and drives the whole chat tool loop —
+        including the model genuinely redrawing the infographic.</p></div>
+      <div class="card"><h3>3 · Live QA (post-deploy)</h3>
+        <p>After the deploy, plain fetches against the live site: the version it claims,
+        every cache-busted asset, the samples and prompts, the engine origin + CORS, and
+        every GitHub/self link on the record pages. The pipeline checks its own work.</p></div>
+      <div class="card"><h3>+ · QA-to-docs journeys</h3>
+        <p>The key user journeys — key setup, the one pass, the chat — replayed with a
+        scripted, deterministic model and screenshotted at each story moment. An
+        image-diff gate compares every shot to its committed baseline: pixel noise is
+        ignored, a real UI change either fails the run (a caught visual regression) or
+        refreshes the baseline with the feature — and those screenshots ARE the user
+        docs' images. One run, three outputs.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">The receipts that matter most</span>
+    <h2>Bugs these layers actually caught</h2>
+    <div class="story"><span class="t">The hallucinated transcript (issue 025)</span>
+      <p>Some <code>.ogg</code> voice notes reached the model undecodable — and came back as fluent,
+      confident transcripts of audio nobody recorded. A unit-tested content-sniffer (magic
+      bytes, never the file extension) now guarantees the model receives real audio, and a
+      six-variant regression matrix keeps it that way.</p></div>
+    <div class="story"><span class="t">The stale JavaScript deploy (issue 026)</span>
+      <p>Fresh HTML paired with ten-minute-old cached modules broke a new feature silently.
+      Now CI stamps every asset URL per release and the live-QA layer fetches each one —
+      this class of failure cannot ship quietly again.</p></div>
+    <div class="story"><span class="t">The misleading "Failed to fetch" (issue 032)</span>
+      <p>A disabled OpenRouter key surfaced as a network error (the rejection carries no CORS
+      headers, so the browser hides it). Found live via the app's own debug pane; fixed with
+      a key-status re-check; pinned by an integration test.</p></div>
+    <div class="story"><span class="t">The re-run that failed (issue 029)</span>
+      <p>Transcribing the same file twice failed with "not an audio file" — the engine silently
+      dedupes identical uploads. The end-to-end test caught it; the fix reuses the deduped
+      queue item; the case is now part of the gate.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="receipts"><strong>Receipts</strong>
+      <ul>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/tests/unit">tests/unit/</a> · <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/tests/integration">tests/integration/</a> · <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/tests/qa">tests/qa/</a> — all of it, public</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/tests/fixtures">Real WhatsApp voice-note fixtures</a> — the tests run genuine audio, not synthetic stubs</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/025-ogg-mime-hallucinated-transcript.md">Issue 025's full write-up</a> — reproduction, cause, fix, upstream reports</li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom · Site content CC BY 4.0 &nbsp;·&nbsp;
+      <a href="../../versions/"><span id="site-version">dev</span></a></div>
+    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+  </div>
+</footer>
+
+<script type="module">
+try {
+    const s = await (await fetch('../status.json', { cache: 'no-store' })).json()
+    if (s.tests) {
+        const u = s.tests.unit, i1 = s.tests['integration-boot'], i2 = s.tests['integration-chat']
+        if (u) document.getElementById('l-unit').textContent = `${u.pass}/${u.total}`
+        if (i1 || i2) document.getElementById('l-int').textContent =
+            [i1 && `boot ${i1.pass}/${i1.total}`, i2 && `chat ${i2.pass}/${i2.total}`].filter(Boolean).join(' · ')
+        const q = s.tests['qa-to-docs']
+        document.getElementById('l-qtd').textContent = q ? `${q.pass}/${q.total}` : 'arming'
+    } else {
+        document.getElementById('l-unit').textContent = 'see Actions'
+        document.getElementById('l-int').textContent = 'see Actions'
+    }
+} catch { document.getElementById('l-unit').textContent = 'status.json unavailable' }
+</script>
+
+</body>
+</html>

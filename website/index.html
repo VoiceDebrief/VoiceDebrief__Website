@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WhatsApp Voice Note Transcription — transcript, analysis and debrief in one pass</title>
 <meta name="description" content="Drop in a WhatsApp voice note and get back a transcript, an analysis and a short debrief in one pass — with an infographic if you ask. No accounts to configure, no steps to chain.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Voice Note Transcribe">
+<meta property="og:title" content="WhatsApp voice notes → transcript, analysis and debrief in one pass">
+<meta property="og:description" content="Drop in the audio. That's it. Runs in your browser with your own key — no accounts, no backend, nothing stored.">
+<meta property="og:url" content="https://whatsapp-voice-transcription.sgraph.ai/">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" type="application/rss+xml" title="Voice Note Transcribe — Updates" href="updates/feed.xml">
 <style>
   :root{
     --navy:#0b1f3a; --navy-2:#122c50; --ink:#1a2433; --paper:#ffffff;
@@ -87,6 +94,8 @@
       <a href="library/">Library</a>
       <a href="updates/">Updates</a>
       <a href="versions/">Versions</a>
+      <a href="videos/">Videos</a>
+      <a href="engineering/">Engineering</a>
     </nav>
   </div>
 </header>
@@ -145,7 +154,7 @@ done.  no accounts to configure, no steps to chain.</pre>
     <p class="sub">The whole journey, end to end:</p>
     <div class="grid cols-4">
       <div class="card"><span class="step-n">1</span><h3>Upload</h3><p>Drag in the voice note from WhatsApp — laptop download, Android export or iPhone forward.</p></div>
-      <div class="card"><span class="step-n">2</span><h3>Choose options</h3><p>Pick your privacy mode, and whether you'd like an infographic with your results.</p></div>
+      <div class="card"><span class="step-n">2</span><h3>Choose options</h3><p>Decide whether you'd like an infographic with your results — and which model draws it.</p></div>
       <div class="card"><span class="step-n">3</span><h3>One pass</h3><p>Transcript, analysis and a short debrief come back together. No chaining steps.</p></div>
       <div class="card"><span class="step-n">4</span><h3>Export</h3><p>Copy, download as markdown, or save the infographic. Your results are yours.</p></div>
     </div>
@@ -156,7 +165,9 @@ done.  no accounts to configure, no steps to chain.</pre>
   <div class="wrap">
     <span class="kicker">Privacy</span>
     <h2>Privacy is a mode you choose, not a disclaimer you scroll past</h2>
-    <p class="sub">Different voice notes deserve different handling. Pick per upload:</p>
+    <p class="sub">Different voice notes deserve different handling. Three modes are designed;
+      today's beta runs in <strong>routed</strong> mode, and the per-upload selector ships when
+      restricted and browser-local do <span class="tag higher">PROPOSED</span>:</p>
     <div class="tablewrap">
       <table>
         <thead><tr><th>Mode</th><th>Where it runs</th><th>Privacy</th><th>Price</th></tr></thead>
@@ -178,26 +189,31 @@ done.  no accounts to configure, no steps to chain.</pre>
     </div>
     <div class="honest"><strong>Honesty note:</strong> the default mode is the least private —
       requests are routed to whichever model provider serves them, and we cannot promise which one.
-      If that matters for a recording, use restricted or browser-local mode. A full privacy notice
-      ships with the beta.</div>
+      If that matters for a recording, wait for restricted or browser-local mode before uploading it.
+      A full privacy notice is being written and will be published here; until it is, this note and
+      the <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">open repository</a>
+      are the record.</div>
   </div>
 </section>
 
 <section id="pricing" class="alt">
   <div class="wrap">
     <span class="kicker">Pricing</span>
-    <h2>Pay for what you use. Around 20p per transcription.</h2>
-    <p class="sub">No subscription. Buy credits, spend them when you need them.</p>
+    <h2>Pay for what you use. Pence per transcription.</h2>
+    <p class="sub"><strong>Today (beta):</strong> bring your own <a href="https://openrouter.ai" style="color:inherit">OpenRouter</a>
+      key and pay the provider directly — a typical pass costs a fraction of a penny to a few pence,
+      with no margin added. The credit product below is the plan, not yet the product.</p>
     <div class="grid cols-3">
       <div class="card"><h3>Pay as you go</h3><p>Each transcription priced at or under ~20p, passed
         through close to what the work actually costs.</p></div>
-      <div class="card"><h3>Credits from £5</h3><p>Top-ups start at £5 so card fees don't eat your
+      <div class="card"><h3>Credits from £5 <span class="tag higher">PROPOSED</span></h3><p>Top-ups start at £5 so card fees don't eat your
         credit — at £1, fixed fees would take 40% of it. We'd rather tell you that than hide it.</p></div>
-      <div class="card"><h3>Your credit, your key</h3><p>Your balance is provisioned as your own
+      <div class="card"><h3>Your credit, your key <span class="tag higher">PROPOSED</span></h3><p>Your balance is provisioned as your own
         metered key with a hard spend cap. No invoices, no billing system, no surprises.</p></div>
     </div>
-    <p class="price-note">Early access opens with the August 2026 beta — capped, free-to-try
-      credits for the first users. The browser-local mode may be entirely free.</p>
+    <p class="price-note">The beta is live now, bring-your-own-key. PROPOSED next: capped,
+      free-to-try credits provisioned as your own metered key for the first users. The
+      browser-local mode may be entirely free.</p>
   </div>
 </section>
 
@@ -217,7 +233,8 @@ done.  no accounts to configure, no steps to chain.</pre>
     <div>© 2026 SGraph / The Cyber Boardroom — Simple. Private. Portable.<br>
       Site content released under CC BY 4.0. &nbsp;·&nbsp; <a href="versions/" style="color:#dbe6f5"><span id="site-version">v0.1.0</span></a></div>
     <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a>
-      &nbsp;·&nbsp; <a href="library/">Library</a> &nbsp;·&nbsp; <a href="updates/">Updates</a></div>
+      &nbsp;·&nbsp; <a href="library/">Library</a> &nbsp;·&nbsp; <a href="updates/">Updates</a>
+      &nbsp;·&nbsp; <a href="engineering/">Engineering</a></div>
   </div>
 </footer>
 

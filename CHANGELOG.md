@@ -18,6 +18,134 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Each estate's derived links now point at itself** — `build_content.py` gains
+  `--ref`: the qa build links `blob/qa/...`, the dev build `blob/dev/...`. The
+  live-QA link check caught the gap (its first real save): three 7-Aug posts
+  linked issues 041/042/043 at `blob/dev/` while those files existed only on
+  the qa branch — three honest 404s on the QA estate.
+- **Every CI job now carries an explicit `timeout-minutes`** (test 10, deploys
+  10, tag 5, live-QA 15 — sized from healthy runs) so a genuine hang fails fast
+  with an honest "timed out" instead of running toward GitHub's 6-hour default.
+  Investigated after two qa runs died at exactly ~15m: those never executed a
+  step at all — the jobs sat queued with no runner assigned (runner_id 0, empty
+  logs) and GitHub cancelled them at its own queue limit; a hosted-runner
+  capacity blip, not a test hang, and not something a job timeout governs.
+- **The workflow is now a declared state machine (issues 042–043, human brief
+  v0.33.56)** — the one-pass executes from `website/app/workflows/standard.json`:
+  each step declares what it requires and produces, its pinned model, its
+  **spending ceiling**, its permitted transitions and its failure behaviour.
+  A validator refuses declarations that lie (unknown transitions, unreachable
+  steps, missing failure paths); the runner enforces the budget at every step
+  boundary — a run that overruns is stopped, and the overrun itself is recorded,
+  never absorbed. The maximum cost is quoted on the options screen before
+  anything runs ("max cost for this run ≈ £0.21" — the sum of the declared
+  ceilings for the chosen options). A new **🧭 flow panel** (third right-edge
+  tab) renders the declaration before a run and the live execution trace during
+  and after — per-step status, actual cost against ceiling, durations, the
+  skipped branch dimmed — the "what actually happened" provenance record, which
+  also rides on `results.trace`. Deleting the declaration breaks the tool: there
+  is deliberately no code fallback. One declared-behaviour fix: infographic
+  failures now genuinely degrade (the code claimed they did, but aborted).
+  Consensus transcription (two models, disagreement marked not resolved) is
+  issue 044, blocked on a second audio-model family (D2 amendment); named
+  purchasable workflows are issue 045. Dev pack:
+  `library/dev_packs/v0.1.21__workflow-state-machine/`.
+
+- **The qa branch merged in** (two same-day workstreams converged): the qa side's
+  issues 036/037/038 were minted in parallel with dev's and collided — renumbered
+  on merge to **039** (content architecture), **040** (videos page) and **041**
+  (`?origin=`; both branches independently allow-listed the same vulnerability
+  the same day, then Dinis called the better fix — remove the parameter entirely,
+  see the 041 bullet). The qa bullets below appear under their new numbers.
+- **The record caught up (review-pack group A)**: the changelog's Unreleased block
+  split into its real tag headings (v0.1.12–v0.1.21 below), `versions.json` caught up,
+  the Updates page's dead/moving links fixed and pinned to tags, reality-doc and
+  issue-README contradictions resolved, open-issue status notes re-dated, and the
+  landing page copy corrected (privacy-mode step removed, pricing labelled
+  PROPOSED, beta tense fixed). Outbound link-checking of the site's Updates and
+  Library links added to the live-QA job so dead links cannot recur silently.
+- **Security hardening, first slice (issue 037, items 1–2)** — the `?origin=`
+  query parameter was validated against an allowlist, closing the review pack's
+  highest-priority finding (S1, key-exfiltration via a crafted link) — later the
+  same day superseded by 041's removal of the parameter altogether; and the app
+  page carries a meta Content-Security-Policy pinning `script-src` and
+  `connect-src` to the origins the app actually uses (S2) — verified against
+  the full real decode chain (WASM opus decoder included) and both integration
+  gates. New `scripts/mirror_engine.mjs` builds a local engine mirror for the
+  integration tests' `MIRROR_DIR` mode (review E4).
+- **The open engineering hub (issue 036, M-hub-1 + M-hub-2)** — `/engineering/`
+  and five section pages (pipeline, testing, docs, security, team), each
+  principle → live view → receipts, rendered client-side from JSON CI emits at
+  deploy (`scripts/emit_engineering_json.py`: status, issue queue, doc
+  inventory; per-layer test results travel from the test job by artifact). The
+  security page carries the S1–S5 hardening state honestly and the
+  ciphertext-rule table, doubling as the interim trust page. Landing nav gains
+  Engineering; live-QA checks all six pages + the three JSON files. Plus the
+  story-travel slice of M-hub-3: OG/Twitter tags on the share targets and an
+  RSS feed of Updates (superseded on merge by `build_content.py`'s generated
+  feed); the chat post's stale "live-key run pending" tag corrected.
+- **QA-to-docs, first slice (issue 038, M-qtd-1)** — `tests/qa-to-docs/`: the
+  key user journeys (the one pass; the chat) replayed deterministically against
+  the scripted OpenRouter and screenshotted at 7 manifest-named story moments
+  (masks over the version chip, costs and latencies), with a pixelmatch
+  image-diff gate against committed baselines — pixel noise ignored, real UI
+  change fails the run with side-by-side diff reports, and the same screenshots
+  become the user docs' images. Verified in-session: 0.000% self-diff across
+  all shots on rerun; a perturbed baseline caught at 0.954%. Both workflows
+  gate on it and upload candidates/diffs as an artifact; baselines arm on the
+  first CI run per the CI-only baseline policy. The hub's testing page shows
+  the journey layer.
+- **Issue 007 closed as superseded (Dinis)** — the seven strategy-level
+  infographics from 28 Jul never landed (the source files' whereabouts are
+  unknown) and the three 31-Jul product infographics cover the library's
+  visual needs. The queue's only blocked issue; `issues/blocked/` is now empty.
+- **Security: `?origin=` is gone (issue 041)**. The parameter chose which server the
+  transcription engine was imported from — so a URL parameter decided which JavaScript
+  ran inside the page, beside the user's OpenRouter key in localStorage. A link on our
+  own trusted domain (`…/app/?origin=https://somewhere-else`) was enough to run someone
+  else's code and take the key. It was first fixed with an allow-list (independently on
+  the review-pack branch too, as its issue 037); the version that shipped **removes the
+  parameter entirely** — Dinis's call, and the better one, since it existed only for
+  development and development never needed it (the tests reach a local engine by
+  intercepting requests to the real origin, not by rewriting it). `ORIGIN` is now a
+  constant, and a test asserts `config.js` never reads the query string at all, because
+  an allow-list can be widened by a later edit while deleted code cannot. Briefing:
+  `library/guides/v0.1.20__guide__the-origin-parameter.md`.
+
+- **Publishing is now adding one file (issue 039)**. The Updates page was being edited
+  as raw HTML — a fragile job for a person and a worse one for the 5am Journalist
+  routine, which had to splice an `<article>` into a 145-line file and perform surgery
+  on another to drop a stale caveat. Now `content/updates|versions|videos/*.md` are the
+  source of truth and `scripts/build_content.py` generates the pages,
+  `updates.json`, `videos.json`, `feed.xml` and `versions.json` (all gitignored build
+  output). Links are **derived** — `version:` gives the diff against the previous
+  released tag, `issues: 035` finds the issue file wherever it now lives — which retires
+  the whole class of stale-link bugs the routine had to fix by hand. The build validates
+  and refuses (bad date, duplicate slug, missing issue, dead video id…), gating both CI
+  workflows before the tag and the deploy. 11 posts and 21 versions migrated with no
+  content loss.
+- **A Videos page (issue 040)**: `/videos/`, grouped into demos, explainers and shorts,
+  fed by `content/videos/*.md`. Cards, not embeds — **nothing is requested from YouTube
+  until you press play**, and playback uses `youtube-nocookie.com`; a test asserts the
+  served HTML contains no iframe, because on a product that promises not to track you an
+  auto-loading third-party player would be a quiet lie. Three of Dinis's videos are live on it —
+  the chat feature, the QA site tour and the first MVP demo, each tied to the release it
+  shows — with a fourth held as a draft until its id arrives. Mapping for what comes next (landing-page card,
+  videos inside release posts, local posters, transcripts of our own videos made with our
+  own tool) in `library/dev_packs/v0.1.20__video-on-the-site/`.
+
+- **Updates + Versions caught up through v0.1.20 (Journalist)**: a new post on
+  `website/updates/` for issue 035 (the chat rewriting the transcript/summary with the
+  original one click away, seeing the finished infographic as a real image, and the
+  suggestion-chip tidy); the M3 chat post's "live-key run pending" caveat resolved
+  (Dinis validated it live) and its issue link repointed to `issues/done/`; the Versions
+  post now links to the released `v0.1.18...v0.1.19` diff instead of the QA branch; and
+  `website/versions/versions.json` gains the v0.1.19 and v0.1.20 entries so the public
+  per-version list matches the tags CI has minted (now `content/versions/*.md`;
+  v0.1.21 added on merge).
+
+## [v0.1.21](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.20...v0.1.21) — 6 Aug 2026
+
 - **The four review-pack decisions, decided and landed (Dinis, 6 Aug)** — D1: the
   OpenRouter account is personal for now (issues 010/014 unblocked). D2: the model
   allowlist is the five models the app actually calls, verified in code and recorded
@@ -42,6 +170,9 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   documents that this changelog's tag-heading discipline is behind since v0.1.11 and
   `versions.json` is two tags stale — the record fixes are its group-A
   recommendation.
+
+## [v0.1.20](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.19...v0.1.20) — 6 Aug 2026
+
 - **The chat can now EDIT the materials and SEE the infographic (issue 035)** — built
   from a developer brief the chat itself wrote during Dinis's live session.
   `update_transcript` / `update_summary` / `restore_original` tools rewrite the page
@@ -76,6 +207,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   means to a reader on the QA estate (issue 033); and the M3 chat panel (issue 034
   — its "live keyed run pending" caveat has since been resolved: Dinis validated
   the chat live).
+## [v0.1.19](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.18...v0.1.19) — 5 Aug 2026
+
 - **The Versions page (issue 033)**: `website/versions/` lists every CI tag with
   its date, headline and changes, each linking to its full GitHub diff — the
   changelog stays the complete record, the page is the per-version site view
@@ -91,6 +224,11 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   live by Dinis via the debug pane's exchange log — its first real save.
 - The "also make me an infographic" option is now ticked by default (Dinis, 5 Aug —
   "for now"), so a plain run produces the full set: transcript, summary, infographic.
+- M3 design brief filed (`library/dev_packs/v0.1.18__chat-with-materials/`) — the
+  study of the reference vault app that issue 034's build was made to.
+
+## [v0.1.18](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.17...v0.1.18) — 5 Aug 2026
+
 - **The infographic is now a finished image (issue 031)**: the default model is
   `google/gemini-3.1-flash-image-preview` — the one the proven Infographic Generator
   tool uses — returning a publication-quality picture instead of a drawn SVG (that
@@ -104,19 +242,21 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 - **Fixed: sample chips skipped the options screen** (issue 031) — they auto-ran
   the pass, making the infographic toggle unreachable. A sample now loads into the
   same options screen as a dropped file.
+- Issue 030 closed: the QA Netlify estate verified live end to end; the QA live
+  check moved inside the deploy job (the secret-derived URL is dropped from
+  cross-job outputs), and the QA CORS check now sends an `Origin` header like a
+  browser would — it had failed on a green site (dev run #20).
+
+## [v0.1.17](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.16...v0.1.17) — 5 Aug 2026
+
 - **QA estate live: the `qa` branch auto-deploys to Netlify (issue 030)**. GitHub
   Pages is the dev estate (one Pages site per repo), so `.github/workflows/qa-deploy.yml`
   gives `qa` its own: push → the same unit+integration test gate → Netlify publish
   (build stamped `<version>-qa.<short-sha>`, cache-busted; the `version` file stays
   owned by the dev/main pipeline) → the live-site QA check against the Netlify URL.
-  Verified end to end at https://silver-melba-d8d883.netlify.app (all 16 live checks).
-  One wrinkle fixed in the wiring: with `NETLIFY_SITE_ID` set to the site name, the
-  deploy URL is secret-derived and GitHub drops it from cross-job outputs — so the
-  live check now runs inside the deploy job, reading the URL from the deploy's JSON.
-- **Fixed: the QA CORS check failed on a green site** (dev run #20). The tools-origin
-  CDN only sends `access-control-allow-origin` when the request carries an `Origin`
-  header, as browsers always do — the check's bare server-side fetch read `null`. It
-  now sends an `Origin` header; verified green against both estates.
+  Verified end to end (all 16 live checks) — now at
+  https://qa.whatsapp-voice-transcription.sgraph.ai; the live-check wiring
+  fixes followed in v0.1.18.
 - **The advanced/debug pane (issue 027)**: a "⚙ debug" tab on the right edge opens a
   resizable side pane with three views — **LLM calls** (every request and response the
   page makes, verbatim, audio bytes summarised by size; each row can fetch its billed
@@ -143,6 +283,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   own re-transcribe path. Found by the new e2e; reported upstream alongside the `.ogg`
   MIME report.
 
+## [v0.1.16](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.15...v0.1.16) — 5 Aug 2026
+
 - **Fixed: after a deploy the browser could run the previous release's JavaScript**
   (issue 026 — reported as "the infographic checkbox did nothing"). GitHub Pages serves
   our modules with `max-age=600`, and the app's own modules were the one part of the
@@ -153,6 +295,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   code actually running — ask for it first when triaging.
 - Infographic failures are no longer silent: the card explains what happened (and says
   so when a reply contains no drawable SVG) instead of only turning a rail step red.
+
+## [v0.1.15](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.14...v0.1.15) — 5 Aug 2026
 
 - **Fixed a silent data-integrity bug (issue 025, urgent)**: a `.ogg` voice note whose
   OS MIME is `application/ogg` or `video/ogg` reached the model undecodable and came
@@ -178,6 +322,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   (fourth rail step), `wa-result-card` v0.1.1 (proper heading/bullet rendering —
   fixes the inline-bold summary glitch).
 
+## [v0.1.14](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.13...v0.1.14) — 5 Aug 2026
+
+- **M1 shipped: the product app** — drop a voice note → transcript (about five
+  seconds) → structured summary, streaming in arrival order; bring-your-own
+  OpenRouter key, stored only in your browser; costs shown in GBP. Built by
+  importing the proven audio-transcribe engine cross-origin onto our own
+  `whatsapp-transcribe` API (the M1-a spike's Attempt-2 verdict). Issue 008.
+- Repo debrief covering the 29 Jul – 5 Aug contributions; the 5 Aug build decisions
+  captured; review + spike branches merged; issue 024 opened.
 - M1-a spike harness: `website/m1-spike-test.html` runs the two candidate import cuts from
   [dev brief §2](library/dev_packs/v0.1.1__audio-transcribe-integration/03__dev__implementation-brief.md)
   — Attempt 1 (the `audio-transcribe-api.js` entry module) against Attempt 2 (the method-group
@@ -185,12 +338,19 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   which one publishes a `window.__tool` carrying the full contract surface. A developer harness,
   `noindex`, not part of the product; the spike's own deliverable (the note recording which
   attempt won) is still outstanding.
+## [v0.1.13](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.12...v0.1.13) — 1 Aug 2026
+
 - The three product infographics are documented rather than merely present:
   `library/infographics/README.md` gains a section describing each one, the library
   contents table no longer reads "images pending", the reality doc gains a row for
   them, and `Technical-architecture.jpg.png` is renamed to
   `Technical-architecture.png` (it is a PNG). Dinis's seven from 28 July remain
   pending under issue 007.
+- The infographics labelled as early-stage visions rather than current architecture.
+
+## [v0.1.12](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.11...v0.1.12) — 1 Aug 2026
+
+- CHANGELOG brought up to date through v0.1.11.
 
 ## [v0.1.11](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.10...v0.1.11) — 31 Jul 2026
 

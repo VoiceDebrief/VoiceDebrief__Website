@@ -1,16 +1,21 @@
 # Done Issues
 
 Completed tasks, newest first. Maintained manually, in the same commit as any
-issue change. Last updated: 2026-07-29.
+issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [043](043-flow-panel-visualisation.md) | The 🧭 flow panel | `wa-flow-panel` v0.1.0 — the declaration + live execution trace, cost vs ceiling per step |
+| [042](042-workflow-declared-state-machine.md) | The workflow declared as a JSON state machine | `workflows/standard.json` + `workflow.js` validator/quote/runner; budget entry gate; quotable max pre-run; provenance trace |
+| [041](041-remove-origin-parameter.md) | `?origin=` removed entirely | engine origin hardcoded in `config.js`; a URL parameter no longer decides which JS runs — supersedes both branches' same-day allow-list fixes (dev 037 item 1, qa) |
+| [039](039-content-architecture-markdown-per-post.md) | Content architecture for agents | `content/*.md` + `scripts/build_content.py`; pages/manifests generated, validated in CI |
+| [007](007-infographic-images-into-library.md) | Add the seven shared infographics to the library | closed as superseded (Dinis, 6 Aug): files' whereabouts unknown, the three 31-Jul product infographics cover the need |
 | [035](035-chat-edits-materials-and-sees-image.md) | Chat edits materials + sees the image | update/restore tools, image context row + view_infographic, suggestions tidy |
 | [034](034-chat-with-materials.md) | M3: chat with the materials, tool-driven | `wa-chat-panel`, `chat.js`/`chat-tools.js`, scripted-OpenRouter CI test; live-validated |
 | [033](033-versions-page-and-sitewide-version.md) | Versions page + site-wide version chip | `website/versions/` timeline per tag; QA stamped `<next>-qa.<sha>` |
 | [032](032-disabled-key-shows-failed-to-fetch.md) | Disabled key read as "Failed to fetch" | network-shaped LLM failures now diagnosed via GET /api/v1/key; key named in place |
 | [031](031-infographic-v2-image-model-redraw-spinner.md) | Infographic v2: image model, redraw, heartbeat | gemini-3.1-flash-image-preview default; model picker + redraw; spinner/elapsed; samples keep options |
-| [030](030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify | `qa-deploy.yml` verified e2e → silver-melba-d8d883.netlify.app |
+| [030](030-qa-branch-netlify-deploys.md) | QA branch auto-deploys to Netlify | `qa-deploy.yml` verified e2e → qa.whatsapp-voice-transcription.sgraph.ai |
 | [029](029-repeat-pass-same-file-not-audio.md) | Repeat pass on same file failed ("not-audio") | pipeline reuses the deduped item + upstream report |
 | [028](028-ci-pipeline-tests.md) | CI tests gate the release | `tests/{unit,integration,qa}/` + test/qa-live jobs in `ci-pipeline.yml` |
 | [027](027-debug-advanced-views-and-samples.md) | Debug/advanced views + sample files | `wa-debug-panel`, `debug-store.js`, `openrouter.js`, `website/app/samples/` |

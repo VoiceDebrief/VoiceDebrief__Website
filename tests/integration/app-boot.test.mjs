@@ -6,7 +6,6 @@
 
    Environment:
      SITE_DIR       website dir to serve      (default: <repo>/website)
-     TOOLS_ORIGIN   engine origin             (default: https://dev.tools.sgraph.ai)
      MIRROR_DIR     if set, requests to the tools origin are served from this
                     local directory instead of the network (sandboxed runs)
      CHROMIUM_PATH  explicit browser binary   (default: playwright's own)
@@ -20,7 +19,9 @@ import path from 'node:path'
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const SITE_DIR = process.env.SITE_DIR || path.join(repo, 'website')
-const TOOLS_ORIGIN = process.env.TOOLS_ORIGIN || 'https://dev.tools.sgraph.ai'
+// The engine origin is hardcoded in config.js (issue 041). MIRROR_DIR mode
+// serves it locally by intercepting requests to it, not by rewriting it.
+const TOOLS_ORIGIN = 'https://dev.tools.sgraph.ai'
 const MIRROR_DIR = process.env.MIRROR_DIR || ''
 const PORT = 8123
 
@@ -55,7 +56,7 @@ if (MIRROR_DIR) {
 }
 
 try {
-    await page.goto(`http://127.0.0.1:${PORT}/app/?origin=${encodeURIComponent(TOOLS_ORIGIN)}`, { waitUntil: 'domcontentloaded' })
+    await page.goto(`http://127.0.0.1:${PORT}/app/`, { waitUntil: 'domcontentloaded' })
 
     // 1. The engine boots and our SgToolApi publishes.
     const booted = await page.waitForFunction(() => !!window.__tool, null, { timeout: 30000 }).then(() => true).catch(() => false)
@@ -125,6 +126,31 @@ try {
         ['transcript', 'summary', 'costs', 'history'].every(id => chatBits.rows.includes(id)), chatBits.rows.join(','))
     check('tool registry exposed with 13 tools', chatBits.tools === 13, String(chatBits.tools))
     check('chat history starts empty', chatBits.history === 0)
+
+    // 6c. The declared workflow (issue 042): the definition loads and validates,
+    //     the quote follows the options, and the flow panel renders the steps.
+    const wf = await page.evaluate(async () => {
+        const on = await window.__tool.getWorkflow({ options: { infographic: true } })
+        const off = await window.__tool.getWorkflow({ options: { infographic: false } })
+        return { id: on.definition.id, steps: on.definition.steps.length,
+                 quoteOn: on.quoteUsd, quoteOff: off.quoteUsd, max: on.maxUsd,
+                 trace: await window.__tool.getWorkflowTrace() }
+    })
+    check('workflow declaration loads with a quotable ceiling',
+        wf.id === 'standard' && wf.steps === 5 && wf.quoteOn === wf.max && wf.quoteOn > wf.quoteOff, JSON.stringify(wf))
+    check('no trace before any run', wf.trace === null)
+    const quoteShown = await page.locator('#max-cost').textContent()
+    check('max cost quoted on the options screen', /max cost for this run/.test(quoteShown || ''), quoteShown)
+    const flow = page.locator('wa-flow-panel')
+    await page.waitForFunction(() => document.querySelector('wa-flow-panel')?.shadowRoot?.querySelector('.wa-flow__toggle'), null, { timeout: 10000 })
+    await flow.locator('.wa-flow__toggle').click()
+    check('flow pane opens on toggle', await flow.locator('.wa-flow__panel.open').count() === 1)
+    check('opening flow closes the chat pane', await chat.locator('.wa-chat__panel.open').count() === 0)
+    const flowRendered = await page.waitForFunction(() =>
+        document.querySelector('wa-flow-panel').shadowRoot.querySelectorAll('.wa-flow__steps .step').length === 5,
+        null, { timeout: 10000 }).then(() => true).catch(() => false)
+    check('flow pane renders the five declared steps', flowRendered)
+    await flow.locator('.wa-flow__close').click()
 
     // 7. The exchange log is empty (no key, no LLM calls) and clearable.
     const log = await page.evaluate(async () => ({

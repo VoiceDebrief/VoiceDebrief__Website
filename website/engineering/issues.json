@@ -1,0 +1,371 @@
+{
+  "note": "Rendered from issues/ by CI at deploy time \u2014 the queue as of this release.",
+  "generated_at": "2026-08-06T17:28:15+00:00",
+  "counts": {
+    "open": 13,
+    "blocked": 0,
+    "done": 32
+  },
+  "issues": [
+    {
+      "id": "001",
+      "title": "Create and push the detailed brief pack",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/001-brief-pack-understanding-architecture-tasks.md"
+    },
+    {
+      "id": "002",
+      "title": "Wire up the agentic team for this repo",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/002-wire-up-agentic-team.md"
+    },
+    {
+      "id": "003",
+      "title": "CI pipeline step to auto-tag on dev and main",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/003-ci-auto-tag-dev-main.md"
+    },
+    {
+      "id": "004",
+      "title": "MVP static site published to GitHub Pages",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/004-static-site-mvp-github-pages.md"
+    },
+    {
+      "id": "005",
+      "title": "Create the todo list with issues-fs-lite",
+      "state": "done",
+      "priority": "normal",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/005-issues-fs-lite-todo-list.md"
+    },
+    {
+      "id": "006",
+      "title": "Create the project library and move relevant docs into it",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/006-create-library-import-docs.md"
+    },
+    {
+      "id": "007",
+      "title": "Add the shared infographics to library/infographics/",
+      "state": "done",
+      "priority": "normal",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/007-infographic-images-into-library.md"
+    },
+    {
+      "id": "008",
+      "title": "Web app MVP: one-pass transcript / analysis / debrief / infographic",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/008-web-app-mvp-one-pass.md"
+    },
+    {
+      "id": "009",
+      "title": "Privacy mode selector: routed / restricted / browser-local",
+      "state": "open",
+      "priority": "normal",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/009-privacy-mode-selector.md"
+    },
+    {
+      "id": "010",
+      "title": "OpenRouter key flow for beta",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/010-openrouter-key-flow-beta.md"
+    },
+    {
+      "id": "011",
+      "title": "iOS and Android targets from this repo",
+      "state": "open",
+      "priority": "normal",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/011-ios-android-targets.md"
+    },
+    {
+      "id": "012",
+      "title": "Session completion report + debrief",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/012-completion-report-and-debrief.md"
+    },
+    {
+      "id": "013",
+      "title": "Administrative vault + the ciphertext rule (with enforcement)",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/013-admin-vault-and-ciphertext-rule.md"
+    },
+    {
+      "id": "014",
+      "title": "Explore OpenRouter guardrails: enforce privacy tiers on the key",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/014-openrouter-guardrails-exploration.md"
+    },
+    {
+      "id": "015",
+      "title": "Distribute secrets via the existing SG/Send capability",
+      "state": "open",
+      "priority": "normal",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/015-secret-distribution-via-send.md"
+    },
+    {
+      "id": "016",
+      "title": "CRM built on the vault substrate",
+      "state": "open",
+      "priority": "low",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/016-crm-on-vault-substrate.md"
+    },
+    {
+      "id": "017",
+      "title": "CI: publish Pages after auto-tag, display version on the site",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-28",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/017-ci-publish-after-tag-version-on-site.md"
+    },
+    {
+      "id": "018",
+      "title": "Fix CI: increment-tag failed without pyproject.toml",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-29",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/018-fix-increment-tag-pyproject.md"
+    },
+    {
+      "id": "019",
+      "title": "Tech stack & workflow guide for incoming devs",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-29",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/019-tech-stack-workflow-guide.md"
+    },
+    {
+      "id": "020",
+      "title": "Dev pack: leverage the existing audio-transcribe tool to the max",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-29",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/020-dev-pack-audio-transcribe-integration.md"
+    },
+    {
+      "id": "021",
+      "title": "Finish the custom domain: HTTPS enforcement + org domain verification",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-29",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/021-domain-https-and-org-verification.md"
+    },
+    {
+      "id": "022",
+      "title": "Journalist role + the site's Updates section + per-version changelog",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-29",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/022-journalist-role-updates-section.md"
+    },
+    {
+      "id": "023",
+      "title": "Public Library page on the site (Librarian-maintained)",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-07-29",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/023-public-library-page.md"
+    },
+    {
+      "id": "024",
+      "title": "Commission a v0.1.93-style verified capabilities guide for the infographic generator",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/024-infographic-generator-capabilities-guide.md"
+    },
+    {
+      "id": "025",
+      "title": ".ogg voice notes returned HALLUCINATED transcripts (silent data-integrity bug)",
+      "state": "done",
+      "priority": "urgent",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/025-ogg-mime-hallucinated-transcript.md"
+    },
+    {
+      "id": "026",
+      "title": "Ticking the infographic box did nothing on the live site (stale cached modules)",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/026-stale-cached-modules-after-deploy.md"
+    },
+    {
+      "id": "027",
+      "title": "Debug/advanced views: LLM exchange log, OpenRouter details, prompt customisation, sample files",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/027-debug-advanced-views-and-samples.md"
+    },
+    {
+      "id": "028",
+      "title": "CI pipeline tests: unit + integration gate the release, QA checks the live site",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/028-ci-pipeline-tests.md"
+    },
+    {
+      "id": "029",
+      "title": "Re-running the same voice note failed with \"That doesn't look like an audio file\"",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/029-repeat-pass-same-file-not-audio.md"
+    },
+    {
+      "id": "030",
+      "title": "QA branch with automatic Netlify deploys",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/030-qa-branch-netlify-deploys.md"
+    },
+    {
+      "id": "031",
+      "title": "Infographic v2: image model by default, redraw UX, progress heartbeat; samples keep their options",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/031-infographic-v2-image-model-redraw-spinner.md"
+    },
+    {
+      "id": "032",
+      "title": "A disabled key read as a network error (\"Failed to fetch\")",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/032-disabled-key-shows-failed-to-fetch.md"
+    },
+    {
+      "id": "033",
+      "title": "Versions page + the version number on every page; QA builds stamped with the next version",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/033-versions-page-and-sitewide-version.md"
+    },
+    {
+      "id": "034",
+      "title": "M3: chat with the materials; drive the tool from the chat (via tools)",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-05",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/034-chat-with-materials.md"
+    },
+    {
+      "id": "035",
+      "title": "The chat can now edit the materials and SEE the infographic; suggestions tidy up",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/035-chat-edits-materials-and-sees-image.md"
+    },
+    {
+      "id": "036",
+      "title": "Open engineering hub: public /engineering/ pages for the NFRs",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/036-open-engineering-hub.md"
+    },
+    {
+      "id": "037",
+      "title": "App security hardening: ?origin= allowlist, CSP, chat prompt-tool gating",
+      "state": "open",
+      "priority": "urgent",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/037-app-security-hardening.md"
+    },
+    {
+      "id": "038",
+      "title": "QA-to-docs: journey tests that QA the features AND maintain the user docs",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/038-qa-to-docs-screenshot-pipeline.md"
+    },
+    {
+      "id": "039",
+      "title": "Content architecture: markdown per post, generated pages, atomic agent writes",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/039-content-architecture-markdown-per-post.md"
+    },
+    {
+      "id": "040",
+      "title": "Videos on the site",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/040-videos-on-the-site.md"
+    },
+    {
+      "id": "041",
+      "title": "`?origin=` removed \u2014 the engine origin is hardcoded",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/041-remove-origin-parameter.md"
+    },
+    {
+      "id": "042",
+      "title": "The workflow declared: a JSON state machine with the budget on the step",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/042-workflow-declared-state-machine.md"
+    },
+    {
+      "id": "043",
+      "title": "The flow panel: what will happen, what it may cost, what actually happened",
+      "state": "done",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/done/043-flow-panel-visualisation.md"
+    },
+    {
+      "id": "044",
+      "title": "Consensus transcription: two models, and disagreement marked, not resolved",
+      "state": "open",
+      "priority": "high",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/044-consensus-transcription.md"
+    },
+    {
+      "id": "045",
+      "title": "Named workflows at price points: Quick / Standard / Consensus",
+      "state": "open",
+      "priority": "normal",
+      "created": "2026-08-06",
+      "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/issues/open/045-named-purchasable-workflows.md"
+    }
+  ]
+}

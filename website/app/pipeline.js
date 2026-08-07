@@ -1,15 +1,21 @@
-/* pipeline.js — the one pass, streaming in arrival order (brief v0.33.53):
-   visible progress → TRANSCRIPT → SUMMARY → (infographic when issue 024 lands).
-   Emits wa:* events; never holds a finished artefact for a slower one. */
+/* pipeline.js — the one pass, streaming in arrival order (brief v0.33.53),
+   executed FROM THE DECLARED WORKFLOW (issue 042, human brief v0.33.56): the
+   sequence, models, budgets and failure behaviour live in
+   workflows/standard.json; this file supplies the step executors and keeps the
+   wa:* event stream exactly as it always was. Deleting the declaration breaks
+   the tool — there is deliberately no code fallback. */
 
 import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL } from './config.js'
 import { generateInfographic } from './infographic.js'
 import { normaliseAudioFile } from './audio-normalise.js'
 import { debugStore } from './debug-store.js'
+import { loadWorkflow, runWorkflow, pathUsd, maxUsd } from './workflow.js'
+
+export const WORKFLOW_URL = './workflows/standard.json'
 
 export function createPipeline({ api, emit, getKey, infographicMount }) {
     const call = (name, params) => window.__tool[name](params)
-    let current = { itemId: null, results: null }
+    let current = { itemId: null, results: null, trace: null }
 
     // Both prompts honour a saved debug-pane override; the site file stays the
     // default and is registered with the store so the pane can show/diff it.
@@ -26,69 +32,105 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         return debugStore.getPrompt('infographic') || 'Create an infographic of this voice note.\n---\n'
     }
 
-    /* runPass({ file, infographic?, style? }) → { transcript, summary, svg, usage } —
+    /* The workflow declaration + its quotable ceilings (issue 042). Fetched per
+       call on purpose: the declaration IS the behaviour, so a missing or invalid
+       file must fail loudly rather than run from a stale copy. */
+    async function getWorkflow(params = {}) {
+        const definition = await loadWorkflow(WORKFLOW_URL)
+        return {
+            definition,
+            maxUsd: maxUsd(definition),
+            quoteUsd: pathUsd(definition, params.options || {}),
+        }
+    }
+
+    /* runPass({ file, infographic?, infographicModel?, style? }) → results —
        streams via events: wa:pass:started · wa:transcript · wa:summary ·
-       wa:infographic:started · wa:infographic {svg,usage} · wa:infographic:error ·
-       wa:pass:complete · wa:pass:error {code,stage} */
+       wa:infographic:started · wa:infographic · wa:infographic:error ·
+       wa:pass:complete · wa:pass:error {code,stage} — plus the workflow trace:
+       wa:workflow:started · wa:workflow:step · wa:workflow:complete */
     async function runPass(params = {}) {
         const chosen = params.file
         if (!chosen) throw Object.assign(new Error('runPass requires { file }'), { code: 'no-file' })
 
-        // Detect the format by CONTENT before the engine decides anything from the
-        // filename or the OS-supplied MIME (issue 025: a mislabelled Opus-in-Ogg
-        // reached the model undecodable and came back as a hallucinated transcript).
-        const norm = await normaliseAudioFile(chosen)
-        const file = norm.file
-        if (norm.changed) emit('wa:normalised', { from: chosen.name, to: file.name, sniffed: norm.sniffed, reason: norm.reason })
+        const def = await loadWorkflow(WORKFLOW_URL)
+        const options = { infographic: !!params.infographic,
+                          infographicModel: params.infographicModel, style: params.style }
 
         const results = { name: chosen.name, transcript: null, summary: null, svg: null, image: null, usage: {} }
-        current = { itemId: null, results }
-        emit('wa:pass:started', { name: chosen.name, sizeBytes: file.size, sniffed: norm.sniffed })
+        current = { itemId: null, results, trace: null }
 
-        // Stage 1 — ingest (the engine decodes and detects format by content).
-        const { added, rejected } = await call('addFiles', { files: [file] })
-        let item = added[0]
-        if (!item && !rejected.length) {
-            // The engine silently dedupes an identical name+size (addItem → null:
-            // not added, not rejected). Re-running the same voice note is a
-            // legitimate ask — reuse the existing item; transcribeItem appends a
-            // fresh version to it.
-            const existing = (await call('getItems')).find(i => i.name === file.name && i.sizeBytes === file.size)
-            if (existing) item = { id: existing.id, name: existing.name, sizeBytes: existing.sizeBytes, mimeType: existing.mimeType, reused: true }
+        /* The step executors — each does exactly what the old inline stage did,
+           emits the same events, and reports its cost to the runner. */
+        const executors = {
+
+            // Detect the format by CONTENT before the engine decides anything from
+            // the filename or the OS-supplied MIME (issue 025: a mislabelled
+            // Opus-in-Ogg came back as a hallucinated transcript).
+            'local': async () => {
+                const norm = await normaliseAudioFile(chosen)
+                current.file = norm.file
+                if (norm.changed) emit('wa:normalised', { from: chosen.name, to: norm.file.name, sniffed: norm.sniffed, reason: norm.reason })
+                emit('wa:pass:started', { name: chosen.name, sizeBytes: norm.file.size, sniffed: norm.sniffed })
+                return { costUsd: 0 }
+            },
+
+            'engine': async () => {
+                const file = current.file
+                const { added, rejected } = await call('addFiles', { files: [file] })
+                let item = added[0]
+                if (!item && !rejected.length) {
+                    // The engine silently dedupes an identical name+size (addItem →
+                    // null: not added, not rejected). Re-running the same voice note
+                    // is a legitimate ask — reuse the existing item (issue 029).
+                    const existing = (await call('getItems')).find(i => i.name === file.name && i.sizeBytes === file.size)
+                    if (existing) item = { id: existing.id, name: existing.name, sizeBytes: existing.sizeBytes, mimeType: existing.mimeType, reused: true }
+                }
+                if (!item) {
+                    const code = (rejected[0] && rejected[0].code) || 'not-audio'
+                    emit('wa:pass:error', { stage: 'ingest', code })
+                    throw Object.assign(new Error('file rejected'), { code })
+                }
+                current.itemId = item.id
+                emit('wa:ingested', { ...item })
+                return { costUsd: 0 }
+            },
+
+            'llm-transcribe': async () => {
+                let t
+                try { t = await call('transcribeItem', { id: current.itemId }) }
+                catch (e) { emit('wa:pass:error', { stage: 'transcribe', code: e.code || 'llm-error', message: e.message }); throw e }
+                results.transcript = t.text
+                results.usage.transcribe = t.usage
+                emit('wa:transcript', { text: t.text, latencyMs: t.latencyMs, usage: t.usage })
+                return { costUsd: t.usage?.costUsd ?? 0 }
+            },
+
+            'llm-text': async () => {
+                try {
+                    const prompt = await loadSummaryPrompt()
+                    const s = await call('ask', { text: prompt, label: 'summary' })
+                    results.summary = s.text
+                    results.usage.summary = s.usage
+                    emit('wa:summary', { text: s.text, usage: s.usage })
+                    return { costUsd: s.usage?.costUsd ?? 0 }
+                } catch (e) {
+                    // The transcript stands on its own — the declaration says
+                    // degrade, and the UI hears the same event it always did.
+                    emit('wa:summary:error', { code: e.code || 'llm-error', message: e.message })
+                    throw e
+                }
+            },
+
+            'llm-infographic': async (step, ctx) => {
+                const g = await runInfographicStage({ model: ctx.options.infographicModel, style: ctx.options.style })
+                return { costUsd: g.usage?.costUsd ?? 0 }
+            },
         }
-        if (!item) {
-            const code = (rejected[0] && rejected[0].code) || 'not-audio'
-            emit('wa:pass:error', { stage: 'ingest', code })
-            throw Object.assign(new Error('file rejected'), { code })
-        }
-        current.itemId = item.id
-        emit('wa:ingested', { ...item })
 
-        // Stage 2 — transcript (arrives first, never waits for later stages).
-        let t
-        try { t = await call('transcribeItem', { id: current.itemId }) }
-        catch (e) { emit('wa:pass:error', { stage: 'transcribe', code: e.code || 'llm-error', message: e.message }); throw e }
-        results.transcript = t.text
-        results.usage.transcribe = t.usage
-        emit('wa:transcript', { text: t.text, latencyMs: t.latencyMs, usage: t.usage })
-
-        // Stage 3 — summary document (prompt is a markdown file on the site).
-        try {
-            const prompt = await loadSummaryPrompt()
-            const s = await call('ask', { text: prompt, label: 'summary' })
-            results.summary = s.text
-            results.usage.summary = s.usage
-            emit('wa:summary', { text: s.text, usage: s.usage })
-        } catch (e) {
-            // The transcript stands on its own — a summary failure degrades, not aborts.
-            emit('wa:summary:error', { code: e.code || 'llm-error', message: e.message })
-        }
-
-        // Stage 4 — infographic, only if asked (arrives last, the delight).
-        if (params.infographic) {
-            await runInfographicStage({ model: params.infographicModel, style: params.style })
-        }
-
+        const trace = await runWorkflow(def, { options, executors, emit })
+        current.trace = trace
+        results.trace = trace
         emit('wa:pass:complete', { results })
         return results
     }
@@ -156,5 +198,6 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         return { cancelled: 0 }
     }
 
-    return { runPass, redrawInfographic, updateMaterial, restoreMaterial, cancel, results: () => current.results }
+    return { runPass, redrawInfographic, updateMaterial, restoreMaterial, cancel,
+             getWorkflow, results: () => current.results, trace: () => current.trace }
 }

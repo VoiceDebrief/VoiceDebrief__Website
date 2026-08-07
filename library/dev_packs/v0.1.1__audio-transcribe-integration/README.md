@@ -5,7 +5,7 @@
 **from** Conductor, Architect, Dev, Designer (agent team session)
 **to** The implementing agentic team
 **type** Dev pack — briefs only, nothing here is implemented yet
-**status** PROPOSED — this pack describes work that does not exist yet
+**status** SHIPPED — the work this pack proposed landed as M1–M2 (issues 008/024, Aug 2026); kept as the record of what was briefed
 
 *Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
 

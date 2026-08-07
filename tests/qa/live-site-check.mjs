@@ -36,7 +36,11 @@ if (EXPECT_VERSION) {
 
 // 1. The pages of the product.
 for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/updates/', 'Updates'],
-                              ['/versions/', 'Every version'], ['/library/', 'Library']]) {
+                              ['/versions/', 'Every version'], ['/library/', 'Library'],
+                              ['/videos/', 'See it work'],
+                              ['/engineering/', 'engine room'], ['/engineering/pipeline/', 'live QA'],
+                              ['/engineering/testing/', 'Three layers'], ['/engineering/docs/', 'reality doc'],
+                              ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles']]) {
     const r = await get(path)
     check(`GET ${path} → 200 + expected content`, r.ok && r.text.includes(marker), `status ${r.status}`)
 }
@@ -58,6 +62,8 @@ for (const ref of stamped) {
 
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
+                    '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
+                    '/updates/updates.json', '/updates/feed.xml', '/videos/videos.json',
                     '/app/prompts/summary-prompt.md', '/app/prompts/infographic-prompt.md',
                     '/app/samples/whatsapp-voice-note-1.opus', '/app/samples/whatsapp-voice-note-2.opus',
                     '/app/samples/whatsapp-voice-note-android.ogg']) {
@@ -75,6 +81,26 @@ const engine = await fetch(origin + '/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-ap
 check(`engine origin serves modules: ${origin}`, engine.ok, `status ${engine.status}`)
 const cors = engine.ok ? engine.headers.get('access-control-allow-origin') : null
 check('engine origin allows cross-origin import', cors === '*' || cors === LIVE, String(cors))
+
+// 6. Outbound links on the record pages (review pack v0.1.20, group A): every
+//    GitHub link the Updates and Library pages publish must resolve — dead blob/
+//    compare links are exactly how the public record rotted before. Same-origin
+//    links are checked too; other hosts are reported but only GitHub/self fail
+//    the job (third parties may rate-limit CI).
+const seen = new Set()
+for (const page of ['/updates/', '/library/']) {
+    const html = (await get(page)).text
+    for (const m of html.matchAll(/href="(https?:[^"#]+)/g)) {
+        const url = m[1]
+        if (seen.has(url)) continue
+        seen.add(url)
+        const strict = url.startsWith('https://github.com/') || url.startsWith(LIVE)
+        const r = await fetch(url, { method: 'GET', redirect: 'follow',
+            headers: { 'user-agent': 'sgraph-live-qa-link-check' } }).catch(() => ({ ok: false, status: 'ERR' }))
+        if (strict) check(`link resolves (${page}): ${url}`, r.ok, `status ${r.status}`)
+        else if (!r.ok) console.log(`warn  link ${url} → ${r.status} (non-blocking: third-party host)`)
+    }
+}
 
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nlive site healthy')
 process.exit(failures ? 1 : 0)
