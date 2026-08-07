@@ -18,6 +18,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Live-QA link check made honest about networks**: the recurring
+  `status ERR` failures ("on every other build", Dinis) were dropped
+  connections, not dead links — the check bursts sequential requests at
+  github.com from a shared runner and GitHub throttles some of them, and one
+  thrown fetch failed the job. Link fetches now retry three times with
+  backoff and pace themselves; a link that still never answers is a loud
+  warning, while an actual HTTP 404 stays exactly as fatal as before.
 - **Browser unit tests (issue 049, requested by Dinis)** — the app's JS modules
   re-tested under REAL browser semantics with QUnit (vendored 2.24.1, MIT):
   genuine `File`/`Blob` for the audio sniffer, genuine localStorage for the
@@ -76,6 +83,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
     section, or a panel inside the shadow DOM, instead of a full-page capture that
     buried the subject under the hero and made the whole page the diff surface.
     Done before any baseline was armed, so nothing needed re-arming.
+## [v0.1.22](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.21...v0.1.22) — 7 Aug 2026
+
 - **Each estate's derived links now point at itself** — `build_content.py` gains
   `--ref`: the qa build links `blob/qa/...`, the dev build `blob/dev/...`. The
   live-QA link check caught the gap (its first real save): three 7-Aug posts

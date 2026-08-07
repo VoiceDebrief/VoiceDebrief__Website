@@ -95,6 +95,24 @@ check('engine origin allows cross-origin import', cors === '*' || cors === LIVE,
 //    compare links are exactly how the public record rotted before. Same-origin
 //    links are checked too; other hosts are reported but only GitHub/self fail
 //    the job (third parties may rate-limit CI).
+//    A dead link ANSWERS — with a 404 — and that stays fatal. A connection that
+//    drops (fetch throws: reset, timeout, TLS hiccup) is the runner's network or
+//    GitHub throttling the burst of sequential requests this loop makes; it was
+//    the recurring "status ERR" that failed every other build on a random link.
+//    Those are retried with backoff and, if still unanswered, reported loudly
+//    but non-fatally: no HTTP response is no evidence about the link.
+const fetchLink = async url => {
+    for (let attempt = 1; ; attempt++) {
+        try {
+            return await fetch(url, { method: 'GET', redirect: 'follow',
+                headers: { 'user-agent': 'sgraph-live-qa-link-check' } })
+        } catch (e) {
+            if (attempt >= 3) return { ok: false, status: 'ERR', transient: true,
+                detail: String(e?.cause?.code || e?.message || e).slice(0, 80) }
+            await new Promise(r => setTimeout(r, 1500 * attempt))
+        }
+    }
+}
 const seen = new Set()
 for (const page of ['/updates/', '/library/']) {
     const html = (await get(page)).text
@@ -103,10 +121,11 @@ for (const page of ['/updates/', '/library/']) {
         if (seen.has(url)) continue
         seen.add(url)
         const strict = url.startsWith('https://github.com/') || url.startsWith(LIVE)
-        const r = await fetch(url, { method: 'GET', redirect: 'follow',
-            headers: { 'user-agent': 'sgraph-live-qa-link-check' } }).catch(() => ({ ok: false, status: 'ERR' }))
-        if (strict) check(`link resolves (${page}): ${url}`, r.ok, `status ${r.status}`)
+        const r = await fetchLink(url)
+        if (r.transient) console.log(`warn  link ${url} → no HTTP response after 3 attempts (${r.detail}) — connection noise, not a dead link`)
+        else if (strict) check(`link resolves (${page}): ${url}`, r.ok, `status ${r.status}`)
         else if (!r.ok) console.log(`warn  link ${url} → ${r.status} (non-blocking: third-party host)`)
+        await new Promise(r => setTimeout(r, 250))   // pace the burst — the throttling is what caused the drops
     }
 }
 
