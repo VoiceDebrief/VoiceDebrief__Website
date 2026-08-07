@@ -39,3 +39,11 @@ the build rather than shipping a dead player.
    that fetching thumbnails from `i.ytimg.com` would break).
 4. Captions/transcripts beside each video — produced by running our own tool over our own
    videos, which is both accessibility and the most on-brand demo available.
+
+## Status 7 Aug — a fourth video LIVE (the Journalist-agent short)
+Dinis published https://www.youtube.com/shorts/A4Y1a0g9Tp4 ("How This AI Agent
+Automatically Writes Our Product Updates" — the service using its own Journalist
+routine on itself); added as `content/videos/journalist-agent-writes-updates.md`,
+published. Four videos live. Still blocked on ONE id: the one-click
+recording/transcription/publishing clip (`one-click-recording-and-publishing.md`
+stays a draft until it arrives).
