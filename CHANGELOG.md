@@ -36,7 +36,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   WhatsApp's own built-in transcripts). Proposal: name the OUTPUT —
   **VoiceBrief** ("WhatsApp voice notes, debriefed"), keep the descriptive
   subdomain, keep WhatsApp in titles/copy as nominative use like every
-  competitor does. Linked from the Library page. No renaming done.
+  competitor does. Linked from the Library page. Same day, two more rounds:
+  the "for WhatsApp" edition pattern agreed; then Dinis's domain check found
+  an active namesake at voicebrief.io (the search worked as a name-collision
+  detector) — VoiceBrief withdrawn, and the working name is now
+  **VoiceDebrief for WhatsApp** (clean .com/.ai/.io field; adjacency to
+  voicebrief.io accepted, different focus). Registrar + trademark checks
+  pending; no renaming done.
 - **llms.txt gets a public explanation, fresh links, and a rulebook clause
   (Dinis)** — `/engineering/docs/` now explains and links `/llms.txt` (nothing
   on the site referenced it before); the file itself caught up with the newest
