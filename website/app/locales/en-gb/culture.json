@@ -1,0 +1,9 @@
+{
+  "_note": "Culture is not language: currency, formatting and tone. It lives inside the locale folder so that pt-PT and pt-BR can share a language and still disagree about everything here. Currency is GBP for every locale for now (Dinis, 8 Aug) — standardising on one currency avoids exchange-rate and pricing-parity problems while payments are unsettled. Because it is declared here rather than hardcoded, the day payments want EUR or BRL is a data change.",
+  "currency": "GBP",
+  "symbol": "£",
+  "usdRate": 0.79,
+  "intlLocale": "en-GB",
+  "language": "English",
+  "tone": "Plain, direct British English. No marketing register, no exclamation marks."
+}

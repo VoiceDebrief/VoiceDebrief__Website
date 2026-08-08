@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.1/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.2/wa-site-nav.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
