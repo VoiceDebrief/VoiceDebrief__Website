@@ -1,9 +1,9 @@
 # Design responses (received 8 Aug 2026, via Dinis)
 
 Two hand-off packs from the Claude Design sessions, answering the two design
-asks in flight. Reviewed by the build session (see the review notes in the
-changelog and issue 050/052 records); implementation belongs to the agent on
-the design/i18n workstream.
+asks in flight. Full review: `team/roles/architect/reviews/08/08/v0.1.23__review__design-responses-culture-packs-and-themes.md`
+(verdict: both accepted for implementation; grounding verified against the real
+app). Implementation belongs to the agent on the design/i18n workstream.
 
 | Pack | Answers | Contents |
 |---|---|---|
