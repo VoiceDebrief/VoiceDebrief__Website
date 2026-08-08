@@ -226,3 +226,43 @@ Component strings (`chat`/`flow`/`debug`/`errors`, ~160 literals) — the picker
 means the app now switches language with the *page* copy only; component text
 stays English until those domains are extracted. Artefact language (item 4 of
 the brief — `{{language}}`/`{{tone}}` into the prompts) is not built.
+
+## Status 8 Aug (later) — M1b continues: the one-pass components localise
+
+The five components of the one-pass flow now switch language with the page.
+
+- **`applyIn(root)`** localises a shadow root using the same `data-i18n`
+  attributes as the page, with one difference that matters: **the fallback is
+  the text already in the template**. A component ships readable English markup
+  and i18n only overrides it — so there is no second copy of the English to
+  drift, and the component still renders correctly standalone (the browser
+  harness, or any page that skips `initI18n()`).
+  The original is stashed in `data-i18n-src` on first pass. Without that, the
+  *second* locale switch would take the *first* switch's output as its fallback,
+  and a missing key would strand the user in a language they had already left.
+  Verified by round-tripping en-gb → pt-BR → pt-PT → en-US → pt-BR → en-gb and
+  asserting the English comes back byte-exact.
+- **Five components bumped** (published versions untouched): cost-line v0.1.1,
+  result-card v0.1.3, progress-rail v0.1.3, drop-zone v0.1.2, key-panel v0.1.2.
+  14 template strings keyed, 4 locales × 47 keys.
+- The culture split reaches inside the shadow DOM: the progress rail reads
+  **"a transcrever…"** in pt-PT and **"transcrevendo…"** in pt-BR — European
+  progressive vs Brazilian gerund, not a respelling.
+- Gated in `app-boot.test.mjs`: component shadow DOM localises, and switching
+  back restores the original English exactly.
+- **Visually unchanged in English**: `01`–`03` match baseline; the app looks
+  identical to anyone who never touches the picker.
+
+### Honestly still English
+
+- **7 strings set from JS** inside these five (key-panel's saved/rejected status
+  lines, result-card's copied confirmation, cost-line's assembled line). They
+  are not in the template, so `applyIn` cannot reach them — each needs a `tOr()`
+  call at its assignment.
+- **The three big panels** — chat, flow, debug (~130 literals) — untouched. They
+  are the `chat`/`flow`/`debug` domains, and they are where most of the
+  remaining work is.
+- **`errors.json`** not started.
+- **Artefact language** (M2 brief item 4): `{{language}}`/`{{tone}}` into the
+  prompts so the *summary* comes back in the user's language, not just the UI.
+  Not built — and it is the half that SG/Send never had.

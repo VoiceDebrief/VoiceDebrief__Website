@@ -3,7 +3,7 @@
    through window.__tool — the UI is just one consumer of the API. */
 
 import { fmtGbp } from './config.js'
-import { initI18n, t, tOr, getLocale, getLocales, setLocale } from './i18n.js'
+import { initI18n, t, tOr, applyIn, getLocale, getLocales, setLocale } from './i18n.js'
 import { bootEngine } from './engine.js'
 import { createPipeline } from './pipeline.js'
 import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
@@ -11,11 +11,11 @@ import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 
 // Components (ours; the SgComponent base loads from the tools origin inside each).
 import '../components/wa-locale-picker/v0/v0.1/v0.1.0/wa-locale-picker.js'
-import '../components/wa-key-panel/v0/v0.1/v0.1.1/wa-key-panel.js'
-import '../components/wa-drop-zone/v0/v0.1/v0.1.1/wa-drop-zone.js'
-import '../components/wa-progress-rail/v0/v0.1/v0.1.2/wa-progress-rail.js'
-import '../components/wa-result-card/v0/v0.1/v0.1.2/wa-result-card.js'
-import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
+import '../components/wa-key-panel/v0/v0.1/v0.1.2/wa-key-panel.js'
+import '../components/wa-drop-zone/v0/v0.1/v0.1.2/wa-drop-zone.js'
+import '../components/wa-progress-rail/v0/v0.1/v0.1.3/wa-progress-rail.js'
+import '../components/wa-result-card/v0/v0.1/v0.1.3/wa-result-card.js'
+import '../components/wa-cost-line/v0/v0.1/v0.1.1/wa-cost-line.js'
 import '../components/wa-debug-panel/v0/v0.1/v0.1.3/wa-debug-panel.js'
 import '../components/wa-chat-panel/v0/v0.1/v0.1.2/wa-chat-panel.js'
 import '../components/wa-flow-panel/v0/v0.1/v0.1.1/wa-flow-panel.js'
@@ -28,7 +28,7 @@ window.__waFlow = { fmtGbp }
    wa-* component must not depend on the app's file layout — it is published
    at its own immutable path and has to render standalone. Absent, every
    component falls back to the English in its own markup. */
-window.__waI18n = { t, tOr, getLocale, getLocales, setLocale }
+window.__waI18n = { t, tOr, applyIn, getLocale, getLocales, setLocale }
 
 const $ = (s) => document.querySelector(s)
 const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']

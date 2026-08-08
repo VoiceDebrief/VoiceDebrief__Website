@@ -1,0 +1,3 @@
+.wa-cost{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:.9rem;color:var(--wa-ink,#1a2433);font-weight:600}
+.sep{color:var(--wa-muted,#5b6b7f)}
+.note{font-size:.75rem;color:var(--wa-muted,#5b6b7f);font-weight:400;margin-left:6px}

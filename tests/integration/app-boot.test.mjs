@@ -178,7 +178,22 @@ try {
         return { h1: document.querySelector('h1').textContent.trim(), locale: window.__waI18n.getLocale() }
     })
     check('picking pt-BR re-renders the page in place', picked.locale === 'pt-br' && /áudio/.test(picked.h1), picked.h1)
-    await page.evaluate(() => window.__waI18n.setLocale('en-gb'))
+
+    // The strings INSIDE the components, not just the page around them — and the
+    // round trip back, which is what proves each component stashed its original
+    // English rather than translating its own last output.
+    const inside = await page.evaluate(() => ({
+        drop: document.querySelector('wa-drop-zone').shadowRoot.querySelector('.wa-drop__big').textContent.trim(),
+        save: document.querySelector('wa-key-panel').shadowRoot.querySelector('button').textContent.trim(),
+        step: document.querySelector('wa-progress-rail').shadowRoot.querySelector('[data-step=\"transcribe\"] .label').textContent.trim(),
+    }))
+    check('component shadow DOM localises too', /áudio/.test(inside.drop) && inside.save === 'Salvar chave' && inside.step === 'transcrevendo…',
+        JSON.stringify(inside))
+    const back = await page.evaluate(async () => {
+        await window.__waI18n.setLocale('en-gb')
+        return document.querySelector('wa-drop-zone').shadowRoot.querySelector('.wa-drop__big').textContent.trim()
+    })
+    check('switching back restores the original English exactly', back === 'drop your voice note here', back)
 
     check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 4).join(' | '))
 } catch (e) {

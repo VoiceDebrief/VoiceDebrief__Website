@@ -32,5 +32,19 @@
   "again": "transcrever outro áudio",
   "footerHtml": "© 2026 SGraph / The Cyber Boardroom — nada é rastreado, nada é armazenado no servidor",
   "localeLabel": "idioma",
-  "localeDraft": "rascunho"
+  "localeDraft": "rascunho",
+  "costNote": "convertido a partir da medição em USD",
+  "copy": "copiar",
+  "downloadMd": "baixar .md",
+  "stepIngest": "lendo o áudio",
+  "stepTranscribe": "transcrevendo…",
+  "stepSummary": "escrevendo o resumo",
+  "stepInfographic": "desenhando o infográfico",
+  "stop": "Parar",
+  "dropAria": "Escolher o seu áudio",
+  "dropBig": "solte aqui o seu áudio",
+  "dropSmall": "ou toque para procurar",
+  "keyLabel": "A sua chave OpenRouter",
+  "keyPlaceholder": "sk-or-…  (obtenha uma em openrouter.ai/keys)",
+  "keySave": "Salvar chave"
 }

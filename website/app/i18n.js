@@ -127,6 +127,33 @@ export function apply(root = document) {
     }
 }
 
+/* applyIn(root) — localise a component's shadow DOM (issue 050, M1b).
+
+   Same data-i18n attributes as the page, one difference that matters: the
+   fallback is THE TEXT ALREADY IN THE TEMPLATE. A component ships readable
+   English markup; this only overrides it. So there is no second copy of the
+   English to drift, and the component still renders correctly standalone — in
+   the browser harness, or before initI18n() resolves.
+
+   The original is stashed in data-i18n-src on the first pass. Without that, the
+   second locale switch would take the FIRST switch's output as its fallback and
+   a missing key would strand the user in a language they had already left. */
+export function applyIn(root) {
+    if (!root) return
+    for (const el of root.querySelectorAll('[data-i18n]')) {
+        if (el.dataset.i18nSrc === undefined) el.dataset.i18nSrc = el.textContent
+        el.textContent = tOr(el.dataset.i18n, el.dataset.i18nSrc)
+    }
+    for (const attr of ['title', 'placeholder', 'aria-label', 'label']) {
+        const key = 'data-i18n-' + attr
+        const stash = 'data-i18n-src-' + attr
+        for (const el of root.querySelectorAll(`[${key}]`)) {
+            if (!el.hasAttribute(stash)) el.setAttribute(stash, el.getAttribute(attr) ?? '')
+            el.setAttribute(attr, tOr(el.getAttribute(key), el.getAttribute(stash)))
+        }
+    }
+}
+
 /* Switching locale re-renders in place — no reload. A pass in flight, the flow
    panel's trace and the chat thread all survive a language change, which is
    the whole reason components listen for the event instead of the page

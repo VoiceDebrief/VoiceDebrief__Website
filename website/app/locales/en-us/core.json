@@ -32,5 +32,19 @@
   "again": "do another voice message",
   "footerHtml": "© 2026 SGraph / The Cyber Boardroom — nothing tracked, nothing stored server-side",
   "localeLabel": "language",
-  "localeDraft": "draft"
+  "localeDraft": "draft",
+  "costNote": "converted from USD metering",
+  "copy": "copy",
+  "downloadMd": "download .md",
+  "stepIngest": "reading the audio",
+  "stepTranscribe": "transcribing…",
+  "stepSummary": "writing the summary",
+  "stepInfographic": "drawing the infographic",
+  "stop": "Stop",
+  "dropAria": "Choose your voice message",
+  "dropBig": "drop your voice message here",
+  "dropSmall": "or tap to browse",
+  "keyLabel": "Your OpenRouter key",
+  "keyPlaceholder": "sk-or-…  (get one at openrouter.ai/keys)",
+  "keySave": "Save key"
 }
