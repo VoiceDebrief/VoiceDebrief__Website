@@ -39,16 +39,45 @@ def declared(path):
 
 
 def css_files_the_app_ships():
-    """app.css plus the component stylesheet of each version app.js imports —
-    older versions on disk are immutable history and are not the live design."""
+    """Every stylesheet the LIVE app renders through, from both routes a
+    component can arrive by:
+
+      - imported by app.js (the eight wa-* panels), and
+      - referenced from a page's <script>, which is how wa-site-nav loads.
+
+    The second route was missed on the first pass, and wa-site-nav — on every
+    page of the site — sat with 26 hardcoded colours and no tokens at all while
+    this check reported "themes ok". A gate that only looks where you remembered
+    to point it is how a theme ends up restyling everything except the header.
+
+    Some components carry their styles inline in the .js rather than a sibling
+    .css, so both are read. Older versions on disk are immutable history and are
+    deliberately not scanned."""
     files = [os.path.join(APP, 'app.css')]
-    with open(os.path.join(APP, 'app.js'), encoding='utf-8') as f:
-        app_js = f.read()
-    for rel in sorted(set(re.findall(r'components/([a-z-]+/v\d+/v[\d.]+/v[\d.]+)', app_js))):
-        name = rel.split('/')[0]
-        css = os.path.join(ROOT, 'website/components', rel, f'{name}.css')
-        if os.path.exists(css):
-            files.append(css)
+    seen = set()
+
+    sources = [os.path.join(APP, 'app.js')]
+    for root, _, names in os.walk(os.path.join(ROOT, 'website')):
+        if '/components/' in root.replace(os.sep, '/'):
+            continue
+        sources += [os.path.join(root, n) for n in names if n.endswith('.html')]
+    sources += [os.path.join(ROOT, 'scripts/templates', n)
+                for n in os.listdir(os.path.join(ROOT, 'scripts/templates')) if n.endswith('.html')]
+
+    for src in sources:
+        if not os.path.exists(src):
+            continue
+        with open(src, encoding='utf-8') as f:
+            text = f.read()
+        for rel in re.findall(r'components/([a-z-]+/v\d+/v[\d.]+/v[\d.]+)', text):
+            if rel in seen:
+                continue
+            seen.add(rel)
+            name = rel.split('/')[0]
+            for ext in ('css', 'js'):
+                path = os.path.join(ROOT, 'website/components', rel, f'{name}.{ext}')
+                if os.path.exists(path):
+                    files.append(path)
     return files
 
 

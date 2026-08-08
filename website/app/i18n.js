@@ -90,6 +90,22 @@ export function t(key, params) {
         (params[name] !== undefined ? String(params[name]) : m))
 }
 
+/* tOr(key, fallback) — for the wa-* components.
+
+   A component must render correctly on its own: in the browser test harness, on
+   a page that never called initI18n(), or if the locale fetch fails. So each one
+   keeps its English in the markup and asks i18n only to OVERRIDE it. This is the
+   same shape as the CSS token fallbacks (var(--wa-navy,#0b1f3a)) and for the same
+   reason — the component is the unit that has to keep working.
+
+   t() returns the key on a miss, which is right for the app page (a visible
+   core.go is a bug report); here it is wrong, because the component has a
+   perfectly good English string to fall back to. tOr() converts one to the other. */
+export const tOr = (key, fallback, params) => {
+    const v = t(key, params)
+    return v === key ? fallback : v
+}
+
 /* Render every data-i18n in a root. Attributes are addressed as
    data-i18n-<attr> so one element can localise its text and its title. */
 export function apply(root = document) {

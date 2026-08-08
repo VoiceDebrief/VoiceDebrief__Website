@@ -149,3 +149,25 @@ selectors and keys rather than copy, so they need reading not sed). The eight
 `wa-*` components hold roughly 160 more literals between them and each needs a
 `t()` import and a `wa:locale-changed` listener. That is the bulk of M1b and it
 is mechanical but not blind — it is the natural next slice.
+
+## Status 8 Aug (later) — a hole the checker did not see
+
+Merging `qa` brought `wa-site-nav` (issue 054), which sits on **every page** of
+the site. It had 26 hardcoded colours and read zero tokens — so a theme swap
+would have restyled the whole app *except its header*, and `check_themes.py`
+reported "themes ok" throughout.
+
+The gate only scanned components `app.js` imports. `wa-site-nav` loads from a
+page `<script>` instead, so it was invisible to the check. A gate that only
+looks where you remembered to point it is not a gate.
+
+- `check_themes.py` now scans **both routes** a component arrives by — imported
+  by `app.js`, and referenced from any page or template's markup — and reads
+  inline styles in `.js` as well as sibling `.css`.
+- `wa-site-nav` v0.1.1 → **v0.1.2**, 26 colours tokenised, each keeping its
+  literal as the `var(--wa-x, #hex)` fallback: the nav ships on library,
+  versions and engineering pages that do NOT load `themes/default.css`, and must
+  look identical there. One new token, `--wa-navy-hover`. 15 pages/templates
+  repointed.
+- Verified invisible: `01-app-start` (the shot that shows the nav) unchanged at
+  0.046%, `02`/`03` at 0.000%.

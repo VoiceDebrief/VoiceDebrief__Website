@@ -28,6 +28,7 @@
   /* ── Brand and chrome ─────────────────────────────────────────────── */
   --wa-navy:          #0b1f3a;   /* page chrome, primary dark buttons        */
   --wa-navy-2:        #122c50;   /* hover on navy, gradient end              */
+  --wa-navy-hover:    #0e2647;   /* site-nav hover                           */
   --wa-ink:           #1a2433;   /* body text                                */
   --wa-fg:            #fff;      /* text on dark, card surfaces              */
 

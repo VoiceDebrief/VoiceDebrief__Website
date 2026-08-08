@@ -43,6 +43,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   **VoiceDebrief for WhatsApp** (clean .com/.ai/.io field; adjacency to
   voicebrief.io accepted, different focus). Registrar + trademark checks
   pending; no renaming done.
+- **The theme gate was missing every page's header (issue 050)** — merging the
+  new `wa-site-nav` revealed it sat on every page of the site with 26 hardcoded
+  colours and no tokens, while `check_themes.py` reported "themes ok". The check
+  only scanned components `app.js` imports, and the nav loads from a page
+  `<script>`; a gate that only looks where you remembered to point it is not a
+  gate. It now scans both routes, and reads inline styles in `.js` as well as
+  sibling `.css`. The nav is tokenised at v0.1.2, each colour keeping its literal
+  as a `var()` fallback because the nav also ships on pages that do not load the
+  theme sheet and must look identical there. Verified invisible.
 - **Strings and culture are now data (issue 050, M1b foundation + M1c)** —
   `website/app/i18n.js` is the entire runtime: key lookup, one-hop fallback to
   en-gb, `data-i18n` rendering, and `setLocale()` that re-renders in place so a

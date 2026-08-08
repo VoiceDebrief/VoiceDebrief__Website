@@ -3,7 +3,7 @@
    through window.__tool — the UI is just one consumer of the API. */
 
 import { fmtGbp } from './config.js'
-import { initI18n, t } from './i18n.js'
+import { initI18n, t, tOr, getLocale } from './i18n.js'
 import { bootEngine } from './engine.js'
 import { createPipeline } from './pipeline.js'
 import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
@@ -23,6 +23,11 @@ import '../components/wa-flow-panel/v0/v0.1/v0.1.1/wa-flow-panel.js'
 window.__waChat = { models: CHAT_MODELS, suggestions: CHAT_SUGGESTIONS }
 // Same idiom for the flow panel: it displays budgets/costs in GBP.
 window.__waFlow = { fmtGbp }
+/* The components' seam to i18n. A global rather than an import because a
+   wa-* component must not depend on the app's file layout — it is published
+   at its own immutable path and has to render standalone. Absent, every
+   component falls back to the English in its own markup. */
+window.__waI18n = { t, tOr, getLocale }
 
 const $ = (s) => document.querySelector(s)
 const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']
