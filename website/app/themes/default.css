@@ -1,0 +1,102 @@
+/* themes/default.css — the app's design, and the whole of it (issue 050, M1).
+
+   Every colour, overlay and font stack the app uses is declared here as a
+   --wa-* custom property on :root (shape is not — see the note at the bottom).
+   Custom properties inherit THROUGH shadow DOM, so these reach inside all
+   eight wa-* components without any of them importing this file — which is
+   the point: a design candidate becomes one sheet like this one, not a fork
+   of eight components. Verified: overriding --wa-green on :root alone changes
+   the computed value inside every component's shadow root.
+
+   Rules for this file and its siblings:
+   - A theme may only REDEFINE these names. It may not introduce new ones that
+     the components do not read, and it may not omit one — CI checks every
+     theme's tokens are a superset-complete match against this file, so a half
+     -finished candidate fails the build instead of rendering with holes.
+   - Components keep a literal fallback in their own var() calls
+     (var(--wa-navy,#0b1f3a)) so a component still renders standalone, in a
+     test harness or on a page that forgot the sheet.
+   - This file is DESIGN only. Nothing here is per-locale; strings live in
+     locales/, culture in locales/<locale>/culture.json.
+
+   Extracted from app.css and the nine shadow stylesheets with no visual
+   change intended — the qa-to-docs screenshots are the proof, and they must
+   not move when this lands. */
+
+:root {
+
+  /* ── Brand and chrome ─────────────────────────────────────────────── */
+  --wa-navy:          #0b1f3a;   /* page chrome, primary dark buttons        */
+  --wa-navy-2:        #122c50;   /* hover on navy, gradient end              */
+  --wa-ink:           #1a2433;   /* body text                                */
+  --wa-fg:            #fff;      /* text on dark, card surfaces              */
+
+  /* ── Surfaces and borders ─────────────────────────────────────────── */
+  --wa-mist:          #f2f5f9;   /* light surface                            */
+  --wa-line:          #dbe3ec;   /* border on cool surfaces                  */
+
+  /* ── Secondary text ───────────────────────────────────────────────── */
+  --wa-muted:         #5b6b7f;   /* secondary text on light                  */
+  --wa-muted-2:       #9fb2c9;   /* tertiary text, monospace meta            */
+  --wa-muted-on-dark: #c8d6e8;   /* secondary text on navy                   */
+  --wa-muted-dark:    #a9bcd6;   /* footer text on navy                      */
+  --wa-link-on-dark:  #dbe6f5;   /* links on navy                            */
+
+  /* ── Green: the primary action, and "done" ────────────────────────── */
+  --wa-green:         #25d366;   /* primary action                           */
+  --wa-green-hi:      #2ee273;   /* primary action hover                     */
+  --wa-green-ink:     #07301c;   /* text on green                            */
+  --wa-green-dark:    #1f7a4d;   /* done states, read-tier tool calls        */
+  --wa-green-soft:    #8ff0b6;   /* links on dark                            */
+  --wa-green-bg:      #e9f9ef;   /* success surface                          */
+
+  /* ── Blue: material labels and focus ──────────────────────────────── */
+  --wa-blue:          #2563eb;   /* TRANSCRIPT / SUMMARY / INFOGRAPHIC       */
+  --wa-blue-bg:       #e8effc;   /* blue surface                             */
+  --wa-blue-line:     #dbe8fb;   /* blue border, light                       */
+  --wa-blue-line-2:   #b9cdf2;   /* blue border, stronger                    */
+
+  /* ── Amber: the privacy notice, and "changes materials" ───────────── */
+  --wa-amber-bg:      #fdf1e3;   /* privacy notice surface                   */
+  --wa-amber-line:    #e0a445;   /* privacy notice accent                    */
+  --wa-amber-ink:     #a05a00;   /* privacy notice label                     */
+
+  /* ── Danger: errors, and "spends money" ───────────────────────────── */
+  --wa-danger:        #b91c1c;   /* error text and accents                   */
+  --wa-danger-ink:    #8a1f1f;   /* error heading                            */
+  --wa-danger-bg:     #fdecec;   /* error surface                            */
+  --wa-danger-bg-2:   #fff6f6;   /* error surface, softer                    */
+  --wa-danger-line:   #f3c0c0;   /* error border                             */
+  --wa-danger-line-2: #e08a8a;   /* error border, stronger                   */
+
+  /* ── Overlays and rings (composite, so declared whole) ────────────── */
+  --wa-shadow-panel:  rgba(11,31,58,.18);    /* side-panel drop shadow       */
+  --wa-ring-blue:     rgba(37,99,235,.15);   /* focus ring                   */
+  --wa-ring-blue-2:   rgba(37,99,235,.35);   /* focus ring, stronger         */
+  --wa-ring-blue-3:   rgba(37,99,235,.45);   /* focus ring, strongest        */
+  --wa-ring-green:    rgba(37,211,102,.18);  /* green halo                   */
+  --wa-ring-green-2:  rgba(37,211,102,.5);   /* green border                 */
+  --wa-tint-green:    rgba(37,211,102,.06);  /* faint green wash             */
+  --wa-on-dark-04:    rgba(255,255,255,.04); /* raised surface on navy       */
+  --wa-on-dark-08:    rgba(255,255,255,.08);
+  --wa-on-dark-12:    rgba(255,255,255,.12);
+  --wa-on-dark-28:    rgba(255,255,255,.28);
+  --wa-on-dark-30:    rgba(255,255,255,.3);
+
+  /* ── Type ─────────────────────────────────────────────────────────── */
+  /* No web fonts: the CSP forbids remote origins, and a system stack is
+     also the fastest and the most culturally neutral starting point — a
+     locale that needs a different stack overrides it here, not in nine
+     components. */
+  --wa-font: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --wa-font-mono: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --wa-font-mono-2: ui-monospace,Menlo,Consolas,monospace;
+
+  /* Radius, spacing and type scale are NOT tokenised yet. They could not be
+     extracted the way colour was: the app uses 7/8/9/10/12/14px radii that a
+     scale would have to collapse, and collapsing them moves pixels. That makes
+     it a design decision with a visible diff, not a mechanical lift — so it
+     gets its own reviewed change rather than riding in on a refactor that
+     promised to change nothing. Until then a candidate theme restyles colour
+     and type; shape stays. */
+}

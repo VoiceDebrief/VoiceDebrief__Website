@@ -1,0 +1,13 @@
+{
+  "note": "The theme allowlist (issue 050, M1). A theme is ONE stylesheet of --wa-* tokens on :root, plus an optional data-layout class for genuinely different arrangements. Selection may only ever name a key from this file — never a URL, never a query parameter (the issue-041 rule: nothing outside the repo decides what the page loads). CI checks every listed sheet declares exactly the tokens default.css declares, so a half-finished candidate fails the build instead of shipping with holes.",
+  "default": "default",
+  "themes": {
+    "default": {
+      "label": "Default",
+      "sheet": "default.css",
+      "layout": null,
+      "status": "live",
+      "description": "The design the product shipped with — extracted from app.css and the nine component stylesheets, unchanged."
+    }
+  }
+}

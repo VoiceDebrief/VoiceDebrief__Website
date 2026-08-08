@@ -18,6 +18,28 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The app's design is now one swappable sheet (issue 050, M1a)** — every
+  colour, overlay and font stack the app uses is declared as a `--wa-*` token on
+  `:root` in `website/app/themes/default.css`; `app.css` and all eight live
+  component stylesheets read them and declare no colour of their own. Before
+  this, only three of eight components read a token at all, so a theme sheet
+  would have restyled less than half the UI. Custom properties inherit through
+  shadow DOM, so a design candidate — an A/B arm — is now one file, not a fork
+  of eight components; verified by overriding `--wa-green` on `:root` alone and
+  watching the computed value change inside every component's shadow root.
+  The refactor promised no visible change and that was **measured, not asserted**:
+  all eight qa-to-docs shots captured before and after and compared directly,
+  0.0000% difference on every one. `scripts/check_themes.py` now runs in both
+  pipelines and guards both directions — a token the app reads but no theme
+  declares is a hole where a component silently keeps its old colour, and a
+  candidate missing a token ships half-styled, which would make an A/B result
+  unreadable. Radius, spacing and type scale are deliberately left alone:
+  collapsing the app's 7/8/9/10/12/14px radii into a scale moves pixels, which
+  makes it a design decision with a visible diff rather than a mechanical lift.
+  Seven components were bumped rather than edited in place: their CSS is fetched
+  at runtime unstamped, so a cached published version would have kept its
+  hardcoded colours and ignored the theme — the exact failure this refactor
+  exists to prevent, arriving through the cache instead of the code.
 - **llms.txt gets a public explanation, fresh links, and a rulebook clause
   (Dinis)** — `/engineering/docs/` now explains and links `/llms.txt` (nothing
   on the site referenced it before); the file itself caught up with the newest

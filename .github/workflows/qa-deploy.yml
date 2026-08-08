@@ -55,6 +55,9 @@ jobs:
       - name: Validate the user-guide manifest
         run: python3 scripts/build_user_guide.py --check
 
+      - name: Validate the theme tokens (issue 050)
+        run: python3 scripts/check_themes.py
+
       - name: Unit tests
         shell: bash
         run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log

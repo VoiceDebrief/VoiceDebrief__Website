@@ -1,0 +1,30 @@
+<button type="button" class="wa-flow__toggle" title="The workflow: what will happen, what it may cost, and what actually happened">🧭 flow</button>
+
+<aside class="wa-flow__panel" aria-label="The declared workflow">
+  <div class="wa-flow__grip" title="drag to resize"></div>
+
+  <div class="wa-flow__head">
+    <span class="wa-flow__title">WORKFLOW</span>
+    <span class="wa-flow__status"></span>
+    <button type="button" class="wa-flow__close" aria-label="Close">✕</button>
+  </div>
+
+  <div class="wa-flow__body">
+    <div class="wa-flow__intro">
+      <div class="wa-flow__name"></div>
+      <p class="wa-flow__desc"></p>
+      <div class="wa-flow__quote"></div>
+    </div>
+
+    <ol class="wa-flow__steps"></ol>
+
+    <div class="wa-flow__foot">
+      <p>This run is driven by a declared state machine — the steps, models, spending
+      ceilings and failure behaviour above are a
+      <a class="wa-flow__deflink" href="workflows/standard.json" target="_blank" rel="noopener">file</a>,
+      not code, and the tool cannot take a path that is not declared.
+      <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/library/dev_packs/v0.1.21__workflow-state-machine/00__design-brief.md"
+         target="_blank" rel="noopener">Why we built it this way</a>.</p>
+    </div>
+  </div>
+</aside>

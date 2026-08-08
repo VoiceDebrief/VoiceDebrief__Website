@@ -9,14 +9,14 @@ import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
 import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 
 // Components (ours; the SgComponent base loads from the tools origin inside each).
-import '../components/wa-key-panel/v0/v0.1/v0.1.0/wa-key-panel.js'
-import '../components/wa-drop-zone/v0/v0.1/v0.1.0/wa-drop-zone.js'
-import '../components/wa-progress-rail/v0/v0.1/v0.1.1/wa-progress-rail.js'
-import '../components/wa-result-card/v0/v0.1/v0.1.1/wa-result-card.js'
+import '../components/wa-key-panel/v0/v0.1/v0.1.1/wa-key-panel.js'
+import '../components/wa-drop-zone/v0/v0.1/v0.1.1/wa-drop-zone.js'
+import '../components/wa-progress-rail/v0/v0.1/v0.1.2/wa-progress-rail.js'
+import '../components/wa-result-card/v0/v0.1/v0.1.2/wa-result-card.js'
 import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
-import '../components/wa-debug-panel/v0/v0.1/v0.1.2/wa-debug-panel.js'
-import '../components/wa-chat-panel/v0/v0.1/v0.1.1/wa-chat-panel.js'
-import '../components/wa-flow-panel/v0/v0.1/v0.1.0/wa-flow-panel.js'
+import '../components/wa-debug-panel/v0/v0.1/v0.1.3/wa-debug-panel.js'
+import '../components/wa-chat-panel/v0/v0.1/v0.1.2/wa-chat-panel.js'
+import '../components/wa-flow-panel/v0/v0.1/v0.1.1/wa-flow-panel.js'
 
 // The chat panel reads these at mount time — before the engine has booted.
 window.__waChat = { models: CHAT_MODELS, suggestions: CHAT_SUGGESTIONS }

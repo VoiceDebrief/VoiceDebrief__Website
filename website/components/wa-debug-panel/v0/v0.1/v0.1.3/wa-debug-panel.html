@@ -1,0 +1,51 @@
+<button type="button" class="wa-dbg__toggle" aria-expanded="false" title="Advanced: LLM requests, OpenRouter data, prompt templates">⚙ debug</button>
+
+<aside class="wa-dbg__panel" aria-label="Advanced debug pane">
+  <div class="wa-dbg__grip" title="drag to resize"></div>
+
+  <div class="wa-dbg__head">
+    <span class="wa-dbg__title">ADVANCED</span>
+    <nav class="wa-dbg__tabs">
+      <button type="button" class="wa-dbg__tab on" data-tab="exchanges">LLM calls</button>
+      <button type="button" class="wa-dbg__tab" data-tab="openrouter">OpenRouter</button>
+      <button type="button" class="wa-dbg__tab" data-tab="prompts">Prompts</button>
+    </nav>
+    <button type="button" class="wa-dbg__close" aria-label="Close">✕</button>
+  </div>
+
+  <div class="wa-dbg__body">
+
+    <section data-view="exchanges">
+      <div class="wa-dbg__row">
+        <span class="wa-dbg__ex-count">no LLM calls yet — run a pass</span>
+        <button type="button" class="wa-dbg__clear mini">clear</button>
+      </div>
+      <p class="wa-dbg__hint">Every model call this page makes — the full request and response.
+        Audio bytes are summarised by size; everything else is verbatim. Nothing here leaves your browser.</p>
+      <div class="wa-dbg__ex-list"></div>
+    </section>
+
+    <section data-view="openrouter" hidden>
+      <div class="wa-dbg__row">
+        <button type="button" class="wa-dbg__key-check mini">check my key</button>
+        <button type="button" class="wa-dbg__models-load mini">models used — full details</button>
+      </div>
+      <div class="wa-dbg__row">
+        <input class="wa-dbg__gen-input" type="text" placeholder="generation id (gen-…)" spellcheck="false">
+        <button type="button" class="wa-dbg__gen-fetch mini">fetch generation</button>
+      </div>
+      <p class="wa-dbg__hint">Read straight from OpenRouter with your key: key limits and usage,
+        the public catalogue entry for each model used, and the billed record for any generation id
+        (each LLM call above links its own).</p>
+      <div class="wa-dbg__or-out"></div>
+    </section>
+
+    <section data-view="prompts" hidden>
+      <p class="wa-dbg__hint">The three instructions this product sends. Edit and save to override —
+        overrides live in this browser's localStorage and apply from the next pass; reset returns to
+        the shipped default.</p>
+      <div class="wa-dbg__prompts"></div>
+    </section>
+
+  </div>
+</aside>

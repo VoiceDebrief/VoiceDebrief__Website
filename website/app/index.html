@@ -13,6 +13,11 @@
      inlined WASM needs 'wasm-unsafe-eval'). GitHub Pages cannot set headers,
      so this rides in the page. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'wasm-unsafe-eval' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://cdn.jsdelivr.net; connect-src 'self' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://openrouter.ai https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://dev.tools.sgraph.ai https://tools.sgraph.ai; img-src 'self' data: blob:; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<!-- The design, as one swappable sheet (issue 050 M1). It must load BEFORE
+     app.css: app.css declares no colours of its own, and these tokens also
+     inherit through the shadow boundary into every wa-* component. A design
+     candidate / A/B arm is a different file here, nothing else. -->
+<link rel="stylesheet" href="themes/default.css">
 <link rel="stylesheet" href="app.css">
 <script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.0/wa-site-nav.js"></script>
 </head>
