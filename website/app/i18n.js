@@ -206,6 +206,7 @@ export async function setLocale(name) {
 
 export const getLocale = () => active
 export const getLocales = () => index?.locales || {}
+export const defaultLocale = () => index?.default || SOURCE
 
 /* ── Culture (M1c) ───────────────────────────────────────────────────────
    Culture is not language: it is currency, formatting and tone, and it lives

@@ -3,14 +3,14 @@
    through window.__tool — the UI is just one consumer of the API. */
 
 import { fmtGbp } from './config.js'
-import { initI18n, t, tOr, applyIn, culture, getLocale, getLocales, setLocale } from './i18n.js'
+import { initI18n, t, tOr, applyIn, culture, getLocale, getLocales, defaultLocale, setLocale } from './i18n.js'
 import { bootEngine } from './engine.js'
 import { createPipeline } from './pipeline.js'
 import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
 import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 
 // Components (ours; the SgComponent base loads from the tools origin inside each).
-import '../components/wa-locale-picker/v0/v0.1/v0.1.1/wa-locale-picker.js'
+import '../components/wa-locale-picker/v0/v0.1/v0.1.2/wa-locale-picker.js'
 import '../components/wa-key-panel/v0/v0.1/v0.1.2/wa-key-panel.js'
 import '../components/wa-drop-zone/v0/v0.1/v0.1.2/wa-drop-zone.js'
 import '../components/wa-progress-rail/v0/v0.1/v0.1.4/wa-progress-rail.js'
@@ -28,7 +28,7 @@ window.__waFlow = { fmtGbp }
    wa-* component must not depend on the app's file layout — it is published
    at its own immutable path and has to render standalone. Absent, every
    component falls back to the English in its own markup. */
-window.__waI18n = { t, tOr, applyIn, getLocale, getLocales, setLocale }
+window.__waI18n = { t, tOr, applyIn, getLocale, getLocales, defaultLocale, setLocale }
 
 const $ = (s) => document.querySelector(s)
 const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']

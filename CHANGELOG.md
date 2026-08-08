@@ -18,6 +18,27 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The language picker moves to the top right, and keeps a door open
+  (Dinis, four corrections)** — `wa-locale-picker` v0.1.2 now rides in
+  `wa-site-nav` v0.1.3 via `<slot name="locale">`, where sgraph.ai puts it and
+  where people look for it; the culture list is **closed until you click the
+  caret** rather than sitting open on the page. The change that matters most:
+  once you are in a non-default locale, a plain 🇬🇧 **EN-GB** button appears
+  *beside* the dropdown — one click back to English, no menu. Someone who lands
+  on Portuguese from a shared link or a mis-tap should not have to operate a
+  dropdown in a language they cannot read to undo it, so the two controls answer
+  two different questions: *where am I* and *get me out*. The nav also stops
+  pretending the whole site is translated: `/app/` is listed first carrying the
+  **active locale's flag**, and the English-only pages sit behind a single 🇬🇧
+  marker — as pages localise they move across it. Trigger shows the locale code
+  (🇵🇹 PT-PT), not the native name, which wrapped the control onto a second row
+  and dragged the panel off the left edge. Two things fell out of the work: the
+  nav had no `render()` at all, so the redraw hook I added for
+  `wa:locale-changed` was a silent no-op (the flag would have frozen at
+  page-load locale), and `defaultLocale()` now comes from the allowlist instead
+  of a hardcoded `'en-gb'`. 19 references repointed; the browser suite pins the
+  flag behaviour; six qa-to-docs shots moved and are logged for review.
+
 - **Two design responses received and filed (Dinis, 8 Aug)** —
   `library/briefs/ux-experiments/responses/`: the four-culture pack (en-gb,
   en-us, pt-pt, pt-br — switchable prototype with a per-culture explanation
