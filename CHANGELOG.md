@@ -36,7 +36,11 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   (issue-041 rule), per-locale LIVE gating instead of a global SOON, and
   qa-to-docs screenshots per locale×theme as the review surface. Strategy only —
   implementation is issue 050, starting with extraction (M1), which is what
-  unblocks the Claude Design A/B token sheets.
+  unblocks the Claude Design A/B token sheets. Revised same day per Dinis's
+  voice memo: a folder per locale holding per-domain files (Send's
+  one-file-per-locale rejected on its own evidence — token explosion), first
+  locales pt-PT + pt-BR together, and GBP everywhere for now — declared in each
+  locale's culture data, never hardcoded.
 - **Live-QA link check made honest about networks**: the recurring
   `status ERR` failures ("on every other build", Dinis) were dropped
   connections, not dead links — the check bursts sequential requests at

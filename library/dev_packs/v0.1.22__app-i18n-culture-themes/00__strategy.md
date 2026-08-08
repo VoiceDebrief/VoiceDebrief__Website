@@ -6,6 +6,11 @@
 **to** Dinis, Dev, Architect, Designer, QA — and the Claude Design brief the other agent is writing
 **status** STRATEGY — nothing in here exists yet; implementation is issue 050
 **scope** the app page only (`/app/`) — the pages that tell the story localise later; the page that does the work localises first
+**revised** 8 August 2026 per Dinis's voice memo: folder per locale, a SET of
+per-domain files instead of one big file per locale (the single-file approach
+*backfired* at Send — token explosion, every small change touches a massive
+file), first locales pt-PT + pt-BR, and currency standardised to GBP across all
+locales for now — declared in the locale's culture data, never hardcoded
 
 *Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
 
@@ -126,20 +131,41 @@ Everything below is on the record in `the-cyber-boardroom/SGraph-AI__App__Send`
 
 ```
 website/app/
-  locales/            LANGUAGE — what the app says
-    index.json          the allowlist: which locales exist + which are LIVE vs draft
-    en-gb.json          source of truth, flat dotted keys (Send convention)
-    pt-pt.json          complete file per locale, one-hop fallback to en-gb
-  cultures/           CULTURE — how it says numbers, money, dates, tone
-    en-gb.json          { currency: {code,symbol,usdRate}, intlLocale, tone, … }
-    pt-pt.json          culture keys the prompts also read (formality, sign-off)
-  themes/             DESIGN — how it looks
+  locales/            one FOLDER per locale — everything that locale needs, in one place
+    index.json          the allowlist: locales that exist, which are LIVE vs draft,
+                        and the file-set each one ships
+    en-gb/              source of truth — a SET of per-domain files, not one blob
+      core.json           the one-pass chrome: drop zone, options, results
+      chat.json           the chat panel
+      flow.json           the flow panel + workflow step names
+      debug.json          the advanced/debug pane
+      errors.json         every error message (they deserve their own review pass)
+      culture.json        currency, intlLocale, date/number style, tone/formality
+                          notes the prompts read — culture data lives IN the locale
+    pt-pt/              what exists here is what pt-pt supports — incremental by
+      core.json           construction: a locale can ship core.json LIVE while
+      culture.json        chat.json is still draft or absent (falls back per key)
+    pt-br/              same language, different culture — different folder, and
+      …                   room for things only this culture has (samples, imagery)
+  themes/             DESIGN — how it looks (cross-cutting, not per-locale)
     index.json          the allowlist: theme name → token sheet (+ layout class)
     default.css         every colour/font/space/radius as --wa-* tokens on :root
     <candidate>.css     one file per Claude Design candidate = one A/B arm
   i18n.js             t(key, params), locale detect/persist, wa:locale-changed
   prompts/*.md        gain {{language}} / {{tone}} placeholders (culture-fed)
 ```
+
+Why a folder per locale, and many small files (Dinis, 8 Aug — revising this
+doc's first draft): Send's one-file-per-locale **backfired** — 850-key files
+meant every change, however small, re-processed the whole file, and translation
+agents drowned in tokens (the 03/01 scaling brief's "agent paralysis", relived).
+Per-domain files make the unit of work "translate chat.json for pt-br" (~30
+keys), the unit of review one domain, and the unit of support one file: **the
+files that exist are the support you have.** A locale's folder is also the home
+for everything culture-specific that isn't a string — sample voice notes,
+imagery, culture-specific UI affordances — so maturity can vary honestly per
+locale without a global switch. The domain split follows the app's component
+seams, so a component's strings and its translation file move together.
 
 - **Locale resolution**: `navigator.languages` matched against the allowlist
   (with Send's prefix fallback map, `pt → pt-pt`) → overridden by the picker →
@@ -152,9 +178,16 @@ website/app/
   components re-render on `wa:locale-changed` (no full-page reload — the flow
   panel and an in-flight pass survive a language switch).
 - **Culture in the pipeline**: `fmtGbp` generalises to `fmtMoney(usd)` reading
-  the active culture pack; dates/counts via `Intl.*` with the pack's
+  the active locale's `culture.json`; dates/counts via `Intl.*` with its
   `intlLocale`; the culture's `tone` strings flow into the prompt templates
-  beside `{{language}}`.
+  beside `{{language}}`. **Currency decision (Dinis, 8 Aug): every locale's
+  `culture.json` declares GBP for now** — `{code:"GBP", symbol:"£",
+  usdRate:0.79}` in pt-pt and pt-br too. Standardising on one currency
+  sidesteps exchange-rate and pricing-parity problems while payments are
+  unsettled; because it is declared per locale rather than hardcoded, the day
+  payments want € or R$ is a data change, not a refactor. (This is Send's £/€
+  inconsistency lesson answered from the other side: one currency everywhere,
+  on purpose, in data.)
 - **Themes**: after the token extraction, a theme is one CSS file of `:root`
   custom properties (+ an optional `data-layout` class for genuinely different
   arrangements — Send's third primitive). Selection: `data-theme` attribute set
@@ -166,13 +199,17 @@ website/app/
   clickable, draft locales visible but marked — per-locale gating, not Send's
   global SOON.
 
-**Translation pipeline** (agents, not heroics): `en-gb.json` is canonical; a
-key-diff script reports missing/stale keys per locale; translation jobs are
-"translate these 12 keys with this culture's tone note", never "translate this
-file". Each locale's LIVE bit flips only after human review of its qa-to-docs
-screenshots. CI check (extending `--check` discipline): every locale file's keys
-⊆ en-gb's, every LIVE locale 100% key-complete, every theme's tokens ⊆
-default's — parity failures fail the build, the way Send's generators never did.
+**Translation pipeline** (agents, not heroics): `locales/en-gb/` is canonical;
+a key-diff script reports missing/stale keys **per domain file** per locale, so
+a translation job is "translate chat.json for pt-br with this culture's tone
+note" — a ~30-key task, never a whole-locale blob (the unit of work that made
+Send's translation agents hang). LIVE gating is per locale, and support is per
+file: a domain file a locale doesn't ship yet simply falls back to en-gb key by
+key. The LIVE bit flips only after human review of that locale's qa-to-docs
+screenshots. CI check (extending `--check` discipline): every locale file's
+keys ⊆ its en-gb counterpart's, every LIVE locale's shipped files 100%
+key-complete, every theme's tokens ⊆ default's — parity failures fail the
+build, the way Send's generators never did.
 
 **Testing**: browser unit tests (issue 049) grow modules for `t()` fallback,
 culture formatting, and theme-token completeness; qa-to-docs runs its journeys
@@ -183,17 +220,19 @@ every build.
 ## 4. Sequencing (issue 050)
 
 - **M1 — Extract (no visible change).** Tokens out of `app.css` + nine shadow
-  styles into `themes/default.css`; strings out of HTML/JS into
-  `locales/en-gb.json`; money/dates through `cultures/en-gb.json`. All existing
-  tests stay green; the app looks identical. *This alone unblocks the Claude
-  Design A/B work — a candidate design becomes one token sheet.*
-- **M2 — Second locale end to end.** `pt-pt` (language + culture + artefact
-  language through the workflow options and prompts), the picker, persistence,
-  per-locale qa-to-docs shots, the parity `--check`. Two locales prove the
-  matrix; seventeen is then translation work, not engineering.
-- **M3 — Culture variants + design candidates.** `pt-br` (same language,
-  different culture — the proof the split is real); Claude Design token sheets
-  as A/B arms.
+  styles into `themes/default.css`; strings out of HTML/JS into the
+  `locales/en-gb/` domain files; money/dates through `en-gb/culture.json`
+  (GBP declared, not hardcoded). All existing tests stay green; the app looks
+  identical. *This alone unblocks the Claude Design A/B work — a candidate
+  design becomes one token sheet.*
+- **M2 — pt-PT and pt-BR together, end to end (Dinis, 8 Aug).** Two folders,
+  same language, genuinely different cultures — the pair proves the
+  language/culture split is real from day one and gives us something to *show*
+  (different tone, even different UI affordances, per culture). Picker,
+  persistence, artefact language through the workflow options and prompts,
+  per-locale qa-to-docs shots, the per-file parity `--check`. Both stay GBP.
+- **M3 — Design candidates as A/B arms** (Claude Design token sheets), plus
+  whichever next locale the pt pair's experience says is cheapest.
 - **M4 — Content-estate localisation** (`/pt-pt/` paths, hreflang, sitemap) —
   Send's generator architecture applies almost verbatim there; adopt it minus
   its recorded gotchas.
@@ -203,26 +242,37 @@ every build.
 - No i18n framework/library; `i18n.js` stays in the spirit of the workflow
   split — generic data format, minimal machinery (Send's runtime is ~200 lines;
   ours should be smaller).
-- No fallback chains (`de-ch → de-de → en-gb`); one hop, complete files —
-  revisit only when a real locale pair hurts.
+- No fallback chains (`de-ch → de-de → en-gb`); one hop, straight to en-gb —
+  revisit only when a real locale pair hurts (pt-pt/pt-br will be the first
+  evidence either way).
 - No runtime translation fetching from third parties, no CDN dictionaries —
   packs are committed, allowlisted, CSP-clean.
 - No flags in the picker. Recorded once at Send, done here.
 - Klingon only when it stops being effort (it's a good edge-case test; it is
   not M1).
 
-## 6. Open questions for Dinis
+## 6. Decisions taken, questions still open
 
-1. **First non-English locale** — pt-PT (your call on the record at Send was
-   "start with a couple")? And is pt-BR the right M3 culture-split proof?
-2. **Currency policy** — does culture drive display currency (pt-PT shows €,
-   converted at a committed rate), or does the product keep a single pricing
-   currency with locale-formatted numbers? (Send's record shows the half-way
-   house failing: £0.01 hardcoded inside translated sentences.)
-3. **A/B measurement without a backend** — self-reported (a "which did you
+**Decided (Dinis, voice memo, 8 Aug 2026):**
+
+1. **Locale layout** — a folder per locale, a set of per-domain files inside
+   it, incremental support by file existence (§3, revised accordingly). The
+   single-file-per-locale pattern is rejected on Send's own evidence: it
+   caused the token explosion it was meant to manage.
+2. **First locales** — **pt-PT and pt-BR together**: distinctly different
+   cultures sharing a language, the strongest possible proof of the split,
+   with visible culture differences (tone, even UI) to show.
+3. **Currency** — **GBP everywhere for now**, declared in each locale's
+   `culture.json`, never hardcoded. Protects against exchange-rate/pricing
+   problems until payments are sorted; switching a locale's currency later is
+   a data edit.
+
+**Still open:**
+
+1. **A/B measurement without a backend** — self-reported (a "which did you
    prefer" prompt), OpenRouter-key-level cohorting, or defer measurement and
    use A/B only for internal review via qa-to-docs shots?
-4. **Artefact language default** — UI locale (current proposal) or the detected
+2. **Artefact language default** — UI locale (current proposal) or the detected
    language of the voice note itself?
 
 ---

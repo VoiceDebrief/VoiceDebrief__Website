@@ -22,13 +22,27 @@ is committed-allowlist only (issue-041 rule: no URL parameter chooses what
 loads); per-locale LIVE gating, not a global SOON; qa-to-docs screenshots per
 locale×theme are the review surface Send never had.
 
+## Decisions (Dinis, voice memo, 8 Aug 2026 — strategy §6 revised)
+- **Folder per locale, per-domain files inside** (`locales/pt-pt/{core,chat,culture,…}.json`)
+  — the single-file-per-locale pattern is rejected on Send's own evidence
+  (token explosion; every small change re-processes a massive file). Support
+  is incremental by file existence; maturity can vary per locale honestly.
+- **First locales: pt-PT and pt-BR together** — different cultures, shared
+  language: the strongest proof of the language/culture split, with visible
+  differences (tone, even UI) to show.
+- **Currency: GBP everywhere for now**, declared in each locale's
+  `culture.json`, never hardcoded — payments sorts currencies later as a data
+  edit.
+
 ## Milestones
-- **M1 — Extract** (tokens, strings, culture formatting; zero visible change;
-  unblocks Claude Design A/B — a candidate design = one token sheet)
-- **M2 — pt-pt end to end** (picker, persistence, artefact language, parity --check)
-- **M3 — pt-br culture split + design candidates as A/B arms**
+- **M1 — Extract** (tokens, strings into en-gb domain files, culture formatting;
+  zero visible change; unblocks Claude Design A/B — a candidate design = one
+  token sheet)
+- **M2 — pt-PT + pt-BR together, end to end** (picker, persistence, artefact
+  language, per-file parity --check; both GBP)
+- **M3 — design candidates as A/B arms** (+ next locale as experience dictates)
 - **M4 — content-estate locale paths** (Send's generator architecture, minus its
   recorded gotchas)
 
-Open questions for Dinis in the strategy doc §6: first locale, currency policy,
-A/B measurement without a backend, artefact-language default.
+Still open (strategy §6): A/B measurement without a backend; artefact-language
+default (UI locale vs detected voice-note language).
