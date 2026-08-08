@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.0/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.1/wa-site-nav.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -151,16 +151,35 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('renders the ten links, the badge, and no engineering row off /engineering/', assert => {
+    QUnit.test('two-level menu: six primary links, two groups, nine grouped pages (v0.1.1)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
-        assert.strictEqual(sr.querySelectorAll('nav[aria-label="Main"] a').length, 10, 'ten links, everywhere')
+        assert.strictEqual(sr.querySelectorAll('nav.main > a').length, 6, 'six primary links')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 2, 'News + Engineering groups')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 9,
+            '3 news pages + 6 engineering sections in the dropdowns')
         assert.strictEqual(sr.querySelector('.badge').textContent, 'BETA')
         assert.strictEqual(sr.querySelector('.sub'), null, 'no section row outside /engineering/')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/app/'),
             'the App is always in the menu (it was not, before issue 048)')
+    })
+
+    QUnit.test('small screens get a hamburger panel — the menu is never lost (v0.1.0 hid it)', assert => {
+        const el = document.createElement('wa-site-nav')
+        document.getElementById('qunit-fixture').appendChild(el)
+        const sr = el.shadowRoot
+        const burger = sr.querySelector('.burger')
+        assert.ok(burger, 'the hamburger button exists')
+        assert.strictEqual(burger.getAttribute('aria-expanded'), 'false')
+        burger.click()
+        assert.true(el.classList.contains('open'), 'clicking opens the panel')
+        assert.strictEqual(burger.getAttribute('aria-expanded'), 'true')
+        assert.true(sr.querySelectorAll('.panel a').length >= 15,
+            'the panel lists every page — primary, news and engineering alike')
+        burger.click()
+        assert.false(el.classList.contains('open'), 'clicking again closes it')
     })
 })
 

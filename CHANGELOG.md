@@ -18,6 +18,23 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The nav grows a second level and stops abandoning phones (issue 054,
+  Dinis with screenshots)** — `wa-site-nav` v0.1.1: ten flat links become six
+  primary plus **News ▾** and **Engineering ▾** dropdowns (CSS-only, keyboard
+  included; group parents are real links), and small screens get a hamburger
+  panel with every page grouped and reachable — v0.1.0's mobile treatment was
+  `display:none`, the menu was simply lost. Mid-width wrapping tidied. All 17
+  references flipped to the new immutable version; the browser suite grows to
+  12 tests pinning the structure and exercising the toggle. The header
+  screenshots will move — the record-not-block baseline policy (issue 053)
+  gets its first real customer.
+- **Product name analysis written (Dinis's request; decision his)** —
+  `library/briefs/naming/`: all five "WhatsApp …" candidates fail the same two
+  tests (Meta's mark can't lead a product name; the SERP head is owned by
+  WhatsApp's own built-in transcripts). Proposal: name the OUTPUT —
+  **VoiceBrief** ("WhatsApp voice notes, debriefed"), keep the descriptive
+  subdomain, keep WhatsApp in titles/copy as nominative use like every
+  competitor does. Linked from the Library page. No renaming done.
 - **llms.txt gets a public explanation, fresh links, and a rulebook clause
   (Dinis)** — `/engineering/docs/` now explains and links `/llms.txt` (nothing
   on the site referenced it before); the file itself caught up with the newest

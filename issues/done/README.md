@@ -5,6 +5,7 @@ issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [054](054-nav-second-level-mobile.md) | Nav second level + mobile | `wa-site-nav` v0.1.1 — 6 primary + News/Engineering dropdowns, hamburger panel ≤760px; 17 refs flipped; 12 browser tests |
 | [053](053-baselines-record-not-block.md) | Baselines record UI change, not block it (renumbered from 050 on merge) | changed shots update baselines + append `baseline-changes.md/.json` per commit/run; agent review is issue 051 |
 | [049](049-browser-unit-tests.md) | Browser unit tests (QUnit) | `website/tests/browser/` runs live/local/CI — 11 tests, real File/localStorage/custom elements; `browser-unit` layer in both pipelines |
 | [048](048-single-source-site-nav.md) | One nav, one source | `wa-site-nav` v0.1.0 on all 12 surfaces; five drifted menus retired; dead CSS stripped |

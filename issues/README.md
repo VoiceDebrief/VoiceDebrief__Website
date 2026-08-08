@@ -17,6 +17,7 @@ superseding both branches' allow-list fixes; 007 closed as superseded — Dinis)
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [054](done/054-nav-second-level-mobile.md) | Nav v0.1.1: second level (News/Engineering dropdowns) + mobile hamburger — the menu is never lost | done | high | small |
 | [053](done/053-baselines-record-not-block.md) | Screenshot baselines record UI change, they do not block it (renumbered from 050 on merge) | done | high | medium |
 | [052](open/052-three-alternative-designs-ab-test.md) | Three alternative designs shipped alongside the current one, for A/B testing | open | high | large |
 | [051](open/051-agent-review-of-baseline-changes.md) | An agent reviews the screenshot change log (makes 053 sound) | open | **high** | medium |
