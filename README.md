@@ -1,6 +1,6 @@
 # SGraph-AI — WhatsApp Audio Transcription
 
-![release](https://img.shields.io/badge/release-v0.1.22-blue) ![licence-docs](https://img.shields.io/badge/docs-CC%20BY%204.0-green) ![licence-code](https://img.shields.io/badge/code-Apache%202.0-blue)
+![release](https://img.shields.io/badge/release-v0.1.23-blue) ![licence-docs](https://img.shields.io/badge/docs-CC%20BY%204.0-green) ![licence-code](https://img.shields.io/badge/code-Apache%202.0-blue)
 
 The WhatsApp voice note transcription tool — the first SGraph product going to market.
 One job, one pass: drop in the audio (`.opus` / `.ogg` / `.m4a`) → transcript, analysis,
