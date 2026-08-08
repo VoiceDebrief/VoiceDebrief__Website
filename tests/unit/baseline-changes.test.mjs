@@ -24,11 +24,20 @@ const logJson = path.join(guide, 'baseline-changes.json')
 const shot = path.join(repo, 'website/user-guide/screenshots/01-app-start.png')
 
 /* The script writes into the real guide directory by design (CI commits what it
-   writes), so each test saves and restores whatever was there. */
-const snapshot = () => ({
-    md: existsSync(logMd) ? readFileSync(logMd) : null,
-    json: existsSync(logJson) ? readFileSync(logJson) : null,
-})
+   writes), so each test saves and restores whatever was there — and then starts
+   from a CLEAN slate. The repo now legitimately carries a committed log (CI has
+   been recording real changes since run #35), so a test that assumes the
+   starting state is "no entries" counts wrong unless it clears first. CI caught
+   exactly that (run for bc49422: 2 failures that predated it locally passing). */
+const snapshot = () => {
+    const s = {
+        md: existsSync(logMd) ? readFileSync(logMd) : null,
+        json: existsSync(logJson) ? readFileSync(logJson) : null,
+    }
+    rmSync(logMd, { force: true })
+    rmSync(logJson, { force: true })
+    return s
+}
 const restore = (s) => {
     for (const [p, v] of [[logMd, s.md], [logJson, s.json]]) {
         if (v === null) rmSync(p, { force: true })
