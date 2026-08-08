@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.2/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.3/wa-site-nav.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -158,12 +158,16 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: App + Pricing primary, three groups, twelve grouped pages (v0.1.1)', assert => {
+    QUnit.test('two-level menu: App + Pricing primary, three groups, twelve grouped pages (v0.1.3)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
-        assert.strictEqual(sr.querySelectorAll('nav.main > a').length, 2, 'App and Pricing stay primary')
+        // Since v0.1.3 the App link is wrapped in a flag span (it is the one page
+        // that exists in other languages), so it is no longer a DIRECT child of
+        // nav.main — count both shapes rather than only the old one.
+        assert.strictEqual(sr.querySelectorAll('nav.main > a, nav.main > .i18n-link > a').length, 2,
+            'App and Pricing stay primary')
         assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 3, 'Library + News + Engineering groups')
         assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 12,
             '3 library + 3 news + 6 engineering pages in the dropdowns')
@@ -171,6 +175,23 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         assert.strictEqual(sr.querySelector('.sub'), null, 'no section row outside /engineering/')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/app/'),
             'the App is always in the menu (it was not, before issue 048)')
+    })
+
+    QUnit.test('the nav says which pages follow your language, and which do not (v0.1.3)', assert => {
+        const el = document.createElement('wa-site-nav')
+        document.getElementById('qunit-fixture').appendChild(el)
+        const sr = el.shadowRoot
+        // Exactly the translated pages carry a flag; everything else sits behind
+        // ONE marker rather than repeating a flag five times. With no i18n on the
+        // page (this harness has none) the flag is 🇬🇧 — the truth for that page.
+        const flagged = [...sr.querySelectorAll('.i18n-link')]
+        assert.strictEqual(flagged.length, 1, 'today only the app exists in other languages')
+        assert.strictEqual(flagged[0].querySelector('a').getAttribute('href'), '/app/')
+        assert.ok(/\p{Regional_Indicator}/u.test(flagged[0].textContent), 'the translated link carries a flag')
+        assert.ok(sr.querySelector('.en-only'), 'one marker introduces the English-only links')
+        assert.ok(sr.querySelector('.en-only').getAttribute('title')?.includes('English'),
+            'and it explains itself on hover rather than being a mystery flag')
+        assert.ok(sr.querySelector('slot[name="locale"]'), 'the nav offers the picker a home, top right')
     })
 
     QUnit.test('small screens get a hamburger panel — the menu is never lost (v0.1.0 hid it)', assert => {
