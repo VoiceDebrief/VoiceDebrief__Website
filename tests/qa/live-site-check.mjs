@@ -54,6 +54,7 @@ for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/upda
                               ['/engineering/', 'engine room'], ['/engineering/pipeline/', 'live QA'],
                               ['/engineering/testing/', 'Three layers'], ['/engineering/docs/', 'reality doc'],
                               ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles'],
+                              ['/engineering/concepts/', 'concept'],
                               ['/tests/browser/', 'qunit']]) {
     const r = await get(path)
     check(`GET ${path} → 200 + expected content`, r.ok && r.text.includes(marker), `status ${r.status}`)
@@ -92,9 +93,10 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
-                    '/components/wa-site-nav/v0/v0.1/v0.1.4/wa-site-nav.js',
+                    '/components/wa-site-nav/v0/v0.1/v0.1.5/wa-site-nav.js',
                     '/app/skills/SKILL__api.md', '/app/workflows/standard.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
+                    '/engineering/concepts/concepts.json',
                     '/updates/updates.json', '/updates/feed.xml', '/videos/videos.json',
                     '/app/prompts/summary-prompt.md', '/app/prompts/infographic-prompt.md',
                     '/app/samples/whatsapp-voice-note-1.opus', '/app/samples/whatsapp-voice-note-2.opus',

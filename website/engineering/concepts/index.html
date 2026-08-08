@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://whatsapp-voice-transcription.sgraph.ai/engineering/concepts/">
+<title>Concepts — Engineering</title>
+<meta name="description" content="The concept scheme behind the interface vocabulary: meaning stored in a definition, labels attached per culture, and the English review that found three words naming the wrong thing.">
+<link rel="stylesheet" href="../eng.css">
+<link rel="stylesheet" href="concepts.css">
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.5/wa-site-nav.js"></script>
+</head>
+<body>
+
+<wa-site-nav></wa-site-nav>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="../">engineering</a> / concepts</div>
+    <h1>Meaning lives in a definition. Words are just labels attached to it.</h1>
+    <p class="lead">Store a nuance in an English word and every translation inherits whatever
+      that word got wrong. Store it in a <strong>concept</strong> — a definition, a scope note,
+      and one label per culture — and translating stops being word-to-word.
+      This page is the review surface for that scheme, and the English pass over it.</p>
+    <div class="status-strip" id="counts"></div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">Read this first</span>
+    <h2>Nothing here is wired to the product</h2>
+    <p class="sub">The app page does not read <code>concepts.json</code>. That is deliberate:
+      this is a place to decide what words should be, separately from the strings currently
+      shipping, so a decision can be argued with before it reaches anyone. The cost of that
+      separation is drift — a review document describing strings that changed months ago is
+      worse than no document, because it is confidently wrong. So every concept records what
+      <em>actually ships</em>, and a CI test asserts those recordings against the real locale
+      files. Change a string without revisiting its concept and the build fails.</p>
+
+    <div class="grid cols-3">
+      <div class="card"><h3>Scope is terms, not strings</h3>
+        <p>The app ships 53 keys and most are prose. A sentence does not have a concept — it
+        has meaning in context. Only the terms are modelled here, in three schemes.</p></div>
+      <div class="card"><h3>The vocabulary, not the stack</h3>
+        <p>Field names are borrowed from SKOS — definition, scopeNote, broader, narrower,
+        related — without the RDF machinery. No triple store, no SPARQL. For fifteen
+        concepts on a site with no backend, that would be all cost.</p></div>
+      <div class="card"><h3>Divergence is classified, not flagged</h3>
+        <p>Two cultures using different words is usually the model working, not a defect.
+        <em>voice note</em> / <em>voice message</em> / <em>nota de voz</em> / <em>áudio</em>
+        are four right answers. Findings say which kind of difference each one is.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">The scheme</span>
+    <h2>Fifteen concepts, three schemes</h2>
+    <p class="sub">Three views of the same data, because part of the exercise is working out
+      which way of looking at this is actually useful. <strong>Cards</strong> put the
+      definition first and the labels underneath — good for deciding. <strong>Matrix</strong>
+      puts every culture side by side on one row — good for spotting divergence.
+      <strong>Relations</strong> draws the broader/narrower/related edges, which is the
+      structure a held-out check would compare — and drawing it is what makes plain how few
+      edges an interface vocabulary this flat actually has.</p>
+
+    <div class="viewpick" role="tablist" aria-label="View">
+      <button type="button" class="on" data-view="cards" role="tab" aria-selected="true">Cards</button>
+      <button type="button" data-view="matrix" role="tab" aria-selected="false">Matrix</button>
+      <button type="button" data-view="graph" role="tab" aria-selected="false">Relations</button>
+    </div>
+    <div class="filters" id="filters"></div>
+
+    <div id="view"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">What the pass found</span>
+    <h2>Three words name the wrong thing, and one of them is on screen right now</h2>
+    <p class="sub">The full reasoning sits on each concept above. The short version:</p>
+    <div class="grid cols-2">
+      <div class="card"><h3><code>draft</code> → <code>unreviewed</code></h3>
+        <p><em>draft</em> names a stage of <strong>authoring</strong> — an unfinished thing its
+        author is still working on. The concept is a state of <strong>verification</strong> — a
+        finished thing nobody has checked. All four locales ship 53 of 53 keys; nothing is
+        missing. So <em>incomplete</em> and <em>partial</em> are wrong too: they describe
+        coverage. <code>rascunho</code> was never a bad translation — it faithfully carried a
+        word that was already pointing at the wrong axis.</p></div>
+      <div class="card"><h3><code>soon</code> → <code>planned</code></h3>
+        <p>A promise about time that nothing backs. <code>en-gb/culture.json</code> declares
+        this product's register as <em>“Plain, direct British English. No marketing register”</em>
+        — and <em>soon</em> is marketing. The concept is intent, not imminence.</p></div>
+      <div class="card"><h3><code>Routed — cheapest</code> and <code>Restricted*</code></h3>
+        <p>Both name a mechanism inside a group labelled <em>privacy</em>, where the question
+        is where the audio goes — and the first smuggles a second axis, price, into the same
+        string. <code>On-device</code> is the only chip already labelled on the scheme's own
+        axis, which is how the inconsistency was spotted. These are claims made to users about
+        their recordings, so they are marked <strong>decide</strong> and want sign-off rather
+        than a unilateral edit.</p></div>
+      <div class="card"><h3>The one that is not a defect</h3>
+        <p>pt-PT uses <em>idioma</em> for the setting and <em>língua</em> for the tongue that
+        was spoken. English uses one word for both and gets away with it because context
+        disambiguates. Portuguese is being <em>more</em> precise, not inconsistent — a genuine
+        lexical gap. Recording it is right; forcing agreement would destroy information.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">Not built</span>
+    <h2>What this deliberately does not do yet</h2>
+    <p class="sub">Named so the gap is visible rather than assumed.</p>
+    <ul class="plain">
+      <li><strong>It does not generate the strings.</strong> Labels here are proposals; the
+        shipped locale files are still hand-written and are still the thing the app reads.</li>
+      <li><strong>There is no held-out check.</strong> Asking a model to produce the concept
+        graph for a new culture without showing it the reference is a real test, but it is
+        model-generated and cannot tell a bad translation from a lexical gap. That makes it a
+        <em>report</em>, not a gate — the same conclusion issue 053 reached about screenshots,
+        for the same reason. It is not written yet.</li>
+      <li><strong>Only the <code>core</code> domain is modelled.</strong> The chat, flow and
+        debug panels hold roughly 130 more literals that have not been extracted at all.</li>
+      <li><strong>No concept is marked not-applicable-in-a-culture.</strong> The case will
+        arrive — a concept that exists in one culture and simply has nothing to label in
+        another — and the schema does not express it yet.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 ·
+    <a href="../">Engineering</a> · <a href="../../">Home</a> ·
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a> ·
+    <a href="../../versions/"><span id="site-version">dev</span></a></div>
+</footer>
+
+<script>fetch('/version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'dev').then(v=>{document.getElementById('site-version').textContent=v.trim()}).catch(()=>{})</script>
+<script type="module" src="concepts.js"></script>
+</body>
+</html>
