@@ -116,21 +116,24 @@ jobs:
           name: test-results
           path: test-results.json
 
-  # The docs half of QA-to-docs (issue 038). The test job captures screenshots
-  # into an artifact and the container dies with them; this job is the only way
-  # a capture ever becomes a committed baseline — and therefore a picture in the
-  # user guide.
+  # The docs half of QA-to-docs (issues 038 + 050). The test job captures
+  # screenshots into an artifact and the container dies with them; this job is
+  # the only way a capture ever becomes a committed baseline — and therefore a
+  # picture in the user guide.
   #
-  # It commits ONLY shots that have no baseline yet. A shot whose baseline exists
-  # and differs is the gate firing: the test job is already red, this job does not
-  # run, and nothing overwrites the evidence. Auto-blessing a diff would turn the
-  # gate into a recorder that faithfully files every regression as the new truth.
-  # Refreshing an intended change stays deliberate (UPDATE_BASELINES=1, M-qtd-3).
+  # Policy (Dinis, 7 Aug): a changed shot is COMMITTED, not blocked. UX change is
+  # the normal state of a product going to market, and a pixel threshold can only
+  # say that something moved, never whether it moved in the right place. So CI
+  # records rather than judges: new and changed shots both become baselines, and
+  # every change is appended to website/user-guide/baseline-changes.md against
+  # the commit and CI run that caused it. That log is the review surface — an
+  # agent reads it and asks whether the movement matches the work. Regressions
+  # are caught by a reader who can judge intent, not by a number that cannot.
   #
   # The push uses GITHUB_TOKEN, whose pushes do not trigger workflows — the same
   # property the version bump on dev/main already relies on, so no loop.
   commit-baselines:
-    name: Commit new screenshot baselines
+    name: Commit screenshot baselines + change log
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: [test]
@@ -151,37 +154,42 @@ jobs:
           name: qa-to-docs
           path: qa-to-docs-artifact
 
-      - name: Commit candidates that have no baseline yet
+      - name: Update baselines and append the change log
         id: commit
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT_SHA: ${{ github.sha }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
         run: |
-          mkdir -p website/user-guide/screenshots
-          added=0
-          for f in qa-to-docs-artifact/candidates/*.png; do
-            [ -e "$f" ] || continue                       # no candidates: nothing to arm
-            dest="website/user-guide/screenshots/$(basename "$f")"
-            if [ -e "$dest" ]; then
-              echo "skip $(basename "$f") — baseline exists (a change here must go through UPDATE_BASELINES)"
-              continue
-            fi
-            cp "$f" "$dest"
-            added=$((added + 1))
-          done
-          if [ "$added" -eq 0 ]; then
-            echo "no new baselines — the guide's pictures are already current"
+          python3 scripts/record_baseline_changes.py \
+            --captures qa-to-docs-artifact \
+            --run-url "$RUN_URL" --run-number "${GITHUB_RUN_NUMBER}" \
+            --commit "$COMMIT_SHA" --repo-url "$REPO_URL"
+          if git diff --quiet -- website/user-guide; then
+            echo "nothing moved — baselines and log already current"
             echo "committed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add website/user-guide/screenshots
+          git add website/user-guide
           printf '%s\n\n%s\n' \
-            "QA-to-docs: arm $added screenshot baseline(s) from CI run ${GITHUB_RUN_NUMBER}" \
-            "Captured by the qa-to-docs journeys in this run and committed by CI — baselines are never produced on a laptop (font rendering differs). From here they are both the diff gate's reference and the user guide's illustrations." \
+            "QA-to-docs: update screenshot baselines from CI run ${GITHUB_RUN_NUMBER}" \
+            "Captured by the qa-to-docs journeys in this run. New and changed shots both become baselines; every change is recorded in website/user-guide/baseline-changes.md against this commit, for agent review of whether the change landed where the work was meant to land." \
             > /tmp/baseline-commit-msg
           git commit -F /tmp/baseline-commit-msg
           git push origin qa
           echo "committed=true" >> "$GITHUB_OUTPUT"
-          echo "### Armed $added screenshot baseline(s)" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Screenshot baselines updated" >> "$GITHUB_STEP_SUMMARY"
+          python3 - <<'SUMMARY' >> "$GITHUB_STEP_SUMMARY"
+          import json, os
+          d = json.load(open('qa-to-docs-artifact/changes.json'))
+          for c in d.get('changes', []):
+              moved = f"{c['percent']}% of pixels" if c['kind'] == 'changed' else f"{c['from']} -> {c['to']}"
+              print(f"- `{c['id']}` ({c['slot']}): {moved}")
+          if d.get('candidates'):
+              print(f"- {d['candidates']} new shot(s) armed")
+          SUMMARY
 
   deploy-netlify:
     name: Deploy to Netlify (QA)

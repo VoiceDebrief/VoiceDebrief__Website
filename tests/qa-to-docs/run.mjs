@@ -8,13 +8,22 @@
    run; animations are disabled; dynamic regions (version chip, costs,
    latencies) are masked per the manifest.
 
-   Baseline policy (M-qtd-1): baselines live in website/user-guide/screenshots/
-   and are ONLY ever produced by CI — a laptop's font rendering differs. When a
-   baseline is missing, the run captures a CANDIDATE into
-   tests/qa-to-docs/output/candidates/ and passes with a warning; CI uploads the
-   candidates as an artifact, and committing them (reviewed) arms the gate.
-   When a baseline exists: diff ≥ threshold fails the run and writes
-   <id>.current.png + <id>.diff.png into tests/qa-to-docs/output/.
+   Baseline policy (M-qtd-3, Dinis 7 Aug — REPLACES M-qtd-1's blocking gate):
+   baselines live in website/user-guide/screenshots/ and are ONLY ever produced
+   by CI (a laptop's font rendering differs). A changed shot UPDATES its baseline
+   and is LOGGED; it does not fail the run. UX changes are expected, and a pixel
+   threshold cannot tell an intended redesign from a regression — it can only
+   tell that something moved. What matters is whether the change landed where the
+   work was supposed to land, and that judgement belongs to an agent reading the
+   log, not to a number in a test.
+
+   So each run produces:
+     output/candidates/  shots with no baseline yet  → CI commits them
+     output/updated/     shots whose picture moved   → CI commits them
+     output/<id>.diff.png  where it moved (artifact only, never committed)
+     output/changes.json the run's verdict as data   → CI turns it into
+                         website/user-guide/baseline-changes.md, the review log,
+                         each entry tied to the commit and CI run that moved it.
 
    Environment:
      SITE_DIR, TOOLS_ORIGIN, MIRROR_DIR, CHROMIUM_PATH   as the integration tests
@@ -43,8 +52,12 @@ const manifest = JSON.parse(readFileSync(path.join(repo, 'tests/qa-to-docs/journ
 const BASELINE_DIR = path.join(repo, 'website/user-guide/screenshots')
 const OUT_DIR = path.join(repo, 'tests/qa-to-docs/output')
 const CANDIDATE_DIR = path.join(OUT_DIR, 'candidates')
+const UPDATED_DIR = path.join(OUT_DIR, 'updated')
 
 let failures = 0, candidates = 0
+// Shots whose picture moved this run. Written to output/changes.json for the
+// commit job, which turns it into the reviewable log the agent reads.
+const changes = []
 const check = (n, ok, x = '') => { console.log(`${ok ? 'ok ' : 'FAIL'}  ${n}${x ? '  — ' + x : ''}`); if (!ok) failures++ }
 
 const site = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '--directory', SITE_DIR], { stdio: 'ignore' })
@@ -104,12 +117,29 @@ async function capture(id) {
         console.log(`ok    ${id}: no baseline yet — candidate captured (commit it to arm the gate)`)
         return
     }
+    /* A changed shot RECORDS, it does not block (Dinis, 7 Aug): "UX changes are
+       to be expected — what we need to keep an eye on is if the change happened
+       in the correct place, and that needs to be done via an agent, not a CI
+       pipeline". A pixel gate over an evolving UI only manufactures red builds
+       and trains people to refresh baselines without looking.
+
+       So the run stays green, the new capture becomes the baseline, and the
+       change is written to the log CI commits — every changed shot named, with
+       how much moved, tied to the commit that moved it. The log is the review
+       surface; the agent reads it and asks whether the movement is where the
+       change was supposed to land. A REGRESSION is still caught — just by a
+       reader who can judge intent, not by a threshold that cannot. */
     const a = PNG.sync.read(readFileSync(baseline))
     const b = PNG.sync.read(png)
+    mkdirSync(UPDATED_DIR, { recursive: true })
+    mkdirSync(OUT_DIR, { recursive: true })
+
     if (a.width !== b.width || a.height !== b.height) {
-        mkdirSync(OUT_DIR, { recursive: true })
-        writeFileSync(path.join(OUT_DIR, `${id}.current.png`), png)
-        check(`${id}: dimensions match baseline`, false, `${a.width}x${a.height} → ${b.width}x${b.height}`)
+        // Reframed: no pixel comparison is meaningful, so report the geometry.
+        writeFileSync(path.join(UPDATED_DIR, `${id}.png`), png)
+        changes.push({ id, kind: 'resized', from: `${a.width}x${a.height}`, to: `${b.width}x${b.height}`,
+                       caption: spec.caption, slot: spec.slot })
+        console.log(`ok    ${id}: CHANGED — resized ${a.width}x${a.height} → ${b.width}x${b.height} (baseline updated, logged for review)`)
         return
     }
     const diff = new PNG({ width: a.width, height: a.height })
@@ -117,11 +147,14 @@ async function capture(id) {
     const fraction = differing / (a.width * a.height)
     const limit = spec.threshold ?? manifest.threshold
     if (fraction >= limit) {
-        mkdirSync(OUT_DIR, { recursive: true })
-        writeFileSync(path.join(OUT_DIR, `${id}.current.png`), png)
+        writeFileSync(path.join(UPDATED_DIR, `${id}.png`), png)
+        // The diff image travels as an artifact so a reviewer can see WHERE it
+        // moved without checking out two commits; it is not committed (bloat).
         writeFileSync(path.join(OUT_DIR, `${id}.diff.png`), PNG.sync.write(diff))
-        check(`${id}: within diff threshold`, false,
-            `${(fraction * 100).toFixed(3)}% ≥ ${(limit * 100).toFixed(3)}% — real UI change: regression, or refresh the baseline with the feature`)
+        changes.push({ id, kind: 'changed', pixels: differing, area: a.width * a.height,
+                       percent: +(fraction * 100).toFixed(3), threshold: +(limit * 100).toFixed(3),
+                       caption: spec.caption, slot: spec.slot })
+        console.log(`ok    ${id}: CHANGED — ${(fraction * 100).toFixed(3)}% of pixels moved (baseline updated, logged for review)`)
     } else {
         console.log(`ok    ${id}: matches baseline (${(fraction * 100).toFixed(3)}% < ${(limit * 100).toFixed(3)}%)`)
     }
@@ -207,6 +240,18 @@ try {
     site.kill()
 }
 
-if (candidates) console.log(`\n${candidates} candidate baseline(s) in tests/qa-to-docs/output/candidates/ — review and commit to website/user-guide/screenshots/ to arm the diff gate`)
+/* Hand the run's verdict to the commit job as data, not as log text to be
+   grepped. Written even when empty, so a missing file means the run died. */
+mkdirSync(OUT_DIR, { recursive: true })
+writeFileSync(path.join(OUT_DIR, 'changes.json'), JSON.stringify({ changes, candidates }, null, 2) + '\n')
+
+if (candidates) console.log(`\n${candidates} new shot(s) in tests/qa-to-docs/output/candidates/ — CI commits these as baselines`)
+if (changes.length) {
+    console.log(`\n${changes.length} shot(s) CHANGED — the baseline moves to the new capture and the change is logged:`)
+    for (const c of changes)
+        console.log(`  ${c.id}  ${c.kind === 'resized' ? `${c.from} → ${c.to}` : `${c.percent}% of pixels`}  (${c.slot})`)
+    console.log('  Not a failure: UI changes are expected. The question an agent answers from the log is whether')
+    console.log('  the change landed where the work was supposed to land — see website/user-guide/baseline-changes.md')
+}
 console.log(failures ? `\n${failures} check(s) FAILED` : '\nqa-to-docs healthy')
 process.exit(failures ? 1 : 0)

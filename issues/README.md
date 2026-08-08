@@ -17,6 +17,9 @@ superseding both branches' allow-list fixes; 007 closed as superseded — Dinis)
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [052](open/052-three-alternative-designs-ab-test.md) | Three alternative designs shipped alongside the current one, for A/B testing | open | high | large |
+| [051](open/051-agent-review-of-baseline-changes.md) | An agent reviews the screenshot change log (makes 050 sound) | open | **high** | medium |
+| [050](done/050-baselines-record-not-block.md) | Screenshot baselines record UI change, they do not block it | done | high | medium |
 | [044](open/044-consensus-transcription.md) | Consensus transcription: two models, disagreement marked not resolved | **blocked** (on a D2 allowlist amendment — second audio model) | high | large |
 | [045](open/045-named-purchasable-workflows.md) | Named workflows at price points (Quick/Standard/Consensus) | open | normal | medium |
 | [037](open/037-app-security-hardening.md) | App security hardening: CSP shipped; chat prompt-tool gating, SVG sanitisation, key hygiene open (S1 closed by 041's removal) | open | **urgent** | medium |
