@@ -18,6 +18,27 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The picker was broken on a phone (Dinis, iPhone screenshots)** — the
+  language panel opened **131px off the left edge of the screen**, with a third
+  of the names unreadable and 60px of the list below the fold. Two faults
+  compounding: the header is a `space-between` row, so on a narrow screen it
+  wrapped and threw the picker to the far *left* of the second line with the
+  hamburger at the far right — two controls at opposite ends of an empty row,
+  reading as two unrelated things — and the panel was anchored `right:0` to the
+  trigger, which is only ever correct while the trigger is itself at the right
+  edge. Fixed structurally rather than by nudging numbers: `wa-site-nav` v0.1.4
+  makes the picker and the hamburger **one cluster** that stays adjacent and hard
+  right whichever row it lands on (the brand shrinks, then ellipses, before they
+  do), and `wa-locale-picker` v0.1.3 stops being a dropdown on phones — below
+  620px the panel is pinned to the *screen*, inset from both edges, capped in
+  height and scrollable, with its top measured from the trigger at open time and
+  re-measured on rotation. Both buttons go flag-only below 560px, the locale code
+  moving into the accessible name rather than being lost. Verified fully on
+  screen with no sideways scroll at 320px, 390px and 1280px. Two notes: the panel
+  does **not** auto-open (the screenshot made that ambiguous — it was a tap), and
+  the BETA badge deliberately **stays**, even though hiding it would buy a
+  single-row header on an iPhone.
+
 - **The language picker moves to the top right, and keeps a door open
   (Dinis, four corrections)** — `wa-locale-picker` v0.1.2 now rides in
   `wa-site-nav` v0.1.3 via `<slot name="locale">`, where sgraph.ai puts it and

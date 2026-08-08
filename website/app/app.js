@@ -10,7 +10,7 @@ import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
 import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 
 // Components (ours; the SgComponent base loads from the tools origin inside each).
-import '../components/wa-locale-picker/v0/v0.1/v0.1.2/wa-locale-picker.js'
+import '../components/wa-locale-picker/v0/v0.1/v0.1.3/wa-locale-picker.js'
 import '../components/wa-key-panel/v0/v0.1/v0.1.2/wa-key-panel.js'
 import '../components/wa-drop-zone/v0/v0.1/v0.1.2/wa-drop-zone.js'
 import '../components/wa-progress-rail/v0/v0.1/v0.1.4/wa-progress-rail.js'

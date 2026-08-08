@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.3/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.4/wa-site-nav.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -158,7 +158,7 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: App + Pricing primary, three groups, twelve grouped pages (v0.1.3)', assert => {
+    QUnit.test('two-level menu: App + Pricing primary, three groups, twelve grouped pages (v0.1.4)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
@@ -177,7 +177,7 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
             'the App is always in the menu (it was not, before issue 048)')
     })
 
-    QUnit.test('the nav says which pages follow your language, and which do not (v0.1.3)', assert => {
+    QUnit.test('the nav says which pages follow your language, and which do not (v0.1.4)', assert => {
         const el = document.createElement('wa-site-nav')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
@@ -208,6 +208,35 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
             'the panel lists every page — primary, news and engineering alike')
         burger.click()
         assert.false(el.classList.contains('open'), 'clicking again closes it')
+    })
+
+    /* The phone regression (v0.1.4). The bar is a space-between row; when it
+       wrapped on an iPhone the picker slot and the hamburger — plain siblings —
+       were thrown to opposite ends of the second line, and the panel, anchored
+       right:0 to a trigger now sitting mid-row, opened 131px off the left edge
+       of the screen. The fix is structural: the two controls are ONE element, so
+       whatever the row does they stay adjacent and hard right. Assert the
+       structure, because that is what the CSS depends on. */
+    QUnit.test('the language slot and the hamburger are one cluster, so a wrapped header cannot separate them (v0.1.4)', assert => {
+        const el = document.createElement('wa-site-nav')
+        document.getElementById('qunit-fixture').appendChild(el)
+        const sr = el.shadowRoot
+        const cluster = sr.querySelector('header > .wrap > .right')
+        assert.ok(cluster, 'the right-hand cluster exists in the bar')
+        assert.ok(cluster.querySelector('slot[name="locale"]'), 'the locale slot is inside it')
+        assert.ok(cluster.querySelector('.burger'), 'the hamburger is inside it')
+        assert.strictEqual(sr.querySelectorAll('header > .wrap > slot[name="locale"]').length, 0,
+            'and neither is left loose in the space-between row')
+        assert.strictEqual(sr.querySelectorAll('header > .wrap > .burger').length, 0,
+            'the hamburger is not a loose sibling either')
+        // Not getComputedStyle().marginLeft — that resolves `auto` to a used
+        // pixel value, so it can never equal the string 'auto'. Assert the thing
+        // the margin exists to produce: the cluster sits flush with the bar's
+        // right content edge.
+        const wrap = sr.querySelector('header > .wrap')
+        const gap = wrap.getBoundingClientRect().right - cluster.getBoundingClientRect().right
+        assert.true(Math.abs(gap - 20) < 2,
+            `the cluster is flush right against the bar's 20px padding (gap ${gap.toFixed(1)}px)`)
     })
 })
 
