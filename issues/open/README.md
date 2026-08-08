@@ -5,6 +5,8 @@ Last updated: 2026-08-07.
 
 | # | Title | Priority | Effort | Latest status |
 |---|-------|----------|--------|---------------|
+| [052](052-three-alternative-designs-ab-test.md) | Three alternative designs shipped alongside the current one, for A/B testing | high | large | design brief written (library/dev_briefs); waits on 050-M1 token extraction |
+| [051](051-agent-review-of-baseline-changes.md) | An agent reviews the screenshot change log | **high** | medium | makes 053 sound — until built, nobody is required to read the log |
 | [050](050-app-i18n-culture-themes.md) | The app in many languages, cultures and designs | high | large | strategy written (dev pack v0.1.22), grounded in the SG/Send record; M1 = extraction |
 | [037](037-app-security-hardening.md) | App security hardening: ?origin= allowlist, CSP, chat prompt-tool gating | **urgent** | medium | opened from the v0.1.20 review pack |
 | [036](036-open-engineering-hub.md) | Open engineering hub: public /engineering/ pages for the NFRs | high | medium | opened from the v0.1.20 review pack; record fixes (pack doc 07 group A) first |

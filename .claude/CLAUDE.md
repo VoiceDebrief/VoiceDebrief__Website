@@ -42,6 +42,12 @@ decisions, do not casually revisit:
   (Librarian + Journalist). Describe in-flight work under "Unreleased" in the same
   commit; rename the heading once CI tags. Notable versions become posts on
   `website/updates/`.
+- **llms.txt discipline**: `website/llms.txt` is the site's front door for agents
+  (explained publicly on `/engineering/docs/`). Any change to the public surface —
+  a page added, moved or removed; a machine-readable JSON; a skills doc; the
+  workflow declaration — updates `llms.txt` **in the same commit**, and every URL
+  it lists must resolve on the deployed estates. Live-QA fetches the file; a dead
+  link in it is a dead link in the public record.
 - **Never commit secrets**: no OpenRouter keys (management or per-user), no access
   tokens, no vault keys. A leaked key is a security incident. The beta hardcoded key,
   when it arrives, is added deliberately, capped, and documented — never by accident.

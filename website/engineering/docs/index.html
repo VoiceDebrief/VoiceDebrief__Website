@@ -72,6 +72,22 @@
 
 <section>
   <div class="wrap">
+    <span class="kicker">For agents</span>
+    <h2>The site has a front door for machines: /llms.txt</h2>
+    <p class="sub"><a href="/llms.txt"><code>/llms.txt</code></a> is the agent-facing index of this
+      site, following the <a href="https://llmstxt.org/">llms.txt convention</a>: what the product
+      is, the <code>window.__tool</code> API skills for operating the app, the declared workflow it
+      executes from, and every machine-readable surface this deploy emits —
+      <code>status.json</code> (this build's test gate), <code>issues.json</code>,
+      <code>versions.json</code>, <code>updates.json</code>, the user guide as data, and the
+      screenshot change log. Every URL it lists is checked by the post-deploy live QA, and the
+      rulebook requires it to be updated <em>in the same commit</em> as any change to the public
+      surface — so an agent reading it always sees the deployed truth, not a stale map.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
     <div class="receipts"><strong>Receipts</strong>
       <ul>
         <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/.claude/CLAUDE.md">CLAUDE.md</a> — the rulebook that encodes the discipline (reality rule, changelog rule, licence rules)</li>

@@ -30,13 +30,19 @@ step with the deployed build.
 - [updates.json](https://whatsapp-voice-transcription.sgraph.ai/updates/updates.json): every Updates post, structured
 - [videos.json](https://whatsapp-voice-transcription.sgraph.ai/videos/videos.json): the demo videos
 - [RSS feed](https://whatsapp-voice-transcription.sgraph.ai/updates/feed.xml)
+- [guide.json](https://whatsapp-voice-transcription.sgraph.ai/user-guide/guide.json): the user guide as data — each step with its test-captured screenshot
+- [baseline-changes.json](https://whatsapp-voice-transcription.sgraph.ai/user-guide/baseline-changes.json): every time the product's screenshots moved, tied to the commit and CI run that moved them (the agent-review surface for UI change)
 
 ## Pages
 
 - [How it works + pricing](https://whatsapp-voice-transcription.sgraph.ai/): the landing page — today's beta is bring-your-own-key; the credit product is labelled PROPOSED
 - [The app](https://whatsapp-voice-transcription.sgraph.ai/app/)
+- [User guide](https://whatsapp-voice-transcription.sgraph.ai/user-guide/): step-by-step usage — every screenshot taken by a passing test on the same build
 - [Engineering](https://whatsapp-voice-transcription.sgraph.ai/engineering/): how it is built — pipeline, testing, docs, security posture (including open findings, honestly labelled), team
+- [Browser unit tests](https://whatsapp-voice-transcription.sgraph.ai/tests/browser/): the app's unit suite, runnable in your browser against the deployed modules
 - [Updates](https://whatsapp-voice-transcription.sgraph.ai/updates/): the dated build-in-public record
+- [Versions](https://whatsapp-voice-transcription.sgraph.ai/versions/): every release, with diffs
+- [Videos](https://whatsapp-voice-transcription.sgraph.ai/videos/): demos and shorts
 - [Library](https://whatsapp-voice-transcription.sgraph.ai/library/): every document behind the product
 
 ## Source

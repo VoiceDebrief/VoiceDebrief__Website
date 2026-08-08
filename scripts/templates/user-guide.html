@@ -51,7 +51,7 @@
   <div class="wrap">
     <h1>Using the tool, step by step</h1>
     <p>Every screenshot below was taken by a test that was, at that moment, proving the
-       product works. If the app changes, the picture changes with it or the build fails —
+       product works. When the app changes, the picture changes with it on the next build —
        <strong>this guide cannot quietly go out of date</strong>.</p>
   </div>
 </div>
@@ -62,7 +62,9 @@
       (<code>tests/qa-to-docs/</code>), captured on CI against a scripted model so that
       every run produces the same pictures. No real voice note and no real API key is
       involved in making them — see the
-      <a href="../engineering/testing/">testing page</a> for how the gate works.</p>
+      <a href="../engineering/testing/">testing page</a> for how the journeys work.
+      When a picture moves, the change is recorded in the
+      <a href="baseline-changes.md">baseline change log</a> against the commit that caused it.</p>
 
 <!--GUIDE-->
 
