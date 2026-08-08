@@ -147,6 +147,12 @@ jobs:
 
       - name: Download the QA-to-docs captures
         uses: actions/download-artifact@v4
+        # A fully-armed, fully-matching run produces NO candidates and NO diffs,
+        # so the test job (if-no-files-found: ignore) uploads no artifact at all
+        # — the healthy steady state. Without this guard the download hard-fails
+        # ("Artifact not found: qa-to-docs") and, because deploy is gated on this
+        # job not failing, a green build never ships (runs #28-#29, 8 Aug).
+        continue-on-error: true
         with:
           name: qa-to-docs
           path: qa-to-docs-artifact

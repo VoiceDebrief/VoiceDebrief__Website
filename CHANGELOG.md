@@ -18,6 +18,14 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Fixed: a fully-healthy QA build could not deploy (runs #28–#29, found by
+  Dinis)** — once every screenshot baseline is armed and matching, the
+  qa-to-docs run produces no candidates, so no `qa-to-docs` artifact is
+  uploaded (`if-no-files-found: ignore`); `commit-baselines` then hard-failed
+  on the artifact download and the deploy — gated on that job — never ran. The
+  8 Aug Updates posts sat undeployed behind it. The download is now
+  `continue-on-error`: a missing artifact means "nothing to arm", the healthy
+  steady state, and the deploy proceeds.
 - **Strategy: the app in many languages, cultures and designs (issue 050,
   requested by Dinis)** — a dev pack
   (`library/dev_packs/v0.1.22__app-i18n-culture-themes/`) grounding the refactor
