@@ -18,6 +18,41 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Concepts, not words: a concept scheme and the English pass over it
+  (issue 057, from Dinis's brief)** — a new `/engineering/concepts/` surface where
+  meaning lives in a **definition** and each culture attaches a **label** to it,
+  so translation stops being word-to-word. Fifteen concepts in three schemes
+  (locale & culture, privacy modes, what a pass produces), each carrying a scope
+  note, the label shipping today in all four cultures, a verdict and — where the
+  English is wrong — a proposal. Rendered three ways because deciding *how to look
+  at this* was half the ask: cards for deciding, a matrix for spotting divergence,
+  and a relations graph.
+
+  **The pass found the brief's own example was wrong, and wrong in a way that
+  proves its thesis harder.** The brief supposed `draft` meant *incomplete
+  coverage*. The data says otherwise: all four locales ship 53 of 53 keys, and
+  `locales/index.json` gates the flag on *review*, not on completeness. So the
+  concept is a state of **verification** — `draft` names authoring, `incomplete`
+  names coverage, and both point at the wrong axis. `rascunho` was never a bad
+  translation; it faithfully carried a word that was already wrong. Proposed:
+  **unreviewed** / *por rever* (pt-PT) / *não revisado* (pt-BR). Second finding:
+  `soon` → **planned**, because `en-gb/culture.json` declares the register as
+  *"no marketing register"* and *soon* is a promise nothing backs. Third: the two
+  privacy chips (`Routed — cheapest`, `Restricted*`) name a *mechanism* inside a
+  group asking where the audio goes, and the first smuggles price into a privacy
+  control — marked **decide**, not changed, because they are claims made to users.
+
+  Deliberately **not wired to the product**: the app reads nothing from it, and
+  the shipped strings are untouched. The price of that separation is drift, so a
+  CI test asserts every recorded label against the real locale files and fails the
+  build when a string moves without its concept being revisited — proven to bite.
+  Three departures from the brief, each recorded with its reason: terms not
+  strings; SKOS *vocabulary* without the RDF stack; and the held-out generation
+  check demoted to a report and left unbuilt, because it is model-judged and
+  cannot tell a defect from a lexical gap — the same conclusion issue 053 reached
+  about screenshots. `wa-site-nav` v0.1.5 adds the section; `llms.txt`, the
+  sitemap and live-QA updated in the same commit.
+
 - **The picker was broken on a phone (Dinis, iPhone screenshots)** — the
   language panel opened **131px off the left edge of the screen**, with a third
   of the names unreadable and 60px of the list below the fold. Two faults

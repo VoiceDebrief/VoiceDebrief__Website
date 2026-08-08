@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.4/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.5/wa-site-nav.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -158,7 +158,7 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: App + Pricing primary, three groups, twelve grouped pages (v0.1.4)', assert => {
+    QUnit.test('two-level menu: App + Pricing primary, three groups, thirteen grouped pages (v0.1.5)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
@@ -169,15 +169,15 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         assert.strictEqual(sr.querySelectorAll('nav.main > a, nav.main > .i18n-link > a').length, 2,
             'App and Pricing stay primary')
         assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 3, 'Library + News + Engineering groups')
-        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 12,
-            '3 library + 3 news + 6 engineering pages in the dropdowns')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 13,
+            '3 library + 3 news + 7 engineering pages in the dropdowns (Concepts added, issue 057)')
         assert.strictEqual(sr.querySelector('.badge').textContent, 'BETA')
         assert.strictEqual(sr.querySelector('.sub'), null, 'no section row outside /engineering/')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/app/'),
             'the App is always in the menu (it was not, before issue 048)')
     })
 
-    QUnit.test('the nav says which pages follow your language, and which do not (v0.1.4)', assert => {
+    QUnit.test('the nav says which pages follow your language, and which do not (v0.1.5)', assert => {
         const el = document.createElement('wa-site-nav')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
@@ -217,7 +217,7 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
        of the screen. The fix is structural: the two controls are ONE element, so
        whatever the row does they stay adjacent and hard right. Assert the
        structure, because that is what the CSS depends on. */
-    QUnit.test('the language slot and the hamburger are one cluster, so a wrapped header cannot separate them (v0.1.4)', assert => {
+    QUnit.test('the language slot and the hamburger are one cluster, so a wrapped header cannot separate them (v0.1.5)', assert => {
         const el = document.createElement('wa-site-nav')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
