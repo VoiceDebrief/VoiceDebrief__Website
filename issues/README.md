@@ -17,6 +17,7 @@ superseding both branches' allow-list fixes; 007 closed as superseded — Dinis)
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [050](open/050-app-i18n-culture-themes.md) | The app in many languages, cultures and designs (strategy written; M1 extract next) | open | high | large |
 | [044](open/044-consensus-transcription.md) | Consensus transcription: two models, disagreement marked not resolved | **blocked** (on a D2 allowlist amendment — second audio model) | high | large |
 | [045](open/045-named-purchasable-workflows.md) | Named workflows at price points (Quick/Standard/Consensus) | open | normal | medium |
 | [037](open/037-app-security-hardening.md) | App security hardening: CSP shipped; chat prompt-tool gating, SVG sanitisation, key hygiene open (S1 closed by 041's removal) | open | **urgent** | medium |

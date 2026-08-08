@@ -18,6 +18,17 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Strategy: the app in many languages, cultures and designs (issue 050,
+  requested by Dinis)** — a dev pack
+  (`library/dev_packs/v0.1.22__app-i18n-culture-themes/`) grounding the refactor
+  in the SG/Send record: culture = language+country as the unit, flat per-locale
+  key files with one-hop en-gb fallback, `:root` design tokens piercing the
+  components' shadow DOM, language riding the workflow declaration into the
+  prompts so the *artefacts* localise, committed-allowlist selection only
+  (issue-041 rule), per-locale LIVE gating instead of a global SOON, and
+  qa-to-docs screenshots per locale×theme as the review surface. Strategy only —
+  implementation is issue 050, starting with extraction (M1), which is what
+  unblocks the Claude Design A/B token sheets.
 - **Live-QA link check made honest about networks**: the recurring
   `status ERR` failures ("on every other build", Dinis) were dropped
   connections, not dead links — the check bursts sequential requests at
