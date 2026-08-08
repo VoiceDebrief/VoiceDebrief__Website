@@ -62,6 +62,18 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   sibling `.css`. The nav is tokenised at v0.1.2, each colour keeping its literal
   as a `var()` fallback because the nav also ships on pages that do not load the
   theme sheet and must look identical there. Verified invisible.
+- **The app speaks four languages (issue 050, M2 first pass)** — `en-gb`,
+  `en-us`, `pt-pt`, `pt-br`, each a folder of per-domain files, plus
+  `wa-locale-picker`: native-script names, no flags (a flag is a country and a
+  language is not one), draft locales visible and honestly marked rather than
+  hidden. pt-PT and pt-BR are written as different **cultures**, not spellings —
+  *ficheiro/arquivo*, *ecrã/tela*, and the one that matters commercially, a
+  Brazilian says **áudio** where a Portuguese user says *nota de voz*, which is
+  what each will actually search for. Testing caught a real bug: automatic
+  detection matched the browser's language against every locale including
+  drafts, so an en-US browser was silently served an unreviewed translation.
+  Drafts are now picked, never assigned. (`en-uk` was requested; the valid tag
+  is `en-gb`, which already existed.)
 - **Strings and culture are now data (issue 050, M1b foundation + M1c)** —
   `website/app/i18n.js` is the entire runtime: key lookup, one-hop fallback to
   en-gb, `data-i18n` rendering, and `setLocale()` that re-renders in place so a

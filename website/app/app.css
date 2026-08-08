@@ -66,3 +66,7 @@ section[hidden]{display:none !important}
 .error-body{font-size:.92rem;color:var(--wa-muted)}
 footer{background:var(--wa-navy);color:var(--wa-muted-dark);padding:26px 0;font-size:.84rem}
 footer a{color:var(--wa-link-on-dark)}
+
+/* The locale picker sits above the key panel — a choice made before anything
+   is typed, not buried in a footer (issue 050 M2). */
+.locale-row{margin:0 0 14px}

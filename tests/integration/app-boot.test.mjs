@@ -159,6 +159,27 @@ try {
     check('exchange log empty without LLM calls, clearExchanges ok', log.list === 0 && log.cleared === true)
 
     // 8. No page errors during any of the above.
+    // i18n (issue 050 M2). The rule worth a gate: a DRAFT locale is one nobody
+    // has reviewed, and must never be served automatically — only chosen. A
+    // headless en-US browser was silently given the unreviewed en-us locale
+    // before this was fixed, and nothing would have told us.
+    const i18n = await page.evaluate(() => {
+        const api = window.__waI18n
+        const locales = api.getLocales()
+        return { active: api.getLocale(), status: locales[api.getLocale()]?.status,
+                 count: Object.keys(locales).length,
+                 drafts: Object.entries(locales).filter(([, m]) => m.status !== 'live').map(([k]) => k) }
+    })
+    check('locale allowlist loaded', i18n.count >= 4, `${i18n.count} locales, drafts: ${i18n.drafts.join(', ')}`)
+    check('the served locale is LIVE — drafts are picked, never assigned',
+        i18n.status === 'live', `serving ${i18n.active} (${i18n.status})`)
+    const picked = await page.evaluate(async () => {
+        await window.__waI18n.setLocale('pt-br')
+        return { h1: document.querySelector('h1').textContent.trim(), locale: window.__waI18n.getLocale() }
+    })
+    check('picking pt-BR re-renders the page in place', picked.locale === 'pt-br' && /áudio/.test(picked.h1), picked.h1)
+    await page.evaluate(() => window.__waI18n.setLocale('en-gb'))
+
     check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 4).join(' | '))
 } catch (e) {
     check('test run completed', false, e.message)

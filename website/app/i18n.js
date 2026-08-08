@@ -52,18 +52,26 @@ async function loadLocale(name) {
     return out
 }
 
-/* navigator.languages against the allowlist, then the prefix map (pt → pt-pt),
-   then the stored choice, which always wins. Send's recorded gap was that the
-   picker's choice never persisted; it does here. */
+/* The stored choice always wins; otherwise navigator.languages against the
+   allowlist, then the prefix map (pt → pt-pt). Send's recorded gap was that the
+   picker's choice never persisted; it does here.
+
+   AUTOMATIC selection only ever considers LIVE locales. A draft translation is
+   one nobody has reviewed yet, and serving it to a visitor purely because their
+   browser said pt-BR would put unreviewed copy in front of them with no way to
+   know why. Draft locales stay pickable — that is how they get the feedback that
+   makes them live — but they are chosen, never assigned. (Caught in testing: a
+   headless en-US browser was silently served the unreviewed en-us locale.) */
 function detect() {
     const stored = (() => { try { return localStorage.getItem(LS_LOCALE) } catch { return null } })()
-    if (stored && index?.locales?.[stored]) return stored
-    const allow = Object.keys(index?.locales || {})
+    if (stored && index?.locales?.[stored]) return stored          // explicit choice, draft or not
+    const live = Object.entries(index?.locales || {})
+        .filter(([, m]) => m.status === 'live').map(([k]) => k)
     for (const raw of (navigator.languages || [navigator.language || ''])) {
         const tag = String(raw).toLowerCase()
-        if (allow.includes(tag)) return tag
+        if (live.includes(tag)) return tag
         const mapped = index?.prefixes?.[tag.split('-')[0]]
-        if (mapped && allow.includes(mapped)) return mapped
+        if (mapped && live.includes(mapped)) return mapped
     }
     return index?.default || SOURCE
 }

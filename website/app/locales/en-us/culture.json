@@ -1,0 +1,9 @@
+{
+  "_note": "US culture. GBP is deliberate for every locale for now — one currency while payments are unsettled. Declared here, so changing it is data.",
+  "currency": "GBP",
+  "symbol": "£",
+  "usdRate": 0.79,
+  "intlLocale": "en-US",
+  "language": "English",
+  "tone": "Plain, direct American English. No marketing register, no exclamation marks."
+}
