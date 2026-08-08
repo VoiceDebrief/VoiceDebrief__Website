@@ -56,6 +56,9 @@ jobs:
       - name: Validate the locale files (issue 050)
         run: python3 scripts/check_locales.py
 
+      - name: Validate the per-locale app URLs (issue 056)
+        run: python3 scripts/build_locale_pages.py --check
+
       - name: Unit tests
         shell: bash
         run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log
@@ -163,6 +166,11 @@ jobs:
         # generated pages get the version stamp and the cache-buster like
         # every other page. Links point at dev — the branch this estate serves.
         run: python3 scripts/build_content.py --ref dev
+
+      - name: Build the per-locale app pages (issue 056)
+        # /app/pt-pt/ and friends — real files, so a shared link works on a
+        # static host with no rewrite rules.
+        run: python3 scripts/build_locale_pages.py
 
       - name: Build the user guide from the QA captures (issue 038)
         run: python3 scripts/build_user_guide.py

@@ -52,6 +52,22 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   sibling `.css`. The nav is tokenised at v0.1.2, each colour keeping its literal
   as a `var()` fallback because the nav also ships on pages that do not load the
   theme sheet and must look identical there. Verified invisible.
+- **Every language now has its own URL (issue 056, Dinis)** — `/app/pt-pt/`,
+  `/app/pt-br/`, `/app/en-us/`, `/app/en-gb/` are real directories generated
+  from the locale allowlist, so a translated page can be linked, shared,
+  bookmarked and indexed. Real files rather than client-side routing because
+  GitHub Pages cannot rewrite: a path that only works once JavaScript rescues
+  it is a 404 with good intentions. Each page carries `<base href="../">`, a
+  BCP-47 `lang`, a self-canonical and the full hreflang set. The URL beats a
+  stored preference — otherwise shared links would work for everyone except
+  the people most likely to be sent them — and switching in the page rewrites
+  the address bar without reloading, so an in-flight pass survives. The path
+  becomes an allowlist KEY, never a fetched URL, which is the whole distinction
+  from the `?origin=` problem. One real bug caught in testing: `replaceState`
+  moves the document URL, and relative fetches resolve against it, so changing
+  language on the un-based page silently broke every relative fetch from that
+  moment on. Both pages now pin a base, and a gate asserts a relative fetch
+  still resolves after the URL moves.
 - **The debrief now comes back in YOUR language (issue 055, Dinis)** — a
   `translate` step joins the declared workflow between transcribe and summary,
   on by default. The transcript stays in the language spoken — it is the record

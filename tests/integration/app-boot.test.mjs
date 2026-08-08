@@ -200,6 +200,23 @@ try {
     })
     check('switching back restores the original English exactly', back === 'drop your voice note here', back)
 
+    /* Switching language rewrites the address bar to /app/<locale>/ without a
+       reload (issue 056), so links are shareable. That moves the document URL,
+       and a page with no pinned <base> would resolve every relative fetch one
+       level too deep from that moment on — silently, and only for users who
+       change language. Assert the URL moved AND that the app can still load a
+       relative asset afterwards. */
+    const afterSwitch = await page.evaluate(async () => {
+        await window.__waI18n.setLocale('pt-br')
+        const wf = await window.__tool.getWorkflow({ options: {} })   // fetches ./workflows/standard.json
+        const url = location.pathname
+        await window.__waI18n.setLocale('en-gb')
+        return { url, wf: wf?.definition?.id, back: location.pathname }
+    })
+    check('switching locale rewrites the URL for sharing', /\/app\/pt-br\/$/.test(afterSwitch.url), afterSwitch.url)
+    check('relative fetches still resolve after the URL moves', afterSwitch.wf === 'standard', String(afterSwitch.wf))
+    check('switching back to the default returns to /app/', /\/app\/$/.test(afterSwitch.back), afterSwitch.back)
+
     check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 4).join(' | '))
 } catch (e) {
     check('test run completed', false, e.message)

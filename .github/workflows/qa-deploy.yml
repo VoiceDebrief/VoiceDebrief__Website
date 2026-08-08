@@ -61,6 +61,9 @@ jobs:
       - name: Validate the locale files (issue 050)
         run: python3 scripts/check_locales.py
 
+      - name: Validate the per-locale app URLs (issue 056)
+        run: python3 scripts/build_locale_pages.py --check
+
       - name: Unit tests
         shell: bash
         run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log
@@ -248,6 +251,11 @@ jobs:
         # every other page. --ref qa: the QA estate's derived links point at
         # the qa branch — files can exist here before they exist on dev.
         run: python3 scripts/build_content.py --ref qa
+
+      - name: Build the per-locale app pages (issue 056)
+        # /app/pt-pt/ and friends — real files, so a shared link works on a
+        # static host with no rewrite rules.
+        run: python3 scripts/build_locale_pages.py
 
       - name: Build the user guide from the QA captures (issue 038)
         # Renders website/user-guide/ from tests/qa-to-docs/journeys.json plus
