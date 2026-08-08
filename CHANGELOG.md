@@ -18,6 +18,30 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Strings and culture are now data (issue 050, M1b foundation + M1c)** —
+  `website/app/i18n.js` is the entire runtime: key lookup, one-hop fallback to
+  en-gb, `data-i18n` rendering, and `setLocale()` that re-renders in place so a
+  pass in flight and the chat thread survive a language switch. No i18n
+  framework, and none planned. Each locale is a FOLDER of per-domain files
+  rather than one blob — the unit of work becomes "translate chat.json for
+  pt-br", and the files a locale ships are exactly the support it has, with
+  missing keys falling back one at a time. `t()` returns the key itself on a
+  miss, because a visible `core.go` is a bug report where a blank is a hole
+  nobody notices. Locale selection may only name a key from the allowlist,
+  never a URL — the issue-041 rule applied before anyone asks for `?locale=`.
+  The app page is wired: 28 elements, 31 keys, text and attributes alike.
+  Money went with it: `fmtGbp` now delegates to `fmtMoney`, which reads
+  currency, symbol and rate from the active locale's `culture.json` (GBP
+  everywhere for now, so switching is a data change rather than a refactor).
+  The rendered format is byte-identical — `Intl.NumberFormat` was deliberately
+  avoided because it renders `£0.79` where the app renders `£0.790`, and this
+  refactor may not change a single price. `scripts/check_locales.py` joins the
+  gates in both pipelines and was negative-tested in both directions: a LIVE
+  locale with holes fails, the same locale marked draft passes, a key en-gb
+  does not have always fails. Verified visually identical, including the
+  options screen whose chip labels were re-wrapped to make them translatable.
+  Still to come in M1b: the eight components' own strings (~160 literals across
+  the chat, flow, debug and errors domains).
 - **The app's design is now one swappable sheet (issue 050, M1a)** — every
   colour, overlay and font stack the app uses is declared as a `--wa-*` token on
   `:root` in `website/app/themes/default.css`; `app.css` and all eight live

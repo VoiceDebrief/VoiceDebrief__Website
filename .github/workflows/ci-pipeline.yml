@@ -53,6 +53,9 @@ jobs:
       - name: Validate the theme tokens (issue 050)
         run: python3 scripts/check_themes.py
 
+      - name: Validate the locale files (issue 050)
+        run: python3 scripts/check_locales.py
+
       - name: Unit tests
         shell: bash
         run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log

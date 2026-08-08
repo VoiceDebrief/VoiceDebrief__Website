@@ -3,6 +3,7 @@
    through window.__tool — the UI is just one consumer of the API. */
 
 import { fmtGbp } from './config.js'
+import { initI18n, t } from './i18n.js'
 import { bootEngine } from './engine.js'
 import { createPipeline } from './pipeline.js'
 import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
@@ -44,6 +45,12 @@ const ERROR_COPY = {
 let pendingFile = null
 
 async function main() {
+    // Strings and culture first (issue 050 M1b): the page ships en-gb copy in the
+    // markup, and initI18n() overwrites it with the active locale's before the
+    // engine boots — so a visitor never sees English flash into their language.
+    // A failure here must NOT stop the app: the markup already reads correctly.
+    await initI18n().catch(e => console.warn('[whatsapp-transcribe] i18n unavailable, using the markup as written:', e))
+
     // Version stamp (written by CI at publish time).
     fetch('../version.txt', { cache: 'no-store' }).then(r => r.ok ? r.text() : 'dev').then(v => { $('#site-version').textContent = v.trim() }).catch(() => {})
 

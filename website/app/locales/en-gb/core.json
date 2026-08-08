@@ -1,0 +1,42 @@
+{
+  "_note": "The one-pass chrome: the hero, the sample chips, the options screen, the results cards. en-gb is the source of truth — every other locale's keys must be a subset of this file's, which CI checks. Keys are named for what the string IS, not where it sits, so a redesign that moves an element does not orphan its translation.",
+
+  "title": "Transcribe — Voice Note Transcribe (beta)",
+  "metaDescription": "Drop in your WhatsApp voice note and get a transcript and a summary in one pass — everything runs in your browser with your own OpenRouter key.",
+
+  "heroHeading": "Drop in your voice note. That's it.",
+  "heroLeadHtml": "Transcript, summary and an infographic in one pass — everything runs in this browser.\n       Beta: bring your own <a href=\"https://openrouter.ai/keys\">OpenRouter key</a>.",
+
+  "samplesRegion": "Sample voice notes",
+  "samplesLabel": "no voice note handy? try a sample:",
+  "sample1": "▶ voice note 1 (.opus)",
+  "sample2": "▶ voice note 2 (.opus)",
+  "sampleAndroid": "▶ android export (.ogg)",
+
+  "findNoteSummary": "where do I find my voice note?",
+  "findNoteBodyHtml": "Laptop: open WhatsApp Web/Desktop → the voice message → download (<code>.opus</code>).\n         Android: share/export the message (<code>.opus</code>/<code>.ogg</code>).\n         iPhone: forwarding between apps produces <code>.m4a</code> — that works too.",
+
+  "fileRemove": "Remove",
+
+  "privacyLabel": "privacy",
+  "modeRouted": " Routed — cheapest",
+  "modeRestricted": " Restricted*",
+  "modeRestrictedTitle": "Enforced on the key server-side — coming with beta",
+  "modeOnDevice": " On-device*",
+  "modeOnDeviceTitle": "Nothing leaves your device — coming later",
+  "modeHonest": "Routed: any of our model providers may process this recording — we can't promise which.",
+  "wantInfographic": " also make me an infographic",
+  "go": "Transcribe →",
+
+  "labelTranscript": "TRANSCRIPT",
+  "labelSummary": "SUMMARY",
+  "labelInfographic": "INFOGRAPHIC",
+  "editedNoteHtml": "✎ edited by the assistant · <a href=\"#\" data-restore=\"transcript\">restore the original</a>",
+  "editedNoteSummaryHtml": "✎ edited by the assistant · <a href=\"#\" data-restore=\"summary\">restore the original</a>",
+  "infographicModelTitle": "Model used to draw the infographic",
+  "redraw": "redraw",
+  "save": "save",
+  "again": "do another voice note",
+
+  "footerHtml": "© 2026 SGraph / The Cyber Boardroom — nothing tracked, nothing stored server-side"
+}

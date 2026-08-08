@@ -100,3 +100,52 @@ declared, but the fallback is wrong and would show if the sheet ever failed.
 Remaining in M1: **M1b** strings out of HTML/JS into `locales/en-gb/` domain
 files + `i18n.js`; **M1c** culture (`culture.json`, `fmtGbp` → `fmtMoney` with
 GBP declared, not hardcoded).
+
+## Status 8 Aug — M1b foundation + M1c SHIPPED (core domain done; components remain)
+
+Strings and culture are now data, and the machinery to serve them exists.
+
+- **`website/app/i18n.js`** — the whole runtime, deliberately tiny: key lookup,
+  one-hop fallback to en-gb, `data-i18n` rendering, `setLocale()` re-rendering in
+  place (no reload, so a pass in flight and the chat thread survive a language
+  switch), and `wa:locale-changed`. No framework, and none coming.
+  - `t()` returns **the key itself** on a miss, not an empty string: a visible
+    `core.go` in the UI is a bug report, a blank is a hole nobody notices.
+  - Selection may only name a locale in `locales/index.json` — never a URL,
+    never a query parameter. The issue-041 rule, applied before anyone asks
+    for `?locale=`.
+- **`locales/index.json` + `en-gb/{core,culture}.json`** — one folder per locale,
+  per-domain files. `files` is the support statement: a locale ships `core.json`
+  while `chat.json` is still absent, and the missing keys fall back one at a time.
+- **`app/index.html`**: 28 elements wired, 31 keys. Text, HTML fragments, and
+  attributes (`title`, `placeholder`, `aria-label`, `content`, and the component
+  `label` attribute) all localise.
+- **M1c — money is culture data.** `fmtGbp` now delegates to `fmtMoney`, which
+  reads `currency`/`symbol`/`usdRate` from the active locale's `culture.json`.
+  GBP is declared for every locale for now (Dinis, 8 Aug), so the day payments
+  want EUR or BRL is a data change. `fmtGbp` is kept as the compatibility name —
+  the flow panel, chat meter and cost line call it and renaming them is churn.
+  **Format is byte-identical**, including the three-decimals-under-10p rule;
+  `Intl.NumberFormat` was deliberately NOT used, because it renders `£0.79`
+  where this renders `£0.790` and M1 may not change a rendered price.
+- **`scripts/check_locales.py`** in both pipelines: keys ⊆ en-gb; a LIVE locale
+  must be key-complete (a live language showing English mid-sentence reads worse
+  than not offering it) while a DRAFT locale may have holes; declared files must
+  exist and existing files must be declared; every `data-i18n` key in the markup
+  must resolve. Negative-tested in both directions rather than assumed.
+- **11 new unit tests** (72 total), including two that break the checkers on
+  purpose — a checker that cannot fail is worse than none, since it reports
+  success either way.
+
+**Verified no visible change**: qa-to-docs after the wiring is identical to
+before, including `03-options` at 0.000% — the screen whose chip labels were
+re-wrapped in spans to make them translatable.
+
+### Remaining in M1b
+
+The component internals: `chat.json`, `flow.json`, `debug.json`, `errors.json`,
+plus the user-facing strings in `app.js` itself (~72 literals, many of which are
+selectors and keys rather than copy, so they need reading not sed). The eight
+`wa-*` components hold roughly 160 more literals between them and each needs a
+`t()` import and a `wa:locale-changed` listener. That is the bulk of M1b and it
+is mechanical but not blind — it is the natural next slice.

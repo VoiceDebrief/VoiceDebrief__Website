@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://whatsapp-voice-transcription.sgraph.ai/app/">
-<title>Transcribe — Voice Note Transcribe (beta)</title>
-<meta name="description" content="Drop in your WhatsApp voice note and get a transcript and a summary in one pass — everything runs in your browser with your own OpenRouter key.">
+<title data-i18n="core.title">Transcribe — Voice Note Transcribe (beta)</title>
+<meta name="description" data-i18n-content="core.metaDescription" content="Drop in your WhatsApp voice note and get a transcript and a summary in one pass — everything runs in your browser with your own OpenRouter key.">
 <!-- Issue 037 (S2): pin where code can load from and where data can go — the
      hardcoded engine origins (?origin= is gone, issue 041), OpenRouter for the
      API calls, and cdn.jsdelivr.net for the pinned ogg-opus-decoder
@@ -27,18 +27,18 @@
 
 <div class="hero">
   <div class="wrap">
-    <h1>Drop in your voice note. That's it.</h1>
-    <p class="lead">Transcript, summary and an infographic in one pass — everything runs in this browser.
+    <h1 data-i18n="core.heroHeading">Drop in your voice note. That's it.</h1>
+    <p class="lead" data-i18n-html="core.heroLeadHtml">Transcript, summary and an infographic in one pass — everything runs in this browser.
        Beta: bring your own <a href="https://openrouter.ai/keys">OpenRouter key</a>.</p>
     <wa-drop-zone id="drop"></wa-drop-zone>
-    <div class="samples" aria-label="Sample voice notes">
-      <span class="samples__label">no voice note handy? try a sample:</span>
-      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-1.opus">▶ voice note 1 (.opus)</button>
-      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-2.opus">▶ voice note 2 (.opus)</button>
-      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-android.ogg">▶ android export (.ogg)</button>
+    <div class="samples" data-i18n-aria-label="core.samplesRegion" aria-label="Sample voice notes">
+      <span class="samples__label" data-i18n="core.samplesLabel">no voice note handy? try a sample:</span>
+      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-1.opus" data-i18n="core.sample1">▶ voice note 1 (.opus)</button>
+      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-2.opus" data-i18n="core.sample2">▶ voice note 2 (.opus)</button>
+      <button type="button" class="sample-chip" data-sample="samples/whatsapp-voice-note-android.ogg" data-i18n="core.sampleAndroid">▶ android export (.ogg)</button>
     </div>
-    <details class="find-note"><summary>where do I find my voice note?</summary>
-      <p>Laptop: open WhatsApp Web/Desktop → the voice message → download (<code>.opus</code>).
+    <details class="find-note"><summary data-i18n="core.findNoteSummary">where do I find my voice note?</summary>
+      <p data-i18n-html="core.findNoteBodyHtml">Laptop: open WhatsApp Web/Desktop → the voice message → download (<code>.opus</code>).
          Android: share/export the message (<code>.opus</code>/<code>.ogg</code>).
          iPhone: forwarding between apps produces <code>.m4a</code> — that works too.</p></details>
   </div>
@@ -55,19 +55,19 @@
       <span class="file-icon">🎙</span>
       <span class="file-name"></span>
       <span class="file-size"></span>
-      <button type="button" class="file-remove" aria-label="Remove">✕</button>
+      <button type="button" class="file-remove" data-i18n-aria-label="core.fileRemove" aria-label="Remove">✕</button>
     </div>
     <div class="options">
       <div class="mode">
-        <span class="opt-label">privacy</span>
-        <label class="chip on"><input type="radio" name="mode" checked> Routed — cheapest</label>
-        <label class="chip off" title="Enforced on the key server-side — coming with beta"><input type="radio" name="mode" disabled> Restricted*</label>
-        <label class="chip off" title="Nothing leaves your device — coming later"><input type="radio" name="mode" disabled> On-device*</label>
+        <span class="opt-label" data-i18n="core.privacyLabel">privacy</span>
+        <label class="chip on"><input type="radio" name="mode" checked><span data-i18n="core.modeRouted"> Routed — cheapest</span></label>
+        <label class="chip off" data-i18n-title="core.modeRestrictedTitle" title="Enforced on the key server-side — coming with beta"><input type="radio" name="mode" disabled><span data-i18n="core.modeRestricted"> Restricted*</span></label>
+        <label class="chip off" data-i18n-title="core.modeOnDeviceTitle" title="Nothing leaves your device — coming later"><input type="radio" name="mode" disabled><span data-i18n="core.modeOnDevice"> On-device*</span></label>
       </div>
-      <p class="mode-honest">Routed: any of our model providers may process this recording — we can't promise which.</p>
-      <label class="infog"><input type="checkbox" id="want-infographic" checked> also make me an infographic</label>
+      <p class="mode-honest" data-i18n="core.modeHonest">Routed: any of our model providers may process this recording — we can't promise which.</p>
+      <label class="infog"><input type="checkbox" id="want-infographic" checked><span data-i18n="core.wantInfographic"> also make me an infographic</span></label>
       <span id="max-cost" class="max-cost"></span>
-      <button type="button" id="go" class="go">Transcribe →</button>
+      <button type="button" id="go" class="go" data-i18n="core.go">Transcribe →</button>
     </div>
   </section>
 
@@ -77,23 +77,23 @@
   </section>
 
   <section id="results-section" hidden>
-    <wa-result-card id="transcript-card" label="TRANSCRIPT" filename="transcript" hidden></wa-result-card>
-    <p id="transcript-edit-note" class="edit-note" hidden>✎ edited by the assistant · <a href="#" data-restore="transcript">restore the original</a></p>
-    <wa-result-card id="summary-card" label="SUMMARY" filename="summary" hidden></wa-result-card>
-    <p id="summary-edit-note" class="edit-note" hidden>✎ edited by the assistant · <a href="#" data-restore="summary">restore the original</a></p>
+    <wa-result-card id="transcript-card" label="TRANSCRIPT" data-i18n-label="core.labelTranscript" filename="transcript" hidden></wa-result-card>
+    <p id="transcript-edit-note" class="edit-note" data-i18n-html="core.editedNoteHtml" hidden>✎ edited by the assistant · <a href="#" data-restore="transcript">restore the original</a></p>
+    <wa-result-card id="summary-card" label="SUMMARY" data-i18n-label="core.labelSummary" filename="summary" hidden></wa-result-card>
+    <p id="summary-edit-note" class="edit-note" data-i18n-html="core.editedNoteSummaryHtml" hidden>✎ edited by the assistant · <a href="#" data-restore="summary">restore the original</a></p>
     <div id="infographic-card" class="wa-info-card" hidden>
-      <div class="wa-info-card__head"><span class="wa-info-card__title">INFOGRAPHIC</span>
+      <div class="wa-info-card__head"><span class="wa-info-card__title" data-i18n="core.labelInfographic">INFOGRAPHIC</span>
         <span class="wa-info-card__ctls">
-          <select id="infographic-model" title="Model used to draw the infographic"></select>
-          <button type="button" id="redraw-infographic" hidden>redraw</button>
-          <button type="button" id="save-svg" hidden>save</button>
+          <select id="infographic-model" data-i18n-title="core.infographicModelTitle" title="Model used to draw the infographic"></select>
+          <button type="button" id="redraw-infographic" data-i18n="core.redraw" hidden>redraw</button>
+          <button type="button" id="save-svg" data-i18n="core.save" hidden>save</button>
         </span></div>
       <div id="infographic-mount" class="wa-info-card__mount"></div>
       <p id="infographic-note" class="wa-info-card__note" hidden></p>
     </div>
     <div class="results-foot">
       <wa-cost-line id="cost" hidden></wa-cost-line>
-      <button type="button" id="again" class="again">do another voice note</button>
+      <button type="button" id="again" class="again" data-i18n="core.again">do another voice note</button>
     </div>
   </section>
 
