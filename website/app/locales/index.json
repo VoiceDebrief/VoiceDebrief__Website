@@ -1,5 +1,5 @@
 {
-  "note": "The locale allowlist (issue 050). A locale exists here or it does not exist at all — selection may only name a key from this file, never a URL or a query parameter (the issue-041 rule). `files` is the set of domain files that locale actually ships: THE FILES THAT EXIST ARE THE SUPPORT YOU HAVE, and any key a locale does not carry falls back one hop to en-gb. `status` gates per locale, not globally, so a half-translated language can be visible and honestly marked instead of hiding behind a single SOON.",
+  "note": "The locale allowlist (issue 050). A locale exists here or it does not exist at all — selection may only name a key from this file, never a URL or a query parameter (the issue-041 rule). `files` is the set of domain files that locale actually ships: THE FILES THAT EXIST ARE THE SUPPORT YOU HAVE, and any key a locale does not carry falls back one hop to en-gb. `status` gates per locale, not globally: a locale flips to `live` only after a human has reviewed its qa-to-docs screenshots, so a half-finished language is visible and honestly marked rather than hidden behind a single global SOON. Labels are in the native script and there are NO FLAGS — a flag is a country, and a language is not a country (pt-PT and pt-BR would both want a different one, and English would have to pick a fight).",
   "default": "en-gb",
   "prefixes": {
     "en": "en-gb",
@@ -10,6 +10,33 @@
       "label": "English (UK)",
       "nativeLabel": "English (UK)",
       "status": "live",
+      "files": [
+        "core",
+        "culture"
+      ]
+    },
+    "en-us": {
+      "label": "English (US)",
+      "nativeLabel": "English (US)",
+      "status": "draft",
+      "files": [
+        "core",
+        "culture"
+      ]
+    },
+    "pt-pt": {
+      "label": "Portuguese (Portugal)",
+      "nativeLabel": "Português (Portugal)",
+      "status": "draft",
+      "files": [
+        "core",
+        "culture"
+      ]
+    },
+    "pt-br": {
+      "label": "Portuguese (Brazil)",
+      "nativeLabel": "Português (Brasil)",
+      "status": "draft",
       "files": [
         "core",
         "culture"

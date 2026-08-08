@@ -171,3 +171,58 @@ looks where you remembered to point it is not a gate.
   repointed.
 - Verified invisible: `01-app-start` (the shot that shows the nav) unchanged at
   0.046%, `02`/`03` at 0.000%.
+
+## Status 8 Aug — M2 first pass SHIPPED (four locales + the picker)
+
+Per the M2 hand-off brief, and extended by Dinis to four locales.
+
+**A note on the tag**: the request said `en-uk`, which is not a valid BCP-47
+language tag — the UK's is `en-gb`, which we already had. The four are
+**en-gb, en-us, pt-pt, pt-br**.
+
+- **Four locale folders**, each `core.json` (33 keys) + `culture.json`.
+  pt-PT and pt-BR are written as **different cultures, not spellings**:
+  *ficheiro/arquivo*, *ecrã/tela*, *utilizador/usuário*, "estar a + infinitivo"
+  vs the gerund — and the one that matters commercially, **a Brazilian says
+  "áudio" where a Portuguese user says "nota de voz"**. That is what people
+  actually search for, so the hero reads *"Solte aqui o seu áudio"* in pt-BR and
+  *"Largue aqui a sua nota de voz"* in pt-PT.
+- **en-US is honestly close to en-gb** — this copy has almost no -ise/-ize
+  divergence. What genuinely differs is WhatsApp's own US wording ("voice
+  message", not "voice note") and `intlLocale`. Inventing more differences to
+  justify the folder would have been worse than saying so.
+- **Culture packs**: all four declare GBP (`£`, 0.79) per the standing decision;
+  only `intlLocale`, `language` and `tone` differ.
+- **`wa-locale-picker` v0.1.0**: native-script names, **no flags** (a flag is a
+  country and a language is not one — pt-PT and pt-BR would each want a
+  different one, and English would have to pick a fight). Draft locales are
+  visible and marked, not hidden: per-locale gating means someone who reads
+  Portuguese can try it and tell us what reads wrong, which is how a draft
+  becomes live. The list comes from the allowlist and nothing else.
+- All three new locales are **key-complete** — verified by flipping them to
+  `live` and re-running the checker — but stay `draft` until their screenshots
+  are reviewed, per the brief. Draft is a review gate here, not a cover for holes.
+
+### A bug the testing caught
+
+`detect()` matched `navigator.languages` against **every** locale in the
+allowlist, drafts included. A visitor with an en-US browser was silently served
+the unreviewed `en-us` locale, with no way to know why. Automatic selection now
+only considers LIVE locales; a draft is still pickable and the choice still
+persists — chosen, never assigned. Verified across four browser languages, and
+now gated in `app-boot.test.mjs`.
+
+### The first intentional screenshot change
+
+Adding the picker moved 8 of 8 shots (9.55% on `01-app-start`, 2.46% on
+`03-options`, ±1px resizes elsewhere). That is the record-not-block policy
+(issue 053) doing its job for the first time on a real change: the run stayed
+green, the baselines updated, and `baseline-changes.md` names this commit so the
+movement can be reviewed against the intent.
+
+### Still open
+
+Component strings (`chat`/`flow`/`debug`/`errors`, ~160 literals) — the picker
+means the app now switches language with the *page* copy only; component text
+stays English until those domains are extracted. Artefact language (item 4 of
+the brief — `{{language}}`/`{{tone}}` into the prompts) is not built.
