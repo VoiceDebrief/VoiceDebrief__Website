@@ -38,6 +38,22 @@ export async function installMockOpenRouter(page) {
         }
         let content
         if (all.includes('Transcribe the following audio')) content = 'This is me recording a voice memo that we can use in our tests.'
+        // The translate step (issue 055) and the summary built FROM a translation.
+        // Both are ordinary chat calls, so they are matched on their prompt text —
+        // and the fixtures are genuinely Portuguese, so a test asserting the
+        // summary is localised is asserting something real.
+        else if (/You are translating the transcript/i.test(all)) {
+            // Honour the requested language, the way the real prompt asks: text
+            // already in the target comes back unchanged. A mock that always
+            // answered in Portuguese made the English journey produce a
+            // Portuguese summary — a fixture bug that looked like a product bug.
+            content = /into Portuguese/i.test(all)
+                ? 'Estou a gravar um memorando de voz que podemos usar nos nossos testes.'
+                : 'This is me recording a voice memo that we can use in our tests.'
+        }
+        else if (all.includes('Write a summary document') && /memorando de voz/i.test(all))
+            content = '## Pontos principais\n- um memorando de voz para testes'
+        else if (all.includes('Write a summary document')) content = '## Key points\n- a voice memo for tests'
         else if (all.includes('answering questions about the following audio')) content = '## Key points\n- a voice memo for tests'
         else if (lastMsg.includes('TOOL RESULT')) content = 'Done — the drawn SVG infographic is now on the page.'
         else if (/generate the infographic/i.test(lastMsg)) content = 'On it.\n```tool\n{"action":"redraw_infographic","params":{"model":"google/gemini-3.5-flash"}}\n```'

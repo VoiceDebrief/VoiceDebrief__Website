@@ -226,3 +226,89 @@ Component strings (`chat`/`flow`/`debug`/`errors`, ~160 literals) — the picker
 means the app now switches language with the *page* copy only; component text
 stays English until those domains are extracted. Artefact language (item 4 of
 the brief — `{{language}}`/`{{tone}}` into the prompts) is not built.
+
+## Status 8 Aug (later) — M1b continues: the one-pass components localise
+
+The five components of the one-pass flow now switch language with the page.
+
+- **`applyIn(root)`** localises a shadow root using the same `data-i18n`
+  attributes as the page, with one difference that matters: **the fallback is
+  the text already in the template**. A component ships readable English markup
+  and i18n only overrides it — so there is no second copy of the English to
+  drift, and the component still renders correctly standalone (the browser
+  harness, or any page that skips `initI18n()`).
+  The original is stashed in `data-i18n-src` on first pass. Without that, the
+  *second* locale switch would take the *first* switch's output as its fallback,
+  and a missing key would strand the user in a language they had already left.
+  Verified by round-tripping en-gb → pt-BR → pt-PT → en-US → pt-BR → en-gb and
+  asserting the English comes back byte-exact.
+- **Five components bumped** (published versions untouched): cost-line v0.1.1,
+  result-card v0.1.3, progress-rail v0.1.3, drop-zone v0.1.2, key-panel v0.1.2.
+  14 template strings keyed, 4 locales × 47 keys.
+- The culture split reaches inside the shadow DOM: the progress rail reads
+  **"a transcrever…"** in pt-PT and **"transcrevendo…"** in pt-BR — European
+  progressive vs Brazilian gerund, not a respelling.
+- Gated in `app-boot.test.mjs`: component shadow DOM localises, and switching
+  back restores the original English exactly.
+- **Visually unchanged in English**: `01`–`03` match baseline; the app looks
+  identical to anyone who never touches the picker.
+
+### Honestly still English
+
+- **7 strings set from JS** inside these five (key-panel's saved/rejected status
+  lines, result-card's copied confirmation, cost-line's assembled line). They
+  are not in the template, so `applyIn` cannot reach them — each needs a `tOr()`
+  call at its assignment.
+- **The three big panels** — chat, flow, debug (~130 literals) — untouched. They
+  are the `chat`/`flow`/`debug` domains, and they are where most of the
+  remaining work is.
+- **`errors.json`** not started.
+- **Artefact language** (M2 brief item 4): `{{language}}`/`{{tone}}` into the
+  prompts so the *summary* comes back in the user's language, not just the UI.
+  Not built — and it is the half that SG/Send never had.
+
+## Status 8 Aug (later still) — the picker moves into the nav, and the nav tells the truth about what is translated
+
+Four UX corrections from Dinis, all on the same control.
+
+- **Top right, in the nav** — `wa-locale-picker` v0.1.2 is now slotted into
+  `wa-site-nav` v0.1.3 via `<slot name="locale">`, where sgraph.ai and every
+  other product puts it. Slotted rather than built in, so the nav keeps working
+  unchanged on the twelve pages that have no i18n at all.
+- **Closed until asked.** v0.1.1 listed every culture inline; the panel now
+  opens only on the caret, and closes on the caret, a click away, Escape or a
+  selection.
+- **A permanent way home.** Once a non-default locale is active a plain
+  🇬🇧 **EN-GB** button appears *beside* the dropdown — no menu, one click, back
+  to English. The dropdown then shows the locale you are actually in, so the two
+  controls answer two different questions: *where am I* and *get me out*.
+  Someone who lands on Portuguese by accident (a shared link, a mis-tap) should
+  not have to operate a dropdown in a language they cannot read to undo it.
+- **The nav says which pages follow your language.** `/app/` is the only
+  translated surface today, so it is listed first with the active locale's flag
+  beside it (🇵🇹 App when you are in Portuguese), and the English-only links sit
+  behind a single 🇬🇧 marker rather than each carrying their own. As more pages
+  localise they move across the marker; the set is one constant, `TRANSLATED`.
+
+### Two things the work turned up
+
+- **The trigger cannot show the native name.** "Português (Portugal) ▼" pushed
+  the control onto a second row and dragged the panel off the left edge with it.
+  The trigger shows the CODE (🇵🇹 PT-PT); full names stay in the panel, where
+  there is room. Verified: picker at x=967–1170, panel at x=546–1170, both on
+  the same row as the nav and fully on screen.
+- **`wa-site-nav` had no `render()`.** The redraw hook I added for
+  `wa:locale-changed` called `this.render?.()` — a silent no-op, and
+  `attachShadow` would have thrown on a second run. `connectedCallback` is now a
+  thin wrapper around a re-runnable `render()` that reuses `this.shadowRoot`.
+  Without this the flag next to App would have been frozen at page-load locale.
+
+`defaultLocale()` was added to `i18n.js` and to the `window.__waI18n` seam so the
+picker knows which locale is "home" from the allowlist rather than a hardcoded
+string. 19 files repointed to nav v0.1.3. Browser suite grows a test pinning the
+flag behaviour (exactly one `.i18n-link`, pointing at `/app/`, carrying a
+regional-indicator flag; one `.en-only` marker; the locale slot present).
+
+Six qa-to-docs shots moved, `01-app-start` by 27.3% — the nav is in every shot,
+so a change there is the widest change the pipeline can record. Logged against
+the commit per the record-not-block policy; the movement is where the work was.

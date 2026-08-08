@@ -56,6 +56,9 @@ jobs:
       - name: Validate the locale files (issue 050)
         run: python3 scripts/check_locales.py
 
+      - name: Validate the per-locale app URLs (issue 056)
+        run: python3 scripts/build_locale_pages.py --check
+
       - name: Unit tests
         shell: bash
         run: node --test tests/unit/*.test.mjs 2>&1 | tee unit.log
@@ -81,6 +84,10 @@ jobs:
         shell: bash
         run: node tests/integration/chat-loop.test.mjs 2>&1 | tee int-chat.log
 
+      - name: Integration test (translate step — an English note, a Portuguese debrief)
+        shell: bash
+        run: node tests/integration/translate.test.mjs 2>&1 | tee int-translate.log
+
       # QA-to-docs (issue 038): the user journeys as screenshot-verified QA.
       # Missing baselines produce candidates (uploaded below) and pass; a
       # baseline diff over threshold fails the gate like any other test.
@@ -105,10 +112,11 @@ jobs:
           UNIT_FAIL=$(grep -oP '^# fail \K\d+' unit.log)
           BOOT=$(grep -c '^ok ' int-boot.log)
           CHAT=$(grep -c '^ok ' int-chat.log)
+          XL=$(grep -c '^ok ' int-translate.log)
           QTD=$(grep -c '^ok ' qa-docs.log)
           BUNIT=$(grep -c '^ok ' browser.log)
-          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "browser-unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
-            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BUNIT" "$BUNIT" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$QTD" "$QTD" > test-results.json
+          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "browser-unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "integration-translate": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
+            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BUNIT" "$BUNIT" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$XL" "$XL" "$QTD" "$QTD" > test-results.json
           cat test-results.json
 
       - name: Upload test results
@@ -158,6 +166,11 @@ jobs:
         # generated pages get the version stamp and the cache-buster like
         # every other page. Links point at dev — the branch this estate serves.
         run: python3 scripts/build_content.py --ref dev
+
+      - name: Build the per-locale app pages (issue 056)
+        # /app/pt-pt/ and friends — real files, so a shared link works on a
+        # static host with no rewrite rules.
+        run: python3 scripts/build_locale_pages.py
 
       - name: Build the user guide from the QA captures (issue 038)
         run: python3 scripts/build_user_guide.py

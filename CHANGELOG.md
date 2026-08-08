@@ -18,6 +18,27 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The language picker moves to the top right, and keeps a door open
+  (Dinis, four corrections)** — `wa-locale-picker` v0.1.2 now rides in
+  `wa-site-nav` v0.1.3 via `<slot name="locale">`, where sgraph.ai puts it and
+  where people look for it; the culture list is **closed until you click the
+  caret** rather than sitting open on the page. The change that matters most:
+  once you are in a non-default locale, a plain 🇬🇧 **EN-GB** button appears
+  *beside* the dropdown — one click back to English, no menu. Someone who lands
+  on Portuguese from a shared link or a mis-tap should not have to operate a
+  dropdown in a language they cannot read to undo it, so the two controls answer
+  two different questions: *where am I* and *get me out*. The nav also stops
+  pretending the whole site is translated: `/app/` is listed first carrying the
+  **active locale's flag**, and the English-only pages sit behind a single 🇬🇧
+  marker — as pages localise they move across it. Trigger shows the locale code
+  (🇵🇹 PT-PT), not the native name, which wrapped the control onto a second row
+  and dragged the panel off the left edge. Two things fell out of the work: the
+  nav had no `render()` at all, so the redraw hook I added for
+  `wa:locale-changed` was a silent no-op (the flag would have frozen at
+  page-load locale), and `defaultLocale()` now comes from the allowlist instead
+  of a hardcoded `'en-gb'`. 19 references repointed; the browser suite pins the
+  flag behaviour; six qa-to-docs shots moved and are logged for review.
+
 - **Two design responses received and filed (Dinis, 8 Aug)** —
   `library/briefs/ux-experiments/responses/`: the four-culture pack (en-gb,
   en-us, pt-pt, pt-br — switchable prototype with a per-culture explanation
@@ -62,6 +83,45 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   sibling `.css`. The nav is tokenised at v0.1.2, each colour keeping its literal
   as a `var()` fallback because the nav also ships on pages that do not load the
   theme sheet and must look identical there. Verified invisible.
+- **Every language now has its own URL (issue 056, Dinis)** — `/app/pt-pt/`,
+  `/app/pt-br/`, `/app/en-us/`, `/app/en-gb/` are real directories generated
+  from the locale allowlist, so a translated page can be linked, shared,
+  bookmarked and indexed. Real files rather than client-side routing because
+  GitHub Pages cannot rewrite: a path that only works once JavaScript rescues
+  it is a 404 with good intentions. Each page carries `<base href="../">`, a
+  BCP-47 `lang`, a self-canonical and the full hreflang set. The URL beats a
+  stored preference — otherwise shared links would work for everyone except
+  the people most likely to be sent them — and switching in the page rewrites
+  the address bar without reloading, so an in-flight pass survives. The path
+  becomes an allowlist KEY, never a fetched URL, which is the whole distinction
+  from the `?origin=` problem. One real bug caught in testing: `replaceState`
+  moves the document URL, and relative fetches resolve against it, so changing
+  language on the un-based page silently broke every relative fetch from that
+  moment on. Both pages now pin a base, and a gate asserts a relative fetch
+  still resolves after the URL moves.
+- **The debrief now comes back in YOUR language (issue 055, Dinis)** — a
+  `translate` step joins the declared workflow between transcribe and summary,
+  on by default. The transcript stays in the language spoken — it is the record
+  of what was actually said — while the translation becomes its own material
+  with its own card, and **the summary and infographic are both built from it**.
+  Localising the interface but not the output was the half that looked finished
+  and wasn't: the summary is the product. Declared budget of 0.03 keeps the
+  ceiling quotable before anything runs, and a failed translation degrades
+  rather than aborting, so it can never cost the user their transcript. The
+  prompt is a site file with `{{language}}`/`{{tone}}` from the locale's culture
+  data, editable in the debug pane like the others. Three bugs surfaced in
+  testing and are recorded on the issue — including one where the step was
+  skipped silently because the new options never reached the declaration's
+  `when` clauses, so the run looked correct while doing nothing. Not built:
+  language detection, so a note already in the reader's language still costs
+  one call.
+- **The locale picker follows the sgraph.ai pattern (Dinis)** — a compact
+  trigger showing the current culture, opening a two-column panel of every
+  culture with flags. Flags are correct here where they usually are not: the
+  unit is a culture (language + country), so every entry genuinely names one
+  country — 🇵🇹 and 🇧🇷 are exactly the distinction being drawn. Cultures we do
+  not ship yet are listed dimmed and inert as SOON, so the list reads as a
+  roadmap rather than a promise.
 - **The app speaks four languages (issue 050, M2 first pass)** — `en-gb`,
   `en-us`, `pt-pt`, `pt-br`, each a folder of per-domain files, plus
   `wa-locale-picker`: native-script names, no flags (a flag is a country and a

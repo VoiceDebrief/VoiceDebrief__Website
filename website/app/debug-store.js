@@ -25,6 +25,11 @@ const PROMPT_KINDS = {
         note: 'Sent with the audio bytes. The engine default is replaced at request time when you save an override.',
         defaultText: TRANSCRIBE_PROMPT_SEED,
     },
+    translate: {
+        label: 'Translation',
+        note: 'Used when "translate it into my language first" is on (issue 055). {{language}} and {{tone}} are filled from the active locale\'s culture data before sending (served from ./prompts/translate-prompt.md).',
+        defaultText: null,   // learned when the pipeline fetches the site file
+    },
     summary: {
         label: 'Summary document',
         note: 'The markdown prompt asked over the transcript (served from ./prompts/summary-prompt.md).',

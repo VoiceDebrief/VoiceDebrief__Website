@@ -1,0 +1,9 @@
+.wa-card{border:1px solid var(--wa-line,#dbe3ec);border-radius:12px;background:var(--wa-fg);overflow:hidden}
+.wa-card__head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--wa-line,#dbe3ec);background:var(--wa-mist,#f2f5f9)}
+.wa-card__title{font-size:.76rem;font-weight:700;letter-spacing:1px;color:var(--wa-blue,#2563eb)}
+.wa-card__actions button{font:inherit;font-size:.8rem;font-weight:600;padding:4px 10px;border:1px solid var(--wa-line,#dbe3ec);border-radius:7px;background:var(--wa-fg);cursor:pointer;color:var(--wa-ink,#1a2433);margin-left:6px}
+.wa-card__actions button:hover{border-color:var(--wa-muted-2)}
+.wa-card__body{padding:14px 18px;font-size:.94rem;line-height:1.65;color:var(--wa-ink,#1a2433);max-height:420px;overflow-y:auto}
+.wa-card__body p{margin:0 0 10px}
+.wa-card__body h4{margin:12px 0 6px}
+.wa-card__body ul{margin:0 0 10px 20px}

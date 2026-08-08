@@ -63,6 +63,15 @@ async function loadLocale(name) {
    makes them live — but they are chosen, never assigned. (Caught in testing: a
    headless en-US browser was silently served the unreviewed en-us locale.) */
 function detect() {
+    // 1. The URL wins. /app/pt-pt/ exists so that a link to it produces
+    //    Portuguese for whoever opens it — including someone who once picked
+    //    English here. If a stored preference could override the path, shared
+    //    links would work for everyone except the people most likely to be sent
+    //    them. Opening a locale's URL IS an explicit choice, which is also why a
+    //    draft locale may be served this way while never being auto-assigned.
+    const fromPath = localeFromPath()
+    if (fromPath) return fromPath
+
     const stored = (() => { try { return localStorage.getItem(LS_LOCALE) } catch { return null } })()
     if (stored && index?.locales?.[stored]) return stored          // explicit choice, draft or not
     const live = Object.entries(index?.locales || {})
@@ -74,6 +83,21 @@ function detect() {
         if (mapped && live.includes(mapped)) return mapped
     }
     return index?.default || SOURCE
+}
+
+/* The locale named by the path, or null.
+
+   This reads a path segment and turns it into an ALLOWLIST KEY — it never
+   becomes part of a URL we fetch. That distinction is the whole of the
+   issue-041 rule: `?origin=` was dangerous because its value was used to build
+   an import URL, so any string became executable. Here, an unknown or hostile
+   segment simply fails the lookup and we fall through to detection, and the
+   locale files are fetched from the key, not from the path. `/app/../../evil/`
+   and `/app/%2e%2e/` are non-keys like any other typo. */
+function localeFromPath() {
+    const seg = location.pathname.split('/').filter(Boolean).pop() || ''
+    const key = seg.toLowerCase()
+    return index?.locales?.[key] ? key : null
 }
 
 export async function initI18n() {
@@ -127,6 +151,33 @@ export function apply(root = document) {
     }
 }
 
+/* applyIn(root) — localise a component's shadow DOM (issue 050, M1b).
+
+   Same data-i18n attributes as the page, one difference that matters: the
+   fallback is THE TEXT ALREADY IN THE TEMPLATE. A component ships readable
+   English markup; this only overrides it. So there is no second copy of the
+   English to drift, and the component still renders correctly standalone — in
+   the browser harness, or before initI18n() resolves.
+
+   The original is stashed in data-i18n-src on the first pass. Without that, the
+   second locale switch would take the FIRST switch's output as its fallback and
+   a missing key would strand the user in a language they had already left. */
+export function applyIn(root) {
+    if (!root) return
+    for (const el of root.querySelectorAll('[data-i18n]')) {
+        if (el.dataset.i18nSrc === undefined) el.dataset.i18nSrc = el.textContent
+        el.textContent = tOr(el.dataset.i18n, el.dataset.i18nSrc)
+    }
+    for (const attr of ['title', 'placeholder', 'aria-label', 'label']) {
+        const key = 'data-i18n-' + attr
+        const stash = 'data-i18n-src-' + attr
+        for (const el of root.querySelectorAll(`[${key}]`)) {
+            if (!el.hasAttribute(stash)) el.setAttribute(stash, el.getAttribute(attr) ?? '')
+            el.setAttribute(attr, tOr(el.getAttribute(key), el.getAttribute(stash)))
+        }
+    }
+}
+
 /* Switching locale re-renders in place — no reload. A pass in flight, the flow
    panel's trace and the chat thread all survive a language change, which is
    the whole reason components listen for the event instead of the page
@@ -137,6 +188,17 @@ export async function setLocale(name) {
     active = name
     bundle = name === SOURCE ? source : await loadLocale(name)
     try { localStorage.setItem(LS_LOCALE, name) } catch { /* private mode: honour it for this session only */ }
+    /* Keep the address bar truthful, without reloading. A reload would be
+       simpler and would throw away an in-flight pass and the chat thread; a URL
+       that still says /app/pt-pt/ while the page reads English is a link that
+       lies when shared. replaceState rather than pushState: switching language
+       is not a navigation to go "back" from. The target page really exists
+       (build_locale_pages.py), so a refresh or a copied link both work. */
+    try {
+        const base = location.pathname.replace(/\/app\/[a-z]{2}-[a-z]{2}\/?$/i, '/app/').replace(/\/$/, '')
+        const next = name === (index?.default || SOURCE) ? `${base}/` : `${base}/${name}/`
+        if (location.pathname !== next) history.replaceState(null, '', next + location.search + location.hash)
+    } catch { /* a browser that refuses history is not a reason to fail the switch */ }
     apply(document)
     window.dispatchEvent(new CustomEvent('wa:locale-changed', { detail: { locale: name, culture: culture() } }))
     return name
@@ -144,6 +206,7 @@ export async function setLocale(name) {
 
 export const getLocale = () => active
 export const getLocales = () => index?.locales || {}
+export const defaultLocale = () => index?.default || SOURCE
 
 /* ── Culture (M1c) ───────────────────────────────────────────────────────
    Culture is not language: it is currency, formatting and tone, and it lives

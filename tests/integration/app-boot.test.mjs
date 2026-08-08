@@ -92,8 +92,10 @@ try {
     check('debug pane opens on toggle', await dbg.locator('.wa-dbg__panel.open').count() === 1)
     await dbg.locator('.wa-dbg__tab[data-tab="prompts"]').click()
     const prompts = await page.waitForFunction(() =>
-        document.querySelector('wa-debug-panel').shadowRoot.querySelectorAll('.prompt').length === 5, null, { timeout: 10000 }).then(() => true).catch(() => false)
-    check('prompts tab shows the five templates', prompts)
+        document.querySelector('wa-debug-panel').shadowRoot.querySelectorAll('.prompt').length === 6, null, { timeout: 10000 }).then(() => true).catch(() => false)
+    // Six since issue 055: the translate prompt is editable like the rest, so a
+    // user can change the register of their own translations.
+    check('prompts tab shows the six templates', prompts)
     const modelOptions = await page.locator('#infographic-model option').count()
     check('infographic model picker populated', modelOptions >= 3, String(modelOptions))
     await dbg.locator('.wa-dbg__tab[data-tab="openrouter"]').click()
@@ -130,14 +132,17 @@ try {
     // 6c. The declared workflow (issue 042): the definition loads and validates,
     //     the quote follows the options, and the flow panel renders the steps.
     const wf = await page.evaluate(async () => {
-        const on = await window.__tool.getWorkflow({ options: { infographic: true } })
-        const off = await window.__tool.getWorkflow({ options: { infographic: false } })
-        return { id: on.definition.id, steps: on.definition.steps.length,
-                 quoteOn: on.quoteUsd, quoteOff: off.quoteUsd, max: on.maxUsd,
+        const all = await window.__tool.getWorkflow({ options: { infographic: true, translate: true } })
+        const bare = await window.__tool.getWorkflow({ options: {} })
+        return { id: all.definition.id, steps: all.definition.steps.length,
+                 quoteAll: all.quoteUsd, quoteBare: bare.quoteUsd, max: all.maxUsd,
                  trace: await window.__tool.getWorkflowTrace() }
     })
+    // Both optional branches on must equal the declared ceiling, or the "max cost
+    // for this run" the options screen promises is not actually a maximum.
     check('workflow declaration loads with a quotable ceiling',
-        wf.id === 'standard' && wf.steps === 5 && wf.quoteOn === wf.max && wf.quoteOn > wf.quoteOff, JSON.stringify(wf))
+        wf.id === 'standard' && wf.steps === 6 && wf.quoteAll === wf.max && wf.quoteAll > wf.quoteBare,
+        JSON.stringify(wf))
     check('no trace before any run', wf.trace === null)
     const quoteShown = await page.locator('#max-cost').textContent()
     check('max cost quoted on the options screen', /max cost for this run/.test(quoteShown || ''), quoteShown)
@@ -147,9 +152,9 @@ try {
     check('flow pane opens on toggle', await flow.locator('.wa-flow__panel.open').count() === 1)
     check('opening flow closes the chat pane', await chat.locator('.wa-chat__panel.open').count() === 0)
     const flowRendered = await page.waitForFunction(() =>
-        document.querySelector('wa-flow-panel').shadowRoot.querySelectorAll('.wa-flow__steps .step').length === 5,
+        document.querySelector('wa-flow-panel').shadowRoot.querySelectorAll('.wa-flow__steps .step').length === 6,
         null, { timeout: 10000 }).then(() => true).catch(() => false)
-    check('flow pane renders the five declared steps', flowRendered)
+    check('flow pane renders the six declared steps', flowRendered)
     await flow.locator('.wa-flow__close').click()
 
     // 7. The exchange log is empty (no key, no LLM calls) and clearable.
@@ -178,7 +183,39 @@ try {
         return { h1: document.querySelector('h1').textContent.trim(), locale: window.__waI18n.getLocale() }
     })
     check('picking pt-BR re-renders the page in place', picked.locale === 'pt-br' && /áudio/.test(picked.h1), picked.h1)
-    await page.evaluate(() => window.__waI18n.setLocale('en-gb'))
+
+    // The strings INSIDE the components, not just the page around them — and the
+    // round trip back, which is what proves each component stashed its original
+    // English rather than translating its own last output.
+    const inside = await page.evaluate(() => ({
+        drop: document.querySelector('wa-drop-zone').shadowRoot.querySelector('.wa-drop__big').textContent.trim(),
+        save: document.querySelector('wa-key-panel').shadowRoot.querySelector('button').textContent.trim(),
+        step: document.querySelector('wa-progress-rail').shadowRoot.querySelector('[data-step=\"transcribe\"] .label').textContent.trim(),
+    }))
+    check('component shadow DOM localises too', /áudio/.test(inside.drop) && inside.save === 'Salvar chave' && inside.step === 'transcrevendo…',
+        JSON.stringify(inside))
+    const back = await page.evaluate(async () => {
+        await window.__waI18n.setLocale('en-gb')
+        return document.querySelector('wa-drop-zone').shadowRoot.querySelector('.wa-drop__big').textContent.trim()
+    })
+    check('switching back restores the original English exactly', back === 'drop your voice note here', back)
+
+    /* Switching language rewrites the address bar to /app/<locale>/ without a
+       reload (issue 056), so links are shareable. That moves the document URL,
+       and a page with no pinned <base> would resolve every relative fetch one
+       level too deep from that moment on — silently, and only for users who
+       change language. Assert the URL moved AND that the app can still load a
+       relative asset afterwards. */
+    const afterSwitch = await page.evaluate(async () => {
+        await window.__waI18n.setLocale('pt-br')
+        const wf = await window.__tool.getWorkflow({ options: {} })   // fetches ./workflows/standard.json
+        const url = location.pathname
+        await window.__waI18n.setLocale('en-gb')
+        return { url, wf: wf?.definition?.id, back: location.pathname }
+    })
+    check('switching locale rewrites the URL for sharing', /\/app\/pt-br\/$/.test(afterSwitch.url), afterSwitch.url)
+    check('relative fetches still resolve after the URL moves', afterSwitch.wf === 'standard', String(afterSwitch.wf))
+    check('switching back to the default returns to /app/', /\/app\/$/.test(afterSwitch.back), afterSwitch.back)
 
     check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 4).join(' | '))
 } catch (e) {

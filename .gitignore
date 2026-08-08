@@ -234,3 +234,8 @@ website/videos/videos.json
 website/sitemap.xml
 website/user-guide/index.html
 website/user-guide/guide.json
+# Per-locale app pages — build output (scripts/build_locale_pages.py)
+website/app/en-gb/
+website/app/en-us/
+website/app/pt-pt/
+website/app/pt-br/

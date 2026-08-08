@@ -16,15 +16,31 @@ test('the shipped standard.json is a valid declaration', () => {
     assert.ok(v.ok)
 })
 
-test('the quote follows the options: infographic on/off select different paths', () => {
-    const withInfog = pathUsd(standard, { infographic: true })
-    const without = pathUsd(standard, { infographic: false })
-    assert.ok(withInfog > without, 'the infographic branch must cost more')
-    assert.equal(maxUsd(standard), withInfog, 'all options on = the absolute ceiling')
-    assert.deepEqual(pathFor(standard, { infographic: false }).map(s => s.id),
+test('the quote follows the options: each optional step selects a different path', () => {
+    // Two optional branches now (issue 055 added translate). The quote a user is
+    // shown must be the path THEIR options select — not a fixed number — and the
+    // declared ceiling must be the everything-on path, or the "max cost" promise
+    // on the options screen is not a ceiling at all.
+    const bare = pathUsd(standard, {})
+    const infog = pathUsd(standard, { infographic: true })
+    const trans = pathUsd(standard, { translate: true })
+    const both = pathUsd(standard, { infographic: true, translate: true })
+
+    assert.ok(infog > bare, 'the infographic branch must cost more')
+    assert.ok(trans > bare, 'the translate branch must cost more')
+    assert.ok(both > infog && both > trans, 'both branches must cost more than either alone')
+    assert.equal(maxUsd(standard), both, 'all options on = the absolute ceiling')
+
+    assert.deepEqual(pathFor(standard, {}).map(s => s.id),
         ['normalise', 'ingest', 'transcribe', 'summary'])
     assert.deepEqual(pathFor(standard, { infographic: true }).map(s => s.id),
         ['normalise', 'ingest', 'transcribe', 'summary', 'infographic'])
+    // Translate sits BETWEEN transcribe and summary — the summary is built from
+    // it, so any other position would summarise the wrong text.
+    assert.deepEqual(pathFor(standard, { translate: true }).map(s => s.id),
+        ['normalise', 'ingest', 'transcribe', 'translate', 'summary'])
+    assert.deepEqual(pathFor(standard, { infographic: true, translate: true }).map(s => s.id),
+        ['normalise', 'ingest', 'transcribe', 'translate', 'summary', 'infographic'])
 })
 
 /* A tiny two-step machine for the validator's negative cases. */

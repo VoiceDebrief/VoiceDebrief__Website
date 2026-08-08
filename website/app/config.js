@@ -38,3 +38,4 @@ export { fmtMoney, fmtMoney as fmtGbp } from './i18n.js'
    editable without touching code. */
 export const SUMMARY_PROMPT_URL = './prompts/summary-prompt.md'
 export const INFOGRAPHIC_PROMPT_URL = './prompts/infographic-prompt.md'
+export const TRANSLATE_PROMPT_URL = './prompts/translate-prompt.md'

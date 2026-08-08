@@ -3,19 +3,19 @@
    through window.__tool — the UI is just one consumer of the API. */
 
 import { fmtGbp } from './config.js'
-import { initI18n, t, tOr, getLocale, getLocales, setLocale } from './i18n.js'
+import { initI18n, t, tOr, applyIn, culture, getLocale, getLocales, defaultLocale, setLocale } from './i18n.js'
 import { bootEngine } from './engine.js'
 import { createPipeline } from './pipeline.js'
 import { INFOGRAPHIC_MODELS, INFOGRAPHIC_MODEL_DEFAULT } from './infographic.js'
 import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 
 // Components (ours; the SgComponent base loads from the tools origin inside each).
-import '../components/wa-locale-picker/v0/v0.1/v0.1.0/wa-locale-picker.js'
-import '../components/wa-key-panel/v0/v0.1/v0.1.1/wa-key-panel.js'
-import '../components/wa-drop-zone/v0/v0.1/v0.1.1/wa-drop-zone.js'
-import '../components/wa-progress-rail/v0/v0.1/v0.1.2/wa-progress-rail.js'
-import '../components/wa-result-card/v0/v0.1/v0.1.2/wa-result-card.js'
-import '../components/wa-cost-line/v0/v0.1/v0.1.0/wa-cost-line.js'
+import '../components/wa-locale-picker/v0/v0.1/v0.1.2/wa-locale-picker.js'
+import '../components/wa-key-panel/v0/v0.1/v0.1.2/wa-key-panel.js'
+import '../components/wa-drop-zone/v0/v0.1/v0.1.2/wa-drop-zone.js'
+import '../components/wa-progress-rail/v0/v0.1/v0.1.4/wa-progress-rail.js'
+import '../components/wa-result-card/v0/v0.1/v0.1.3/wa-result-card.js'
+import '../components/wa-cost-line/v0/v0.1/v0.1.1/wa-cost-line.js'
 import '../components/wa-debug-panel/v0/v0.1/v0.1.3/wa-debug-panel.js'
 import '../components/wa-chat-panel/v0/v0.1/v0.1.2/wa-chat-panel.js'
 import '../components/wa-flow-panel/v0/v0.1/v0.1.1/wa-flow-panel.js'
@@ -28,7 +28,7 @@ window.__waFlow = { fmtGbp }
    wa-* component must not depend on the app's file layout — it is published
    at its own immutable path and has to render standalone. Absent, every
    component falls back to the English in its own markup. */
-window.__waI18n = { t, tOr, getLocale, getLocales, setLocale }
+window.__waI18n = { t, tOr, applyIn, getLocale, getLocales, defaultLocale, setLocale }
 
 const $ = (s) => document.querySelector(s)
 const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']
@@ -68,7 +68,7 @@ async function main() {
 
     engine.api
         .register('runPass',    (p) => pipeline.runPass(p), { async: true,
-            events: ['wa:pass:started', 'wa:normalised', 'wa:ingested', 'wa:transcript', 'wa:summary', 'wa:summary:error',
+            events: ['wa:pass:started', 'wa:normalised', 'wa:ingested', 'wa:transcript', 'wa:translation', 'wa:translation:error', 'wa:summary', 'wa:summary:error',
                      'wa:infographic:started', 'wa:infographic', 'wa:infographic:error', 'wa:pass:complete', 'wa:pass:error'] })
         .register('getResults', () => pipeline.results(),   { async: false })
         .register('redrawInfographic', (p) => pipeline.redrawInfographic(p), { async: true,
@@ -93,7 +93,8 @@ async function main() {
     engine.api.activate()   // → window.__tool ('whatsapp-transcribe') + tool:ready
 
     const key = $('#key'), drop = $('#drop'), rail = $('#rail')
-    const tCard = $('#transcript-card'), sCard = $('#summary-card'), cost = $('#cost')
+    const tCard = $('#transcript-card'), xCard = $('#translation-card'),
+          sCard = $('#summary-card'), cost = $('#cost')
 
     // --- key handling (BYOK, localStorage) ---
     key.addEventListener('wa:key-submitted', async (e) => {
@@ -155,14 +156,34 @@ async function main() {
     // --- the quotable maximum (issue 042): sum of the declared step budgets on
     // the path the current options select — known before anything runs. ---
     const wantInfog = $('#want-infographic')
+    const wantTranslate = $('#want-translate')
+
+    /* The translate option names the language it will produce, from the active
+       locale's culture data — "translate it into my language first" is vague,
+       "…into Português (Portugal)" is a decision someone can actually make.
+       Re-labelled on every locale change. */
+    const passOptions = () => ({
+        infographic: wantInfog.checked,
+        translate: wantTranslate.checked,
+        language: culture().language || 'English',
+        tone: culture().tone || '',
+    })
+    const labelTranslate = () => {
+        const loc = getLocales()[getLocale()]
+        $('#translate-lang').textContent = loc ? ` — ${loc.nativeLabel || loc.label}` : ''
+    }
+    labelTranslate()
+    window.addEventListener('wa:locale-changed', () => { labelTranslate(); updateQuote() })
+
     async function updateQuote() {
         try {
-            const w = await window.__tool.getWorkflow({ options: { infographic: wantInfog.checked } })
+            const w = await window.__tool.getWorkflow({ options: passOptions() })
             $('#max-cost').textContent = `max cost for this run ≈ ${fmtGbp(w.quoteUsd)}`
             $('#max-cost').title = `The "${w.definition.title}" workflow declares a spending ceiling per step — this is their sum for the options chosen. The 🧭 flow tab shows the steps.`
         } catch (_) { $('#max-cost').textContent = '' }
     }
     wantInfog.addEventListener('change', updateQuote)
+    wantTranslate.addEventListener('change', updateQuote)
     updateQuote()
 
     // --- go ---
@@ -171,14 +192,14 @@ async function main() {
         if (!engine.hasKey()) return showError('no-key', 'key')
         const wantInfographic = $('#want-infographic').checked
         $('.working-name').textContent = pendingFile.name
-        tCard.hidden = sCard.hidden = cost.hidden = true
+        tCard.hidden = xCard.hidden = sCard.hidden = cost.hidden = true
         $('#infographic-card').hidden = true; $('#save-svg').hidden = true
         $('#infographic-note').hidden = true
         show('#key-section', '#work-section', '#results-section')
-        rail.reset(wantInfographic); rail.start('ingest')
+        rail.reset(wantInfographic, wantTranslate.checked); rail.start('ingest')
         try {
-            await window.__tool.runPass({ file: pendingFile, infographic: wantInfographic,
-                infographicModel: modelSel.value })
+            await window.__tool.runPass({ ...passOptions(), file: pendingFile,
+                infographic: wantInfographic, infographicModel: modelSel.value })
         } catch (e) {
             const code = await diagnoseLlmFailure(e)
             if (code === 'key-invalid') key.confirmSaved(false, 'OpenRouter rejected this key — it may be disabled or out of credit. Paste a fresh one.')
@@ -200,10 +221,24 @@ async function main() {
     // --- streaming reveal, bound to wa:* events ---
     window.addEventListener('wa:ingested',   () => { rail.finish('ingest'); rail.start('transcribe') })
     window.addEventListener('wa:transcript', (e) => {
-        rail.finish('transcribe'); rail.start('summary')
+        rail.finish('transcribe')
+        // The rail follows the declared path: translate only when this run takes it.
+        if (wantTranslate.checked) rail.start('translate'); else rail.start('summary')
         tCard.show(e.detail.text); tCard.hidden = false
         updateCost()
     })
+    /* The translation is SHOWN, not just used. Without the card a reader sees an
+       English transcript and a Portuguese summary with nothing joining them —
+       and no way to check the translation the summary was built on. */
+    window.addEventListener('wa:translation', (e) => {
+        rail.finish('translate'); rail.start('summary')
+        xCard.show(e.detail.text); xCard.hidden = false
+    })
+    window.addEventListener('wa:translation:error', () => {
+        // Declared degrade: the summary still runs, on the original transcript.
+        rail.finish('translate', false); rail.start('summary')
+    })
+
     window.addEventListener('wa:summary', (e) => {
         rail.finish('summary')
         sCard.show(e.detail.text); sCard.hidden = false
@@ -283,6 +318,7 @@ async function main() {
         if (done.transcript && $('#results-section').hidden && $('#error-section').hidden) {
             $('#results-section').hidden = false
             tCard.show(done.transcript); tCard.hidden = false
+            if (done.translation) { xCard.show(done.translation); xCard.hidden = false }
             if (done.summary) { sCard.show(done.summary); sCard.hidden = false }
         }
         // No infographic asked for? Offer to draw one from the finished pass.

@@ -59,6 +59,18 @@ for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/upda
     check(`GET ${path} → 200 + expected content`, r.ok && r.text.includes(marker), `status ${r.status}`)
 }
 
+// 1b. One real URL per locale (issue 056). A translated page that 404s is worse
+//     than no translation: it is a link we published that does not work. The
+//     marker is the page's own lang attribute, so a generator that wrote four
+//     copies of the same page is caught too, not just a missing file.
+for (const [path, marker] of [['/app/en-gb/', 'lang="en-GB"'], ['/app/en-us/', 'lang="en-US"'],
+                              ['/app/pt-pt/', 'lang="pt-PT"'], ['/app/pt-br/', 'lang="pt-BR"']]) {
+    const r = await get(path)
+    check(`GET ${path} → 200 + correct lang`, r.ok && r.text.includes(marker), `status ${r.status}`)
+}
+const appAlts = (await get('/app/')).text.match(/hreflang="[^"]+"/g) || []
+check('the app page advertises every locale + x-default', appAlts.length >= 5, appAlts.join(' '))
+
 // 2. Version stamp — the deployed artifact must name itself truthfully.
 const ver = await get('/version.txt')
 check('version.txt present', ver.ok && /^v?\d+\.\d+\.\d+/.test(ver.text.trim()), ver.text.trim().slice(0, 20))
@@ -80,7 +92,7 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
-                    '/components/wa-site-nav/v0/v0.1/v0.1.2/wa-site-nav.js',
+                    '/components/wa-site-nav/v0/v0.1/v0.1.3/wa-site-nav.js',
                     '/app/skills/SKILL__api.md', '/app/workflows/standard.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
                     '/updates/updates.json', '/updates/feed.xml', '/videos/videos.json',
