@@ -1,0 +1,4 @@
+{
+  "note": "Written by scripts/record_baseline_changes.py on each qa push whose screenshots moved. A change is a record, not a failure \u2014 the review question is whether the movement matches the work the commit set out to do.",
+  "entries": []
+}
