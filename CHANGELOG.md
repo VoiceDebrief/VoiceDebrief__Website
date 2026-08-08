@@ -53,6 +53,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   one-file-per-locale rejected on its own evidence — token explosion), first
   locales pt-PT + pt-BR together, and GBP everywhere for now — declared in each
   locale's culture data, never hardcoded.
+- **Live-QA made honest about networks, part two (run #33)** — the outbound
+  LINK checks got retries yesterday, but the site's own `get()` helper had no
+  handling at all: one `ECONNRESET` (common just after a deploy while the CDN
+  settles) crashed the whole script from inside the helper, marking a
+  successful deploy red with most checks never run. Same treatment one layer
+  deeper: page/asset fetches retry three times with backoff; a site that truly
+  cannot answer is a failing check, never an unhandled TypeError.
 - **Live-QA link check made honest about networks**: the recurring
   `status ERR` failures ("on every other build", Dinis) were dropped
   connections, not dead links — the check bursts sequential requests at
