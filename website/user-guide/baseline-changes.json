@@ -2,6 +2,27 @@
   "note": "Written by scripts/record_baseline_changes.py on each qa push whose screenshots moved. A change is a record, not a failure \u2014 the review question is whether the movement matches the work the commit set out to do.",
   "entries": [
     {
+      "date": "2026-08-08 17:41 UTC",
+      "commit": "1089d5cd2cc3dfbe2d14b4017b98d58a17520afe",
+      "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/1089d5cd2cc3dfbe2d14b4017b98d58a17520afe",
+      "run": "50",
+      "run_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31270016868",
+      "base_version": "v0.1.23",
+      "armed": [],
+      "changes": [
+        {
+          "id": "01-app-start",
+          "kind": "changed",
+          "pixels": 2663,
+          "area": 1024000,
+          "percent": 0.26,
+          "threshold": 0.1,
+          "caption": "The app as you arrive: drop zone, sample notes, and the key panel.",
+          "slot": "getting-started/arrival"
+        }
+      ]
+    },
+    {
       "date": "2026-08-08 16:13 UTC",
       "commit": "a2a85856fe0a0a8f01d21ab81fce9610b6ca3f1c",
       "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/a2a85856fe0a0a8f01d21ab81fce9610b6ca3f1c",

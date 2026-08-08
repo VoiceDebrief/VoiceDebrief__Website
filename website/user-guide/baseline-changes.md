@@ -16,6 +16,16 @@ Newest first.
 
 ---
 
+## 2026-08-08 17:41 UTC — run [#50](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31270016868) · commit [`1089d5c`](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/1089d5cd2cc3dfbe2d14b4017b98d58a17520afe) · base v0.1.23
+
+| Shot | Taught at | What moved |
+|---|---|---|
+| `01-app-start` | getting-started/arrival | 0.26% of pixels (threshold 0.1%) |
+
+*Review question: does that movement match what this commit set out to change?*
+
+---
+
 ## 2026-08-08 16:13 UTC — run [#48](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31266364039) · commit [`a2a8585`](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/a2a85856fe0a0a8f01d21ab81fce9610b6ca3f1c) · base v0.1.23
 
 | Shot | Taught at | What moved |
