@@ -26,6 +26,10 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   initialises empty logs on its first quiet run so those links never 404; and
   `.claude/CLAUDE.md` gains the discipline: any change to the public surface
   updates `llms.txt` in the same commit, and every URL it lists must resolve.
+  Follow-up fix caught on the first live run: the commit step gated on
+  `git diff --quiet`, which is blind to untracked files — precisely what a
+  newly-armed shot or the first-run change log is — so new files were never
+  committed; it now checks `git status --porcelain`.
 - **Fixed: a fully-healthy QA build could not deploy (runs #28–#29, found by
   Dinis)** — once every screenshot baseline is armed and matching, the
   qa-to-docs run produces no candidates, so no `qa-to-docs` artifact is

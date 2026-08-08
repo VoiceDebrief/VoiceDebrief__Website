@@ -176,7 +176,10 @@ jobs:
             --captures qa-to-docs-artifact \
             --run-url "$RUN_URL" --run-number "${GITHUB_RUN_NUMBER}" \
             --commit "$COMMIT_SHA" --repo-url "$REPO_URL"
-          if git diff --quiet -- website/user-guide; then
+          # git diff --quiet is blind to UNTRACKED files — which is exactly what
+          # a newly-armed shot or the first-run change log is. status --porcelain
+          # sees modified and new alike.
+          if [ -z "$(git status --porcelain -- website/user-guide)" ]; then
             echo "nothing moved — baselines and log already current"
             echo "committed=false" >> "$GITHUB_OUTPUT"
             exit 0
