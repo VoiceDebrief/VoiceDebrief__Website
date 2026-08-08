@@ -2,6 +2,69 @@
   "note": "Written by scripts/record_baseline_changes.py on each qa push whose screenshots moved. A change is a record, not a failure \u2014 the review question is whether the movement matches the work the commit set out to do.",
   "entries": [
     {
+      "date": "2026-08-08 15:51 UTC",
+      "commit": "d255b7bd69486264a27b692082e069dfb28beae5",
+      "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/d255b7bd69486264a27b692082e069dfb28beae5",
+      "run": "47",
+      "run_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31265356777",
+      "base_version": "v0.1.23",
+      "armed": [],
+      "changes": [
+        {
+          "id": "01-app-start",
+          "kind": "changed",
+          "pixels": 24615,
+          "area": 1024000,
+          "percent": 2.404,
+          "threshold": 0.1,
+          "caption": "The app as you arrive: drop zone, sample notes, and the key panel.",
+          "slot": "getting-started/arrival"
+        },
+        {
+          "id": "02-key-saved",
+          "kind": "resized",
+          "from": "820x149",
+          "to": "820x148",
+          "caption": "Paste your OpenRouter key once \u2014 it stays in your browser.",
+          "slot": "getting-started/key"
+        },
+        {
+          "id": "03-options",
+          "kind": "resized",
+          "from": "820x285",
+          "to": "820x346",
+          "caption": "A loaded voice note: choose whether you want an infographic, then transcribe.",
+          "slot": "one-pass/options"
+        },
+        {
+          "id": "04-results",
+          "kind": "resized",
+          "from": "820x911",
+          "to": "820x1044",
+          "caption": "The one pass, done: transcript, summary and the infographic together.",
+          "slot": "one-pass/results"
+        },
+        {
+          "id": "08-flow-run",
+          "kind": "changed",
+          "pixels": 85330,
+          "area": 336800,
+          "percent": 25.336,
+          "threshold": 0.1,
+          "caption": "The \ud83e\udded flow tab: the declared workflow \u2014 every step's model and spending ceiling, and what this run actually did and cost.",
+          "slot": "one-pass/workflow"
+        },
+        {
+          "id": "07-chat-edited",
+          "kind": "resized",
+          "from": "820x939",
+          "to": "820x1072",
+          "caption": "The assistant edited the summary \u2014 the original is always one click away.",
+          "slot": "chat/edit-restore"
+        }
+      ]
+    },
+    {
       "date": "2026-08-08 15:02 UTC",
       "commit": "d457e00141d409c78add83afbedf1604287cda42",
       "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/d457e00141d409c78add83afbedf1604287cda42",

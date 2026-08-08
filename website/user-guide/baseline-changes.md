@@ -16,6 +16,21 @@ Newest first.
 
 ---
 
+## 2026-08-08 15:51 UTC — run [#47](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31265356777) · commit [`d255b7b`](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/d255b7bd69486264a27b692082e069dfb28beae5) · base v0.1.23
+
+| Shot | Taught at | What moved |
+|---|---|---|
+| `01-app-start` | getting-started/arrival | 2.404% of pixels (threshold 0.1%) |
+| `02-key-saved` | getting-started/key | resized 820x149 → 820x148 |
+| `03-options` | one-pass/options | resized 820x285 → 820x346 |
+| `04-results` | one-pass/results | resized 820x911 → 820x1044 |
+| `08-flow-run` | one-pass/workflow | 25.336% of pixels (threshold 0.1%) |
+| `07-chat-edited` | chat/edit-restore | resized 820x939 → 820x1072 |
+
+*Review question: does that movement match what this commit set out to change?*
+
+---
+
 ## 2026-08-08 15:02 UTC — run [#45](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31263409054) · commit [`d457e00`](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/d457e00141d409c78add83afbedf1604287cda42) · base v0.1.23
 
 | Shot | Taught at | What moved |
