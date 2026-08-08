@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html,body{margin:0;padding:0}
+  *{box-sizing:border-box}
+  a{color:inherit}
+  @keyframes cp-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+  @keyframes cp-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:{{ pageBg }};color:{{ ink }};font-family:{{ uiFont }};display:flex;flex-direction:column;transition:background .25s,color .25s">
+
+  <div style="background:{{ barBg }};color:{{ barFg }};padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <span style="font-weight:700;font-size:.9rem">Voice Note</span>
+    <span style="display:flex;gap:6px;flex-wrap:wrap;margin-left:6px">
+      <sc-for list="{{ locales }}" as="l" hint-placeholder-count="4">
+        <button type="button" onClick="{{ l.onPick }}" title="{{ l.code }}" style="font:inherit;font-size:.78rem;font-weight:{{ l.weight }};padding:6px 13px;border-radius:999px;border:1px solid {{ l.border }};background:{{ l.bg }};color:{{ l.fg }};cursor:pointer;min-height:34px">{{ l.native }}</button>
+      </sc-for>
+    </span>
+    <span style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button type="button" onClick="{{ toggleReasons }}" style="font:inherit;font-size:.76rem;font-weight:700;padding:6px 13px;border-radius:999px;border:1px solid {{ reasonBorder }};background:{{ reasonBg }};color:{{ reasonFg }};cursor:pointer;min-height:34px">{{ reasonLabel }}</button>
+      <button type="button" onClick="{{ toggleView }}" style="font:inherit;font-size:.76rem;font-weight:600;padding:6px 13px;border-radius:999px;border:1px solid rgba(127,127,127,.35);background:transparent;color:{{ barFg }};cursor:pointer;min-height:34px">{{ viewLabel }}</button>
+    </span>
+  </div>
+
+  <sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:grid;grid-template-columns:{{ appCols }};gap:0;align-items:start">
+
+      <div style="padding:34px 24px 60px;display:flex;justify-content:center">
+        <div style="width:100%;max-width:560px;display:flex;flex-direction:column;gap:20px">
+
+          <div style="display:flex;flex-direction:column;gap:10px;animation:cp-in .3s ease both">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <h1 style="margin:0;font-family:{{ headFont }};font-size:clamp(1.5rem,3.8vw,2.15rem);line-height:1.18;font-weight:{{ headWeight }};max-width:20ch;text-wrap:balance">{{ title }}</h1>
+              <sc-if value="{{ reasons }}" hint-placeholder-val="{{ false }}">
+                <span style="flex:0 0 auto;margin-top:6px;font-size:.68rem;font-weight:800;width:20px;height:20px;border-radius:50%;background:{{ accent }};color:{{ onAccent }};display:flex;align-items:center;justify-content:center">2</span>
+              </sc-if>
+            </div>
+            <p style="margin:0;font-size:1rem;line-height:1.6;color:{{ muted }};max-width:50ch;text-wrap:pretty">{{ body }}</p>
+          </div>
+
+          <sc-if value="{{ isIdle }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div onClick="{{ browse }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="position:relative;background:{{ surface }};border:2px dashed {{ dropLine }};border-radius:{{ radiusLg }};padding:44px 24px;display:flex;flex-direction:column;align-items:center;gap:11px;cursor:pointer;box-shadow:{{ shadow }};transition:border-color .15s,background .15s">
+                <sc-if value="{{ reasons }}" hint-placeholder-val="{{ false }}">
+                  <span style="position:absolute;top:10px;right:12px;font-size:.68rem;font-weight:800;width:20px;height:20px;border-radius:50%;background:{{ accent }};color:{{ onAccent }};display:flex;align-items:center;justify-content:center">3</span>
+                </sc-if>
+                <span style="width:64px;height:64px;border-radius:{{ radiusRound }};background:{{ accentWash }};color:{{ accent }};display:flex;align-items:center;justify-content:center;font-size:1.6rem">♪</span>
+                <span style="font-family:{{ headFont }};font-size:1.16rem;font-weight:700;text-align:center">{{ dropTitle }}</span>
+                <span style="font-size:.92rem;color:{{ muted }};text-align:center;max-width:36ch;line-height:1.5">{{ t.dropSub }}</span>
+                <span style="font-size:.75rem;color:{{ muted2 }};font-family:ui-monospace,SFMono-Regular,Menlo,monospace">{{ t.dropHint }}</span>
+              </div>
+              <input type="file" ref="{{ fileRef }}" onChange="{{ onFile }}" accept=".opus,.ogg,.m4a,audio/*" style="display:none" />
+              <button type="button" onClick="{{ runDemo }}" style="font:inherit;font-size:.96rem;font-weight:700;padding:15px;border:0;border-radius:{{ radiusMd }};background:{{ accentWash }};color:{{ accent }};cursor:pointer;min-height:52px">{{ t.demo }}</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isConsent }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:14px;animation:cp-in .3s ease both">
+              <div style="background:{{ surface }};border-radius:{{ radiusMd }};padding:15px 17px;display:flex;align-items:center;gap:12px;box-shadow:{{ shadow }}">
+                <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ fileName }}</span>
+                <button type="button" onClick="{{ reset }}" style="margin-left:auto;font:inherit;font-size:.82rem;color:{{ muted2 }};background:none;border:0;cursor:pointer">{{ t.remove }}</button>
+              </div>
+              <div style="position:relative;background:{{ warnBg }};border-radius:{{ radiusMd }};padding:17px 19px;display:flex;flex-direction:column;gap:8px;border-left:4px solid {{ warnEdge }}">
+                <span style="font-size:.68rem;font-weight:800;letter-spacing:1.2px;color:{{ warnInk }}">{{ t.consentLabel }}</span>
+                <p style="margin:0;font-size:.95rem;line-height:1.6;color:{{ warnBody }};text-wrap:pretty">{{ t.consentBody }}</p>
+              </div>
+              <div style="position:relative;background:{{ surface }};border-radius:{{ radiusMd }};padding:17px 19px;display:flex;gap:22px;flex-wrap:wrap;box-shadow:{{ shadow }}">
+                <sc-if value="{{ reasons }}" hint-placeholder-val="{{ false }}">
+                  <span style="position:absolute;top:10px;right:12px;font-size:.68rem;font-weight:800;width:20px;height:20px;border-radius:50%;background:{{ accent }};color:{{ onAccent }};display:flex;align-items:center;justify-content:center">4</span>
+                </sc-if>
+                <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:.68rem;font-weight:800;letter-spacing:1px;color:{{ muted2 }}">{{ t.expected }}</span><span style="font-size:1.3rem;font-weight:800">{{ money.expected }}</span></span>
+                <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:.68rem;font-weight:800;letter-spacing:1px;color:{{ muted2 }}">{{ t.ceiling }}</span><span style="font-size:1.3rem;font-weight:800">{{ money.ceiling }}</span></span>
+                <span style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:170px"><span style="font-size:.68rem;font-weight:800;letter-spacing:1px;color:{{ muted2 }}">{{ t.billedLabel }}</span><span style="font-size:.9rem;color:{{ muted }};line-height:1.5">{{ t.billed }}</span></span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isRunning }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="background:{{ surface }};border-radius:{{ radiusMd }};padding:19px 21px;display:flex;flex-direction:column;gap:13px;box-shadow:{{ shadow }}">
+                <sc-for list="{{ stages }}" as="s" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <span style="width:26px;height:26px;flex:0 0 26px;border-radius:50%;background:{{ s.dotBg }};color:{{ s.dotFg }};display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;animation:{{ s.anim }}">{{ s.glyph }}</span>
+                    <span style="font-size:.98rem;font-weight:{{ s.weight }};color:{{ s.color }}">{{ s.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="background:{{ surface }};border-radius:{{ radiusMd }};padding:19px 21px;box-shadow:{{ shadow }}">
+                <p style="margin:0;font-size:.95rem;line-height:1.75;color:{{ ink }};min-height:88px;text-wrap:pretty">{{ transcript }}</p>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:14px;animation:cp-in .3s ease both">
+              <div style="background:{{ surface }};border-radius:{{ radiusMd }};overflow:hidden;box-shadow:{{ shadow }}">
+                <div style="padding:14px 19px 0;display:flex;align-items:center;gap:10px">
+                  <span style="font-size:.68rem;font-weight:800;letter-spacing:1.2px;color:{{ accent }}">{{ t.transcriptLabel }}</span>
+                  <span style="font-size:.78rem;color:{{ muted2 }};font-family:ui-monospace,SFMono-Regular,Menlo,monospace">{{ meta.words }}</span>
+                  <button type="button" onClick="{{ copyTranscript }}" style="margin-left:auto;font:inherit;font-size:.78rem;font-weight:700;padding:7px 15px;border:0;border-radius:999px;background:{{ accentWash }};color:{{ accent }};cursor:pointer;min-height:36px">{{ copyLabel }}</button>
+                </div>
+                <p style="margin:0;padding:11px 19px 19px;font-size:.96rem;line-height:1.75;text-wrap:pretty">{{ transcript }}</p>
+              </div>
+              <div style="position:relative;background:{{ invBg }};color:{{ invFg }};border-radius:{{ radiusMd }};padding:19px 21px;display:flex;flex-direction:column;gap:11px">
+                <sc-if value="{{ reasons }}" hint-placeholder-val="{{ false }}">
+                  <span style="position:absolute;top:12px;right:14px;font-size:.68rem;font-weight:800;width:20px;height:20px;border-radius:50%;background:{{ accent }};color:{{ onAccent }};display:flex;align-items:center;justify-content:center">6</span>
+                </sc-if>
+                <span style="font-size:.68rem;font-weight:800;letter-spacing:1.2px;color:{{ invLabel }}">{{ t.summaryLabel }}</span>
+                <sc-for list="{{ summaryLines }}" as="ln" hint-placeholder-count="4">
+                  <p style="margin:0;font-size:.95rem;line-height:1.65;padding-left:{{ ln.pad }};text-wrap:pretty"><span style="font-weight:700">{{ ln.lead }}</span><span>{{ ln.rest }}</span></p>
+                </sc-for>
+              </div>
+              <div style="position:relative;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:2px">
+                <span style="font-size:.84rem;color:{{ muted2 }}">{{ costLine }}</span>
+                <sc-if value="{{ reasons }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:.68rem;font-weight:800;width:20px;height:20px;border-radius:50%;background:{{ accent }};color:{{ onAccent }};display:flex;align-items:center;justify-content:center">5</span>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative;display:flex;flex-direction:column;gap:9px">
+              <button type="button" onClick="{{ next }}" style="font:inherit;font-size:1.02rem;font-weight:800;width:100%;padding:17px 20px;border:0;border-radius:{{ radiusMd }};background:{{ accent }};color:{{ onAccent }};cursor:pointer;min-height:56px">{{ nextLabel }}</button>
+              <span style="font-size:.83rem;color:{{ muted2 }};text-align:center">{{ nextHint }}</span>
+              <sc-if value="{{ reasons }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute;top:-9px;right:-9px;font-size:.68rem;font-weight:800;width:20px;height:20px;border-radius:50%;background:{{ accent }};color:{{ onAccent }};display:flex;align-items:center;justify-content:center">7</span>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <p style="margin:8px 0 0;font-size:.76rem;color:{{ muted2 }};text-align:center;line-height:1.6">{{ t.footer }}</p>
+        </div>
+      </div>
+
+      <sc-if value="{{ reasons }}" hint-placeholder-val="{{ false }}">
+        <div style="border-left:1px solid {{ hairline }};background:{{ panelBg }};padding:28px 24px 60px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;max-height:100vh;overflow:auto">
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <span style="font-size:.66rem;font-weight:800;letter-spacing:1.5px;color:{{ muted2 }}">WHY THIS LOCALE LOOKS LIKE THIS</span>
+            <span style="font-family:{{ headFont }};font-size:1.2rem;font-weight:700">{{ current.native }}</span>
+            <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.76rem;color:{{ muted2 }}">locales/{{ current.code }}/ · {{ current.status }}</span>
+          </div>
+          <sc-for list="{{ notes }}" as="n" hint-placeholder-count="6">
+            <div style="display:flex;gap:12px">
+              <span style="flex:0 0 20px;font-size:.68rem;font-weight:800;width:20px;height:20px;border-radius:50%;background:{{ accent }};color:{{ onAccent }};display:flex;align-items:center;justify-content:center;margin-top:2px">{{ n.num }}</span>
+              <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+                <span style="font-size:.9rem;font-weight:700">{{ n.what }}</span>
+                <span style="font-size:.86rem;line-height:1.6;color:{{ muted }};text-wrap:pretty">{{ n.why }}</span>
+                <span style="font-size:.76rem;line-height:1.5;color:{{ muted2 }};font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-wrap:pretty">{{ n.evidence }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isDiff }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:34px 24px 70px;display:flex;justify-content:center">
+      <div style="width:100%;max-width:1180px;display:flex;flex-direction:column;gap:26px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <h1 style="margin:0;font-family:{{ headFont }};font-size:clamp(1.6rem,3.6vw,2.2rem);font-weight:800;line-height:1.15;max-width:24ch;text-wrap:balance">Four cultures, one app — and the reason for every difference.</h1>
+          <p style="margin:0;font-size:1rem;line-height:1.65;color:{{ muted }};max-width:70ch;text-wrap:pretty">Two languages, four cultures. Nothing below is a spelling variant: each row is a decision that has to be made per locale, and each one is a file in that locale's folder rather than a branch in the code.</p>
+        </div>
+
+        <div style="overflow:auto;border:1px solid {{ hairline }};border-radius:14px;background:{{ surface }}">
+          <table style="width:100%;border-collapse:collapse;font-size:.88rem;min-width:900px">
+            <thead>
+              <tr>
+                <th style="text-align:left;padding:14px 16px;border-bottom:2px solid {{ hairline }};font-size:.68rem;letter-spacing:1.2px;color:{{ muted2 }};width:150px">DIMENSION</th>
+                <sc-for list="{{ heads }}" as="h" hint-placeholder-count="4">
+                  <th style="text-align:left;padding:14px 16px;border-bottom:2px solid {{ hairline }};border-left:1px solid {{ hairline }}">
+                    <span style="display:flex;flex-direction:column;gap:3px">
+                      <span style="font-size:.94rem;font-weight:700">{{ h.native }}</span>
+                      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;color:{{ muted2 }};font-weight:400">{{ h.code }}</span>
+                    </span>
+                  </th>
+                </sc-for>
+                <th style="text-align:left;padding:14px 16px;border-bottom:2px solid {{ hairline }};border-left:2px solid {{ hairline }};font-size:.68rem;letter-spacing:1.2px;color:{{ muted2 }};width:290px">WHY IT MATTERS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="9">
+                <tr>
+                  <td style="padding:14px 16px;border-bottom:1px solid {{ hairline }};font-weight:700;vertical-align:top">{{ r.dim }}</td>
+                  <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="4">
+                    <td style="padding:14px 16px;border-bottom:1px solid {{ hairline }};border-left:1px solid {{ hairline }};vertical-align:top;line-height:1.55">
+                      <span style="display:flex;flex-direction:column;gap:5px">
+                        <span style="display:flex;gap:7px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:{{ c.swatch }};flex:0 0 11px"></span><span style="font-family:{{ c.font }};color:{{ ink }}">{{ c.value }}</span></span>
+                      </span>
+                    </td>
+                  </sc-for>
+                  <td style="padding:14px 16px;border-bottom:1px solid {{ hairline }};border-left:2px solid {{ hairline }};vertical-align:top;line-height:1.6;color:{{ muted }};text-wrap:pretty">{{ r.why }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px">
+          <sc-for list="{{ principles }}" as="p" hint-placeholder-count="4">
+            <div style="border:1px solid {{ hairline }};border-radius:14px;background:{{ surface }};padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:.66rem;font-weight:800;letter-spacing:1.3px;color:{{ accent }}">{{ p.tag }}</span>
+              <span style="font-size:1rem;font-weight:700;line-height:1.35">{{ p.title }}</span>
+              <p style="margin:0;font-size:.88rem;line-height:1.6;color:{{ muted }};text-wrap:pretty">{{ p.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+/* Four culture packs. Each is what would live in website/app/locales/<code>/ —
+   core.json (strings) + culture.json (money, dates, tone) — plus the theme tokens
+   that locale's folder points at. Deliberately no flags anywhere: native-script
+   names only, per the recorded designer decision. */
+
+const PACKS = {
+  'en-gb': {
+    native: 'English (UK)', status: 'LIVE · source of truth',
+    theme: {
+      pageBg: '#f3f2ef', surface: '#ffffff', panelBg: '#eeece7', ink: '#1b1f23',
+      muted: '#5a6169', muted2: '#8b9299', hairline: '#dcd9d2',
+      accent: '#7a2230', onAccent: '#ffffff', accentWash: '#f3e4e6',
+      barBg: '#1b1f23', barFg: '#f3f2ef', barAccent: '#a33344', onBarAccent: '#ffffff', invBg: '#1b1f23', invFg: '#f0efec', invLabel: '#c9a1a8',
+      warnBg: '#f7f2e6', warnEdge: '#a67c1f', warnInk: '#7a5a12', warnBody: '#4a412c',
+      dropLine: '#cbc6bb', shadow: 'none', radiusLg: '4px', radiusMd: '4px', radiusRound: '4px',
+      headFont: "Georgia,'Times New Roman',serif", uiFont: "system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", headWeight: 400
+    },
+    culture: { money: ['£0.014', '£0.055'], words: '218 words', date: '8 August 2026', number: '1,234.5' },
+    t: {
+      title: 'A voice note, in writing.', body: 'Drop one in and you will get the words back, along with the points that matter. It all happens in this browser.',
+      dropTitle: 'Drop the voice note here', dropTitleOver: 'Let go', dropSub: 'Or click to choose one from your device.', dropHint: '.opus · .ogg · .m4a',
+      demo: 'Try it on a sample — no key needed', remove: 'remove',
+      consentLabel: 'BEFORE WE START', consentBody: 'One of our model providers will process this recording on their servers, and we cannot promise which one. We store nothing, and your key never leaves this browser.',
+      expected: 'EXPECTED', ceiling: 'MOST IT CAN COST', billedLabel: 'BILLED TO', billed: 'your own OpenRouter account',
+      go: 'Yes — go ahead', goHint: 'Next: about ten seconds of listening, then the words.',
+      steps: ['Reading the audio', 'Writing it down', 'Picking out what matters'],
+      transcriptLabel: 'TRANSCRIPT', summaryLabel: 'THE SHORT VERSION', copy: 'copy', copied: 'copied',
+      again: 'Another voice note', againHint: 'Starts again from an empty page.',
+      running: 'Listening.', runningBody: 'Nothing to do — it takes about ten seconds.',
+      doneTitle: 'Done.', doneBody: 'The words, then the points. Copy whatever you need.',
+      consentTitle: 'One thing to agree first.', consentSub: 'This is the only question before the words come back.',
+      cost: 'This run cost £0.014 of a possible £0.055.', costDemo: 'Sample run — £0.000, nothing was charged.',
+      footer: 'Nothing tracked, nothing stored server-side.'
+    }
+  },
+  'en-us': {
+    native: 'English (US)', status: 'LIVE',
+    theme: {
+      pageBg: '#ffffff', surface: '#ffffff', panelBg: '#f6f8fb', ink: '#0d1219',
+      muted: '#4d5866', muted2: '#8592a3', hairline: '#e1e7ef',
+      accent: '#1657d0', onAccent: '#ffffff', accentWash: '#e6eefc',
+      barBg: '#0d1219', barFg: '#ffffff', barAccent: '#3d7ef0', onBarAccent: '#04101f', invBg: '#0d1219', invFg: '#f2f5f9', invLabel: '#93b4f0',
+      warnBg: '#fff6e8', warnEdge: '#e08c14', warnInk: '#96590a', warnBody: '#4a3a1e',
+      dropLine: '#c3d3ea', shadow: '0 4px 14px rgba(13,18,25,.07)', radiusLg: '14px', radiusMd: '10px', radiusRound: '14px',
+      headFont: "system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", uiFont: "system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", headWeight: 800
+    },
+    culture: { money: ['£0.014', '£0.055'], words: '218 words', date: 'August 8, 2026', number: '1,234.5' },
+    t: {
+      title: 'Your voice note, transcribed in 10 seconds.', body: 'Drop it in. Get the full transcript plus the key points — instantly, right in your browser. No account, no upload.',
+      dropTitle: 'Drop your voice note here', dropTitleOver: 'Drop it', dropSub: 'Or click to browse. Nothing leaves your device until you say go.', dropHint: '.opus · .ogg · .m4a',
+      demo: 'See it work — free, no key', remove: 'remove',
+      consentLabel: 'HEADS UP', consentBody: "One of our model providers processes this recording on their servers — we can't promise which one. We store nothing, and your key never leaves this browser.",
+      expected: 'TYPICAL COST', ceiling: 'HARD CAP', billedLabel: 'CHARGED TO', billed: 'your own OpenRouter account',
+      go: "Got it — let's go", goHint: 'Up next: about 10 seconds, then your transcript.',
+      steps: ['Loading the audio', 'Transcribing', 'Pulling the key points'],
+      transcriptLabel: 'TRANSCRIPT', summaryLabel: 'KEY POINTS', copy: 'Copy', copied: 'Copied',
+      again: 'Do another one', againHint: 'Clears the page and starts over.',
+      running: 'Transcribing…', runningBody: 'Sit tight — about 10 seconds.',
+      doneTitle: 'All set.', doneBody: 'Full transcript up top, key points below. Grab what you need.',
+      consentTitle: 'One quick thing.', consentSub: 'The only question before you get your transcript.',
+      cost: 'This run: £0.014 of a £0.055 cap.', costDemo: 'Demo run — £0.000, nothing charged.',
+      footer: 'Nothing tracked, nothing stored server-side.'
+    }
+  },
+  'pt-pt': {
+    native: 'Português (Portugal)', status: 'LIVE · revisto',
+    theme: {
+      pageBg: '#f6f4ee', surface: '#ffffff', panelBg: '#efece3', ink: '#16202e',
+      muted: '#556072', muted2: '#8b93a1', hairline: '#ddd8ca',
+      accent: '#1f4788', onAccent: '#ffffff', accentWash: '#e4eaf6',
+      barBg: '#16202e', barFg: '#f6f4ee', barAccent: '#4a7ec4', onBarAccent: '#0a1420', invBg: '#16202e', invFg: '#eef1f5', invLabel: '#9fb6da',
+      warnBg: '#f9ede3', warnEdge: '#b5642f', warnInk: '#8a4a20', warnBody: '#4a3626',
+      dropLine: '#c7c8bb', shadow: '0 2px 10px rgba(22,32,46,.06)', radiusLg: '8px', radiusMd: '8px', radiusRound: '8px',
+      headFont: "Georgia,'Times New Roman',serif", uiFont: "system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", headWeight: 400
+    },
+    culture: { money: ['0,014 £', '0,055 £'], words: '218 palavras', date: '8 de agosto de 2026', number: '1 234,5' },
+    t: {
+      title: 'Uma nota de voz, por escrito.', body: 'Coloque aqui o ficheiro e receberá a transcrição, além dos pontos essenciais. Tudo é processado neste navegador.',
+      dropTitle: 'Largue aqui a nota de voz', dropTitleOver: 'Pode largar', dropSub: 'Ou clique para escolher um ficheiro do seu dispositivo.', dropHint: '.opus · .ogg · .m4a',
+      demo: 'Experimente com um exemplo — sem chave', remove: 'remover',
+      consentLabel: 'ANTES DE COMEÇAR', consentBody: 'Um dos nossos fornecedores de modelos irá processar esta gravação nos servidores dele, e não podemos garantir qual. Não guardamos nada, e a sua chave nunca sai deste navegador.',
+      expected: 'CUSTO PREVISTO', ceiling: 'LIMITE MÁXIMO', billedLabel: 'COBRADO A', billed: 'a sua própria conta OpenRouter',
+      go: 'Sim — pode avançar', goHint: 'A seguir: cerca de dez segundos de processamento e depois o texto.',
+      steps: ['A ler o áudio', 'A transcrever', 'A destacar o essencial'],
+      transcriptLabel: 'TRANSCRIÇÃO', summaryLabel: 'EM RESUMO', copy: 'copiar', copied: 'copiado',
+      again: 'Outra nota de voz', againHint: 'Recomeça com uma página vazia.',
+      running: 'A transcrever.', runningBody: 'Não é preciso fazer nada — demora cerca de dez segundos.',
+      doneTitle: 'Concluído.', doneBody: 'Primeiro o texto, depois os pontos essenciais. Copie o que precisar.',
+      consentTitle: 'Uma autorização, apenas.', consentSub: 'É a única pergunta antes de receber o texto.',
+      cost: 'Esta execução custou 0,014 £ de um máximo de 0,055 £.', costDemo: 'Exemplo — 0,000 £, não foi cobrado nada.',
+      footer: 'Nada é registado, nada é guardado no servidor.'
+    }
+  },
+  'pt-br': {
+    native: 'Português (Brasil)', status: 'LIVE · revisado',
+    theme: {
+      pageBg: '#fbf7f0', surface: '#ffffff', panelBg: '#f5efe4', ink: '#1c2b26',
+      muted: '#54655e', muted2: '#8b9a93', hairline: '#e6ddcd',
+      accent: '#0e7c66', onAccent: '#ffffff', accentWash: '#dff1ec',
+      barBg: '#0e7c66', barFg: '#ffffff', barAccent: '#ffd9a0', onBarAccent: '#12352c', invBg: '#1c2b26', invFg: '#eef5f2', invLabel: '#8fd6c4',
+      warnBg: '#fdf0dc', warnEdge: '#dd8a1c', warnInk: '#96590a', warnBody: '#4a3c22',
+      dropLine: '#d8cbb4', shadow: '0 6px 20px rgba(28,43,38,.08)', radiusLg: '22px', radiusMd: '16px', radiusRound: '50%',
+      headFont: "system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", uiFont: "system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", headWeight: 800
+    },
+    culture: { money: ['£ 0,014', '£ 0,055'], words: '218 palavras', date: '8 de agosto de 2026', number: '1.234,5' },
+    t: {
+      title: 'Manda o áudio. A gente escreve.', body: 'Solta o arquivo aqui e você recebe a transcrição inteira mais os pontos principais. Tudo roda no seu navegador mesmo.',
+      dropTitle: 'Solte o áudio aqui', dropTitleOver: 'Pode soltar!', dropSub: 'Ou toque para escolher um arquivo do seu celular.', dropHint: '.opus · .ogg · .m4a',
+      demo: 'Ver funcionando — de graça, sem chave', remove: 'tirar',
+      consentLabel: 'SÓ UM AVISO', consentBody: 'Um dos nossos provedores de modelo vai processar essa gravação nos servidores dele — e a gente não tem como garantir qual. Não guardamos nada, e sua chave nunca sai desse navegador.',
+      expected: 'CUSTO NORMAL', ceiling: 'NÃO PASSA DE', billedLabel: 'QUEM PAGA', billed: 'você, direto na sua conta OpenRouter',
+      go: 'Beleza — pode ir', goHint: 'Agora: uns dez segundos e o texto aparece.',
+      steps: ['Preparando o áudio', 'Transcrevendo', 'Separando o que importa'],
+      transcriptLabel: 'TRANSCRIÇÃO', summaryLabel: 'RESUMÃO', copy: 'copiar', copied: 'copiado',
+      again: 'Fazer outro', againHint: 'Limpa a tela e começa de novo.',
+      running: 'Transcrevendo…', runningBody: 'Pode relaxar — uns dez segundos.',
+      doneTitle: 'Prontinho.', doneBody: 'O texto em cima, o resumo embaixo. Copia o que precisar.',
+      consentTitle: 'Tudo bem se a gente processar?', consentSub: 'É a única coisa que precisamos perguntar.',
+      cost: 'Essa rodada custou £ 0,014 de um teto de £ 0,055.', costDemo: 'Exemplo — £ 0,000, não foi cobrado nada.',
+      footer: 'Nada é rastreado, nada fica guardado no servidor.'
+    }
+  }
+}
+
+const NOTES = {
+  'en-gb': [
+    { num: 1, what: 'Native-script names, never flags', why: 'One flag never equals one language, and flags exclude diaspora speakers — a Portuguese speaker in Luxembourg is not served by a Portuguese flag. The picker is the same control in every locale.', evidence: 'designer decision, Send review 03/02 §3.6 — recorded there, implemented here' },
+    { num: 2, what: 'Understated, serif, low contrast', why: 'The source-of-truth locale reads as an institution rather than a pitch: Georgia headings, near-zero radius, no shadows, claret accent. Restraint is the cultural signal.', evidence: 'locales/en-gb/ is canonical — every other locale key-diffs against it' },
+    { num: 3, what: '“Voice note”, “device”, “browser”', why: 'British product vocabulary. The en-us pack changes these words even though the language is identical — which is exactly why culture, not language, is the unit.', evidence: 'core.json · culture is the unit, not language (D-2026-03-02-003)' },
+    { num: 4, what: 'Symbol first: £0.014', why: 'Currency is GBP in all four packs by decision, but its formatting still belongs to the locale. Here it is symbol-first with a decimal point.', evidence: 'culture.json {code:"GBP", symbol:"£", usdRate:0.79}' },
+    { num: 5, what: 'Dates and numbers via Intl', why: '8 August 2026 · 1,234.5 — driven by the pack’s intlLocale, never hand-formatted, so a new locale is a data change rather than a string-building change.', evidence: 'Intl.NumberFormat / Intl.DateTimeFormat keyed on the locale' },
+    { num: 6, what: 'The summary is written in this culture', why: 'The artefact is the fourth language surface. The pack’s tone note rides into the prompt template beside {{language}}, so the debrief matches the register — the transcript stays in whatever was spoken.', evidence: 'options.language through workflows/standard.json into prompts/*.md' },
+    { num: 7, what: 'No fixed-width buttons anywhere', why: 'Every label here is the shortest of the four. The same button holds “Sim — pode avançar” and a German string 108% longer, so buttons size to content in all locales.', evidence: 'text-expansion budget; logical CSS properties from day one' }
+  ],
+  'en-us': [
+    { num: 1, what: 'Same picker, different pack', why: 'Switching locale swaps strings and tokens and re-renders in place — an in-flight pass and a saved key both survive it. No page reload, no URL parameter.', evidence: 'wa:locale-changed; no URL parameter selects anything (issue 041)' },
+    { num: 2, what: 'Benefit-forward, high contrast', why: 'The headline states the outcome and the time — “transcribed in 10 seconds” — where en-gb states the object. Bold sans, white ground, saturated blue: confident rather than restrained.', evidence: 'same language as en-gb, different culture pack' },
+    { num: 3, what: '“Browse”, “heads up”, “sit tight”', why: 'A different register, not different spelling. If the two English packs were one file with spelling swaps, none of this could exist.', evidence: 'culture is the unit — pt-pt/pt-br proves the same point in the other language' },
+    { num: 4, what: 'Still £, on purpose', why: 'A US visitor sees GBP because payments are unsettled and one currency sidesteps exchange-rate and pricing-parity problems. It is declared in this pack, so the day it becomes USD is a data edit.', evidence: 'Dinis, 8 Aug: GBP everywhere for now, declared per locale' },
+    { num: 5, what: 'August 8, 2026 · 1,234.5', why: 'Month-first ordering is the visible half; the invisible half is that no code anywhere builds a date string by hand.', evidence: 'culture.json intlLocale: en-US' },
+    { num: 6, what: '“Key points”, not “the short version”', why: 'The summary heading and the summary itself both come from the pack. Translating the chrome but not the artefact would leave the product half-localised.', evidence: 'prompts read the culture’s tone note' },
+    { num: 7, what: 'Labels are shortest here', why: 'Which makes this the locale most likely to hide a layout bug. Review screenshots are generated per locale so the widest string, not the narrowest, sets the layout.', evidence: 'qa-to-docs journeys run per LIVE locale' }
+  ],
+  'pt-pt': [
+    { num: 1, what: 'Two Portuguese packs, not one', why: 'pt-PT and pt-BR are separate folders with separate review states. Neither falls back to the other: a missing key here goes straight to en-gb, one hop, no chains.', evidence: 'one-hop fallback to en-gb; no de-ch → de-de chains' },
+    { num: 2, what: 'Formal register, third person', why: '“Coloque aqui o ficheiro… receberá a transcrição” — the pack addresses the reader formally throughout. That is a tone decision recorded in culture.json, not a translator’s improvisation.', evidence: 'culture.json tone/formality note' },
+    { num: 3, what: 'ficheiro · dispositivo · navegador', why: 'Where pt-BR says arquivo, this pack says ficheiro; ecrã not tela; utilizador not usuário. Same language, different words for the same object — the clearest possible evidence for the split.', evidence: 'the Translator role: “different cultures, not just different spellings”' },
+    { num: 4, what: 'Symbol last: 0,014 £', why: 'Comma decimal, symbol after the amount, space before it. Same GBP amount as en-gb, formatted by this locale’s rules.', evidence: 'culture.json {code:"GBP"} + intlLocale pt-PT' },
+    { num: 5, what: '1 234,5 — space as thousands', why: 'A narrow space, not a point. pt-BR uses a point for the same number, which is why number formatting cannot be shared between them.', evidence: 'Intl.NumberFormat(pt-PT)' },
+    { num: 6, what: 'The summary is in European Portuguese', why: 'Not merely “in Portuguese”. The tone note carried into the prompt is what stops the model returning Brazilian phrasing to a Lisbon reader.', evidence: 'artefact language defaults to the UI locale (open question §6.2)' },
+    { num: 7, what: 'Longest strings of the four', why: 'Portuguese runs roughly 20–30% longer than English here. This pack is the layout stress test, which is why it ships in the first milestone rather than the fourth.', evidence: 'no fixed-width buttons; M2 ships pt-PT and pt-BR together' }
+  ],
+  'pt-br': [
+    { num: 1, what: 'A different culture can look different', why: 'Rounded, warm, higher-energy — a circular drop target where pt-PT has a square one. The locale folder holds more than strings: it can hold culture-specific affordances and imagery too.', evidence: 'a locale’s folder is the home for everything culture-specific' },
+    { num: 2, what: 'Informal, first person plural', why: '“Manda o áudio. A gente escreve.” Addressing the reader informally is correct here and would be wrong in pt-PT. Same language, opposite register.', evidence: 'culture.json tone: informal' },
+    { num: 3, what: 'arquivo · celular · tela', why: 'The vocabulary diverges from pt-PT in ordinary nouns, not edge cases. A single “pt” locale would have to pick one and be wrong for half its readers.', evidence: 'pt-pt and pt-br are separate first-class locales' },
+    { num: 4, what: 'Symbol first, with a space: £ 0,014', why: 'Brazilian convention places the symbol before with a space and uses a comma decimal — a third formatting of the same GBP figure.', evidence: 'culture.json {code:"GBP"} + intlLocale pt-BR' },
+    { num: 5, what: '1.234,5 — point as thousands', why: 'The exact inverse of en-gb, and different again from pt-PT’s space. Three formats for one number across four packs.', evidence: 'Intl.NumberFormat(pt-BR)' },
+    { num: 6, what: '“Resumão”', why: 'There is no good pt-PT equivalent — it is affectionate and slightly informal, and it is the right word here. Keys hold meaning per culture, not one string translated four ways.', evidence: 'translate keys, not pages — per-domain files, ~30 keys a job' },
+    { num: 7, what: 'Ships alongside pt-PT, not after it', why: 'Shipping the pair together in M2 proves the language/culture split is real before ten more locales are built on the assumption.', evidence: 'M2 — pt-PT and pt-BR together, end to end' }
+  ]
+}
+
+const ROWS = [
+  { dim: 'Accent colour', why: 'The theme is a token sheet the locale folder points at, so a culture’s palette is a CSS file rather than a fork of the components.', vals: ['Claret — restrained, institutional', 'Saturated blue — confident, high contrast', 'Azulejo blue on limewash — Atlantic, formal', 'Deep green on warm cream — warm, high energy'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'] },
+  { dim: 'Typography', why: 'Type carries as much cultural signal as colour. Serif reads institutional in en-gb and pt-PT; bold sans reads direct in en-us and pt-BR.', vals: ['Georgia headings, 400 weight', 'System sans, 800 weight', 'Georgia headings, 400 weight', 'System sans, 800 weight'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'] },
+  { dim: 'Shape language', why: 'Radius and shadow are tokens, so “this culture feels softer” is a two-line change rather than a redesign.', vals: ['4px, no shadow', '10–14px, light shadow', '8px, light shadow', '16–22px, soft shadow, circular drop target'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'] },
+  { dim: 'Register', why: 'Recorded in culture.json as a tone note, which also rides into the prompt templates so the artefact matches the chrome.', vals: ['Understated, polite, indirect', 'Direct, benefit-first, warm', 'Formal, third person, precise', 'Informal, first person plural'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'] },
+  { dim: 'Vocabulary', why: 'The single strongest argument for culture-as-unit: same language, different everyday nouns.', vals: ['voice note · device', 'voice memo · browse', 'ficheiro · dispositivo · ecrã', 'arquivo · celular · tela'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'] },
+  { dim: 'Currency (all GBP)', why: 'One currency everywhere on purpose — it sidesteps exchange-rate and pricing-parity problems while payments are unsettled. Declared per locale, so changing it later is a data edit.', vals: ['£0.014', '£0.014', '0,014 £', '£ 0,014'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'], mono: true },
+  { dim: 'Numbers', why: 'Three different formats across four packs. Hand-formatting a number anywhere in the code makes one of them wrong.', vals: ['1,234.5', '1,234.5', '1 234,5', '1.234,5'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'], mono: true },
+  { dim: 'Dates', why: 'Driven by Intl.DateTimeFormat on the pack’s intlLocale — never a template string.', vals: ['8 August 2026', 'August 8, 2026', '8 de agosto de 2026', '8 de agosto de 2026'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'], mono: true },
+  { dim: 'Artefact language', why: 'The summary and infographic are written by the model, so “the app in Portuguese” has to mean the debrief too — not just the buttons. The transcript stays in whatever was spoken.', vals: ['English (UK) summary', 'English (US) summary', 'European Portuguese summary', 'Brazilian Portuguese summary'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'] },
+  { dim: 'Fallback', why: 'One hop, no chains. pt-BR does not fall back to pt-PT — a half-translated Brazilian screen showing European phrasing is worse than showing English.', vals: ['— (source of truth)', '→ en-gb', '→ en-gb', '→ en-gb'], swatches: ['#7a2230', '#1657d0', '#1f4788', '#0e7c66'], mono: true }
+]
+
+const PRINCIPLES = [
+  { tag: 'THE UNIT', title: 'Culture, not language', body: 'Four packs for two languages. Every row above is a decision that differs inside a language as often as between languages — which is why a “pt” locale could not be correct for anyone.' },
+  { tag: 'THE PICKER', title: 'Native names, no flags', body: 'One flag never equals one language, and flags exclude diaspora speakers. Names appear in their own script, LIVE locales are clickable, drafts are visible but marked — gated per locale, never a global SOON.' },
+  { tag: 'THE MONEY', title: 'GBP everywhere, declared not hardcoded', body: 'All four packs quote GBP while payments are unsettled. Because the currency lives in each culture.json rather than in config.js, the day one locale wants € it is a data edit and nothing else moves.' },
+  { tag: 'THE UNIT OF WORK', title: 'A file, not a locale', body: 'Per-domain files mean a translation job is “chat.json for pt-br” — about thirty keys. The files a locale ships are the support it has; anything absent falls back to en-gb key by key, so a locale can go live incomplete and honest.' }
+]
+
+class Component extends DCLogic {
+  state = { code: 'en-gb', view: 'app', reasons: true, phase: 'idle', stages: [], transcript: '', summary: '', demo: false, over: false, fileName: '', copied: false }
+  fileRef = React.createRef()
+
+  async componentDidMount () { this.api = await import('./tool-adapter.js'); this.forceUpdate() }
+
+  setLocale = (code) => () => this.setState({ code })
+  toggleReasons = () => this.setState(s => ({ reasons: !s.reasons }))
+  toggleView = () => this.setState(s => ({ view: s.view === 'app' ? 'diff' : 'app' }))
+
+  browse = () => this.fileRef.current && this.fileRef.current.click()
+  onDragOver = (e) => { e.preventDefault(); if (!this.state.over) this.setState({ over: true }) }
+  onDragLeave = () => this.setState({ over: false })
+  onDrop = (e) => { e.preventDefault(); this.setState({ over: false }); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) this.accept(f) }
+  onFile = (e) => { const f = e.target.files && e.target.files[0]; if (f) this.accept(f) }
+  accept = (f) => this.setState({ phase: 'consent', fileName: f.name, demo: false })
+
+  runDemo = () => this.setState({ demo: true, fileName: 'exemplo.opus' }, this.start)
+  reset = () => this.setState({ phase: 'idle', transcript: '', summary: '', fileName: '', demo: false })
+
+  next = () => {
+    const p = this.state.phase
+    if (p === 'consent') return this.start()
+    if (p === 'done') return this.reset()
+  }
+
+  start = () => {
+    const t = PACKS[this.state.code].t
+    this.setState({ phase: 'running', transcript: '', summary: '', stages: t.steps.map((label, i) => ({ id: i, label, state: 'wait' })) })
+    const mark = (i, state) => this.setState(s => ({ stages: s.stages.map(x => x.id === i ? { ...x, state } : x) }))
+    this.api.runPass({
+      variant: 'culture-' + this.state.code, infographic: false,
+      onStage: (stage, payload) => {
+        if (stage === 'ingest') mark(0, 'run')
+        if (stage === 'transcribe') { mark(0, 'done'); mark(1, 'run') }
+        if (stage === 'chunk') this.setState({ transcript: payload })
+        if (stage === 'transcript') { mark(1, 'done'); this.setState({ transcript: payload }) }
+        if (stage === 'summarise') mark(2, 'run')
+        if (stage === 'summary') { mark(2, 'done'); this.setState({ summary: payload }) }
+        if (stage === 'complete') setTimeout(() => this.setState({ phase: 'done' }), 400)
+      }
+    })
+  }
+
+  copyTranscript = () => { try { navigator.clipboard.writeText(this.state.transcript) } catch (e) {} ; this.setState({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1400) }
+
+  parseLines (text) {
+    return String(text || '').split('\n').filter(Boolean).map(raw => {
+      const bullet = raw.trim().startsWith('- ')
+      const body = bullet ? raw.trim().slice(2) : raw.trim()
+      const m = body.match(/^\*\*(.+?)\*\*(.*)$/)
+      return { pad: bullet ? '16px' : '0px', lead: m ? (bullet ? '· ' : '') + m[1] : (bullet ? '· ' : ''), rest: m ? m[2].replace(/\*\*/g, '') : body.replace(/\*\*/g, '') }
+    })
+  }
+
+  renderVals () {
+    const code = this.state.code
+    const pack = PACKS[code]
+    const th = pack.theme
+    const t = pack.t
+    const p = this.state.phase
+    const demo = this.state.demo
+
+    const title = { idle: t.title, consent: t.consentTitle, running: t.running, done: t.doneTitle }[p]
+    const body = { idle: t.body, consent: t.consentSub, running: t.runningBody, done: t.doneBody }[p]
+    const nextLabel = { consent: t.go, done: t.again }[p]
+    const nextHint = { consent: t.goHint, done: t.againHint }[p]
+
+    return {
+      ...th, t,
+      locales: Object.keys(PACKS).map(c => ({
+        code: c, native: PACKS[c].native, onPick: this.setLocale(c),
+        weight: c === code ? 800 : 500,
+        bg: c === code ? th.barAccent : 'transparent',
+        fg: c === code ? th.onBarAccent : th.barFg,
+        border: c === code ? th.barAccent : 'rgba(127,127,127,.4)'
+      })),
+      current: { native: pack.native, code, status: pack.status },
+      title, body,
+      isApp: this.state.view === 'app', isDiff: this.state.view === 'diff',
+      viewLabel: this.state.view === 'app' ? 'Compare all four →' : '← Back to the app',
+      reasons: this.state.reasons,
+      reasonLabel: this.state.reasons ? 'Reasons on' : 'Reasons off',
+      reasonBg: this.state.reasons ? th.barAccent : 'transparent',
+      reasonFg: this.state.reasons ? th.onBarAccent : th.barFg,
+      reasonBorder: this.state.reasons ? th.barAccent : 'rgba(127,127,127,.4)',
+      appCols: this.state.reasons ? 'minmax(0,1fr) minmax(300px,400px)' : 'minmax(0,1fr)',
+      isIdle: p === 'idle', isConsent: p === 'consent', isRunning: p === 'running', isDone: p === 'done',
+      dropTitle: this.state.over ? t.dropTitleOver : t.dropTitle,
+      dropLine: this.state.over ? th.accent : th.dropLine,
+      fileName: this.state.fileName,
+      money: { expected: pack.culture.money[0], ceiling: pack.culture.money[1] },
+      meta: { words: pack.culture.words },
+      stages: this.state.stages.map(s => ({
+        ...s,
+        glyph: s.state === 'done' ? '✓' : s.state === 'run' ? '•' : '',
+        dotBg: s.state === 'done' ? th.accent : s.state === 'run' ? th.accent : th.accentWash,
+        dotFg: s.state === 'wait' ? th.muted2 : th.onAccent,
+        color: s.state === 'wait' ? th.muted2 : th.ink,
+        weight: s.state === 'run' ? 700 : 500,
+        anim: s.state === 'run' ? 'cp-pulse 1.2s infinite' : 'none'
+      })),
+      transcript: this.state.transcript,
+      summaryLines: this.parseLines(this.state.summary),
+      copyLabel: this.state.copied ? t.copied : t.copy,
+      costLine: demo ? t.costDemo : t.cost,
+      hasNext: !!nextLabel, nextLabel, nextHint,
+      notes: NOTES[code],
+      heads: Object.keys(PACKS).map(c => ({ code: c, native: PACKS[c].native })),
+      rows: ROWS.map(r => ({
+        dim: r.dim, why: r.why,
+        cells: r.vals.map((v, i) => ({ value: v, swatch: r.swatches[i], font: r.mono ? 'ui-monospace,SFMono-Regular,Menlo,monospace' : 'inherit' }))
+      })),
+      principles: PRINCIPLES,
+      fileRef: this.fileRef,
+      browse: this.browse, onDragOver: this.onDragOver, onDragLeave: this.onDragLeave, onDrop: this.onDrop,
+      onFile: this.onFile, runDemo: this.runDemo, reset: this.reset, next: this.next,
+      copyTranscript: this.copyTranscript, toggleReasons: this.toggleReasons, toggleView: this.toggleView
+    }
+  }
+}
+
+</script>
+</body>
+</html>

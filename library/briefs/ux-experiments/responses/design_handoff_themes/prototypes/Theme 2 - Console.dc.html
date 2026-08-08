@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html,body{margin:0;padding:0;background:#0e1113}
+  *{box-sizing:border-box}
+  a{color:#35d0ba;text-decoration:none}
+  a:hover{color:#7ee8d8;text-decoration:underline}
+  @keyframes cn-blink{0%,100%{opacity:0}50%{opacity:1}}
+  @keyframes cn-pulse{0%,100%{opacity:.45}50%{opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0e1113;color:#dfe6e9;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;display:flex;flex-direction:column">
+
+  <div style="border-bottom:1px solid #262c31;padding:11px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <span style="color:#35d0ba;font-weight:700;font-size:.86rem">voice-note</span>
+    <span style="color:#4d585f;font-size:.8rem">/ transcribe</span>
+    <span style="margin-left:auto;display:flex;gap:12px;align-items:center">
+      <span style="font-size:.74rem;color:#8a969d">{{ modeLabel }}</span>
+      <button type="button" onClick="{{ toggleWidth }}" style="font:inherit;font-size:.74rem;padding:5px 11px;border:1px solid #2f373d;border-radius:4px;background:#161a1d;color:#8a969d;cursor:pointer" style-hover="border-color:#35d0ba;color:#35d0ba">{{ widthLabel }}</button>
+    </span>
+  </div>
+
+  <div style="flex:1;width:100%;max-width:{{ shellWidth }};margin:0 auto;display:grid;grid-template-columns:{{ cols }};gap:0;align-items:start">
+
+    <div style="border-right:{{ railBorder }};border-bottom:{{ railBorderB }};padding:24px 22px;display:flex;flex-direction:column;gap:20px;position:{{ railPos }};top:0">
+      <span style="font-size:.7rem;letter-spacing:1.6px;color:#4d585f">PIPELINE</span>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:5px;background:{{ r.bg }};border-left:2px solid {{ r.edge }}">
+            <span style="font-size:.72rem;color:{{ r.tagColor }};width:44px;flex:0 0 44px">{{ r.tag }}</span>
+            <span style="font-size:.84rem;color:{{ r.color }};font-weight:{{ r.weight }}">{{ r.label }}</span>
+            <span style="margin-left:auto;font-size:.7rem;color:#4d585f">{{ r.note }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="border-top:1px solid #262c31;padding-top:16px;display:flex;flex-direction:column;gap:9px">
+        <span style="font-size:.7rem;letter-spacing:1.6px;color:#4d585f">SPEND</span>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:1.5rem;color:#35d0ba">{{ spent }}</span>
+          <span style="font-size:.76rem;color:#4d585f">/ {{ ceiling }} ceiling</span>
+        </div>
+        <div style="height:5px;background:#1c2225;border-radius:3px;overflow:hidden"><div style="height:100%;width:{{ spendPct }};background:#35d0ba"></div></div>
+        <span style="font-size:.72rem;color:#8a969d;line-height:1.5">{{ spendNote }}</span>
+      </div>
+    </div>
+
+    <div style="padding:28px 24px 60px;display:flex;flex-direction:column;gap:22px;min-width:0">
+
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <span style="font-size:.72rem;color:#f0b429;letter-spacing:1.2px">{{ statusTag }}</span>
+        <h1 style="margin:0;font-size:clamp(1.3rem,3.2vw,1.9rem);line-height:1.3;font-weight:600;color:#fff;max-width:24ch;text-wrap:balance">{{ title }}</h1>
+        <p style="margin:0;font-size:.9rem;line-height:1.7;color:#8a969d;max-width:62ch;text-wrap:pretty">{{ body }}</p>
+      </div>
+
+      <sc-if value="{{ isIdle }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div onClick="{{ browse }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="border:1px dashed {{ dropLine }};border-radius:8px;background:{{ dropBg }};padding:56px 28px;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;transition:background .15s,border-color .15s">
+            <span style="font-size:1.6rem;color:{{ dropIcon }}">{{ dropGlyph }}</span>
+            <span style="font-size:1.02rem;color:#fff;text-align:center">{{ dropTitle }}</span>
+            <span style="font-size:.82rem;color:#8a969d">click to choose · drag anywhere in this box</span>
+            <span style="font-size:.74rem;color:#4d585f;letter-spacing:.5px">.opus .ogg .m4a — stays local until you confirm</span>
+          </div>
+          <input type="file" ref="{{ fileRef }}" onChange="{{ onFile }}" accept=".opus,.ogg,.m4a,audio/*" style="display:none" />
+          <button type="button" onClick="{{ runDemo }}" style="font:inherit;font-size:.9rem;font-weight:600;padding:14px;border:1px solid #35d0ba;border-radius:8px;background:rgba(53,208,186,.08);color:#35d0ba;cursor:pointer;min-height:48px" style-hover="background:rgba(53,208,186,.18)">▶ run the demo — no key, £0.000</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPrivacy }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="border:1px solid #262c31;border-radius:8px;background:#161a1d;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <span style="color:#35d0ba;font-size:.8rem">file</span>
+            <span style="font-size:.84rem;color:#fff">{{ fileName }}</span>
+            <button type="button" onClick="{{ reset }}" style="margin-left:auto;font:inherit;font-size:.78rem;color:#8a969d;background:none;border:0;cursor:pointer" style-hover="color:#f0b429">remove</button>
+          </div>
+          <div style="border:1px solid #4a3a12;border-radius:8px;background:rgba(240,180,41,.07);padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:.72rem;letter-spacing:1.2px;color:#f0b429">CONSENT REQUIRED — ROUTED MODE</span>
+            <p style="margin:0;font-size:.9rem;line-height:1.7;color:#e6d9b8;max-width:62ch">One of our model providers processes this recording on their servers. We cannot promise which one. We store nothing. Your key never leaves this browser.</p>
+          </div>
+          <div style="display:flex;gap:26px;flex-wrap:wrap;border:1px solid #262c31;border-radius:8px;padding:16px 18px">
+            <span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:.7rem;letter-spacing:1.2px;color:#4d585f">EXPECTED</span><span style="font-size:1.2rem;color:#fff">£0.014</span></span>
+            <span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:.7rem;letter-spacing:1.2px;color:#4d585f">CEILING</span><span style="font-size:1.2rem;color:#fff">£0.055</span></span>
+            <span style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:190px"><span style="font-size:.7rem;letter-spacing:1.2px;color:#4d585f">BILLED TO</span><span style="font-size:.84rem;color:#8a969d;line-height:1.5">your OpenRouter account, direct</span></span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isKey }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <input type="password" placeholder="sk-or-v1-…" value="{{ keyDraft }}" onInput="{{ onKeyInput }}" style="font:inherit;font-size:.94rem;padding:15px 16px;border:1px solid #2f373d;border-radius:8px;background:#161a1d;color:#dfe6e9;min-height:50px" />
+          <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem">
+            <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">get a key →</a>
+            <a href="#" onClick="{{ useDemo }}">run the demo instead</a>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isRunning }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid #262c31;border-radius:8px;background:#12171a;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+          <span style="font-size:.72rem;letter-spacing:1.2px;color:#4d585f">OUTPUT — LIVE</span>
+          <p style="margin:0;font-size:.92rem;line-height:1.85;color:#cfe9e3;min-height:110px;text-wrap:pretty">{{ liveTranscript }}<span style="color:#35d0ba;animation:cn-blink 1s infinite">█</span></p>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="border:1px solid #262c31;border-radius:8px;background:#12171a;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #262c31;background:#161a1d">
+              <span style="font-size:.72rem;letter-spacing:1.4px;color:#35d0ba">TRANSCRIPT</span>
+              <span style="font-size:.72rem;color:#4d585f">1:37 · 218 words · £0.011</span>
+              <button type="button" onClick="{{ copyTranscript }}" style="margin-left:auto;font:inherit;font-size:.75rem;padding:4px 11px;border:1px solid #2f373d;border-radius:5px;background:#0e1113;color:#8a969d;cursor:pointer" style-hover="border-color:#35d0ba;color:#35d0ba">{{ copyLabel }}</button>
+            </div>
+            <p style="margin:0;padding:18px 20px;font-size:.92rem;line-height:1.85;color:#cfe9e3;text-wrap:pretty">{{ transcript }}</p>
+          </div>
+          <div style="border:1px solid #262c31;border-radius:8px;background:#12171a;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #262c31;background:#161a1d">
+              <span style="font-size:.72rem;letter-spacing:1.4px;color:#35d0ba">SUMMARY</span>
+              <span style="font-size:.72rem;color:#4d585f">4 points · £0.003</span>
+            </div>
+            <div style="padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ summaryLines }}" as="ln" hint-placeholder-count="4">
+                <p style="margin:0;font-size:.9rem;line-height:1.7;padding-left:{{ ln.pad }};color:#dfe6e9;text-wrap:pretty"><span style="color:#fff;font-weight:700">{{ ln.lead }}</span><span>{{ ln.rest }}</span></p>
+              </sc-for>
+            </div>
+          </div>
+          <button type="button" onClick="{{ reset }}" style="font:inherit;font-size:.9rem;font-weight:600;align-self:flex-start;padding:13px 26px;border:1px solid #2f373d;border-radius:8px;background:#161a1d;color:#dfe6e9;cursor:pointer;min-height:48px" style-hover="border-color:#35d0ba;color:#35d0ba">↺ another voice note</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <button type="button" onClick="{{ next }}" style="font:inherit;font-size:.95rem;font-weight:700;align-self:flex-start;padding:15px 30px;border:0;border-radius:8px;background:#35d0ba;color:#062b26;cursor:pointer;min-height:50px" style-hover="background:#7ee8d8">{{ nextLabel }}</button>
+          <span style="font-size:.78rem;color:#8a969d">next → {{ nextHint }}</span>
+        </div>
+      </sc-if>
+
+      <p style="margin:14px 0 0;font-size:.74rem;color:#4d585f;line-height:1.7">nothing tracked, nothing stored server-side · other themes: <a href="Theme%201%20-%20Studio.dc.html">studio</a> · <a href="Theme%203%20-%20Card.dc.html">card</a></p>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { phase: 'idle', done: {}, transcript: '', summary: '', keyDraft: '', demo: false, phone: false, copied: false, over: false, fileName: '', source: '', spent: 0 }
+  fileRef = React.createRef()
+
+  async componentDidMount () { this.api = await import('./tool-adapter.js'); this.api.bump('arrival', 'console'); this.forceUpdate() }
+
+  browse = () => this.fileRef.current && this.fileRef.current.click()
+  onDragOver = (e) => { e.preventDefault(); if (!this.state.over) this.setState({ over: true }) }
+  onDragLeave = () => this.setState({ over: false })
+  onDrop = (e) => { e.preventDefault(); this.setState({ over: false }); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) this.accept(f) }
+  onFile = (e) => { const f = e.target.files && e.target.files[0]; if (f) this.accept(f) }
+  accept = (f) => { this.api.bump('note:chosen', 'console'); this.setState({ phase: 'privacy', fileName: f.name, source: 'own', done: { file: true } }) }
+
+  runDemo = () => { this.api.bump('demo:run', 'console'); this.setState({ demo: true, source: 'demo', fileName: 'sample.opus', done: { file: true, consent: true, key: true } }, this.start) }
+  useDemo = (e) => { e.preventDefault(); this.setState({ demo: true }, this.start) }
+  onKeyInput = (e) => this.setState({ keyDraft: e.target.value })
+  reset = () => this.setState({ phase: 'idle', transcript: '', summary: '', fileName: '', source: '', done: {}, spent: 0, demo: false })
+
+  next = () => {
+    const p = this.state.phase
+    if (p === 'privacy') {
+      this.api.bump('routed:accepted', 'console')
+      this.setState(s => ({ done: { ...s.done, consent: true } }))
+      return (this.api.getKey() || this.state.demo) ? this.start() : this.setState({ phase: 'key' })
+    }
+    if (p === 'key' && this.state.keyDraft.trim()) {
+      this.api.saveKey(this.state.keyDraft.trim()); this.api.bump('key:saved', 'console')
+      this.setState(s => ({ done: { ...s.done, key: true } }), this.start)
+    }
+  }
+
+  start = () => {
+    this.setState({ phase: 'running', transcript: '', summary: '', running: 'transcribe' })
+    this.api.runPass({
+      variant: 'console', infographic: false,
+      onStage: (stage, payload) => {
+        if (stage === 'chunk') this.setState({ transcript: payload })
+        if (stage === 'transcript') this.setState(s => ({ transcript: payload, done: { ...s.done, transcribe: true }, spent: 0.011 }))
+        if (stage === 'summary') this.setState(s => ({ summary: payload, done: { ...s.done, summarise: true }, spent: 0.014 }))
+        if (stage === 'complete') setTimeout(() => this.setState({ phase: 'done' }), 400)
+      }
+    })
+  }
+
+  copyTranscript = () => { try { navigator.clipboard.writeText(this.state.transcript) } catch (e) {} ; this.setState({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1400) }
+  toggleWidth = () => this.setState(s => ({ phone: !s.phone }))
+
+  parseLines (text) {
+    return String(text || '').split('\n').filter(Boolean).map(raw => {
+      const bullet = raw.trim().startsWith('- ')
+      const body = bullet ? raw.trim().slice(2) : raw.trim()
+      const m = body.match(/^\*\*(.+?)\*\*(.*)$/)
+      return { pad: bullet ? '16px' : '0px', lead: m ? (bullet ? '· ' : '') + m[1] : (bullet ? '· ' : ''), rest: m ? m[2].replace(/\*\*/g, '') : body.replace(/\*\*/g, '') }
+    })
+  }
+
+  renderVals () {
+    const p = this.state.phase
+    const d = this.state.done
+    const demo = this.state.source === 'demo'
+    const copy = {
+      idle: { statusTag: 'READY — NOTHING SENT', title: 'Turn a voice note into words you can read.', body: 'Everything runs in this browser. The steps on the left are the whole job — they light up as they happen, and none of them start without you.' },
+      privacy: { statusTag: 'WAITING ON YOU — STEP 2 OF 5', title: 'This is the only decision.', body: 'Say yes and it runs to the end without asking you anything else.' },
+      key: { statusTag: 'WAITING ON YOU — STEP 3 OF 5', title: 'Your OpenRouter key.', body: 'Stored in this browser, sent only to OpenRouter, never to us. Paste once and you will not be asked again.' },
+      running: { statusTag: 'RUNNING — NOTHING TO DO', title: demo ? 'Transcribing the sample.' : 'Transcribing.', body: 'The words appear as they arrive. It takes about ten seconds, then the summary.' },
+      done: { statusTag: 'COMPLETE', title: 'Both done.', body: demo ? 'That was the demo and it cost nothing. Drop in one of your own to run it for real.' : 'Transcript and summary below. Copy what you need, or run another.' }
+    }[p]
+
+    const railDef = [
+      { id: 'file', label: 'voice note', note: this.state.fileName ? 'loaded' : '' },
+      { id: 'consent', label: 'consent', note: '' },
+      { id: 'key', label: 'key', note: this.state.demo ? 'skipped' : '' },
+      { id: 'transcribe', label: 'transcribe', note: d.transcribe ? '£0.011' : '' },
+      { id: 'summarise', label: 'summarise', note: d.summarise ? '£0.003' : '' }
+    ]
+    const activeId = p === 'idle' ? 'file' : p === 'privacy' ? 'consent' : p === 'key' ? 'key'
+      : p === 'running' ? (d.transcribe ? 'summarise' : 'transcribe') : null
+    const rail = railDef.map(r => {
+      const isDone = !!d[r.id] && r.id !== activeId
+      const isNow = r.id === activeId
+      return { ...r,
+        tag: isDone ? '[ok]' : isNow ? '[now]' : '[  ]',
+        tagColor: isDone ? '#35d0ba' : isNow ? '#f0b429' : '#39434a',
+        color: isDone ? '#8a969d' : isNow ? '#fff' : '#5c686f',
+        weight: isNow ? 700 : 400,
+        bg: isNow ? 'rgba(240,180,41,.07)' : 'transparent',
+        edge: isNow ? '#f0b429' : isDone ? '#35d0ba' : 'transparent'
+      }
+    })
+
+    const nextLabel = { privacy: 'agree — start transcribing', key: 'save key and start' }[p]
+
+    return {
+      ...copy, rail,
+      isIdle: p === 'idle', isPrivacy: p === 'privacy', isKey: p === 'key', isRunning: p === 'running', isDone: p === 'done',
+      dropTitle: this.state.over ? 'release to load' : 'drop a voice note here',
+      dropGlyph: this.state.over ? '⇩' : '◫',
+      dropIcon: this.state.over ? '#35d0ba' : '#39434a',
+      dropLine: this.state.over ? '#35d0ba' : '#2f373d',
+      dropBg: this.state.over ? 'rgba(53,208,186,.08)' : '#12171a',
+      fileName: this.state.fileName,
+      liveTranscript: this.state.transcript, transcript: this.state.transcript,
+      summaryLines: this.parseLines(this.state.summary),
+      copyLabel: this.state.copied ? 'copied' : 'copy',
+      spent: demo ? '£0.000' : '£' + this.state.spent.toFixed(3),
+      ceiling: demo ? '£0.000' : '£0.055',
+      spendPct: demo ? '0%' : Math.min(100, (this.state.spent / 0.055) * 100).toFixed(0) + '%',
+      spendNote: demo ? 'demo run — cached, nothing was called' : p === 'idle' ? 'nothing spent, nothing committed' : 'billed to your own OpenRouter account',
+      keyDraft: this.state.keyDraft,
+      hasNext: !!nextLabel, nextLabel,
+      nextHint: p === 'privacy' ? (this.api && this.api.getKey() ? 'transcribe, then summarise' : 'your key, then transcribe') : 'transcribe, then summarise',
+      cols: this.state.phone ? '1fr' : '278px 1fr',
+      railBorder: this.state.phone ? '0' : '1px solid #262c31',
+      railBorderB: this.state.phone ? '1px solid #262c31' : '0',
+      railPos: this.state.phone ? 'static' : 'sticky',
+      shellWidth: this.state.phone ? '390px' : '1080px',
+      widthLabel: this.state.phone ? 'desktop' : 'phone',
+      modeLabel: this.state.demo ? 'demo · scripted' : (this.api && this.api.isLive()) ? 'live · your key' : 'no key yet',
+      fileRef: this.fileRef,
+      browse: this.browse, onDragOver: this.onDragOver, onDragLeave: this.onDragLeave, onDrop: this.onDrop,
+      onFile: this.onFile, runDemo: this.runDemo, useDemo: this.useDemo, onKeyInput: this.onKeyInput,
+      next: this.next, reset: this.reset, copyTranscript: this.copyTranscript, toggleWidth: this.toggleWidth
+    }
+  }
+}
+
+</script>
+</body>
+</html>

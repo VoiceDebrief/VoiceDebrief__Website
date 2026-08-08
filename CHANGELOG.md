@@ -18,6 +18,16 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Two design responses received and filed (Dinis, 8 Aug)** —
+  `library/briefs/ux-experiments/responses/`: the four-culture pack (en-gb,
+  en-us, pt-pt, pt-br — switchable prototype with a per-culture explanation
+  layer, token sets, strings and culture data mapping 1:1 onto the shipped
+  locales/themes layout) and the three A/B themes for the core flow (Studio /
+  Console / Card, fixture-or-live via a shared engine seam whose key name and
+  wa:* vocabulary match the real app). Reviewed: grounding verified, five
+  integration flags recorded in the responses README — the main one being
+  theme-per-locale vs the shipped independent theme/locale axes.
+
 - **The nav grows a second level and stops abandoning phones (issue 054,
   Dinis with screenshots)** — `wa-site-nav` v0.1.1: ten flat links become six
   primary plus **News ▾** and **Engineering ▾** dropdowns (CSS-only, keyboard
