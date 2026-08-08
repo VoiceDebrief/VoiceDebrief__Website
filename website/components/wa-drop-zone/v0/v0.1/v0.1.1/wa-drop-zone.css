@@ -1,0 +1,6 @@
+.wa-drop{border:2px dashed var(--wa-line,#8fa8cd);border-radius:14px;padding:44px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;background:var(--wa-on-dark-04)}
+.wa-drop:hover,.wa-drop.over{border-color:var(--wa-green,#25d366);background:var(--wa-tint-green)}
+.wa-drop.busy{opacity:.55;pointer-events:none}
+.wa-drop__big{font-size:1.15rem;font-weight:600;color:var(--wa-fg,#fff)}
+.wa-drop__small{color:var(--wa-muted-on-dark,#c8d6e8);margin-top:4px;font-size:.92rem}
+.wa-drop__formats{margin-top:14px;font-family:var(--wa-font-mono-2);font-size:.85rem;color:var(--wa-muted-on-dark,#9fb2c9)}

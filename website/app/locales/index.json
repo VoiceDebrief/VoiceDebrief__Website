@@ -1,0 +1,19 @@
+{
+  "note": "The locale allowlist (issue 050). A locale exists here or it does not exist at all — selection may only name a key from this file, never a URL or a query parameter (the issue-041 rule). `files` is the set of domain files that locale actually ships: THE FILES THAT EXIST ARE THE SUPPORT YOU HAVE, and any key a locale does not carry falls back one hop to en-gb. `status` gates per locale, not globally, so a half-translated language can be visible and honestly marked instead of hiding behind a single SOON.",
+  "default": "en-gb",
+  "prefixes": {
+    "en": "en-gb",
+    "pt": "pt-pt"
+  },
+  "locales": {
+    "en-gb": {
+      "label": "English (UK)",
+      "nativeLabel": "English (UK)",
+      "status": "live",
+      "files": [
+        "core",
+        "culture"
+      ]
+    }
+  }
+}
