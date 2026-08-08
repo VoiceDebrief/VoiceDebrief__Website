@@ -18,6 +18,31 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The nav grows a second level and stops abandoning phones (issue 054,
+  Dinis with screenshots)** — `wa-site-nav` v0.1.1: ten flat links become six
+  primary plus **News ▾** and **Engineering ▾** dropdowns (CSS-only, keyboard
+  included; group parents are real links), and small screens get a hamburger
+  panel with every page grouped and reachable — v0.1.0's mobile treatment was
+  `display:none`, the menu was simply lost. Mid-width wrapping tidied. All 17
+  references flipped to the new immutable version; the browser suite grows to
+  12 tests pinning the structure and exercising the toggle. The header
+  screenshots will move — the record-not-block baseline policy (issue 053)
+  gets its first real customer. Amended same day (Dinis): further to five
+  top-level items — **App · Pricing · Library ▾ · News ▾ · Engineering ▾** —
+  with How it works, Privacy and User guide grouped under Library.
+- **Product name analysis written (Dinis's request; decision his)** —
+  `library/briefs/naming/`: all five "WhatsApp …" candidates fail the same two
+  tests (Meta's mark can't lead a product name; the SERP head is owned by
+  WhatsApp's own built-in transcripts). Proposal: name the OUTPUT —
+  **VoiceBrief** ("WhatsApp voice notes, debriefed"), keep the descriptive
+  subdomain, keep WhatsApp in titles/copy as nominative use like every
+  competitor does. Linked from the Library page. Same day, two more rounds:
+  the "for WhatsApp" edition pattern agreed; then Dinis's domain check found
+  an active namesake at voicebrief.io (the search worked as a name-collision
+  detector) — VoiceBrief withdrawn, and the working name is now
+  **VoiceDebrief for WhatsApp** (clean .com/.ai/.io field; adjacency to
+  voicebrief.io accepted, different focus). Registrar + trademark checks
+  pending; no renaming done.
 - **Strings and culture are now data (issue 050, M1b foundation + M1c)** —
   `website/app/i18n.js` is the entire runtime: key lookup, one-hop fallback to
   en-gb, `data-i18n` rendering, and `setLocale()` that re-renders in place so a
@@ -99,6 +124,13 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   one-file-per-locale rejected on its own evidence — token explosion), first
   locales pt-PT + pt-BR together, and GBP everywhere for now — declared in each
   locale's culture data, never hardcoded.
+- **Live-QA made honest about networks, part two (run #33)** — the outbound
+  LINK checks got retries yesterday, but the site's own `get()` helper had no
+  handling at all: one `ECONNRESET` (common just after a deploy while the CDN
+  settles) crashed the whole script from inside the helper, marking a
+  successful deploy red with most checks never run. Same treatment one layer
+  deeper: page/asset fetches retry three times with backoff; a site that truly
+  cannot answer is a failing check, never an unhandled TypeError.
 - **Live-QA link check made honest about networks**: the recurring
   `status ERR` failures ("on every other build", Dinis) were dropped
   connections, not dead links — the check bursts sequential requests at

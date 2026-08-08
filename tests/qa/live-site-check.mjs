@@ -16,9 +16,22 @@ const check = (name, ok, extra = '') => {
     console.log(`${ok ? 'ok ' : 'FAIL'}  ${name}${extra ? '  — ' + extra : ''}`)
     if (!ok) failures++
 }
+// Same lesson as the outbound-link fetches learned in §6, one layer deeper: a
+// dropped connection (ECONNRESET — common right after a deploy while the CDN
+// settles) previously CRASHED the whole script from inside this helper, taking
+// every remaining check with it (run #33). Retry with backoff; if our own site
+// truly cannot answer three times in a row, that IS a failing check — reported
+// as one, never as an unhandled TypeError.
 const get = async (path, base = LIVE) => {
-    const r = await fetch(base + path, { headers: { 'cache-control': 'no-cache' } })
-    return { ok: r.ok, status: r.status, text: r.ok ? await r.text() : '' }
+    for (let attempt = 1; ; attempt++) {
+        try {
+            const r = await fetch(base + path, { headers: { 'cache-control': 'no-cache' } })
+            return { ok: r.ok, status: r.status, text: r.ok ? await r.text() : '' }
+        } catch (e) {
+            if (attempt >= 3) return { ok: false, status: `ERR ${String(e?.cause?.code || e?.message || e).slice(0, 40)}`, text: '' }
+            await new Promise(r => setTimeout(r, 1500 * attempt))
+        }
+    }
 }
 
 // 0. When CI names the expected version, wait for the CDN to serve it — Pages
@@ -67,7 +80,7 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
-                    '/components/wa-site-nav/v0/v0.1/v0.1.0/wa-site-nav.js',
+                    '/components/wa-site-nav/v0/v0.1/v0.1.1/wa-site-nav.js',
                     '/app/skills/SKILL__api.md', '/app/workflows/standard.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
                     '/updates/updates.json', '/updates/feed.xml', '/videos/videos.json',
@@ -76,7 +89,12 @@ for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/app/samples/whatsapp-voice-note-android.ogg',
                     '/tests/browser/tests.mjs', '/tests/browser/vendor/qunit.js',
                     '/user-guide/guide.json']) {
-    const r = await fetch(LIVE + path, { method: 'HEAD' }).catch(() => ({ ok: false, status: 'ERR' }))
+    let r
+    for (let attempt = 1; ; attempt++) {
+        r = await fetch(LIVE + path, { method: 'HEAD' }).catch(e => ({ ok: false, status: `ERR ${String(e?.cause?.code || '').slice(0, 20)}` }))
+        if (r.ok || attempt >= 3) break
+        await new Promise(res => setTimeout(res, 1500 * attempt))
+    }
     check(`asset reachable: ${path}`, r.ok, `status ${r.status}`)
 }
 
