@@ -151,15 +151,15 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: six primary links, two groups, nine grouped pages (v0.1.1)', assert => {
+    QUnit.test('two-level menu: App + Pricing primary, three groups, twelve grouped pages (v0.1.1)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
-        assert.strictEqual(sr.querySelectorAll('nav.main > a').length, 6, 'six primary links')
-        assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 2, 'News + Engineering groups')
-        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 9,
-            '3 news pages + 6 engineering sections in the dropdowns')
+        assert.strictEqual(sr.querySelectorAll('nav.main > a').length, 2, 'App and Pricing stay primary')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 3, 'Library + News + Engineering groups')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 12,
+            '3 library + 3 news + 6 engineering pages in the dropdowns')
         assert.strictEqual(sr.querySelector('.badge').textContent, 'BETA')
         assert.strictEqual(sr.querySelector('.sub'), null, 'no section row outside /engineering/')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/app/'),

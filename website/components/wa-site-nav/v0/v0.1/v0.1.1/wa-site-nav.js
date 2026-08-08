@@ -31,16 +31,20 @@ const ENGINEERING = [
     ['/engineering/team/',     'Team'],
 ]
 
-// Top level: [href, label] for plain links; { label, href, children } for groups.
-// The group parent is a real link (its landing page), so nothing needs JS to
-// navigate — the dropdown is a shortcut, not a gate.
-const MENU = [
+const LIBRARY = [
+    ['/user-guide/', 'User guide'],
     ['/#how',        'How it works'],
     ['/#privacy',    'Privacy'],
-    ['/#pricing',    'Pricing'],
-    ['/app/',        'App'],
-    ['/user-guide/', 'User guide'],
-    ['/library/',    'Library'],
+]
+
+// Top level: [href, label] for plain links; { label, href, children } for groups.
+// The group parent is a real link (its landing page), so nothing needs JS to
+// navigate — the dropdown is a shortcut, not a gate. Five items (Dinis, 8 Aug):
+// the product and its price stay primary; everything else is one group deep.
+const MENU = [
+    ['/app/',     'App'],
+    ['/#pricing', 'Pricing'],
+    { label: 'Library',     href: '/library/',     children: LIBRARY },
     { label: 'News',        href: '/updates/',     children: NEWS },
     { label: 'Engineering', href: '/engineering/', children: ENGINEERING },
 ]
@@ -99,14 +103,14 @@ class WaSiteNav extends HTMLElement {
     connectedCallback() {
         const path = location.pathname
         const badge = this.getAttribute('badge')
-        const flat = MENU.flatMap(m => Array.isArray(m) ? [m] : m.children)
+        const flat = MENU.flatMap(m => Array.isArray(m) ? [m] : [[m.href, m.label], ...m.children])
         // Longest matching prefix wins, so /engineering/testing/ doesn't light
         // both Engineering and an anchor link; anchors are never "active".
         const active = flat.filter(([href]) => !href.includes('#') && path.startsWith(href))
             .sort((a, b) => b[0].length - a[0].length)[0]?.[0]
         const link = ([href, label], current) =>
             `<a href="${href}"${href === current ? ' class="active" aria-current="page"' : ''}>${label}</a>`
-        const groupIsActive = g => g.children.some(([href]) => href === active)
+        const groupIsActive = g => g.href === active || g.children.some(([href]) => href === active)
 
         const topLevel = MENU.map(m => Array.isArray(m) ? link(m, active) : `
           <div class="group">
@@ -114,11 +118,15 @@ class WaSiteNav extends HTMLElement {
             <ul class="menu">${m.children.map(c => `<li>${link(c, active)}</li>`).join('')}</ul>
           </div>`).join('')
 
+        // The panel lists everything: plain links under Product, then each group
+        // with its landing page first — no page is reachable on desktop only.
         const panel = `
           <h6>Product</h6>
           ${MENU.filter(Array.isArray).map(l => link(l, active)).join('')}
-          <h6>News</h6>${NEWS.map(l => link(l, active)).join('')}
-          <h6>Engineering</h6>${ENGINEERING.map(l => link(l, active)).join('')}`
+          ${MENU.filter(m => !Array.isArray(m)).map(m => `
+            <h6>${m.label}</h6>
+            ${link([m.href, m.label === 'Library' ? 'All documents' : m.label === 'News' ? 'Updates' : 'Overview'], active)}
+            ${m.children.filter(([href]) => href !== m.href && href !== '/updates/').map(l => link(l, active)).join('')}`).join('')}`
 
         const inEngineering = path.startsWith('/engineering/')
         const section = inEngineering

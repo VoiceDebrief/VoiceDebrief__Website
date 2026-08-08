@@ -27,7 +27,9 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   references flipped to the new immutable version; the browser suite grows to
   12 tests pinning the structure and exercising the toggle. The header
   screenshots will move — the record-not-block baseline policy (issue 053)
-  gets its first real customer.
+  gets its first real customer. Amended same day (Dinis): further to five
+  top-level items — **App · Pricing · Library ▾ · News ▾ · Engineering ▾** —
+  with How it works, Privacy and User guide grouped under Library.
 - **Product name analysis written (Dinis's request; decision his)** —
   `library/briefs/naming/`: all five "WhatsApp …" candidates fail the same two
   tests (Meta's mark can't lead a product name; the SERP head is owned by

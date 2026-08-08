@@ -29,3 +29,12 @@ adapted, it was discarded.
   clicks. The qa-to-docs screenshots will change with the new header — which is
   exactly what the record-not-block policy (issue 053) is for; this is its
   first real customer.
+
+## Amendment (Dinis, same day): five items, three groups
+"Move How it works, Privacy and User guide to the Library (as sub menus)" —
+top level is now **App · Pricing · Library ▾ · News ▾ · Engineering ▾**; the
+Library dropdown holds User guide, How it works, Privacy. The mobile panel
+gained each group's landing page (All documents / Updates / Overview) so no
+page is desktop-only. Noted for later: if "How it works"/"Privacy" (pitch
+anchors, not documents) ever feel mislabelled under Library, relabel the group
+"Learn" — a one-line change.
