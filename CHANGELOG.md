@@ -18,6 +18,30 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Briefing pack for semantic graphs over transcripts (issue 058)** —
+  `library/briefs/semantic-graphs/`: a self-contained, zippable pack (12 files) so an
+  interactive session with no repository access can produce a markdown **simulation** of
+  concept graphs over a realistic voice-note corpus — which then becomes the spec for
+  the visualisation. Building the visualisation from a schema would be guessing; it can
+  only be designed from data, and nobody has seen the data yet. The pack carries both of
+  Dinis's 6 Aug briefs verbatim, what issue 057 actually built, the constraints that are
+  not negotiable, the real `concepts.json` / prompts / workflow as data, and an ask with
+  acceptance criteria. **Nothing of the extraction or mapping is built**, deliberately.
+
+  The engineering review in the pack records three corrections. **Windowing is not
+  sweeping**: the measured "five concepts at a time" is the adjudication batch over
+  *retrieved candidates*, not a sweep of the scheme — read as a sweep it costs 100 model
+  calls per recording on a 500-concept ontology and cannot be quoted before it runs,
+  which would disqualify it as a workflow variant against our $0.30 ceiling. **Embedding
+  retrieval is unavailable** with no backend, so lexical retrieval over label + altLabel
+  + definition + scopeNote substitutes — and the brief's own "definitions improve
+  matching" finding helps that *more* than it would embeddings. **Format symmetry means
+  one core schema with two profiles**, since a customer ontology needs provenance and
+  has no use for review verdicts. Plus one thing the brief under-weights: a voice note
+  yields 3–8 concepts where the cited research indexes documents yielding dozens, so
+  bootstrapping a scheme likely needs 20–50 recordings rather than three — which is the
+  main thing the simulation is asked to measure.
+
 - **Concepts, not words: a concept scheme and the English pass over it
   (issue 057, from Dinis's brief)** — a new `/engineering/concepts/` surface where
   meaning lives in a **definition** and each culture attaches a **label** to it,
