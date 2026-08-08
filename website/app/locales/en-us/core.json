@@ -46,5 +46,10 @@
   "dropSmall": "or tap to browse",
   "keyLabel": "Your OpenRouter key",
   "keyPlaceholder": "sk-or-…  (get one at openrouter.ai/keys)",
-  "keySave": "Save key"
+  "keySave": "Save key",
+  "wantTranslate": " translate it into my language first",
+  "labelTranslation": "TRANSLATION",
+  "stepTranslate": "translating",
+  "translateWhy": "The transcript always stays in the language spoken. The summary and infographic are built from the translation.",
+  "localeSoon": "soon"
 }

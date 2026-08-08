@@ -15,7 +15,7 @@
        trace, never silently absorbed */
 
 export const TERMINAL = 'done'
-export const KINDS = ['local', 'engine', 'llm-transcribe', 'llm-text', 'llm-infographic']
+export const KINDS = ['local', 'engine', 'llm-transcribe', 'llm-translate', 'llm-text', 'llm-infographic']
 export const FAILURE_MODES = ['abort', 'degrade']
 
 /* ── validation ──────────────────────────────────────────────────────────── */

@@ -46,5 +46,10 @@
   "dropSmall": "ou toque para procurar",
   "keyLabel": "A sua chave OpenRouter",
   "keyPlaceholder": "sk-or-…  (obtenha uma em openrouter.ai/keys)",
-  "keySave": "Guardar chave"
+  "keySave": "Guardar chave",
+  "wantTranslate": " traduzir primeiro para a minha língua",
+  "labelTranslation": "TRADUÇÃO",
+  "stepTranslate": "a traduzir",
+  "translateWhy": "A transcrição fica sempre na língua falada. O resumo e o infográfico são criados a partir da tradução.",
+  "localeSoon": "em breve"
 }

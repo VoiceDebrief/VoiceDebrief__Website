@@ -31,12 +31,19 @@ QUnit.module('workflow — the declared state machine', () => {
     })
 
     QUnit.test('the quote follows the options', assert => {
-        assert.true(pathUsd(standard, { infographic: true }) > pathUsd(standard, { infographic: false }),
+        // Two optional branches since issue 055 added translate.
+        assert.true(pathUsd(standard, { infographic: true }) > pathUsd(standard, {}),
             'the infographic branch costs more')
-        assert.strictEqual(maxUsd(standard), pathUsd(standard, { infographic: true }),
+        assert.true(pathUsd(standard, { translate: true }) > pathUsd(standard, {}),
+            'the translate branch costs more')
+        assert.strictEqual(maxUsd(standard), pathUsd(standard, { infographic: true, translate: true }),
             'all options on = the absolute ceiling')
-        assert.deepEqual(pathFor(standard, { infographic: false }).map(s => s.id),
+        assert.deepEqual(pathFor(standard, {}).map(s => s.id),
             ['normalise', 'ingest', 'transcribe', 'summary'])
+        // Translate sits between transcribe and summary: the summary is built
+        // from it, so anywhere else would summarise the wrong text.
+        assert.deepEqual(pathFor(standard, { translate: true }).map(s => s.id),
+            ['normalise', 'ingest', 'transcribe', 'translate', 'summary'])
     })
 
     const stubbed = (overrides = {}) => ({

@@ -52,6 +52,29 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   sibling `.css`. The nav is tokenised at v0.1.2, each colour keeping its literal
   as a `var()` fallback because the nav also ships on pages that do not load the
   theme sheet and must look identical there. Verified invisible.
+- **The debrief now comes back in YOUR language (issue 055, Dinis)** — a
+  `translate` step joins the declared workflow between transcribe and summary,
+  on by default. The transcript stays in the language spoken — it is the record
+  of what was actually said — while the translation becomes its own material
+  with its own card, and **the summary and infographic are both built from it**.
+  Localising the interface but not the output was the half that looked finished
+  and wasn't: the summary is the product. Declared budget of 0.03 keeps the
+  ceiling quotable before anything runs, and a failed translation degrades
+  rather than aborting, so it can never cost the user their transcript. The
+  prompt is a site file with `{{language}}`/`{{tone}}` from the locale's culture
+  data, editable in the debug pane like the others. Three bugs surfaced in
+  testing and are recorded on the issue — including one where the step was
+  skipped silently because the new options never reached the declaration's
+  `when` clauses, so the run looked correct while doing nothing. Not built:
+  language detection, so a note already in the reader's language still costs
+  one call.
+- **The locale picker follows the sgraph.ai pattern (Dinis)** — a compact
+  trigger showing the current culture, opening a two-column panel of every
+  culture with flags. Flags are correct here where they usually are not: the
+  unit is a culture (language + country), so every entry genuinely names one
+  country — 🇵🇹 and 🇧🇷 are exactly the distinction being drawn. Cultures we do
+  not ship yet are listed dimmed and inert as SOON, so the list reads as a
+  roadmap rather than a promise.
 - **The app speaks four languages (issue 050, M2 first pass)** — `en-gb`,
   `en-us`, `pt-pt`, `pt-br`, each a folder of per-domain files, plus
   `wa-locale-picker`: native-script names, no flags (a flag is a country and a

@@ -70,3 +70,7 @@ footer a{color:var(--wa-link-on-dark)}
 /* The locale picker sits above the key panel — a choice made before anything
    is typed, not buried in a footer (issue 050 M2). */
 .locale-row{margin:0 0 14px}
+/* The translate option (issue 055): the language it will produce is named, and
+   the rule that reassures — the transcript is never overwritten — sits with it. */
+.translate-lang{font-weight:600;color:var(--wa-ink)}
+.translate-why{font-size:.78rem;color:var(--wa-muted);margin:-4px 0 2px 22px}

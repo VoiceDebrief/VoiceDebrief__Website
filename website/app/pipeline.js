@@ -5,7 +5,8 @@
    wa:* event stream exactly as it always was. Deleting the declaration breaks
    the tool — there is deliberately no code fallback. */
 
-import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL } from './config.js'
+import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL, TRANSLATE_PROMPT_URL } from './config.js'
+import { culture, getLocale } from './i18n.js'
 import { generateInfographic } from './infographic.js'
 import { normaliseAudioFile } from './audio-normalise.js'
 import { debugStore } from './debug-store.js'
@@ -24,6 +25,12 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         if (!r.ok) throw Object.assign(new Error('summary prompt unavailable'), { code: 'prompt-missing' })
         debugStore.setPromptDefault('summary', await r.text())
         return debugStore.getPrompt('summary')
+    }
+
+    async function loadTranslatePrompt() {
+        const r = await fetch(TRANSLATE_PROMPT_URL, { cache: 'no-cache' })
+        if (r.ok) debugStore.setPromptDefault('translate', await r.text())
+        return debugStore.getPrompt('translate') || 'Translate the following into {{language}}. Return only the translation.\n---\n'
     }
 
     async function loadInfographicPrompt() {
@@ -54,10 +61,18 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         if (!chosen) throw Object.assign(new Error('runPass requires { file }'), { code: 'no-file' })
 
         const def = await loadWorkflow(WORKFLOW_URL)
+        /* The declaration's `when` clauses read this object, so anything that
+           selects a branch has to be here — a caller-supplied field that never
+           reaches it silently skips its step (which is exactly what happened
+           the first time translate was wired). Language and tone default from
+           the active locale, so a caller may pass just { translate: true }. */
         const options = { infographic: !!params.infographic,
-                          infographicModel: params.infographicModel, style: params.style }
+                          infographicModel: params.infographicModel, style: params.style,
+                          translate: !!params.translate,
+                          language: params.language || culture().language || 'English',
+                          tone: params.tone ?? culture().tone ?? '' }
 
-        const results = { name: chosen.name, transcript: null, summary: null, svg: null, image: null, usage: {} }
+        const results = { name: chosen.name, transcript: null, translation: null, summary: null, svg: null, image: null, usage: {} }
         current = { itemId: null, results, trace: null }
 
         /* The step executors — each does exactly what the old inline stage did,
@@ -106,10 +121,53 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
                 return { costUsd: t.usage?.costUsd ?? 0 }
             },
 
+            /* Translate before summarising (issue 055). A voice note is spoken in
+               whatever language the speaker used; the reader has told us, via the
+               locale picker, which one they want. Everything downstream — summary
+               and infographic — is then built from the TRANSLATION, so a
+               Portuguese reader gets a Portuguese debrief rather than a
+               Portuguese label on an English summary.
+
+               The transcript itself is never overwritten: it is the record of
+               what was actually said, and it stays in the spoken language. */
+            'llm-translate': async (step, ctx) => {
+                const target = ctx.options.language
+                try {
+                    const preamble = (await loadTranslatePrompt())
+                        .replace(/\{\{language\}\}/g, target)
+                        .replace(/\{\{tone\}\}/g, ctx.options.tone || '')
+                    // chat() rather than ask(): ask() summarises from the engine's
+                    // held context, and this needs the exact transcript text as
+                    // its input, nothing else.
+                    const r = await call('chat', { messages: [{ role: 'user',
+                        content: preamble + '\n' + results.transcript }], label: 'translate' })
+                    const text = (r.text || '').trim()
+                    if (text) {
+                        results.translation = text
+                        results.usage.translate = r.usage
+                        emit('wa:translation', { text, language: target, usage: r.usage })
+                    }
+                    return { costUsd: r.usage?.costUsd ?? 0 }
+                } catch (e) {
+                    // Declared degrade: a failed translation must not cost the
+                    // user their transcript. The summary then runs on the
+                    // original, which is worse but still useful.
+                    emit('wa:translation:error', { code: e.code || 'llm-error', message: e.message })
+                    throw e
+                }
+            },
+
             'llm-text': async () => {
                 try {
                     const prompt = await loadSummaryPrompt()
-                    const s = await call('ask', { text: prompt, label: 'summary' })
+                    /* With no translation, ask() is used exactly as before — the
+                       engine already holds the transcript as context. With one,
+                       the summary must be built from the TRANSLATED text, so it
+                       is passed explicitly instead. */
+                    const s = results.translation
+                        ? await call('chat', { messages: [{ role: 'user',
+                            content: prompt + '\n\n' + results.translation }], label: 'summary' })
+                        : await call('ask', { text: prompt, label: 'summary' })
                     results.summary = s.text
                     results.usage.summary = s.usage
                     emit('wa:summary', { text: s.text, usage: s.usage })
@@ -142,7 +200,7 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         emit('wa:infographic:started', { model })
         try {
             const preamble = await loadInfographicPrompt()
-            const content = preamble + '\n## Transcript\n' + results.transcript +
+            const content = preamble + '\n## Transcript\n' + (results.translation || results.transcript) +
                 (results.summary ? '\n\n## Summary\n' + results.summary : '')
             const g = await generateInfographic({
                 mount: infographicMount(), content, apiKey: getKey(),
