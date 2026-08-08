@@ -312,3 +312,71 @@ regional-indicator flag; one `.en-only` marker; the locale slot present).
 Six qa-to-docs shots moved, `01-app-start` by 27.3% — the nav is in every shot,
 so a change there is the widest change the pipeline can record. Logged against
 the commit per the record-not-block policy; the movement is where the work was.
+
+## Status 8 Aug (evening) — the picker was broken on a phone
+
+Dinis opened the QA link on an iPhone. Two screenshots, one real bug and one
+that only looked like a style choice.
+
+**The panel opened off the left edge of the screen.** Reproduced at 390×664
+before touching anything:
+
+```
+picker  x=20  r=225   ← mid-row, not at the right edge
+panel   x=-131 r=225  ← 131px of the language names off-screen
+        bot=724 vs vh=664   ← and 60px of the list below the fold
+```
+
+The cause is two bugs compounding:
+
+1. **The header wrapped and split the controls.** `header > .wrap` is a
+   `space-between` row; with `nav.main` hidden below 760px its remaining
+   children were brand, the picker slot and the hamburger as three loose
+   siblings. On a phone they do not fit, the row wraps, and `space-between`
+   throws the picker to the far LEFT of row two and the hamburger to the far
+   right. Two controls at opposite ends of an otherwise empty line read as two
+   unrelated things.
+2. **The panel was anchored to the button, not the screen.** `position:absolute;
+   right:0` is only ever correct while the button is itself at the right edge.
+   Once (1) moved it to x=20, the 356px panel hung off the left of the viewport.
+
+**Fixed structurally, not by nudging numbers.** `wa-site-nav` v0.1.4 puts the
+locale slot and the hamburger in one `.right` cluster (`margin-left:auto`,
+`flex:0 0 auto`), so they stay adjacent and hard right whether they share the
+brand's row or take their own; the brand shrinks and finally ellipses before
+they do. `wa-locale-picker` v0.1.3 stops being a dropdown on phones: below 620px
+the panel is `position:fixed` inset 10px from both screen edges with
+`max-height:calc(100vh - 120px)` and scroll, and `place()` sets its top from the
+trigger's rect at open time — the one value CSS cannot derive. A `resize`
+listener re-places it rather than closing, so rotating the phone does not
+discard what you were doing.
+
+Below 560px both buttons go flag-only; the locale code moves into `title` and
+`aria-label`, never only into the pixels.
+
+Verified across four viewports, panel fully on screen and no horizontal scroll
+in any of them:
+
+```
+iPhone14 390px pt-br  panel [10,380]  onScreen true   2 rows, picker 232-324, burger 332-370
+iPhoneSE 320px pt-br  panel [10,310]  onScreen true   2 rows, picker 162-254, burger 262-300
+iPhone14 390px en-gb  panel [10,380]  onScreen true
+desktop 1280px pt-br  panel [558,1170] onScreen true  1 row, unchanged
+```
+
+### Two things worth writing down
+
+- **The panel does NOT auto-open**, which the screenshot made ambiguous.
+  `panelHidden: true` on load on every viewport — the open panel in the picture
+  was a tap. Requirement 2 from this morning is intact.
+- **The BETA badge stays.** Hiding it below 430px buys a single-row header on an
+  iPhone, and I did that first and then undid it: what the badge says — this
+  product is in beta, judge it accordingly — is worth more than 32px of header
+  height. The bar takes two rows on a narrow phone, deliberately.
+
+Pinned by a new browser test asserting the cluster is one element containing
+both controls and sitting flush right — structure, because that is what the CSS
+depends on. (The first version of that test asserted
+`getComputedStyle(...).marginLeft === 'auto'`, which can never pass:
+`getComputedStyle` resolves `auto` to a used pixel value. It now measures the
+gap the margin exists to produce.)
