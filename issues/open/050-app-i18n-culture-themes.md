@@ -380,3 +380,52 @@ depends on. (The first version of that test asserted
 `getComputedStyle(...).marginLeft === 'auto'`, which can never pass:
 `getComputedStyle` resolves `auto` to a used pixel value. It now measures the
 gap the margin exists to produce.)
+
+## Status 8 Aug (late) — the panel was never closed, and the test agreed with it
+
+Dinis, screenshot of `/app/pt-br/` on desktop: the whole culture list open on page
+load. It had been open since v0.1.1 — on every viewport, every page load, in every
+version of this component that has ever shipped.
+
+**The mechanism.** `toggle()` sets `panel.hidden`. The `hidden` attribute closes an
+element only through the user-agent rule `[hidden]{display:none}`. The component's
+own `.panel{ …; display:grid }` is an **author** rule, and author beats UA. So:
+
+```
+hiddenProperty  : true      ← what the code set, and what every check read
+hasHiddenAttr   : true
+computedDisplay : "grid"    ← what the browser actually painted
+visibleBox      : 612 × 328
+```
+
+One line fixes it — `.panel[hidden]{ display:none }` — and `wa-locale-picker` v0.1.4
+carries it with the reasoning inline so nobody removes it as redundant.
+
+### Why it survived two reviews, which matters more than the bug
+
+Every check I ran asked `panel.hidden`. That property faithfully reports what the
+code assigned to it and has **no relationship to what is on screen**. The probe, the
+integration assertions and my own report to Dinis all agreed with each other and all
+described something invisible to the browser.
+
+It compounded twice:
+
+- When Dinis first sent an iPhone screenshot with the panel open, I measured
+  `panelHidden: true` on load and told him **"the panel does NOT auto-open — that was
+  a tap"**. It was not a tap. It was this bug, and the confident answer stopped anyone
+  looking further for a day.
+- The mobile screenshots I captured to prove the layout fix were clipped to the header
+  (78–90px tall). The panel was rendering *below the clip* in every one of them.
+
+**The rule taken from it: visibility is asserted from computed style or a box, never
+from the attribute that was supposed to cause it.** Three new browser tests apply it —
+they assert `getComputedStyle(panel).display` and `getBoundingClientRect()`, never
+`.hidden`. Proven to bite: removing the one-line CSS fix fails two of them.
+
+Verified across three contexts by painted area, not by state:
+
+```
+desktop 1440 pt-br   load none/0   open grid/200736   esc none/0   pick none/0
+desktop 1440 en-gb   load none/0   open grid/192281   esc none/0   pick none/0
+iPhone14   pt-br     load none/0   open grid/210900   esc none/0   pick none/0
+```

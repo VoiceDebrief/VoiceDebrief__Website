@@ -19,6 +19,7 @@ import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
 import '../../components/wa-site-nav/v0/v0.1/v0.1.5/wa-site-nav.js'
+import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -237,6 +238,84 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         const gap = wrap.getBoundingClientRect().right - cluster.getBoundingClientRect().right
         assert.true(Math.abs(gap - 20) < 2,
             `the cluster is flush right against the bar's 20px padding (gap ${gap.toFixed(1)}px)`)
+    })
+})
+
+/* ── wa-locale-picker: visibility is what the BROWSER PAINTS ─────────────────
+   These exist because of a bug that shipped from v0.1.1 to v0.1.3 and survived
+   review twice. toggle() sets `panel.hidden`, which closes an element only via
+   the user-agent rule [hidden]{display:none}. The component's own
+   .panel{display:grid} is an AUTHOR rule and beats it — so the culture list
+   rendered on every page load, on every viewport, while `panel.hidden` read back
+   true and every check agreed with itself.
+
+   So none of these assert the attribute. They assert computed style and a box,
+   because that is the only thing a user can see. */
+QUnit.module('wa-locale-picker — closed means painting nothing', hooks => {
+    let saved
+    hooks.beforeEach(() => {
+        saved = window.__waI18n
+        window.__waI18n = {
+            getLocales: () => ({
+                'en-gb': { nativeLabel: 'English (UK)', status: 'live', flag: '🇬🇧' },
+                'pt-br': { nativeLabel: 'Português (Brasil)', status: 'draft', flag: '🇧🇷' },
+            }),
+            getLocale: () => 'pt-br',
+            defaultLocale: () => 'en-gb',
+            tOr: (key, fallback) => fallback,
+        }
+    })
+    hooks.afterEach(() => { window.__waI18n = saved })
+
+    const mount = () => {
+        const el = document.createElement('wa-locale-picker')
+        document.getElementById('qunit-fixture').appendChild(el)
+        return el
+    }
+    const paints = (el) => {
+        const p = el.shadowRoot.querySelector('.panel')
+        const box = p.getBoundingClientRect()
+        return getComputedStyle(p).display !== 'none' && box.width > 0 && box.height > 0
+    }
+
+    QUnit.test('the panel paints nothing on load, whatever the hidden attribute says (v0.1.4)', assert => {
+        const el = mount()
+        const panel = el.shadowRoot.querySelector('.panel')
+        assert.ok(panel, 'the panel exists in the shadow root')
+        assert.true(panel.hidden, 'the hidden attribute is set — which by itself proves nothing')
+        assert.strictEqual(getComputedStyle(panel).display, 'none',
+            'and the browser genuinely paints nothing (v0.1.1-v0.1.3: display:grid beat [hidden])')
+        assert.false(paints(el), 'no box on screen')
+    })
+
+    QUnit.test('the caret opens it and every exit closes it — measured, not asserted from state (v0.1.4)', assert => {
+        const el = mount()
+        const trigger = el.shadowRoot.querySelector('.trigger')
+
+        trigger.click()
+        assert.true(paints(el), 'clicking the caret paints the panel')
+        assert.strictEqual(trigger.getAttribute('aria-expanded'), 'true')
+
+        trigger.click()
+        assert.false(paints(el), 'clicking the caret again stops painting it')
+
+        trigger.click()
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+        assert.false(paints(el), 'Escape closes it')
+
+        trigger.click()
+        document.body.click()
+        assert.false(paints(el), 'a click away closes it')
+    })
+
+    QUnit.test('the way home shows only when you are away from home (v0.1.4)', assert => {
+        const away = mount()
+        assert.ok(away.shadowRoot.querySelector('.home'),
+            'in pt-BR the EN-GB escape button is present')
+        window.__waI18n.getLocale = () => 'en-gb'
+        const home = mount()
+        assert.strictEqual(home.shadowRoot.querySelector('.home'), null,
+            'in en-GB there is nothing to escape from, so no second button')
     })
 })
 
