@@ -18,6 +18,18 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Two briefs were in the repo and invisible on the site (Dinis, 404)** — the
+  go-live design brief and the semantic-graphs pack were both added to
+  `library/` and to the repo's own index, and neither reached
+  `website/library/index.html`, which is the page a visitor actually sees. Both
+  now have cards there. The rule already existed in CLAUDE.md — the Library page
+  is the doc front door — and it failed twice in one day, so it is now a test:
+  every folder under `library/briefs/` must be linked from the public page and
+  from the repo index, and every link must name a branch that publishes (`dev`
+  or `qa` — a `tree/dev` link 404s from the QA estate until the branch merges,
+  which live-QA caught once already). It found a third gap on its first run: the
+  naming brief had never been added to the repo index either.
+
 - **The design candidates are live and clickable (issue 059, Dinis)** — `/design/`
   is an A/B hub linking **seven runnable pages**: three themes (Studio, Console,
   Card) and four culture packs (en-gb, en-us, pt-pt, pt-br, plus a side-by-side
