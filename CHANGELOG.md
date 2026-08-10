@@ -35,6 +35,40 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   pipelines. Every variant also carries a top banner back to the hub (plus
   quick links to the other candidates) — injected by the runtime, in a shadow
   root so no theme's global link styling repaints it.
+  pipelines.
+- **Go-live design brief: VoiceDebrief for WhatsApp (issue 060)** —
+  `library/briefs/go-live/`: a brief for Claude Design covering the home page
+  rebuild. Five requirements — put **the workflow on the home page** (the tool's
+  virtue is having no setup, and a "Try the beta →" button currently hides that);
+  **delete the three privacy chips** and replace them with a plain statement that
+  audio and transcripts go to OpenRouter, which routes them to a provider we cannot
+  name and do not control (two of the three chips do not exist, and shipping a
+  privacy *selector* implies a control we do not have); a **Gmail-style beta mark**
+  and an **LLM caveat** placed where it is honest rather than decorative; a page
+  explaining **how to get an OpenRouter key**, reachable from the key field itself;
+  and the **rename**. It also asks the designer for the thing we are worst placed to
+  produce: a list of every claim on the current site that is not true today.
+
+- **The debrief was written in English however the reader had asked (issue 055)** —
+  a pt-PT reader got a correct Portuguese translation card and then an English
+  summary and infographic built out of it. The plumbing was right and the
+  instruction was wrong: `summary-prompt.md` ended with the words *"British
+  English"*, so the translated text was handed over correctly and the model was then
+  told to answer in English anyway. Both prompts now declare `{{language}}` and
+  `{{tone}}` from the reader's culture, exactly as the translate step already did,
+  and `runPass` keeps its options so an infographic **redraw** — which has no step
+  context — is in the right language too. The test that should have caught this
+  asserted the *reply* was Portuguese and passed, because the mock answers in
+  Portuguese whenever the request mentions Portuguese; it now asserts the outgoing
+  **prompt** names the reader's language and no longer says "British English".
+  A reply can be produced by a helpful mock; an instruction cannot.
+
+- **The App link was blue, and purple once visited** — `wa-site-nav` v0.1.6.
+  Wrapping it in `.i18n-link` to carry the locale flag took it out of the
+  `nav.main > a` selector, so it fell back to the browser's default link colour on a
+  navy bar. New browser test compares the computed colour of the wrapped link
+  against its siblings; proven to fail with the selector reverted.
+
 - **The language panel was never actually closed (Dinis, screenshot)** — the whole
   culture list rendered on **every page load, on every viewport, since v0.1.1**.
   `toggle()` sets `panel.hidden`, and the `hidden` attribute closes an element only
