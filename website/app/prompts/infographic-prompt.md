@@ -7,3 +7,6 @@ quote short phrases from the transcript where they are punchy. If the note conta
 actions, give them their own visual row. Keep all text large enough to read at half size.
 
 ---
+
+Write every word of the infographic in {{language}} — headings, labels and captions.
+Keep names, numbers and technical terms exactly as they appear in the source.
