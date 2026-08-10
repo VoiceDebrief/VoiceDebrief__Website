@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.6/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.7/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
@@ -159,7 +159,7 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: App + Pricing primary, three groups, thirteen grouped pages (v0.1.6)', assert => {
+    QUnit.test('two-level menu: App + Pricing primary, three groups, fourteen grouped pages (v0.1.7)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
@@ -170,7 +170,7 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         assert.strictEqual(sr.querySelectorAll('nav.main > a, nav.main > .i18n-link > a').length, 2,
             'App and Pricing stay primary')
         assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 3, 'Library + News + Engineering groups')
-        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 13,
+        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 14,
             '3 library + 3 news + 7 engineering pages in the dropdowns (Concepts added, issue 057)')
         assert.strictEqual(sr.querySelector('.badge').textContent, 'BETA')
         assert.strictEqual(sr.querySelector('.sub'), null, 'no section row outside /engineering/')
