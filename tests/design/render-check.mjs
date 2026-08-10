@@ -55,6 +55,23 @@ for (const [file, marker] of [['studio.html', 'A voice note, in writing'],
     await page.close()
 }
 
+/* Every variant carries the way back to the hub. It is injected by the runtime
+   (the .dc.html files stay byte-identical), so this is the only thing checking
+   it exists — and it lives in a shadow root, hence the piercing selectors. */
+for (const file of ['studio.html', 'console.html', 'card.html', 'cultures.html']) {
+    const { page } = await open(file)
+    const back = await page.evaluate(() => {
+        const host = document.querySelector('[data-dc-banner]')
+        const a = host && host.shadowRoot.querySelector('a.back')
+        return a ? { text: a.textContent, href: a.getAttribute('href'),
+                     first: document.body.firstElementChild === host } : null
+    })
+    check(`${file}: has the back-to-hub banner`, !!back && /all design candidates/i.test(back.text))
+    check(`${file}: the banner is the first thing on the page`, !!back && back.first)
+    check(`${file}: the back link points at the hub`, !!back && back.href === './')
+    await page.close()
+}
+
 /* The culture pack: four locales, switchable, with the hash preset honoured. */
 {
     const { page, errs } = await open('cultures.html')

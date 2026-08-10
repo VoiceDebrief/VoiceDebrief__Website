@@ -70,3 +70,15 @@ is a culture = language + country, so every entry names exactly one country,
 and 🇵🇹 vs 🇧🇷 is the distinction being drawn), not drift — but it means the
 prototype picker and the live nav picker look different, which anyone comparing
 the two will notice.
+
+## Addition (Dinis, same day): a way back
+
+Every variant now carries a top banner — "← All design candidates", the
+prototype label, quick links to the other three, and one to the live app.
+Injected by `support.js` rather than written into the `.dc.html` files, so the
+hand-off stays byte-identical and any future prototype gets it for free. It
+renders in a **shadow root**: Studio restyles every `<a>` on the page in
+terracotta, which would otherwise repaint the bar differently on each variant.
+Static rather than fixed, so it never fights a prototype's own sticky header.
+Checked per variant by `render-check.mjs` (present, first element, points at
+the hub).

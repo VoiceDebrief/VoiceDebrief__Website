@@ -32,7 +32,9 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   as XML); and the hub's "compare all four" link named a state key that does not
   exist, which fails silently. `tests/design/render-check.mjs` drives every
   prototype through a real demo pass and checks every hub link, in both
-  pipelines.
+  pipelines. Every variant also carries a top banner back to the hub (plus
+  quick links to the other candidates) — injected by the runtime, in a shadow
+  root so no theme's global link styling repaints it.
 - **The language panel was never actually closed (Dinis, screenshot)** — the whole
   culture list rendered on **every page load, on every viewport, since v0.1.1**.
   `toggle()` sets `panel.hidden`, and the `hidden` attribute closes an element only

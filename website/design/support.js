@@ -182,6 +182,49 @@
         try { n.setSelectionRange(saved.start, saved.end) } catch (_) { /* not a text input */ }
     }
 
+    /* Every prototype gets a way back to the hub, and a way to jump straight to
+       another candidate — added HERE rather than in the .dc.html files, so the
+       hand-off stays byte-identical and any future prototype gets it for free.
+
+       In a shadow root on purpose: the themes set global styles (Studio restyles
+       every <a> on the page in terracotta), which would otherwise repaint this
+       bar differently on each variant. It is deliberately plain and static — it
+       scrolls away, so it never fights a prototype's own sticky header. */
+    const VARIANTS = [
+        ['studio.html', 'Studio'], ['console.html', 'Console'],
+        ['card.html', 'Card'], ['cultures.html', 'Cultures'],
+    ]
+    function mountBanner () {
+        const here = (location.pathname.split('/').pop() || '').toLowerCase()
+        const links = VARIANTS.map(([href, label]) => href === here
+            ? `<span class="now">${label}</span>`
+            : `<a href="${href}">${label}</a>`).join('')
+        const host = document.createElement('div')
+        host.setAttribute('data-dc-banner', '')
+        host.attachShadow({ mode: 'open' }).innerHTML = `
+<style>
+  :host{all:initial}
+  .bar{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;
+       padding:9px 18px;background:#0b1f3a;color:#dbe6f5;
+       font:500 13px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:#dbe6f5;text-decoration:none;border-bottom:1px solid rgba(219,230,245,.35)}
+  a:hover{color:#fff;border-bottom-color:#fff}
+  .back{font-weight:700;border-bottom:0}
+  .back:hover{color:#8ff0b6}
+  .tag{font-size:10.5px;font-weight:700;letter-spacing:.7px;padding:2px 8px;border-radius:999px;
+       background:rgba(37,211,102,.16);color:#8ff0b6;border:1px solid rgba(37,211,102,.4)}
+  .rest{margin-left:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .rest small{color:#93a7c4;font-size:11.5px}
+  .now{color:#fff;font-weight:700}
+</style>
+<div class="bar">
+  <a class="back" href="./">← All design candidates</a>
+  <span class="tag">PROTOTYPE · NOT THE LIVE PRODUCT</span>
+  <span class="rest"><small>switch:</small>${links}<a href="/app/">the live app</a></span>
+</div>`
+        document.body.insertBefore(host, document.body.firstChild)
+    }
+
     /* `#code=pt-br&reasons=false` → initial state. State only, never code. */
     function preset () {
         const out = {}
@@ -264,6 +307,7 @@
         }
 
         inst.__render()
+        mountBanner()
         if (typeof inst.componentDidMount === 'function') inst.componentDidMount()
     }
 
