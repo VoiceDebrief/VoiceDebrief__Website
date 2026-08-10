@@ -18,6 +18,25 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The language panel was never actually closed (Dinis, screenshot)** — the whole
+  culture list rendered on **every page load, on every viewport, since v0.1.1**.
+  `toggle()` sets `panel.hidden`, and the `hidden` attribute closes an element only
+  through the browser's own `[hidden]{display:none}` rule — which the component's
+  `.panel{display:grid}` overrides, because an author stylesheet beats the user-agent
+  one. The attribute was set, the property read back `true`, and 612×328 pixels of
+  panel sat on the page. `wa-locale-picker` v0.1.4 adds the one line that fixes it,
+  with the reasoning inline so nobody deletes it as redundant.
+
+  **The verification failure is the part worth keeping.** Every check asked
+  `panel.hidden` — a property that faithfully reports what the code assigned to it and
+  has no relationship to what a browser paints. So the probes, the assertions and the
+  report all agreed with each other while describing something nobody could see. Worse,
+  it produced a confidently wrong answer: when the first iPhone screenshot showed the
+  panel open, it was diagnosed as "not auto-open — that was a tap". It was not a tap.
+  The rule now applied: **visibility is asserted from computed style or a box, never
+  from the attribute that was supposed to cause it.** Three new browser tests do exactly
+  that, and removing the one-line fix fails two of them.
+
 - **Briefing pack for semantic graphs over transcripts (issue 058)** —
   `library/briefs/semantic-graphs/`: a self-contained, zippable pack (12 files) so an
   interactive session with no repository access can produce a markdown **simulation** of
