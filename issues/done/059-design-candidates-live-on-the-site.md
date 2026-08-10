@@ -82,3 +82,21 @@ terracotta, which would otherwise repaint the bar differently on each variant.
 Static rather than fixed, so it never fights a prototype's own sticky header.
 Checked per variant by `render-check.mjs` (present, first element, points at
 the hub).
+
+## Addition (Dinis): findable from the site, not just by link
+
+"Is there a link and explanation in the site?" — there was not. Only `llms.txt`
+listed the hub, so an agent could find it and a human could not. Now:
+
+- **Site nav** (`wa-site-nav` v0.1.7): *Engineering ▾ → Design candidates*,
+  reachable from every page (16 references flipped; the browser test's grouped-page
+  count moves 13 → 14).
+- **Engineering hub**: a section explaining both families — what each theme is
+  testing, what a culture pack changes and why — with the honest framing (runs
+  without a key, prototypes not the product, noindexed).
+- **Library page**: a card beside the design briefs, linking the briefs to the
+  running thing they produced.
+- **Live-QA** fetches `/design/` on every deploy, so the hub cannot 404 quietly.
+
+Also corrected here: the reality-doc row for this issue had picked up `issue 060`
+across a merge — that number belongs to the go-live brief.

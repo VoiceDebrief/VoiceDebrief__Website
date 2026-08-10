@@ -46,7 +46,11 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   prototype through a real demo pass and checks every hub link, in both
   pipelines. Every variant also carries a top banner back to the hub (plus
   quick links to the other candidates) — injected by the runtime, in a shadow
-  root so no theme's global link styling repaints it.
+  root so no theme's global link styling repaints it. **Findable from the site**
+  (Dinis: "is there a link and explanation?" — there was not, only in `llms.txt`):
+  the nav gains *Engineering ▾ → Design candidates* (`wa-site-nav` v0.1.7), the
+  Engineering hub explains both families and what each is testing, the Library page
+  links the briefs to the running thing, and live-QA fetches the hub every deploy.
   pipelines.
 - **Go-live design brief: VoiceDebrief for WhatsApp (issue 060)** —
   `library/briefs/go-live/`: a brief for Claude Design covering the home page
