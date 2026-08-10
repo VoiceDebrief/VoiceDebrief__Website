@@ -41,6 +41,7 @@ step with the deployed build.
 - [Engineering](https://whatsapp-voice-transcription.sgraph.ai/engineering/): how it is built — pipeline, testing, docs, security posture (including open findings, honestly labelled), team, concepts
 - [Concepts](https://whatsapp-voice-transcription.sgraph.ai/engineering/concepts/): the concept scheme behind the interface vocabulary — meaning stored in a definition, one label per culture, and the English review that found three words naming the wrong thing. NOT wired to the shipped strings; it is a review surface
 - [concepts.json](https://whatsapp-voice-transcription.sgraph.ai/engineering/concepts/concepts.json): that scheme as data — definitions, scope notes, per-culture labels, verdicts and broader/narrower/related relations
+- [Design candidates](https://whatsapp-voice-transcription.sgraph.ai/design/): the A/B hub — three theme prototypes and four culture packs, each runnable with synthetic data and no key. Design references under evaluation, not the shipping product (noindex, absent from the sitemap)
 - [Browser unit tests](https://whatsapp-voice-transcription.sgraph.ai/tests/browser/): the app's unit suite, runnable in your browser against the deployed modules
 - [Updates](https://whatsapp-voice-transcription.sgraph.ai/updates/): the dated build-in-public record
 - [Versions](https://whatsapp-voice-transcription.sgraph.ai/versions/): every release, with diffs

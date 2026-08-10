@@ -5,6 +5,7 @@ issue change. Last updated: 2026-08-06.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [059](059-design-candidates-live-on-the-site.md) | Design candidates live at /design/ | 3 themes + 4 culture packs runnable with synthetic data behind one A/B hub; prototypes byte-identical on a /design/-only runtime; found the table foster-parenting bug that hid the comparison matrix |
 | [054](054-nav-second-level-mobile.md) | Nav second level + mobile | `wa-site-nav` v0.1.1 — 6 primary + News/Engineering dropdowns, hamburger panel ≤760px; 17 refs flipped; 12 browser tests |
 | [053](053-baselines-record-not-block.md) | Baselines record UI change, not block it (renumbered from 050 on merge) | changed shots update baselines + append `baseline-changes.md/.json` per commit/run; agent review is issue 051 |
 | [049](049-browser-unit-tests.md) | Browser unit tests (QUnit) | `website/tests/browser/` runs live/local/CI — 11 tests, real File/localStorage/custom elements; `browser-unit` layer in both pipelines |

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html,body{margin:0;padding:0;background:#f5f4fc}
+  *{box-sizing:border-box}
+  a{color:#6a4df4;text-decoration:none;font-weight:600}
+  a:hover{color:#4c33cf;text-decoration:underline}
+  @keyframes cd-ring{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.35);opacity:0}}
+  @keyframes cd-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+  @keyframes cd-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#f5f4fc;color:#201c2e;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;display:flex;flex-direction:column;align-items:center;padding:0 18px 40px">
+
+  <div style="width:100%;max-width:{{ shellWidth }};padding:22px 0 6px;display:flex;align-items:center;gap:12px">
+    <span style="width:32px;height:32px;border-radius:11px;background:#6a4df4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.92rem;font-weight:800">V</span>
+    <span style="font-weight:700;font-size:.98rem">Voice Note</span>
+    <button type="button" onClick="{{ toggleWidth }}" style="margin-left:auto;font:inherit;font-size:.75rem;font-weight:600;padding:7px 14px;border:0;border-radius:999px;background:#ece8ff;color:#6a4df4;cursor:pointer" style-hover="background:#ded7ff">{{ widthLabel }}</button>
+  </div>
+
+  <div style="width:100%;max-width:{{ shellWidth }};padding:18px 0 10px;display:flex;gap:8px">
+    <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+      <span style="flex:1;display:flex;flex-direction:column;gap:7px">
+        <span style="height:5px;border-radius:3px;background:{{ s.bar }}"></span>
+        <span style="font-size:.7rem;font-weight:700;letter-spacing:.3px;color:{{ s.color }}">{{ s.label }}</span>
+      </span>
+    </sc-for>
+  </div>
+
+  <div style="width:100%;max-width:{{ shellWidth }};flex:1;display:flex;flex-direction:column;gap:18px;padding-top:14px">
+
+    <div style="display:flex;flex-direction:column;gap:9px;animation:cd-in .3s ease both">
+      <h1 style="margin:0;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.2;font-weight:800;max-width:20ch;text-wrap:balance">{{ title }}</h1>
+      <p style="margin:0;font-size:1rem;line-height:1.6;color:#6d6784;max-width:52ch;text-wrap:pretty">{{ body }}</p>
+    </div>
+
+    <sc-if value="{{ isIdle }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div onClick="{{ browse }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="background:#fff;border-radius:26px;border:2px dashed {{ dropLine }};padding:38px 24px;display:flex;flex-direction:column;align-items:center;gap:16px;cursor:pointer;box-shadow:0 6px 24px rgba(60,40,140,.07);transition:border-color .15s,background .15s">
+          <span style="position:relative;width:120px;height:120px;border-radius:50%;background:{{ ringBg }};display:flex;align-items:center;justify-content:center">
+            <span style="position:absolute;inset:0;border-radius:50%;border:2px solid #6a4df4;animation:{{ ringAnim }}"></span>
+            <span style="font-size:2.4rem;color:#6a4df4">{{ dropGlyph }}</span>
+          </span>
+          <span style="font-size:1.15rem;font-weight:700;text-align:center">{{ dropTitle }}</span>
+          <span style="font-size:.92rem;color:#6d6784;text-align:center;max-width:34ch;line-height:1.5">Tap to pick one from your phone, or drag a file straight in.</span>
+          <span style="font-size:.76rem;color:#9a94b0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">.opus · .ogg · .m4a</span>
+        </div>
+        <input type="file" ref="{{ fileRef }}" onChange="{{ onFile }}" accept=".opus,.ogg,.m4a,audio/*" style="display:none" />
+        <button type="button" onClick="{{ runDemo }}" style="font:inherit;font-size:.98rem;font-weight:700;padding:16px;border:0;border-radius:18px;background:#ece8ff;color:#6a4df4;cursor:pointer;min-height:54px" style-hover="background:#ded7ff">Just show me — run a demo, free</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPrivacy }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px;animation:cd-in .3s ease both">
+        <div style="background:#fff;border-radius:20px;padding:16px 18px;display:flex;align-items:center;gap:13px;box-shadow:0 4px 16px rgba(60,40,140,.06)">
+          <span style="width:42px;height:42px;flex:0 0 42px;border-radius:14px;background:#ece8ff;color:#6a4df4;display:flex;align-items:center;justify-content:center;font-size:1.1rem">♪</span>
+          <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+            <span style="font-weight:700;font-size:.94rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ fileName }}</span>
+            <span style="font-size:.8rem;color:#9a94b0">1:37 · still on your device</span>
+          </span>
+          <button type="button" onClick="{{ reset }}" style="margin-left:auto;font:inherit;font-size:1.1rem;color:#9a94b0;background:none;border:0;cursor:pointer;padding:8px" style-hover="color:#6a4df4">✕</button>
+        </div>
+        <div style="background:#fff8ec;border-radius:20px;padding:18px 20px;display:flex;flex-direction:column;gap:9px">
+          <span style="font-size:.7rem;font-weight:800;letter-spacing:1.2px;color:#b8781a">ONE THING TO KNOW</span>
+          <p style="margin:0;font-size:.96rem;line-height:1.6;color:#4a3d22">One of our model providers will hear this recording on their servers — we can't promise which one. We keep nothing, and your key stays in this browser.</p>
+        </div>
+        <div style="background:#fff;border-radius:20px;padding:18px 20px;display:flex;gap:24px;flex-wrap:wrap;box-shadow:0 4px 16px rgba(60,40,140,.06)">
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:.7rem;font-weight:800;letter-spacing:1px;color:#9a94b0">USUALLY COSTS</span><span style="font-size:1.35rem;font-weight:800">£0.014</span></span>
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:.7rem;font-weight:800;letter-spacing:1px;color:#9a94b0">NEVER MORE THAN</span><span style="font-size:1.35rem;font-weight:800">£0.055</span></span>
+          <span style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:170px"><span style="font-size:.7rem;font-weight:800;letter-spacing:1px;color:#9a94b0">PAID BY</span><span style="font-size:.9rem;color:#6d6784;line-height:1.5">you, straight to OpenRouter</span></span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isKey }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 4px 16px rgba(60,40,140,.06);animation:cd-in .3s ease both">
+        <input type="password" placeholder="sk-or-v1-…" value="{{ keyDraft }}" onInput="{{ onKeyInput }}" style="font:inherit;font-size:1rem;padding:16px 18px;border:2px solid #ece8ff;border-radius:16px;background:#faf9ff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:54px" style-focus="border-color:#6a4df4;outline:none" />
+        <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:.88rem">
+          <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">Get a key — 1 minute</a>
+          <a href="#" onClick="{{ useDemo }}">Try the demo instead</a>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isRunning }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:#fff;border-radius:22px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 4px 16px rgba(60,40,140,.06)">
+          <sc-for list="{{ stages }}" as="s" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:13px">
+              <span style="width:28px;height:28px;flex:0 0 28px;border-radius:50%;background:{{ s.dotBg }};color:{{ s.dotFg }};display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;animation:{{ s.anim }}">{{ s.glyph }}</span>
+              <span style="font-size:1rem;font-weight:{{ s.weight }};color:{{ s.color }}">{{ s.label }}</span>
+              <span style="margin-left:auto;font-size:.8rem;color:#9a94b0">{{ s.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border-radius:22px;padding:20px 22px;box-shadow:0 4px 16px rgba(60,40,140,.06)">
+          <p style="margin:0;font-size:.96rem;line-height:1.75;color:#3b3550;min-height:92px;text-wrap:pretty">{{ liveTranscript }}</p>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px;animation:cd-in .3s ease both">
+        <div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 4px 16px rgba(60,40,140,.06)">
+          <div style="padding:15px 20px 0;display:flex;align-items:center;gap:11px">
+            <span style="font-size:.7rem;font-weight:800;letter-spacing:1.2px;color:#6a4df4">TRANSCRIPT</span>
+            <span style="font-size:.78rem;color:#9a94b0">218 words</span>
+            <button type="button" onClick="{{ copyTranscript }}" style="margin-left:auto;font:inherit;font-size:.78rem;font-weight:700;padding:7px 15px;border:0;border-radius:999px;background:#ece8ff;color:#6a4df4;cursor:pointer;min-height:36px" style-hover="background:#ded7ff">{{ copyLabel }}</button>
+          </div>
+          <p style="margin:0;padding:12px 20px 20px;font-size:.98rem;line-height:1.75;text-wrap:pretty">{{ transcript }}</p>
+        </div>
+        <div style="background:#201c2e;color:#fff;border-radius:22px;padding:20px 22px;display:flex;flex-direction:column;gap:13px">
+          <span style="font-size:.7rem;font-weight:800;letter-spacing:1.2px;color:#b9adff">THE SHORT VERSION</span>
+          <sc-for list="{{ summaryLines }}" as="ln" hint-placeholder-count="4">
+            <p style="margin:0;font-size:.97rem;line-height:1.65;padding-left:{{ ln.pad }};color:#e8e5f5;text-wrap:pretty"><span style="font-weight:700;color:#fff">{{ ln.lead }}</span><span>{{ ln.rest }}</span></p>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:2px 4px">
+          <span style="font-size:.84rem;color:#9a94b0">{{ costLine }}</span>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+    <div style="position:sticky;bottom:0;width:100%;max-width:{{ shellWidth }};padding:14px 0 8px;background:linear-gradient(180deg,rgba(245,244,252,0),#f5f4fc 24%);display:flex;flex-direction:column;gap:9px">
+      <button type="button" onClick="{{ next }}" style="font:inherit;font-size:1.05rem;font-weight:800;width:100%;padding:18px;border:0;border-radius:20px;background:#6a4df4;color:#fff;cursor:pointer;min-height:58px;box-shadow:0 6px 18px rgba(106,77,244,.28)" style-hover="background:#583ce0">{{ nextLabel }}</button>
+      <span style="font-size:.83rem;color:#9a94b0;text-align:center">{{ nextHint }}</span>
+    </div>
+  </sc-if>
+
+  <p style="margin:18px 0 0;font-size:.76rem;color:#9a94b0;text-align:center">Nothing tracked, nothing stored server-side · <a href="Theme%201%20-%20Studio.dc.html">Studio</a> · <a href="Theme%202%20-%20Console.dc.html">Console</a></p>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { phase: 'idle', stages: [], transcript: '', summary: '', keyDraft: '', demo: false, phone: false, copied: false, over: false, fileName: '', source: '' }
+  fileRef = React.createRef()
+
+  STEPS = [{ id: 'ingest', label: 'Getting it ready' }, { id: 'transcribe', label: 'Writing down the words' }, { id: 'summarise', label: 'Pulling out the points' }]
+
+  async componentDidMount () { this.api = await import('./tool-adapter.js'); this.api.bump('arrival', 'card'); this.forceUpdate() }
+
+  browse = () => this.fileRef.current && this.fileRef.current.click()
+  onDragOver = (e) => { e.preventDefault(); if (!this.state.over) this.setState({ over: true }) }
+  onDragLeave = () => this.setState({ over: false })
+  onDrop = (e) => { e.preventDefault(); this.setState({ over: false }); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) this.accept(f) }
+  onFile = (e) => { const f = e.target.files && e.target.files[0]; if (f) this.accept(f) }
+  accept = (f) => { this.api.bump('note:chosen', 'card'); this.setState({ phase: 'privacy', fileName: f.name, source: 'own' }) }
+
+  runDemo = () => { this.api.bump('demo:run', 'card'); this.setState({ demo: true, source: 'demo' }, this.start) }
+  useDemo = (e) => { e.preventDefault(); this.setState({ demo: true }, this.start) }
+  onKeyInput = (e) => this.setState({ keyDraft: e.target.value })
+  reset = () => this.setState({ phase: 'idle', transcript: '', summary: '', fileName: '', source: '', demo: false })
+
+  next = () => {
+    const p = this.state.phase
+    if (p === 'privacy') { this.api.bump('routed:accepted', 'card'); return (this.api.getKey() || this.state.demo) ? this.start() : this.setState({ phase: 'key' }) }
+    if (p === 'key' && this.state.keyDraft.trim()) { this.api.saveKey(this.state.keyDraft.trim()); this.api.bump('key:saved', 'card'); this.start() }
+    if (p === 'done') this.reset()
+  }
+
+  start = () => {
+    this.setState({ phase: 'running', stages: this.STEPS.map(s => ({ ...s, state: 'wait' })), transcript: '', summary: '' })
+    const mark = (id, state, note) => this.setState(s => ({ stages: s.stages.map(x => x.id === id ? { ...x, state, note: note || x.note } : x) }))
+    this.api.runPass({
+      variant: 'card', infographic: false,
+      onStage: (stage, payload) => {
+        if (stage === 'ingest') mark('ingest', 'run')
+        if (stage === 'transcribe') { mark('ingest', 'done', 'free'); mark('transcribe', 'run') }
+        if (stage === 'chunk') this.setState({ transcript: payload })
+        if (stage === 'transcript') { mark('transcribe', 'done', '£0.011'); this.setState({ transcript: payload }) }
+        if (stage === 'summarise') mark('summarise', 'run')
+        if (stage === 'summary') { mark('summarise', 'done', '£0.003'); this.setState({ summary: payload }) }
+        if (stage === 'complete') setTimeout(() => this.setState({ phase: 'done' }), 450)
+      }
+    })
+  }
+
+  copyTranscript = () => { try { navigator.clipboard.writeText(this.state.transcript) } catch (e) {} ; this.setState({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1400) }
+  toggleWidth = () => this.setState(s => ({ phone: !s.phone }))
+
+  parseLines (text) {
+    return String(text || '').split('\n').filter(Boolean).map(raw => {
+      const bullet = raw.trim().startsWith('- ')
+      const body = bullet ? raw.trim().slice(2) : raw.trim()
+      const m = body.match(/^\*\*(.+?)\*\*(.*)$/)
+      return { pad: bullet ? '16px' : '0px', lead: m ? (bullet ? '· ' : '') + m[1] : (bullet ? '· ' : ''), rest: m ? m[2].replace(/\*\*/g, '') : body.replace(/\*\*/g, '') }
+    })
+  }
+
+  renderVals () {
+    const p = this.state.phase
+    const demo = this.state.source === 'demo'
+    const copy = {
+      idle: { title: 'Send us a voice note. Get words back.', body: 'It all happens on this device. Nothing is sent anywhere until you tap the button that says so.' },
+      privacy: { title: 'Happy for it to be heard?', body: 'This is the only thing we need you to decide.' },
+      key: { title: 'Pop your key in.', body: 'It lives in this browser and goes straight to OpenRouter. No account, no sign-up.' },
+      running: { title: demo ? 'Working on the sample…' : 'Working on it…', body: 'Nothing for you to do. About ten seconds.' },
+      done: { title: 'All done.', body: demo ? 'That was a free sample. Drop in one of your own to do it for real.' : 'Here are the words, and the short version underneath.' }
+    }[p]
+
+    const order = ['idle', 'privacy', 'running', 'done']
+    const at = order.indexOf(p === 'key' ? 'privacy' : p)
+    const steps = ['Note', 'OK to send', 'Working', 'Done'].map((label, i) => ({
+      label,
+      bar: i < at ? '#6a4df4' : i === at ? '#6a4df4' : '#e3e0f2',
+      color: i <= at ? '#201c2e' : '#b3aecb'
+    }))
+
+    const nextLabel = { privacy: 'Yes — go ahead', key: 'Save key and go', done: 'Do another one' }[p]
+
+    return {
+      ...copy, steps,
+      isIdle: p === 'idle', isPrivacy: p === 'privacy', isKey: p === 'key', isRunning: p === 'running', isDone: p === 'done',
+      dropTitle: this.state.over ? 'Drop it!' : 'Drop a voice note here',
+      dropGlyph: this.state.over ? '↓' : '♪',
+      dropLine: this.state.over ? '#6a4df4' : '#ded7ff',
+      ringBg: this.state.over ? '#ded7ff' : '#f2effe',
+      ringAnim: this.state.over ? 'cd-ring 1s ease-out infinite' : 'none',
+      fileName: this.state.fileName,
+      stages: this.state.stages.map(s => ({
+        ...s,
+        glyph: s.state === 'done' ? '✓' : s.state === 'run' ? '•' : '',
+        dotBg: s.state === 'done' ? '#12a37f' : s.state === 'run' ? '#6a4df4' : '#ece8ff',
+        dotFg: s.state === 'wait' ? '#b3aecb' : '#fff',
+        color: s.state === 'wait' ? '#b3aecb' : '#201c2e',
+        weight: s.state === 'run' ? 700 : 500,
+        anim: s.state === 'run' ? 'cd-pulse 1.2s infinite' : 'none',
+        note: s.note || ''
+      })),
+      liveTranscript: this.state.transcript, transcript: this.state.transcript,
+      summaryLines: this.parseLines(this.state.summary),
+      copyLabel: this.state.copied ? 'Copied' : 'Copy',
+      costLine: demo ? 'Demo run — £0.000, nothing was charged' : 'This one cost £0.014',
+      keyDraft: this.state.keyDraft,
+      hasNext: !!nextLabel, nextLabel,
+      nextHint: p === 'privacy' ? (this.api && this.api.getKey() ? 'Next: about ten seconds of listening' : 'Next: your key, then about ten seconds')
+        : p === 'key' ? 'Next: the words start appearing' : 'Starts again from an empty page',
+      shellWidth: this.state.phone ? '390px' : '560px',
+      widthLabel: this.state.phone ? 'Desktop' : 'Phone',
+      fileRef: this.fileRef,
+      browse: this.browse, onDragOver: this.onDragOver, onDragLeave: this.onDragLeave, onDrop: this.onDrop,
+      onFile: this.onFile, runDemo: this.runDemo, useDemo: this.useDemo, onKeyInput: this.onKeyInput,
+      next: this.next, reset: this.reset, copyTranscript: this.copyTranscript, toggleWidth: this.toggleWidth
+    }
+  }
+}
+
+</script>
+</body>
+</html>

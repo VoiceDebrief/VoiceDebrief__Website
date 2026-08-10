@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Design candidates — A/B testing</title>
+<meta name="description" content="Seven live design candidates for the voice-note tool — three themes and four culture packs — each runnable with synthetic data, no key needed.">
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.5/wa-site-nav.js"></script>
+<style>
+  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f4f7fb;--line:#dbe3ec;
+        --green:#25d366;--accent:#2563eb;--muted:#5b6b7f;--radius:14px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:#fff;line-height:1.65}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  .hero{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:48px 0 44px}
+  .hero h1{font-size:2rem;line-height:1.2;max-width:20ch}
+  .hero p{color:#c8d6e8;margin-top:10px;max-width:64ch}
+  .tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.8px;
+       padding:4px 10px;border-radius:999px;background:rgba(37,211,102,.16);
+       color:#8ff0b6;border:1px solid rgba(37,211,102,.4);margin-bottom:14px}
+  section{padding:44px 0}
+  section.alt{background:var(--mist);border-block:1px solid var(--line)}
+  .kicker{font-size:.72rem;font-weight:700;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase}
+  h2{font-size:1.4rem;margin:6px 0 6px}
+  .sub{color:var(--muted);max-width:70ch;margin-bottom:22px}
+  .grid{display:grid;gap:18px}
+  @media(min-width:760px){.grid.cols-3{grid-template-columns:repeat(3,1fr)}
+                          .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+                          .grid.cols-4{grid-template-columns:repeat(4,1fr)}}
+  .card{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:#fff;
+        display:flex;flex-direction:column;gap:8px}
+  .card h3{font-size:1.05rem}
+  .card p{font-size:.92rem;color:var(--muted)}
+  .card .look{font-size:.78rem;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .card a.open{margin-top:auto;align-self:flex-start;font-weight:600;font-size:.92rem;
+     color:#fff;background:var(--navy);border-radius:8px;padding:9px 16px;text-decoration:none}
+  .card a.open:hover{background:var(--accent)}
+  .swatch{display:flex;gap:6px;margin:2px 0 4px}
+  .swatch i{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
+  .note{border:1px dashed var(--line);border-radius:var(--radius);padding:16px 20px;
+        font-size:.9rem;color:var(--muted)}
+  .note strong{color:var(--ink)}
+  ul.ask{margin:10px 0 0 20px;font-size:.95rem}
+  ul.ask li{margin-bottom:6px}
+  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem;margin-top:10px}
+  footer a{color:#dbe6f5}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<wa-site-nav></wa-site-nav>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="tag">DESIGN CANDIDATES · NOT THE LIVE PRODUCT</span>
+    <h1>Seven versions of the same tool. Which one would you rather use?</h1>
+    <p>Every page below runs the real flow — drop a voice note, watch the words arrive, read the
+      summary. <strong>You do not need a key</strong>: with no key saved they run a scripted sample
+      at realistic speed. Save your own OpenRouter key and the identical code path does the real
+      thing. Nothing is tracked, nothing is stored anywhere.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">Family one</span>
+    <h2>Three themes — the same flow, three ideas about how to guide you</h2>
+    <p class="sub">These differ in look, and in <em>how you are told what is happening and what comes
+      next</em>. None of them uses the current navy-and-green, deliberately: the test should measure
+      the design, not which one looks familiar.</p>
+    <div class="grid cols-3">
+
+      <div class="card">
+        <h3>1 · Studio</h3>
+        <div class="swatch"><i style="background:#f6f1e7"></i><i style="background:#b6543a"></i><i style="background:#211d18"></i></div>
+        <p class="look">warm cream · Georgia serif · terracotta · no shadows</p>
+        <p>Printed and unhurried. A roman-numeral crumb line across the top, and under every button a
+          plain-English line telling you what happens next.</p>
+        <a class="open" href="studio.html">Open Studio →</a>
+      </div>
+
+      <div class="card">
+        <h3>2 · Console</h3>
+        <div class="swatch"><i style="background:#0e1113"></i><i style="background:#35d0ba"></i><i style="background:#f0b429"></i></div>
+        <p class="look">near-black · monospace · teal + amber</p>
+        <p>A tool that shows its work. A pipeline rail down the left marks every step
+          <code>[ok]</code> / <code>[now]</code> / <code>[&nbsp;&nbsp;]</code>, with a live spend
+          meter against the ceiling.</p>
+        <a class="open" href="console.html">Open Console →</a>
+      </div>
+
+      <div class="card">
+        <h3>3 · Card</h3>
+        <div class="swatch"><i style="background:#f5f4fc"></i><i style="background:#6a4df4"></i><i style="background:#201c2e"></i></div>
+        <p class="look">light violet · rounded cards · phone posture</p>
+        <p>A phone app on any screen. A four-pill stepper at the top and one sticky bottom button
+          that is always the single next thing to do.</p>
+        <a class="open" href="card.html">Open Card →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">Family two</span>
+    <h2>Four culture packs — not translation, adaptation</h2>
+    <p class="sub">Two languages, four cultures. Each pack changes the accent colour, the typography,
+      the shape language, the register and the vocabulary — plus money, dates and number formats.
+      Open one and switch between them in place; the page explains, marker by marker, what changed
+      and why. <strong>English (UK) is what the product looks like today</strong>; the other three
+      are the new work.</p>
+    <div class="grid cols-4">
+      <div class="card">
+        <h3>English (UK)</h3>
+        <div class="swatch"><i style="background:#f3f2ef"></i><i style="background:#7a2230"></i></div>
+        <p class="look">claret · serif · near-zero radius</p>
+        <p>Understated and indirect. Restraint is the cultural signal.</p>
+        <a class="open" href="cultures.html#code=en-gb">Open →</a>
+      </div>
+      <div class="card">
+        <h3>English (US)</h3>
+        <div class="swatch"><i style="background:#ffffff"></i><i style="background:#1657d0"></i></div>
+        <p class="look">blue · bold sans · soft shadows</p>
+        <p>Direct and benefit-first: the headline states the outcome and the time.</p>
+        <a class="open" href="cultures.html#code=en-us">Open →</a>
+      </div>
+      <div class="card">
+        <h3>Português (Portugal)</h3>
+        <div class="swatch"><i style="background:#f6f4ee"></i><i style="background:#1f4788"></i></div>
+        <p class="look">azulejo blue · formal register</p>
+        <p><em>ficheiro · dispositivo · ecrã.</em> Symbol after the amount, comma decimal.</p>
+        <a class="open" href="cultures.html#code=pt-pt">Open →</a>
+      </div>
+      <div class="card">
+        <h3>Português (Brasil)</h3>
+        <div class="swatch"><i style="background:#fbf7f0"></i><i style="background:#0e7c66"></i></div>
+        <p class="look">deep green · softest shapes · warm</p>
+        <p><em>arquivo · celular · tela.</em> First person plural, and a circular drop target.</p>
+        <a class="open" href="cultures.html#code=pt-br">Open →</a>
+      </div>
+    </div>
+    <p style="margin-top:20px"><a href="cultures.html#view=diff">Compare all four side by side →</a>
+      — a matrix of every difference with the reasoning behind each one.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">What we are asking</span>
+    <h2>Tell us what you would actually rather use</h2>
+    <p class="sub">Opinions on any of it are welcome, but these are the questions the test exists to
+      answer:</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>On the themes</h3>
+        <ul class="ask">
+          <li>At the moment you land — is it obvious what to do first?</li>
+          <li>While it runs — do you feel told what is happening, or left waiting?</li>
+          <li>Before you spend anything — was the cost clear, and did you trust it?</li>
+          <li>Which of the three would you send to a friend?</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>On the cultures</h3>
+        <ul class="ask">
+          <li>If one is your culture: does it read as written <em>for</em> you, or translated at you?</li>
+          <li>Anything that feels off — a word, a tone, a colour that means something else where you are?</li>
+          <li>Is the UK and US split real enough to be worth doing?</li>
+          <li>Portugal and Brazil: right call to treat them as separate, or overkill?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="note">
+      <p><strong>Honest notes.</strong> These are design prototypes, not the shipping product — the
+        live app is at <a href="/app/">/app/</a> and is unaffected by anything here. They run on a
+        small runtime that exists only under <code>/design/</code>; the product itself has no
+        framework. The transcript and summary in demo mode are a fixed sample, and the demo is
+        labelled as costing nothing because it calls nothing. These pages are excluded from search
+        indexing and from the sitemap.</p>
+      <p style="margin-top:10px">The reasoning behind both families is public: the
+        <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/tree/dev/library/briefs/ux-experiments">design briefs and hand-off packs</a>,
+        and the <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/team/roles/architect/reviews/08/08/v0.1.23__review__design-responses-culture-packs-and-themes.md">review that accepted them</a>.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 ·
+    <a href="/">Home</a> · <a href="/app/">The live app</a> · <a href="/library/">Library</a> ·
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a> ·
+    <a href="/versions/"><span id="site-version">dev</span></a></div>
+</footer>
+<script>fetch('/version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'dev').then(v=>{document.getElementById('site-version').textContent=v.trim()}).catch(()=>{})</script>
+</body>
+</html>

@@ -17,6 +17,7 @@ superseding both branches' allow-list fixes; 007 closed as superseded — Dinis)
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [059](done/059-design-candidates-live-on-the-site.md) | The design candidates go live at /design/ — seven runnable A/B pages behind one hub | done | high | medium |
 | [056](done/056-per-locale-app-urls.md) | One real URL per language — /app/pt-pt/, direct-linkable | done | high | medium |
 | [055](done/055-translate-before-summarising.md) | Translate before summarising — the debrief in the reader's language | done | high | medium |
 | [054](done/054-nav-second-level-mobile.md) | Nav v0.1.1: second level (News/Engineering dropdowns) + mobile hamburger — the menu is never lost | done | high | small |

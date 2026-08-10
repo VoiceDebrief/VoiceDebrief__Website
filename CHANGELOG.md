@@ -18,6 +18,22 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The design candidates are live and clickable (issue 059, Dinis)** — `/design/`
+  is an A/B hub linking **seven runnable pages**: three themes (Studio, Console,
+  Card) and four culture packs (en-gb, en-us, pt-pt, pt-br, plus a side-by-side
+  comparison matrix). Every one runs the real flow with **no key needed** —
+  scripted fixtures at realistic speed — and the identical code path once a key
+  is saved. The hand-off `.dc.html` files are published **byte-identical**, on a
+  small runtime that lives only under `/design/`; the product itself stays
+  framework-free, and an arm that wins gets ported properly. Building it found
+  two real bugs: the culture pack's comparison matrix — the best idea in the
+  pack — was **invisible**, because `<sc-for>` inside a `<table>` is ejected by
+  the HTML parser's foster-parenting rules (the runtime now parses the template
+  as XML); and the hub's "compare all four" link named a state key that does not
+  exist, which fails silently. `tests/design/render-check.mjs` drives every
+  prototype through a real demo pass and checks every hub link, in both
+  pipelines.
+
 - **Briefing pack for semantic graphs over transcripts (issue 058)** —
   `library/briefs/semantic-graphs/`: a self-contained, zippable pack (12 files) so an
   interactive session with no repository access can produce a markdown **simulation** of

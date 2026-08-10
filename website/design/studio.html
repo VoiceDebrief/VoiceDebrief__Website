@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html,body{margin:0;padding:0;background:#f6f1e7}
+  *{box-sizing:border-box}
+  a{color:#b6543a;text-decoration:none;border-bottom:1px solid rgba(182,84,58,.35)}
+  a:hover{color:#8f3d27;border-bottom-color:#8f3d27}
+  @keyframes st-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+  @keyframes st-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#f6f1e7;color:#211d18;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;display:flex;flex-direction:column;align-items:center">
+
+  <div style="width:100%;border-bottom:1px solid #e4dbca;background:#f6f1e7;position:sticky;top:0;z-index:5">
+    <div style="max-width:{{ shellWidth }};margin:0 auto;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <span style="font-family:Georgia,'Times New Roman',serif;font-size:1.02rem;font-weight:700;letter-spacing:.2px">Voice Note</span>
+      <span style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="3">
+          <span style="display:flex;align-items:center;gap:7px;font-size:.83rem;color:{{ c.color }};font-weight:{{ c.weight }}">
+            <span style="font-family:Georgia,'Times New Roman',serif;font-size:.78rem;color:{{ c.numColor }}">{{ c.num }}</span>{{ c.label }}
+          </span>
+        </sc-for>
+      </span>
+      <button type="button" onClick="{{ toggleWidth }}" style="margin-left:auto;font:inherit;font-size:.74rem;font-weight:600;padding:5px 12px;border:1px solid #ddd3c2;border-radius:3px;background:transparent;color:#6f6558;cursor:pointer" style-hover="border-color:#b6543a;color:#b6543a">{{ widthLabel }}</button>
+    </div>
+  </div>
+
+  <div style="width:100%;max-width:{{ shellWidth }};padding:44px 24px 70px;display:flex;flex-direction:column;gap:28px">
+
+    <div style="display:flex;flex-direction:column;gap:12px;animation:st-in .3s ease both">
+      <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.9rem,4.6vw,2.9rem);line-height:1.15;font-weight:400;max-width:19ch;text-wrap:balance">{{ title }}</h1>
+      <p style="margin:0;font-size:1rem;line-height:1.65;color:#6f6558;max-width:56ch;text-wrap:pretty">{{ body }}</p>
+    </div>
+
+    <sc-if value="{{ isIdle }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div onClick="{{ browse }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="border:2px dashed {{ dropLine }};background:{{ dropBg }};padding:64px 32px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:background .15s,border-color .15s">
+          <span style="font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.3rem,3vw,1.75rem);text-align:center">{{ dropTitle }}</span>
+          <span style="font-size:.94rem;color:#6f6558">or click anywhere in this box to choose one</span>
+          <span style="margin-top:6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.76rem;color:#9a8f7e;letter-spacing:.4px">.opus · .ogg · .m4a — it stays on your device</span>
+        </div>
+        <input type="file" ref="{{ fileRef }}" onChange="{{ onFile }}" accept=".opus,.ogg,.m4a,audio/*" style="display:none" />
+
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:2px">
+          <span style="flex:1;height:1px;background:#e4dbca;min-width:30px"></span>
+          <span style="font-size:.85rem;color:#9a8f7e">haven't got one to hand?</span>
+          <button type="button" onClick="{{ runDemo }}" style="font:inherit;font-size:.94rem;font-weight:600;padding:12px 24px;border:1px solid #211d18;border-radius:3px;background:#211d18;color:#f6f1e7;cursor:pointer;min-height:46px" style-hover="background:#b6543a;border-color:#b6543a">Run the demo — free, no key</button>
+          <span style="flex:1;height:1px;background:#e4dbca;min-width:30px"></span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPrivacy }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:20px;animation:st-in .3s ease both">
+        <div style="border:1px solid #ddd3c2;background:#fffdf8;padding:20px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;color:#6f6558">{{ fileName }}</span>
+          <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;color:#9a8f7e">{{ fileMeta }}</span>
+          <button type="button" onClick="{{ reset }}" style="margin-left:auto;font:inherit;font-size:.8rem;color:#9a8f7e;background:none;border:0;cursor:pointer" style-hover="color:#b6543a">remove</button>
+        </div>
+        <div style="border-left:3px solid #b6543a;padding:4px 0 4px 20px;display:flex;flex-direction:column;gap:8px">
+          <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;letter-spacing:1.2px;color:#b6543a">WHERE IT GOES</span>
+          <p style="margin:0;font-size:1rem;line-height:1.65;max-width:56ch">One of our model providers transcribes this recording on their servers. We can't promise which one. We store nothing, and your key never leaves this browser.</p>
+        </div>
+        <div style="display:flex;gap:40px;flex-wrap:wrap;padding:18px 0;border-top:1px solid #e4dbca;border-bottom:1px solid #e4dbca">
+          <span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:.72rem;letter-spacing:1.2px;color:#9a8f7e">EXPECTED</span><span style="font-family:Georgia,'Times New Roman',serif;font-size:1.5rem">£0.014</span></span>
+          <span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:.72rem;letter-spacing:1.2px;color:#9a8f7e">MOST IT CAN COST</span><span style="font-family:Georgia,'Times New Roman',serif;font-size:1.5rem">£0.055</span></span>
+          <span style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px"><span style="font-size:.72rem;letter-spacing:1.2px;color:#9a8f7e">BILLED TO</span><span style="font-size:.94rem;color:#6f6558;line-height:1.5">your own OpenRouter account, directly</span></span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isKey }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px;animation:st-in .3s ease both">
+        <input type="password" placeholder="sk-or-v1-…" value="{{ keyDraft }}" onInput="{{ onKeyInput }}" style="font:inherit;font-size:1rem;padding:16px 18px;border:1px solid #ddd3c2;border-radius:3px;background:#fffdf8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:52px" />
+        <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:.88rem;color:#6f6558">
+          <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">get a key — a minute, no card</a>
+          <a href="#" onClick="{{ useDemo }}">run the demo instead</a>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isRunning }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:26px">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ stages }}" as="s" hint-placeholder-count="3">
+            <div style="display:flex;align-items:baseline;gap:16px;animation:{{ s.anim }}">
+              <span style="font-family:Georgia,'Times New Roman',serif;font-size:.9rem;color:{{ s.numColor }};width:20px">{{ s.num }}</span>
+              <span style="font-family:Georgia,'Times New Roman',serif;font-size:1.35rem;color:{{ s.color }}">{{ s.label }}</span>
+              <span style="margin-left:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.76rem;color:#9a8f7e">{{ s.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:1.08rem;line-height:1.8;color:#4a4238;border-top:1px solid #e4dbca;padding-top:22px;min-height:90px;text-wrap:pretty">{{ liveTranscript }}</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:34px;animation:st-in .3s ease both">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:baseline;gap:14px;border-bottom:1px solid #211d18;padding-bottom:8px">
+            <span style="font-size:.74rem;font-weight:700;letter-spacing:1.6px">TRANSCRIPT</span>
+            <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.75rem;color:#9a8f7e">1:37 · 218 words</span>
+            <button type="button" onClick="{{ copyTranscript }}" style="margin-left:auto;font:inherit;font-size:.8rem;color:#b6543a;background:none;border:0;cursor:pointer;padding:2px 0" style-hover="color:#8f3d27">{{ copyLabel }}</button>
+          </div>
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;line-height:1.85;text-wrap:pretty">{{ transcript }}</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:baseline;gap:14px;border-bottom:1px solid #211d18;padding-bottom:8px">
+            <span style="font-size:.74rem;font-weight:700;letter-spacing:1.6px">SUMMARY</span>
+            <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.75rem;color:#9a8f7e">4 points · 2 with a deadline</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ summaryLines }}" as="ln" hint-placeholder-count="4">
+              <p style="margin:0;font-size:1rem;line-height:1.7;padding-left:{{ ln.pad }};text-wrap:pretty"><span style="font-weight:700">{{ ln.lead }}</span><span>{{ ln.rest }}</span></p>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;border-top:1px solid #e4dbca;padding-top:22px">
+          <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;color:#6f6558">{{ costLine }}</span>
+          <button type="button" onClick="{{ reset }}" style="margin-left:auto;font:inherit;font-size:.94rem;font-weight:600;padding:12px 24px;border:1px solid #211d18;border-radius:3px;background:transparent;color:#211d18;cursor:pointer;min-height:46px" style-hover="background:#211d18;color:#f6f1e7">Another voice note</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button type="button" onClick="{{ next }}" style="font:inherit;font-size:1.02rem;font-weight:600;align-self:flex-start;padding:15px 34px;border:0;border-radius:3px;background:#b6543a;color:#fff;cursor:pointer;min-height:52px" style-hover="background:#8f3d27">{{ nextLabel }}</button>
+        <span style="font-size:.86rem;color:#9a8f7e">{{ nextHint }}</span>
+      </div>
+    </sc-if>
+
+    <p style="margin:20px 0 0;font-size:.78rem;color:#9a8f7e">Nothing tracked, nothing stored server-side. · Other themes: <a href="Theme%202%20-%20Console.dc.html">Console</a> · <a href="Theme%203%20-%20Card.dc.html">Card</a></p>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { phase: 'idle', stages: [], transcript: '', summary: '', keyDraft: '', demo: false, phone: false, copied: false, over: false, fileName: '', source: '' }
+  fileRef = React.createRef()
+
+  STEPS = [{ id: 'ingest', label: 'Reading the audio' }, { id: 'transcribe', label: 'Writing it down' }, { id: 'summarise', label: 'Picking out what matters' }]
+
+  async componentDidMount () { this.api = await import('./tool-adapter.js'); this.api.bump('arrival', 'studio'); this.forceUpdate() }
+
+  browse = () => this.fileRef.current && this.fileRef.current.click()
+  onDragOver = (e) => { e.preventDefault(); if (!this.state.over) this.setState({ over: true }) }
+  onDragLeave = () => this.setState({ over: false })
+  onDrop = (e) => { e.preventDefault(); this.setState({ over: false }); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) this.accept(f) }
+  onFile = (e) => { const f = e.target.files && e.target.files[0]; if (f) this.accept(f) }
+  accept = (f) => { this.api.bump('note:chosen', 'studio'); this.setState({ phase: 'privacy', fileName: f.name, source: 'own' }) }
+
+  runDemo = () => { this.api.bump('demo:run', 'studio'); this.setState({ demo: true, source: 'demo' }, () => this.start()) }
+  useDemo = (e) => { e.preventDefault(); this.setState({ demo: true }, () => this.start()) }
+  onKeyInput = (e) => this.setState({ keyDraft: e.target.value })
+  reset = () => this.setState({ phase: 'idle', transcript: '', summary: '', fileName: '', source: '', demo: false })
+
+  next = () => {
+    const p = this.state.phase
+    if (p === 'privacy') { this.api.bump('routed:accepted', 'studio'); return (this.api.getKey() || this.state.demo) ? this.start() : this.setState({ phase: 'key' }) }
+    if (p === 'key' && this.state.keyDraft.trim()) { this.api.saveKey(this.state.keyDraft.trim()); this.api.bump('key:saved', 'studio'); this.start() }
+  }
+
+  start = () => {
+    this.setState({ phase: 'running', stages: this.STEPS.map(s => ({ ...s, state: 'wait' })), transcript: '', summary: '' })
+    const mark = (id, state, note) => this.setState(s => ({ stages: s.stages.map(x => x.id === id ? { ...x, state, note: note || x.note } : x) }))
+    this.api.runPass({
+      variant: 'studio', infographic: false,
+      onStage: (stage, payload) => {
+        if (stage === 'ingest') mark('ingest', 'run')
+        if (stage === 'transcribe') { mark('ingest', 'done', 'free'); mark('transcribe', 'run') }
+        if (stage === 'chunk') this.setState({ transcript: payload })
+        if (stage === 'transcript') { mark('transcribe', 'done', '£0.011'); this.setState({ transcript: payload }) }
+        if (stage === 'summarise') mark('summarise', 'run')
+        if (stage === 'summary') { mark('summarise', 'done', '£0.003'); this.setState({ summary: payload }) }
+        if (stage === 'complete') setTimeout(() => this.setState({ phase: 'done' }), 450)
+      }
+    })
+  }
+
+  copyTranscript = () => { try { navigator.clipboard.writeText(this.state.transcript) } catch (e) {} ; this.setState({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1400) }
+  toggleWidth = () => this.setState(s => ({ phone: !s.phone }))
+
+  parseLines (text) {
+    return String(text || '').split('\n').filter(Boolean).map(raw => {
+      const bullet = raw.trim().startsWith('- ')
+      const body = bullet ? raw.trim().slice(2) : raw.trim()
+      const m = body.match(/^\*\*(.+?)\*\*(.*)$/)
+      return { pad: bullet ? '18px' : '0px', lead: m ? (bullet ? '· ' : '') + m[1] : (bullet ? '· ' : ''), rest: m ? m[2].replace(/\*\*/g, '') : body.replace(/\*\*/g, '') }
+    })
+  }
+
+  renderVals () {
+    const p = this.state.phase
+    const demo = this.state.source === 'demo'
+    const copy = {
+      idle: { title: 'A voice note, in writing.', body: 'Drop one in and you get the words back, plus the handful of points that actually matter. It runs in this browser — nothing is uploaded to us, and nothing happens until you say so.' },
+      privacy: { title: 'One thing to agree first.', body: 'This is the only question before the words come back.' },
+      key: { title: 'And your key.', body: 'Kept in this browser, sent only to OpenRouter. There is no account to make here.' },
+      running: { title: demo ? 'Listening to the sample.' : 'Listening.', body: 'Nothing to do — it takes about ten seconds.' },
+      done: { title: 'Done.', body: demo ? 'That was a sample, and it cost you nothing. Drop in one of your own to do it properly.' : 'The words, then the points. Copy what you need.' }
+    }[p]
+
+    const crumbOrder = ['idle', 'privacy', 'running', 'done']
+    const at = crumbOrder.indexOf(p === 'key' ? 'privacy' : p)
+    const crumbs = [{ n: 'I', l: 'the note' }, { n: 'II', l: 'what it costs' }, { n: 'III', l: 'the words' }].map((c, i) => ({
+      num: c.n, label: c.l,
+      color: i === at ? '#211d18' : i < at ? '#9a8f7e' : '#c4bbab',
+      numColor: i === at ? '#b6543a' : '#c4bbab',
+      weight: i === at ? 700 : 400
+    }))
+
+    const nextLabel = { privacy: 'Yes — write it down', key: 'Save the key and start' }[p]
+
+    return {
+      ...copy, crumbs,
+      isIdle: p === 'idle', isPrivacy: p === 'privacy', isKey: p === 'key', isRunning: p === 'running', isDone: p === 'done',
+      dropTitle: this.state.over ? 'Let go' : 'Drop the voice note here',
+      dropLine: this.state.over ? '#b6543a' : '#c9bda8',
+      dropBg: this.state.over ? '#f3e3db' : '#fffdf8',
+      fileName: this.state.fileName, fileMeta: '1:37 · on your device only',
+      stages: this.state.stages.map((s, i) => ({
+        ...s, num: ['I', 'II', 'III'][i],
+        color: s.state === 'done' ? '#9a8f7e' : s.state === 'run' ? '#211d18' : '#c4bbab',
+        numColor: s.state === 'run' ? '#b6543a' : '#c4bbab',
+        anim: s.state === 'run' ? 'st-pulse 1.4s infinite' : 'none',
+        note: s.note || ''
+      })),
+      liveTranscript: this.state.transcript,
+      transcript: this.state.transcript,
+      summaryLines: this.parseLines(this.state.summary),
+      copyLabel: this.state.copied ? 'copied' : 'copy',
+      costLine: demo ? 'demo run — £0.000, nothing was called' : 'this run cost £0.014 of a possible £0.055',
+      keyDraft: this.state.keyDraft,
+      hasNext: !!nextLabel, nextLabel,
+      nextHint: p === 'privacy' ? 'next: about ten seconds of listening, then the words' : 'next: the words, then the points',
+      shellWidth: this.state.phone ? '390px' : '760px',
+      widthLabel: this.state.phone ? 'desktop' : 'phone',
+      fileRef: this.fileRef,
+      browse: this.browse, onDragOver: this.onDragOver, onDragLeave: this.onDragLeave, onDrop: this.onDrop,
+      onFile: this.onFile, runDemo: this.runDemo, useDemo: this.useDemo, onKeyInput: this.onKeyInput,
+      next: this.next, reset: this.reset, copyTranscript: this.copyTranscript, toggleWidth: this.toggleWidth
+    }
+  }
+}
+
+</script>
+</body>
+</html>

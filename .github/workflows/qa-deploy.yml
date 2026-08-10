@@ -81,6 +81,13 @@ jobs:
         shell: bash
         run: node tests/browser/run.mjs 2>&1 | tee browser.log
 
+      # Design candidates (issue 059): the /design/ A/B pages run on a runtime
+      # that exists only there. If it breaks they render blank, and nobody finds
+      # out until someone opens one to give an opinion.
+      - name: Design prototypes (render + a real demo pass each)
+        shell: bash
+        run: node tests/design/render-check.mjs 2>&1 | tee design.log
+
       - name: Integration test (app boot against the live engine origin)
         shell: bash
         run: node tests/integration/app-boot.test.mjs 2>&1 | tee int-boot.log
