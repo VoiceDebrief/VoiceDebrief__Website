@@ -33,7 +33,14 @@
 <script src="vendor/qunit.js"></script>
 <!-- tests.mjs top-level-awaits the workflow declaration, so autostart would
      fire before any test is registered — start explicitly at the end. -->
-<script>QUnit.config.autostart = false</script>
+<script>QUnit.config.autostart = false
+/* noglobals ON by default, so this page and CI agree. It is a checkbox in the
+   toolbar and it defaults OFF, which meant a test could leak a global, go red
+   for anyone who ticked the box, and stay green in CI forever — which is exactly
+   what happened (the locale-picker tests stubbed window.__waI18n and restored it
+   as `undefined`, leaving the property defined). A gate that is stricter when a
+   human happens to tick something is not a gate. */
+QUnit.config.noglobals = true</script>
 <script type="module" src="tests.mjs"></script>
 </body>
 </html>

@@ -284,7 +284,14 @@ QUnit.module('wa-locale-picker — closed means painting nothing', hooks => {
             tOr: (key, fallback) => fallback,
         }
     })
-    hooks.afterEach(() => { window.__waI18n = saved })
+    /* delete, not `= saved`. On this page nothing has ever defined __waI18n, so
+       `saved` is undefined and assigning it back leaves the PROPERTY defined with
+       an undefined value — which is still a new global, and QUnit's noglobals
+       check says so. The app page is the only place the real seam exists. */
+    hooks.afterEach(() => {
+        if (saved === undefined) delete window.__waI18n
+        else window.__waI18n = saved
+    })
 
     const mount = () => {
         const el = document.createElement('wa-locale-picker')
