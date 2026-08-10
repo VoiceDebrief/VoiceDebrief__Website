@@ -13,4 +13,11 @@ Any tasks, follow-ups or requests mentioned, each as "- [who] what". If none, wr
 One plain sentence a busy person could read instead of listening to the note.
 
 Rules: use only what is in the transcript; do not invent or embellish; keep the speaker's
-language where it is clearer than a rewording; British English.
+own words where they are clearer than a rewording.
+
+**Write the whole summary in {{language}}**, including the three headings, whatever
+language the recording was in. This is the reader's debrief, not the speaker's — the
+transcript already preserves what was actually said. Where a name, a number or a
+technical term was spoken, keep it exactly as spoken rather than translating it.
+
+Tone for this reader: {{tone}}

@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.5/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.6/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
@@ -159,7 +159,7 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: App + Pricing primary, three groups, thirteen grouped pages (v0.1.5)', assert => {
+    QUnit.test('two-level menu: App + Pricing primary, three groups, thirteen grouped pages (v0.1.6)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
@@ -178,7 +178,7 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
             'the App is always in the menu (it was not, before issue 048)')
     })
 
-    QUnit.test('the nav says which pages follow your language, and which do not (v0.1.5)', assert => {
+    QUnit.test('the nav says which pages follow your language, and which do not (v0.1.6)', assert => {
         const el = document.createElement('wa-site-nav')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
@@ -211,6 +211,25 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         assert.false(el.classList.contains('open'), 'clicking again closes it')
     })
 
+    /* Wrapping the App link in .i18n-link for its locale flag (v0.1.3) took it out
+       of the `nav.main > a` selector, so it fell back to the browser's default link
+       colour — blue, and purple once visited, on a navy bar. Nothing in the markup
+       looked wrong; only the painted colour was. Asserted from computed style, for
+       the same reason the picker tests are. */
+    QUnit.test('every top-level nav link is the same colour — the flag wrapper does not orphan one (v0.1.6)', assert => {
+        const el = document.createElement('wa-site-nav')
+        document.getElementById('qunit-fixture').appendChild(el)
+        const sr = el.shadowRoot
+        const colourOf = (sel) => { const a = sr.querySelector(sel); return a && getComputedStyle(a).color }
+        const plain = colourOf('nav.main > a')
+        const flagged = colourOf('nav.main > .i18n-link > a')
+        assert.ok(plain, 'an unwrapped primary link exists')
+        assert.ok(flagged, 'the flag-wrapped App link exists')
+        assert.strictEqual(flagged, plain,
+            `the App link matches its siblings (was ${flagged} vs ${plain} before v0.1.6)`)
+        assert.notStrictEqual(flagged, 'rgb(0, 0, 238)', 'and is not the browser default blue')
+    })
+
     /* The phone regression (v0.1.4). The bar is a space-between row; when it
        wrapped on an iPhone the picker slot and the hamburger — plain siblings —
        were thrown to opposite ends of the second line, and the panel, anchored
@@ -218,7 +237,7 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
        of the screen. The fix is structural: the two controls are ONE element, so
        whatever the row does they stay adjacent and hard right. Assert the
        structure, because that is what the CSS depends on. */
-    QUnit.test('the language slot and the hamburger are one cluster, so a wrapped header cannot separate them (v0.1.5)', assert => {
+    QUnit.test('the language slot and the hamburger are one cluster, so a wrapped header cannot separate them (v0.1.6)', assert => {
         const el = document.createElement('wa-site-nav')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot

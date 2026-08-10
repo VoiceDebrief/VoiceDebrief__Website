@@ -73,7 +73,10 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
                           tone: params.tone ?? culture().tone ?? '' }
 
         const results = { name: chosen.name, transcript: null, translation: null, summary: null, svg: null, image: null, usage: {} }
-        current = { itemId: null, results, trace: null }
+        /* options is kept on `current` because the infographic can be REDRAWN
+           after the pass, from a control that has no ctx — and a redraw in the
+           wrong language is the same bug as a summary in the wrong language. */
+        current = { itemId: null, results, trace: null, options }
 
         /* The step executors — each does exactly what the old inline stage did,
            emits the same events, and reports its cost to the runner. */
@@ -157,9 +160,18 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
                 }
             },
 
-            'llm-text': async () => {
+            'llm-text': async (step, ctx) => {
                 try {
-                    const prompt = await loadSummaryPrompt()
+                    /* The summary prompt USED TO END "British English", which is
+                       why a Portuguese reader got an English debrief built out of
+                       a perfectly good Portuguese translation (Dinis, screenshot):
+                       the translated text was passed in correctly and the prompt
+                       then instructed the model to answer in English anyway. The
+                       language is now declared, from the reader's culture, exactly
+                       as the translate step already declared it. */
+                    const prompt = (await loadSummaryPrompt())
+                        .replace(/\{\{language\}\}/g, ctx.options.language)
+                        .replace(/\{\{tone\}\}/g, ctx.options.tone || '')
                     /* With no translation, ask() is used exactly as before — the
                        engine already holds the transcript as context. With one,
                        the summary must be built from the TRANSLATED text, so it
@@ -199,7 +211,9 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         const results = current.results
         emit('wa:infographic:started', { model })
         try {
-            const preamble = await loadInfographicPrompt()
+            const language = current.options?.language || culture().language || 'English'
+            const preamble = (await loadInfographicPrompt())
+                .replace(/\{\{language\}\}/g, language)
             const content = preamble + '\n## Transcript\n' + (results.translation || results.transcript) +
                 (results.summary ? '\n\n## Summary\n' + results.summary : '')
             const g = await generateInfographic({

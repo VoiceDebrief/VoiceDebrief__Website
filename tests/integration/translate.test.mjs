@@ -93,6 +93,29 @@ try {
     check('the translation is shown, with a localised label',
         run.cardShown && run.cardLabel === 'TRADUÇÃO', `${run.cardShown} / ${run.cardLabel}`)
 
+    /* THE PROMPT ITSELF, not the reply. The earlier version of this test asserted
+       that the summary came back in Portuguese, and it passed — because the mock
+       answered in Portuguese whenever the request mentioned Portuguese. Against a
+       real model it failed: the summary prompt ended with the words "British
+       English", so the translated text was handed over correctly and the model was
+       then told to answer in English anyway (Dinis, screenshot: Portuguese
+       translation, English summary, English infographic).
+
+       A reply can be produced by a helpful mock. An instruction cannot: either the
+       prompt names the reader's language or it does not. */
+    const sent = await page.evaluate(async () => {
+        const ex = await window.__tool.getExchanges({ limit: 50 })
+        // Identified by the prompt's OWN marker rather than by a label field, so
+        // this keeps working if the record shape changes.
+        const bodies = ex.map(e => JSON.stringify(e))
+        return { summary: bodies.find(b => b.includes('Key points')) || '', count: ex.length }
+    })
+    check('the summary request was captured', !!sent.summary, `${sent.count} exchange(s)`)
+    check("the summary is INSTRUCTED to write in the reader's language",
+        /Portuguese/i.test(sent.summary), sent.summary ? 'the prompt names the language' : 'no summary request found')
+    check('and no longer carries the hardcoded "British English" that caused the bug',
+        !!sent.summary && !/British English/i.test(sent.summary))
+
     // Opted out: the step must be skipped entirely, not run and discarded — the
     // user is paying per call and an invisible one is the worst kind.
     const off = await page.evaluate(async () => {
