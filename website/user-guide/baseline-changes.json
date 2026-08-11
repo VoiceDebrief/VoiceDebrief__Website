@@ -2,6 +2,43 @@
   "note": "Written by scripts/record_baseline_changes.py on each qa push whose screenshots moved. A change is a record, not a failure \u2014 the review question is whether the movement matches the work the commit set out to do.",
   "entries": [
     {
+      "date": "2026-08-11 11:08 UTC",
+      "commit": "893039c9b14e8e01fbff99637092f6dd4161eda5",
+      "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/893039c9b14e8e01fbff99637092f6dd4161eda5",
+      "run": "64",
+      "run_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31485184982",
+      "base_version": "v0.1.23",
+      "armed": [],
+      "changes": [
+        {
+          "id": "04-results",
+          "kind": "resized",
+          "from": "820x1044",
+          "to": "820x1088",
+          "caption": "The one pass, done: transcript, summary and the infographic together.",
+          "slot": "one-pass/results"
+        },
+        {
+          "id": "08-flow-run",
+          "kind": "changed",
+          "pixels": 31458,
+          "area": 336800,
+          "percent": 9.34,
+          "threshold": 0.1,
+          "caption": "The \ud83e\udded flow tab: the declared workflow \u2014 every step's model and spending ceiling, and what this run actually did and cost.",
+          "slot": "one-pass/workflow"
+        },
+        {
+          "id": "07-chat-edited",
+          "kind": "resized",
+          "from": "820x1072",
+          "to": "820x1116",
+          "caption": "The assistant edited the summary \u2014 the original is always one click away.",
+          "slot": "chat/edit-restore"
+        }
+      ]
+    },
+    {
       "date": "2026-08-10 10:55 UTC",
       "commit": "e4ea8ee7f810a721eba4fa952248428ef3b65c69",
       "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/e4ea8ee7f810a721eba4fa952248428ef3b65c69",
