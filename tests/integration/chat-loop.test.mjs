@@ -104,7 +104,9 @@ try {
     check('tool call + result visible in history',
         after.tools.length === 1 && after.tools[0].ok && after.tools[0].did.startsWith('redraw_infographic'), JSON.stringify(after.tools))
     check('the fenced block reply is marked machinery', after.machinery)
-    check('chat + infographic calls audited in the exchange log', after.chatLog === 3 && after.infogLog === 1,
+    // Four since issue 061: the pass now also asks the model to read the
+    // transcript's metadata, and every call the product makes is audited here.
+    check('chat + infographic calls audited in the exchange log', after.chatLog === 4 && after.infogLog === 1,
         `chat=${after.chatLog} infog=${after.infogLog}`)
 
     // The material-edit workflow (issue 035, brief written from inside the chat):

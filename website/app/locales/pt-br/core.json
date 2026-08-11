@@ -51,5 +51,6 @@
   "labelTranslation": "TRADUÇÃO",
   "stepTranslate": "traduzindo",
   "translateWhy": "A transcrição fica sempre no idioma falado. O resumo e o infográfico são criados a partir da tradução.",
-  "localeSoon": "em breve"
+  "localeSoon": "em breve",
+  "stepClassify": "lendo o conteúdo"
 }

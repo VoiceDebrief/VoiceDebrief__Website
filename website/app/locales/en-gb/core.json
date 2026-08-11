@@ -51,5 +51,6 @@
   "labelTranslation": "TRANSLATION",
   "stepTranslate": "translating",
   "translateWhy": "The transcript always stays in the language spoken. The summary and infographic are built from the translation.",
-  "localeSoon": "soon"
+  "localeSoon": "soon",
+  "stepClassify": "reading it"
 }

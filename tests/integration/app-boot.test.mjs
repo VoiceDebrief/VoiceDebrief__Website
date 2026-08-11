@@ -92,10 +92,11 @@ try {
     check('debug pane opens on toggle', await dbg.locator('.wa-dbg__panel.open').count() === 1)
     await dbg.locator('.wa-dbg__tab[data-tab="prompts"]').click()
     const prompts = await page.waitForFunction(() =>
-        document.querySelector('wa-debug-panel').shadowRoot.querySelectorAll('.prompt').length === 6, null, { timeout: 10000 }).then(() => true).catch(() => false)
-    // Six since issue 055: the translate prompt is editable like the rest, so a
-    // user can change the register of their own translations.
-    check('prompts tab shows the six templates', prompts)
+        document.querySelector('wa-debug-panel').shadowRoot.querySelectorAll('.prompt').length === 7, null, { timeout: 10000 }).then(() => true).catch(() => false)
+    // Seven since issue 061 added classify. Every prompt the product sends is
+    // editable here, which is the point — including the one whose answer decides
+    // whether the translate step runs at all.
+    check('prompts tab shows the seven templates', prompts)
     const modelOptions = await page.locator('#infographic-model option').count()
     check('infographic model picker populated', modelOptions >= 3, String(modelOptions))
     await dbg.locator('.wa-dbg__tab[data-tab="openrouter"]').click()
@@ -141,7 +142,7 @@ try {
     // Both optional branches on must equal the declared ceiling, or the "max cost
     // for this run" the options screen promises is not actually a maximum.
     check('workflow declaration loads with a quotable ceiling',
-        wf.id === 'standard' && wf.steps === 6 && wf.quoteAll === wf.max && wf.quoteAll > wf.quoteBare,
+        wf.id === 'standard' && wf.steps === 7 && wf.quoteAll === wf.max && wf.quoteAll > wf.quoteBare,
         JSON.stringify(wf))
     check('no trace before any run', wf.trace === null)
     const quoteShown = await page.locator('#max-cost').textContent()
@@ -152,9 +153,9 @@ try {
     check('flow pane opens on toggle', await flow.locator('.wa-flow__panel.open').count() === 1)
     check('opening flow closes the chat pane', await chat.locator('.wa-chat__panel.open').count() === 0)
     const flowRendered = await page.waitForFunction(() =>
-        document.querySelector('wa-flow-panel').shadowRoot.querySelectorAll('.wa-flow__steps .step').length === 6,
+        document.querySelector('wa-flow-panel').shadowRoot.querySelectorAll('.wa-flow__steps .step').length === 7,
         null, { timeout: 10000 }).then(() => true).catch(() => false)
-    check('flow pane renders the six declared steps', flowRendered)
+    check('flow pane renders the seven declared steps', flowRendered)
     await flow.locator('.wa-flow__close').click()
 
     // 7. The exchange log is empty (no key, no LLM calls) and clearable.

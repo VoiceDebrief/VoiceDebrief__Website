@@ -5,7 +5,8 @@
    wa:* event stream exactly as it always was. Deleting the declaration breaks
    the tool — there is deliberately no code fallback. */
 
-import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL, TRANSLATE_PROMPT_URL } from './config.js'
+import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL, TRANSLATE_PROMPT_URL, CLASSIFY_PROMPT_URL } from './config.js'
+import { parseJson, normalise, needsTranslation } from './classify.js'
 import { culture, getLocale } from './i18n.js'
 import { generateInfographic } from './infographic.js'
 import { normaliseAudioFile } from './audio-normalise.js'
@@ -31,6 +32,12 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
         const r = await fetch(TRANSLATE_PROMPT_URL, { cache: 'no-cache' })
         if (r.ok) debugStore.setPromptDefault('translate', await r.text())
         return debugStore.getPrompt('translate') || 'Translate the following into {{language}}. Return only the translation.\n---\n'
+    }
+
+    async function loadClassifyPrompt() {
+        const r = await fetch(CLASSIFY_PROMPT_URL, { cache: 'no-cache' })
+        if (r.ok) debugStore.setPromptDefault('classify', await r.text())
+        return debugStore.getPrompt('classify') || 'Return JSON metadata about this transcript.\n---\n'
     }
 
     async function loadInfographicPrompt() {
@@ -70,9 +77,14 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
                           infographicModel: params.infographicModel, style: params.style,
                           translate: !!params.translate,
                           language: params.language || culture().language || 'English',
+                          /* The primary subtag of the active locale — what the
+                             detected language is COMPARED against. pt-PT and
+                             pt-BR both read `pt`: a Brazilian reader does not
+                             need a European Portuguese note translated. */
+                          languageCode: params.languageCode || String(getLocale() || 'en').split('-')[0],
                           tone: params.tone ?? culture().tone ?? '' }
 
-        const results = { name: chosen.name, transcript: null, translation: null, summary: null, svg: null, image: null, usage: {} }
+        const results = { name: chosen.name, transcript: null, facts: null, translation: null, summary: null, svg: null, image: null, usage: {} }
         /* options is kept on `current` because the infographic can be REDRAWN
            after the pass, from a control that has no ctx — and a redraw in the
            wrong language is the same bug as a summary in the wrong language. */
@@ -122,6 +134,40 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
                 results.usage.transcribe = t.usage
                 emit('wa:transcript', { text: t.text, latencyMs: t.latencyMs, usage: t.usage })
                 return { costUsd: t.usage?.costUsd ?? 0 }
+            },
+
+            /* Read the metadata before deciding anything (issue 061). One pass
+               over the transcript returns typed facts — detected language,
+               topics, register, sentiment, urgency, safety signals — and the
+               declaration then guards the translate step on
+               `facts.needsTranslation`, so a note already in the reader's
+               language does not pay to be "translated" into itself.
+
+               Everything it returns is allowlisted in classify.js and NONE of it
+               is ever put back into a prompt. See that file for why. */
+            'llm-classify': async (step, ctx) => {
+                try {
+                    const prompt = await loadClassifyPrompt()
+                    const r = await call('chat', { messages: [{ role: 'user',
+                        content: prompt + '\n' + results.transcript }], label: 'classify' })
+                    const facts = normalise(parseJson(r.text))
+                    results.facts = facts
+                    results.usage.classify = r.usage
+                    /* Two reasons to translate, and both must hold: the reader
+                       asked for it, and the note is not already in their
+                       language. The declaration guards on this single fact
+                       because `when` has no expression language — deliberately,
+                       so a declaration stays readable. */
+                    const need = !!ctx.options.translate && needsTranslation(facts, ctx.options.languageCode)
+                    emit('wa:facts', { facts, needsTranslation: need, usage: r.usage })
+                    return { costUsd: r.usage?.costUsd ?? 0, facts: { needsTranslation: need } }
+                } catch (e) {
+                    /* Declared degrade. The facts are a convenience; losing them
+                       must not cost the user the translation they asked for, so
+                       needsTranslation stays TRUE on the way out. */
+                    emit('wa:facts:error', { code: e.code || 'llm-error', message: e.message })
+                    throw Object.assign(e, { facts: { needsTranslation: true } })
+                }
             },
 
             /* Translate before summarising (issue 055). A voice note is spoken in

@@ -31,16 +31,19 @@ test('the quote follows the options: each optional step selects a different path
     assert.ok(both > infog && both > trans, 'both branches must cost more than either alone')
     assert.equal(maxUsd(standard), both, 'all options on = the absolute ceiling')
 
+    // classify sits on EVERY path (issue 061): the safety signals are the most
+    // valuable thing it produces and must not depend on a translate checkbox.
     assert.deepEqual(pathFor(standard, {}).map(s => s.id),
-        ['normalise', 'ingest', 'transcribe', 'summary'])
+        ['normalise', 'ingest', 'transcribe', 'classify', 'summary'])
     assert.deepEqual(pathFor(standard, { infographic: true }).map(s => s.id),
-        ['normalise', 'ingest', 'transcribe', 'summary', 'infographic'])
-    // Translate sits BETWEEN transcribe and summary — the summary is built from
-    // it, so any other position would summarise the wrong text.
+        ['normalise', 'ingest', 'transcribe', 'classify', 'summary', 'infographic'])
+    // Translate sits BETWEEN classify and summary — the summary is built from
+    // it, so any other position would summarise the wrong text. It is priced in
+    // whenever the user asked for it; whether it RUNS is a fact classify learns.
     assert.deepEqual(pathFor(standard, { translate: true }).map(s => s.id),
-        ['normalise', 'ingest', 'transcribe', 'translate', 'summary'])
+        ['normalise', 'ingest', 'transcribe', 'classify', 'translate', 'summary'])
     assert.deepEqual(pathFor(standard, { infographic: true, translate: true }).map(s => s.id),
-        ['normalise', 'ingest', 'transcribe', 'translate', 'summary', 'infographic'])
+        ['normalise', 'ingest', 'transcribe', 'classify', 'translate', 'summary', 'infographic'])
 })
 
 /* A tiny two-step machine for the validator's negative cases. */
@@ -80,6 +83,10 @@ const stubbed = (overrides = {}) => ({
     'local':           async () => ({ costUsd: 0 }),
     'engine':          async () => ({ costUsd: 0 }),
     'llm-transcribe':  async () => ({ costUsd: 0.004 }),
+    // classify declares the fact the translate branch is guarded on; true here so
+    // the stubbed happy path exercises the same shape a real translating run does.
+    'llm-classify':    async () => ({ costUsd: 0.002, facts: { needsTranslation: true } }),
+    'llm-translate':   async () => ({ costUsd: 0.006 }),
     'llm-text':        async () => ({ costUsd: 0.001 }),
     'llm-infographic': async () => ({ costUsd: 0.02 }),
     ...overrides,
@@ -91,7 +98,11 @@ test('happy path: every path step done, spend summed, skipped branch marked', as
         executors: stubbed(), emit: (n) => events.push(n) })
     assert.equal(trace.status, 'complete')
     assert.equal(trace.steps.find(s => s.id === 'infographic').status, 'skipped')
-    assert.ok(Math.abs(trace.spentUsd - 0.005) < 1e-9)
+    // transcribe 0.004 + classify 0.002 + summary 0.001. Translate is NOT here:
+    // it was never quoted (options.translate is false), so even though classify
+    // declares needsTranslation the runner refuses to route to an unpriced step.
+    assert.ok(Math.abs(trace.spentUsd - 0.007) < 1e-9, `spent ${trace.spentUsd}`)
+    assert.equal(trace.steps.find(s => s.id === 'translate').status, 'skipped')
     assert.equal(trace.quoteUsd, pathUsd(standard, { infographic: false }))
     assert.ok(events.includes('wa:workflow:started') && events.includes('wa:workflow:complete'))
 })
@@ -120,6 +131,90 @@ test('the budget entry gate: an overrun blocks the NEXT step (workflow-budget)',
         (e) => e.code === 'workflow-budget')
     assert.equal(trace.steps.find(s => s.id === 'transcribe').status, 'done')
     assert.ok(trace.steps.find(s => s.id === 'transcribe').overrun, 'the overrun itself is recorded')
-    assert.equal(trace.steps.find(s => s.id === 'summary').status, 'blocked')
+    // The NEXT step is now classify (issue 061), and it is the one refused —
+    // the gate blocks at the first boundary after the overrun, wherever that is.
+    assert.equal(trace.steps.find(s => s.id === 'classify').status, 'blocked')
+    assert.equal(trace.steps.find(s => s.id === 'summary').status, 'pending',
+        'nothing past the blocked step was even considered')
     assert.equal(trace.status, 'failed')
+})
+
+/* ── facts: conditions the RUN discovers (issue 061) ──────────────────────────
+   The asymmetry these lock down is the one the price on screen depends on: a
+   quote assumes every discoverable branch is taken, and a run may then decline
+   work — so a pass can cost LESS than quoted and never more. */
+
+const withClassify = () => ({
+    id: 'f', schema: 1, title: 't', version: '1', start: 'a',
+    steps: [
+        { id: 'a', kind: 'local', label: 'A', requires: [], produces: [], budget: { usd: 0 },
+          on_failure: 'abort', next: [{ to: 'b' }] },
+        { id: 'b', kind: 'llm-classify', label: 'B', model: 'm', requires: [], produces: [], budget: { usd: 0.01 },
+          on_failure: 'degrade', next: [{ to: 'c', when: 'facts.need', quoteWhen: 'options.want', reason: 'not needed' }, { to: 'd' }] },
+        { id: 'c', kind: 'llm-translate', label: 'C', model: 'm', requires: [], produces: [], budget: { usd: 0.03 },
+          on_failure: 'degrade', next: [{ to: 'd' }] },
+        { id: 'd', kind: 'llm-text', label: 'D', model: 'm', requires: [], produces: [], budget: { usd: 0.02 },
+          on_failure: 'degrade', next: [{ to: 'done' }] },
+    ],
+})
+
+const exec = (facts, spend = {}) => ({
+    local: async () => ({ costUsd: 0 }),
+    'llm-classify': async () => ({ costUsd: spend.b ?? 0.005, facts }),
+    'llm-translate': async () => ({ costUsd: spend.c ?? 0.02 }),
+    'llm-text': async () => ({ costUsd: spend.d ?? 0.01 }),
+})
+
+test('a declaration may guard a step on a fact', () => {
+    assert.deepEqual(validateWorkflow(withClassify()).errors, [])
+})
+
+test('quoteWhen must be an option — a price cannot depend on what only the run learns', () => {
+    const bad = withClassify()
+    bad.steps[1].next[0].quoteWhen = 'facts.something'
+    assert.ok(validateWorkflow(bad).errors.some(e => e.includes('quoteWhen')))
+})
+
+test('the QUOTE follows the option, not the fact', () => {
+    const def = withClassify()
+    // want=true → the ceiling includes the guarded step, whatever the run finds
+    assert.ok(Math.abs(pathUsd(def, { want: true }) - 0.06) < 1e-9)
+    // want=false → it cannot happen, so it is not priced
+    assert.ok(Math.abs(pathUsd(def, { want: false }) - 0.03) < 1e-9)
+})
+
+test('a false fact SKIPS the quoted step, and the run spends less than quoted', async () => {
+    const trace = await runWorkflow(withClassify(),
+        { options: { want: true }, executors: exec({ need: false }) })
+    const c = trace.steps.find(s => s.id === 'c')
+    assert.equal(c.status, 'skipped')
+    assert.equal(c.skippedBecause, 'not needed', 'the declaration says WHY, for the flow panel')
+    assert.ok(trace.spentUsd < trace.quoteUsd, `spent ${trace.spentUsd} < quoted ${trace.quoteUsd}`)
+    assert.equal(trace.status, 'complete')
+})
+
+test('a true fact runs it', async () => {
+    const trace = await runWorkflow(withClassify(),
+        { options: { want: true }, executors: exec({ need: true }) })
+    assert.equal(trace.steps.find(s => s.id === 'c').status, 'done')
+})
+
+test('a step that DEGRADES can still declare the fact — losing metadata must not drop the work', async () => {
+    // This is the safety property: classify failing leaves needsTranslation true.
+    const executors = { ...exec({}), 'llm-classify': async () => {
+        throw Object.assign(new Error('boom'), { code: 'llm-error', facts: { need: true } })
+    } }
+    const trace = await runWorkflow(withClassify(), { options: { want: true }, executors })
+    assert.equal(trace.steps.find(s => s.id === 'b').status, 'degraded')
+    assert.equal(trace.steps.find(s => s.id === 'c').status, 'done',
+        'the guarded step still ran, because the failure said it should')
+})
+
+test('and a degraded step that says nothing leaves the fact false — so declarations must default safely', async () => {
+    const executors = { ...exec({}), 'llm-classify': async () => {
+        throw Object.assign(new Error('boom'), { code: 'llm-error' })
+    } }
+    const trace = await runWorkflow(withClassify(), { options: { want: true }, executors })
+    assert.equal(trace.steps.find(s => s.id === 'c').status, 'skipped',
+        'undefined reads as false — which is why classify attaches its fact to the failure')
 })

@@ -25,6 +25,11 @@ const PROMPT_KINDS = {
         note: 'Sent with the audio bytes. The engine default is replaced at request time when you save an override.',
         defaultText: TRANSCRIBE_PROMPT_SEED,
     },
+    classify: {
+        label: 'Metadata (language, topics, signals)',
+        note: 'Reads the transcript once and returns typed JSON — detected language, topics, register, sentiment, urgency and safety signals. Its language answer decides whether the translate step runs at all. Its output is parsed and allowlisted, never fed to another model as text (served from ./prompts/classify-prompt.md).',
+        defaultText: null,   // learned when the pipeline fetches the site file
+    },
     translate: {
         label: 'Translation',
         note: 'Used when "translate it into my language first" is on (issue 055). {{language}} and {{tone}} are filled from the active locale\'s culture data before sending (served from ./prompts/translate-prompt.md).',
