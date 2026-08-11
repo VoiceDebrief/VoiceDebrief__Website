@@ -18,6 +18,35 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The pass reads the note before deciding what to do with it (issue 061, Dinis)** —
+  a **classify** step between transcribe and translate, on every pass. It returns
+  typed metadata — detected language, topics, register, mood, urgency and safety
+  signals — shown in a new card above the transcript, and it earns its place by
+  deciding whether translation needs to happen at all. An English note for an
+  English reader now **spends $0.0015 against a $0.11 quote** instead of paying to
+  translate itself.
+
+  **The state machine gains a `facts` namespace, and the quote stays honest.**
+  `when` accepted `options.<flag>` only, because the price on screen must be
+  knowable before the run — and a detected language is not. A transition may now
+  declare `when: "facts.x"` alongside `quoteWhen: "options.y"`: the ceiling assumes
+  every discoverable branch is taken, and the run then declines work that turns out
+  unnecessary. A pass may spend **less** than quoted, never more. Two invariants sit
+  in the runner rather than in convention — **a fact may never add a step**, and **a
+  degrading step may still declare facts** (classify attaches
+  `needsTranslation: true` to its own failure, because `undefined` reads as false
+  and that is the dangerous direction).
+
+  **The classifier is a trust boundary and is written as one.** It reads whatever a
+  stranger said into their phone, so every value resolves to an allowlist key,
+  nothing it returns is ever put back into a prompt — interpolating a topic would let
+  a voice note write our instructions — and *unsure means do the work*. The safety
+  signals include prompt injection, credentials spoken aloud, and the
+  financial-request-plus-urgency-pressure pairing that is the shape of most
+  voice-note fraud. The card labels them **observations, not a security check**,
+  because the classifier reads the same untrusted text as everything else and can be
+  talked out of reporting.
+
 - **Two briefs were in the repo and invisible on the site (Dinis, 404)** — the
   go-live design brief and the semantic-graphs pack were both added to
   `library/` and to the repo's own index, and neither reached
