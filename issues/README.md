@@ -17,6 +17,7 @@ superseding both branches' allow-list fixes; 007 closed as superseded — Dinis)
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [062](open/062-updates-as-audio.md) | The Updates read aloud — news-style TTS voice memos of each post (brief only) | open | normal | medium |
 | [059](done/059-design-candidates-live-on-the-site.md) | The design candidates go live at /design/ — seven runnable A/B pages behind one hub | done | high | medium |
 | [056](done/056-per-locale-app-urls.md) | One real URL per language — /app/pt-pt/, direct-linkable | done | high | medium |
 | [055](done/055-translate-before-summarising.md) | Translate before summarising — the debrief in the reader's language | done | high | medium |

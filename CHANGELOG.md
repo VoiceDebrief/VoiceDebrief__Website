@@ -18,6 +18,23 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Brief: the Updates, read aloud (issue 062, Dinis)** — a tool that turns voice
+  notes into writing, publishing its own news as voice notes. The brief is
+  grounded against the **real** TTS module rather than its capabilities doc, and
+  three findings change the implementation: the module **403s** at
+  `tools.sgraph.ai` and serves 200 from `dev.tools.sgraph.ai` (the origin we
+  already pin); **Node cannot import from an https URL**, so the doc's headless
+  example fails as written and the module must be vendored rather than eval'd
+  from the network into a process holding an API key; and there is **no ffmpeg**
+  here, while WAV runs ~2.9 MB/min — so the encode step has to be explicit and
+  fail loudly. Proposes the **Journalist writing a `## Spoken` script** in the
+  post (the news style comes from the script, and words a synthetic voice says in
+  our name should be reviewed in the diff), a **deliberate** generator with a
+  declared USD ceiling and a hash-skip so nothing is re-synthesised or re-spent,
+  an RSS `<enclosure>` that turns the feed into a podcast, a plain statement that
+  the voice is synthetic, and a scripted-`fetchImpl` test that proves the pipeline
+  with **no key and no spend**. Nothing built; four decisions are Dinis's.
+
 - **The pass reads the note before deciding what to do with it (issue 061, Dinis)** —
   a **classify** step between transcribe and translate, on every pass. It returns
   typed metadata — detected language, topics, register, mood, urgency and safety
@@ -80,7 +97,6 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   the nav gains *Engineering ▾ → Design candidates* (`wa-site-nav` v0.1.7), the
   Engineering hub explains both families and what each is testing, the Library page
   links the briefs to the running thing, and live-QA fetches the hub every deploy.
-  pipelines.
 - **Go-live design brief: VoiceDebrief for WhatsApp (issue 060)** —
   `library/briefs/go-live/`: a brief for Claude Design covering the home page
   rebuild. Five requirements — put **the workflow on the home page** (the tool's
