@@ -42,6 +42,20 @@ export async function installMockOpenRouter(page) {
         // Both are ordinary chat calls, so they are matched on their prompt text —
         // and the fixtures are genuinely Portuguese, so a test asserting the
         // summary is localised is asserting something real.
+        /* The classify step (issue 061). The fixture transcript is English, so
+           the honest answer is English with high confidence — which means an
+           en-GB reader's run legitimately SKIPS translation and a pt-PT reader's
+           does not. The mock must not shortcut that: the decision under test is
+           made from this JSON, so returning a fixed answer would test nothing. */
+        else if (/returning metadata about it/i.test(all)) {
+            content = JSON.stringify({
+                language: { code: 'en', name: 'English', confidence: 0.97 },
+                topics: ['test recording', 'workflow checks'],
+                register: 'casual', sentiment: 'neutral', urgency: 'low',
+                signals: [],
+                summaryLine: 'A short test recording made to exercise the workflow',
+            })
+        }
         else if (/You are translating the transcript/i.test(all)) {
             // Honour the requested language, the way the real prompt asks: text
             // already in the target comes back unchanged. A mock that always

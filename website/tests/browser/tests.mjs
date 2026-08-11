@@ -40,16 +40,19 @@ QUnit.module('workflow — the declared state machine', () => {
         assert.strictEqual(maxUsd(standard), pathUsd(standard, { infographic: true, translate: true }),
             'all options on = the absolute ceiling')
         assert.deepEqual(pathFor(standard, {}).map(s => s.id),
-            ['normalise', 'ingest', 'transcribe', 'summary'])
+            ['normalise', 'ingest', 'transcribe', 'classify', 'summary'])
         // Translate sits between transcribe and summary: the summary is built
         // from it, so anywhere else would summarise the wrong text.
         assert.deepEqual(pathFor(standard, { translate: true }).map(s => s.id),
-            ['normalise', 'ingest', 'transcribe', 'translate', 'summary'])
+            ['normalise', 'ingest', 'transcribe', 'classify', 'translate', 'summary'])
     })
 
     const stubbed = (overrides = {}) => ({
         'local': async () => ({ costUsd: 0 }), 'engine': async () => ({ costUsd: 0 }),
         'llm-transcribe': async () => ({ costUsd: 0.004 }),
+        // classify declares the fact the translate branch is guarded on (issue 061)
+        'llm-classify': async () => ({ costUsd: 0.002, facts: { needsTranslation: true } }),
+        'llm-translate': async () => ({ costUsd: 0.006 }),
         'llm-text': async () => ({ costUsd: 0.001 }),
         'llm-infographic': async () => ({ costUsd: 0.02 }), ...overrides,
     })
@@ -58,7 +61,7 @@ QUnit.module('workflow — the declared state machine', () => {
         const trace = await runWorkflow(standard, { options: { infographic: false }, executors: stubbed() })
         assert.strictEqual(trace.status, 'complete')
         assert.strictEqual(trace.steps.find(s => s.id === 'infographic').status, 'skipped')
-        assert.true(Math.abs(trace.spentUsd - 0.005) < 1e-9, 'spend summed from the executors')
+        assert.true(Math.abs(trace.spentUsd - 0.007) < 1e-9, 'spend summed from the executors')
     })
 
     QUnit.test('degrade continues, abort stops, the budget gate blocks (the declared behaviours)', async assert => {
@@ -80,7 +83,8 @@ QUnit.module('workflow — the declared state machine', () => {
                 emit: (n, d) => { if (d?.trace) trace = d.trace } }),
             e => e.code === 'workflow-budget', 'an overrun is stopped at the next step boundary')
         assert.true(trace.steps.find(s => s.id === 'transcribe').overrun, 'the overrun itself is recorded')
-        assert.strictEqual(trace.steps.find(s => s.id === 'summary').status, 'blocked')
+        assert.strictEqual(trace.steps.find(s => s.id === 'classify').status, 'blocked',
+            'the gate blocks the first step after the overrun, which is now classify')
     })
 })
 

@@ -6,28 +6,161 @@
   "description": "Transcript, summary and an infographic from one voice note — the one pass. When the note is spoken in one language and the reader wants another, a translate step sits between them, and everything downstream is built from the translation.",
   "start": "normalise",
   "steps": [
-    { "id": "normalise", "kind": "local", "label": "Identify the audio",
-      "requires": ["file"], "produces": ["audio"], "budget": { "usd": 0 },
-      "next": [{ "to": "ingest" }], "on_failure": "abort" },
-    { "id": "ingest", "kind": "engine", "label": "Load into the engine",
-      "requires": ["audio"], "produces": ["item"], "budget": { "usd": 0 },
-      "next": [{ "to": "transcribe" }], "on_failure": "abort" },
-    { "id": "transcribe", "kind": "llm-transcribe", "label": "Transcribe",
+    {
+      "id": "normalise",
+      "kind": "local",
+      "label": "Identify the audio",
+      "requires": [
+        "file"
+      ],
+      "produces": [
+        "audio"
+      ],
+      "budget": {
+        "usd": 0
+      },
+      "next": [
+        {
+          "to": "ingest"
+        }
+      ],
+      "on_failure": "abort"
+    },
+    {
+      "id": "ingest",
+      "kind": "engine",
+      "label": "Load into the engine",
+      "requires": [
+        "audio"
+      ],
+      "produces": [
+        "item"
+      ],
+      "budget": {
+        "usd": 0
+      },
+      "next": [
+        {
+          "to": "transcribe"
+        }
+      ],
+      "on_failure": "abort"
+    },
+    {
+      "id": "transcribe",
+      "kind": "llm-transcribe",
+      "label": "Transcribe",
       "model": "google/gemini-3.5-flash",
-      "requires": ["item"], "produces": ["transcript"], "budget": { "usd": 0.05 },
-      "next": [{ "to": "translate", "when": "options.translate" }, { "to": "summary" }], "on_failure": "abort" },
-    { "id": "translate", "kind": "llm-translate", "label": "Translate",
+      "requires": [
+        "item"
+      ],
+      "produces": [
+        "transcript"
+      ],
+      "budget": {
+        "usd": 0.05
+      },
+      "next": [
+        {
+          "to": "classify"
+        }
+      ],
+      "on_failure": "abort"
+    },
+    {
+      "id": "classify",
+      "kind": "llm-classify",
+      "label": "Read the metadata",
       "model": "google/gemini-3.5-flash",
-      "requires": ["transcript"], "produces": ["translation"], "budget": { "usd": 0.03 },
-      "next": [{ "to": "summary" }], "on_failure": "degrade" },
-    { "id": "summary", "kind": "llm-text", "label": "Summarise",
+      "requires": [
+        "transcript"
+      ],
+      "produces": [
+        "facts"
+      ],
+      "budget": {
+        "usd": 0.01
+      },
+      "next": [
+        {
+          "to": "translate",
+          "when": "facts.needsTranslation",
+          "quoteWhen": "options.translate",
+          "reason": "the note is already in the reader's language"
+        },
+        {
+          "to": "summary"
+        }
+      ],
+      "on_failure": "degrade",
+      "note": "Reads the transcript once and returns typed metadata: detected language, topics, register, sentiment, urgency and safety signals. It runs on EVERY pass — the safety signals are the most valuable thing here and must not depend on whether somebody left the translate box ticked. Its language answer then decides whether translate runs at all, so a note already in the reader's language does not pay to be translated into itself. If this step degrades it declares needsTranslation=true on the way out, so a failure here can cost money but can never silently drop a translation someone asked for."
+    },
+    {
+      "id": "translate",
+      "kind": "llm-translate",
+      "label": "Translate",
       "model": "google/gemini-3.5-flash",
-      "requires": ["transcript"], "produces": ["summary"], "budget": { "usd": 0.02 },
-      "next": [{ "to": "infographic", "when": "options.infographic" }, { "to": "done" }],
-      "on_failure": "degrade" },
-    { "id": "infographic", "kind": "llm-infographic", "label": "Draw the infographic",
+      "requires": [
+        "transcript"
+      ],
+      "produces": [
+        "translation"
+      ],
+      "budget": {
+        "usd": 0.03
+      },
+      "next": [
+        {
+          "to": "summary"
+        }
+      ],
+      "on_failure": "degrade"
+    },
+    {
+      "id": "summary",
+      "kind": "llm-text",
+      "label": "Summarise",
+      "model": "google/gemini-3.5-flash",
+      "requires": [
+        "transcript"
+      ],
+      "produces": [
+        "summary"
+      ],
+      "budget": {
+        "usd": 0.02
+      },
+      "next": [
+        {
+          "to": "infographic",
+          "when": "options.infographic"
+        },
+        {
+          "to": "done"
+        }
+      ],
+      "on_failure": "degrade"
+    },
+    {
+      "id": "infographic",
+      "kind": "llm-infographic",
+      "label": "Draw the infographic",
       "model": "options.infographicModel",
-      "requires": ["transcript"], "produces": ["infographic"], "budget": { "usd": 0.20 },
-      "next": [{ "to": "done" }], "on_failure": "degrade" }
+      "requires": [
+        "transcript"
+      ],
+      "produces": [
+        "infographic"
+      ],
+      "budget": {
+        "usd": 0.2
+      },
+      "next": [
+        {
+          "to": "done"
+        }
+      ],
+      "on_failure": "degrade"
+    }
   ]
 }

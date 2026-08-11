@@ -11,9 +11,10 @@ import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 
 // Components (ours; the SgComponent base loads from the tools origin inside each).
 import '../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
+import '../components/wa-facts-card/v0/v0.1/v0.1.0/wa-facts-card.js'
 import '../components/wa-key-panel/v0/v0.1/v0.1.2/wa-key-panel.js'
 import '../components/wa-drop-zone/v0/v0.1/v0.1.2/wa-drop-zone.js'
-import '../components/wa-progress-rail/v0/v0.1/v0.1.4/wa-progress-rail.js'
+import '../components/wa-progress-rail/v0/v0.1/v0.1.5/wa-progress-rail.js'
 import '../components/wa-result-card/v0/v0.1/v0.1.3/wa-result-card.js'
 import '../components/wa-cost-line/v0/v0.1/v0.1.1/wa-cost-line.js'
 import '../components/wa-debug-panel/v0/v0.1/v0.1.3/wa-debug-panel.js'
@@ -68,7 +69,7 @@ async function main() {
 
     engine.api
         .register('runPass',    (p) => pipeline.runPass(p), { async: true,
-            events: ['wa:pass:started', 'wa:normalised', 'wa:ingested', 'wa:transcript', 'wa:translation', 'wa:translation:error', 'wa:summary', 'wa:summary:error',
+            events: ['wa:pass:started', 'wa:normalised', 'wa:ingested', 'wa:transcript', 'wa:facts', 'wa:facts:error', 'wa:translation', 'wa:translation:error', 'wa:summary', 'wa:summary:error',
                      'wa:infographic:started', 'wa:infographic', 'wa:infographic:error', 'wa:pass:complete', 'wa:pass:error'] })
         .register('getResults', () => pipeline.results(),   { async: false })
         .register('redrawInfographic', (p) => pipeline.redrawInfographic(p), { async: true,
@@ -93,6 +94,7 @@ async function main() {
     engine.api.activate()   // → window.__tool ('whatsapp-transcribe') + tool:ready
 
     const key = $('#key'), drop = $('#drop'), rail = $('#rail')
+    const fCard = $('#facts-card')
     const tCard = $('#transcript-card'), xCard = $('#translation-card'),
           sCard = $('#summary-card'), cost = $('#cost')
 
@@ -222,10 +224,32 @@ async function main() {
     window.addEventListener('wa:ingested',   () => { rail.finish('ingest'); rail.start('transcribe') })
     window.addEventListener('wa:transcript', (e) => {
         rail.finish('transcribe')
-        // The rail follows the declared path: translate only when this run takes it.
-        if (wantTranslate.checked) rail.start('translate'); else rail.start('summary')
+        // Metadata is read on every pass (issue 061) — it decides whether the
+        // translate step is needed, so the rail cannot skip ahead here.
+        rail.start('classify')
         tCard.show(e.detail.text); tCard.hidden = false
         updateCost()
+    })
+
+    /* What the pass noticed. The card is the visible half; the consequential
+       half is `needsTranslation`, which has already decided whether the next
+       step happens at all. When it says no, the translate row is REMOVED rather
+       than left greyed out, and the card says why — a step that silently never
+       runs looks like a bug, and a step that says "not needed, not charged"
+       looks like the product being careful with your money. */
+    window.addEventListener('wa:facts', (e) => {
+        rail.finish('classify')
+        const { facts, needsTranslation } = e.detail
+        fCard.show({ facts, needsTranslation, asked: wantTranslate.checked })
+        if (wantTranslate.checked && needsTranslation) rail.start('translate')
+        else { rail.hide('translate'); rail.start('summary') }
+        updateCost()
+    })
+    window.addEventListener('wa:facts:error', () => {
+        // Declared degrade. No metadata, and translation goes ahead as asked —
+        // losing the card must never quietly cancel work the user chose.
+        rail.finish('classify', false)
+        if (wantTranslate.checked) rail.start('translate'); else rail.start('summary')
     })
     /* The translation is SHOWN, not just used. Without the card a reader sees an
        English transcript and a Portuguese summary with nothing joining them —

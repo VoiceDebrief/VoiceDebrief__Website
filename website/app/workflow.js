@@ -15,7 +15,7 @@
        trace, never silently absorbed */
 
 export const TERMINAL = 'done'
-export const KINDS = ['local', 'engine', 'llm-transcribe', 'llm-translate', 'llm-text', 'llm-infographic']
+export const KINDS = ['local', 'engine', 'llm-transcribe', 'llm-classify', 'llm-translate', 'llm-text', 'llm-infographic']
 export const FAILURE_MODES = ['abort', 'degrade']
 
 /* ── validation ──────────────────────────────────────────────────────────── */
@@ -44,7 +44,11 @@ export function validateWorkflow(def) {
         if (!Array.isArray(s.next) || !s.next.length) err(`${where}: next must be a non-empty array`)
         for (const n of s.next || []) {
             if (n.to !== TERMINAL && !(def.steps || []).some(x => x.id === n.to)) err(`${where}: transition to unknown step "${n.to}"`)
-            if (n.when != null && !/^options\.[a-zA-Z][\w]*$/.test(n.when)) err(`${where}: "when" must be an options.<flag> reference, got "${n.when}"`)
+            for (const [field, ref] of [['when', n.when], ['quoteWhen', n.quoteWhen]]) {
+                if (ref != null && !/^(options|facts)\.[a-zA-Z][\w]*$/.test(ref)) err(`${where}: "${field}" must be an options.<flag> or facts.<name> reference, got "${ref}"`)
+            }
+            if (n.quoteWhen != null && n.when == null) err(`${where}: "quoteWhen" without "when" — the quote would allow a branch the run cannot take`)
+            if (n.quoteWhen != null && !n.quoteWhen.startsWith('options.')) err(`${where}: "quoteWhen" must be an options.<flag> — a quote cannot depend on something only the run discovers`)
         }
         const last = (s.next || []).slice(-1)[0]
         if (last && last.when != null) err(`${where}: the last transition must be unconditional (the declared fallback)`)
@@ -80,9 +84,39 @@ export function validateWorkflow(def) {
 
 /* ── quoting ─────────────────────────────────────────────────────────────── */
 
-const optionFlag = (options, ref) => !!ref && ref.startsWith('options.') && !!options?.[ref.slice(8)]
+/* Two namespaces, and the difference is the whole reason this is safe.
 
-/* The steps the chosen options select, in execution order. */
+   `options.x` is a CHOICE the user made before the run, so it is known when we
+   quote. `facts.x` is something a step DISCOVERS mid-run — the detected language,
+   for instance — so it cannot be known in advance.
+
+   When quoting, a facts condition therefore resolves TRUE: the quote assumes
+   every discoverable branch is taken, which makes it a genuine CEILING. At
+   runtime the same condition is evaluated against what was actually found, so a
+   run can spend LESS than quoted and never more. That asymmetry is the contract
+   the price on screen depends on — a fact must never be able to add a step. */
+const truthy = (bag, ref, prefix) =>
+    !!ref && ref.startsWith(prefix) && !!bag?.[ref.slice(prefix.length)]
+
+const conditionAtQuote = (options, ref) =>
+    ref.startsWith('facts.') ? true : truthy(options, ref, 'options.')
+
+/* A transition may declare BOTH, and the two answer different questions:
+
+     "when":      "facts.needsTranslation"   what the RUN decides
+     "quoteWhen": "options.translate"        what the PRICE assumes
+
+   Without the second, a branch guarded only by a fact would be priced into every
+   quote — including for someone who switched the feature off, who would be shown
+   a ceiling containing a step that cannot happen. With it, the quote follows the
+   user's choices and the run additionally declines work that turns out to be
+   unnecessary. A quote may only ever be an over-estimate. */
+const quoteRef = (transition) => transition.quoteWhen ?? transition.when
+
+const conditionAtRun = (options, facts, ref) =>
+    ref.startsWith('facts.') ? truthy(facts, ref, 'facts.') : truthy(options, ref, 'options.')
+
+/* The steps the chosen options select, in execution order — the QUOTED path. */
 export function pathFor(def, options = {}) {
     const byId = Object.fromEntries(def.steps.map(s => [s.id, s]))
     const path = []
@@ -90,7 +124,7 @@ export function pathFor(def, options = {}) {
     while (id !== TERMINAL) {
         const step = byId[id]
         path.push(step)
-        const taken = step.next.find(n => n.when == null || optionFlag(options, n.when))
+        const taken = step.next.find(n => quoteRef(n) == null || conditionAtQuote(options, quoteRef(n)))
         id = taken.to
     }
     return path
@@ -128,6 +162,13 @@ const resolveModel = (step, options) =>
    path was taken) and is returned alongside being emitted live. */
 export async function runWorkflow(def, { options = {}, executors, emit = () => {} }) {
     const byId = Object.fromEntries(def.steps.map(s => [s.id, s]))
+    /* What the run has DISCOVERED so far. Executors return { facts } and it is
+       merged here; `when: "facts.x"` transitions read it. It starts empty, which
+       matters: a step that fails to produce its facts leaves them undefined, and
+       a declaration must therefore be written so that undefined is the SAFE
+       answer (standard.json guards translation on facts.needsTranslation, which
+       the classify executor sets to true whenever it is unsure). */
+    const facts = {}
     const quote = pathUsd(def, options)
     const trace = {
         workflow: def.id, workflowVersion: def.version, quoteUsd: quote,
@@ -164,7 +205,8 @@ export async function runWorkflow(def, { options = {}, executors, emit = () => {
             t.startedAt = Date.now()
             tell(id)
             try {
-                const out = (await executors[step.kind](step, { options })) || {}
+                const out = (await executors[step.kind](step, { options, facts })) || {}
+                if (out.facts) Object.assign(facts, out.facts)
                 t.ms = Date.now() - t.startedAt
                 t.costUsd = out.costUsd ?? 0
                 trace.spentUsd += t.costUsd
@@ -173,6 +215,12 @@ export async function runWorkflow(def, { options = {}, executors, emit = () => {
             } catch (e) {
                 t.ms = Date.now() - t.startedAt
                 t.error = e.code || e.message || 'error'
+                /* A step that degrades may still have something to say about
+                   what happens next. classify attaches { needsTranslation: true }
+                   to its failure precisely so that losing the metadata cannot
+                   silently withhold a translation the user asked for — undefined
+                   would read as false, which is the dangerous direction. */
+                if (e && e.facts) Object.assign(facts, e.facts)
                 if (step.on_failure === 'abort') {
                     t.status = 'failed'
                     trace.status = 'failed'
@@ -182,8 +230,35 @@ export async function runWorkflow(def, { options = {}, executors, emit = () => {
                 t.status = 'degraded'   // declared: the run continues without this artefact
             }
             tell(id)
-            id = step.next.find(n => n.when == null || optionFlag(options, n.when)).to
+            /* Walk on. A transition guarded by a fact that turned out false is
+               not taken — and the step it guarded, which the QUOTE included,
+               never runs. Record why on that step so the flow panel can say
+               "skipped — already in the reader's language" rather than leaving a
+               step silently pending. */
+            const nexts = step.next
+            /* A FACT MAY NEVER ADD A STEP. The quoted path is the ceiling the
+               user agreed to, so a transition whose target was not priced is not
+               available at runtime however true its condition is — the run falls
+               through to the next one. Enforced here rather than left to each
+               executor to remember, because forgetting it would let a model's
+               answer spend money nobody quoted for. (The entry gate would then
+               refuse the step, so the failure was loud rather than silent — but
+               "loud crash" is not the behaviour to design for.) */
+            const takenIdx = nexts.findIndex(n =>
+                (n.to === TERMINAL || onPath.has(n.to)) &&
+                (n.when == null || conditionAtRun(options, facts, n.when)))
+            for (let i = 0; i < takenIdx; i++) {
+                const missed = tstep(nexts[i].to)
+                if (missed && missed.status === 'pending') {
+                    missed.status = 'skipped'
+                    missed.skippedBecause = nexts[i].reason || `${nexts[i].when} was false`
+                    tell(nexts[i].to)
+                }
+            }
+            id = nexts[takenIdx].to
         }
+        // Anything the run never reached is skipped, not perpetually pending.
+        for (const t of trace.steps) if (t.status === 'pending') t.status = 'skipped'
         trace.status = trace.steps.some(s => s.status === 'degraded') ? 'degraded' : 'complete'
     } finally {
         trace.finishedAt = Date.now()

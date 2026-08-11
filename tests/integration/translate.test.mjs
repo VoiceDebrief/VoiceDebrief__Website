@@ -128,6 +128,51 @@ try {
     check('opting out skips the step and spends nothing on it',
         off.steps.includes('translate:skipped') && !off.translation, off.steps.join(' '))
 
+    /* THE POINT OF ISSUE 061. Translate is ON, the reader is English, and the
+       note is English — so the run must decline the step it was allowed to take
+       and spend less than it quoted. Everything above only proves translation
+       works; this proves it stops when it is pointless. */
+    const already = await page.evaluate(async () => {
+        const r = await fetch('samples/whatsapp-voice-note-2.opus')
+        const f = new File([await r.arrayBuffer()], 'whatsapp-voice-note-2.opus', { type: 'audio/opus' })
+        let seen = null
+        const on = (e) => { seen = e.detail }
+        window.addEventListener('wa:facts', on)
+        const out = await window.__tool.runPass({ file: f, infographic: false, translate: true })
+        window.removeEventListener('wa:facts', on)
+        const card = document.querySelector('wa-facts-card')
+        return {
+            steps: (out.trace?.steps || []).map(s => `${s.id}:${s.status}`),
+            because: (out.trace?.steps || []).find(s => s.id === 'translate')?.skippedBecause,
+            spent: out.trace?.spentUsd, quoted: out.trace?.quoteUsd,
+            translation: out.translation,
+            facts: out.facts && { code: out.facts.language.code, topics: out.facts.topics.length,
+                                  register: out.facts.register, signals: out.facts.signals.length },
+            needed: seen?.needsTranslation,
+            // .card, not the whole shadow root — textContent on the root includes
+            // the <style> block, which matches almost any word you look for.
+            // NOT sliced here: truncating before asserting means the assertion
+            // is about the first 160 characters, not about the card.
+            cardText: (card?.shadowRoot?.querySelector('.card')?.textContent || '')
+                .replace(/\s+/g, ' ').trim(),
+            cardHidden: card?.hidden,
+        }
+    })
+    check('an English note for an English reader skips the translation it was allowed',
+        already.steps.includes('translate:skipped') && !already.translation, already.steps.join(' '))
+    check('and the trace records WHY, in the declaration\'s own words',
+        already.because === "the note is already in the reader's language", String(already.because))
+    check('the run spends LESS than it quoted — a fact may subtract work, never add it',
+        already.spent < already.quoted, `spent ${already.spent} < quoted ${already.quoted}`)
+    check('the metadata itself is typed and allowlisted',
+        already.facts?.code === 'en' && already.facts.topics > 0 && already.facts.register === 'casual',
+        JSON.stringify(already.facts))
+    check('the card is shown and carries the gist and the topics',
+        already.cardHidden === false && /WHAT WE NOTICED/i.test(already.cardText)
+        && /test recording/i.test(already.cardText), already.cardText.slice(0, 90))
+    check('and it says the translation was skipped rather than leaving a silent gap',
+        /already in your language/i.test(already.cardText), already.cardText.slice(0, 160))
+
     check('no page errors', errs.length === 0, errs.slice(0, 3).join(' | '))
 } catch (e) {
     check('test run completed', false, e.message)
