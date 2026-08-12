@@ -5,7 +5,7 @@
    wa:* event stream exactly as it always was. Deleting the declaration breaks
    the tool — there is deliberately no code fallback. */
 
-import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL, TRANSLATE_PROMPT_URL, CLASSIFY_PROMPT_URL } from './config.js'
+import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL, TRANSLATE_PROMPT_URL, CLASSIFY_PROMPT_URL, WORKFLOW_URL } from './config.js'
 import { parseJson, normalise, needsTranslation } from './classify.js'
 import { demoExecutors, DEMO_FILE } from './demo.js'
 import { culture, getLocale } from './i18n.js'
@@ -14,7 +14,9 @@ import { normaliseAudioFile } from './audio-normalise.js'
 import { debugStore } from './debug-store.js'
 import { loadWorkflow, runWorkflow, pathUsd, maxUsd } from './workflow.js'
 
-export const WORKFLOW_URL = './workflows/standard.json'
+// Re-exported for the tests and the debug pane; resolved in config.js against
+// the module's own URL rather than the page's (see the note there).
+export { WORKFLOW_URL }
 
 export function createPipeline({ api, emit, getKey, infographicMount }) {
     const call = (name, params) => window.__tool[name](params)

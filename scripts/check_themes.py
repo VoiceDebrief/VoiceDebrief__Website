@@ -129,9 +129,24 @@ def sheets_the_site_ships():
                 pages.append(os.path.join(root, n))
     tpl = os.path.join(ROOT, 'scripts/templates')
     pages += [os.path.join(tpl, n) for n in os.listdir(tpl) if n.endswith('.html')]
-    files += [os.path.join(SITE, 'app/app.js')]
 
-    for src in pages + [os.path.join(SITE, 'app/app.js')]:
+    # A page can reach a component through its own MODULE, not only by naming the
+    # path in its markup — the home page loads /home.js, which imports
+    # vd-workflow. Following only the markup missed it, which is the same failure
+    # this walk was widened for once already: a gate that only looks where you
+    # remembered to point it. Every same-origin module a page loads is followed,
+    # one level, which is as deep as this site's pages go.
+    entries = []
+    for page in pages:
+        with open(page, encoding='utf-8') as f:
+            for m in re.findall(r'<script[^>]+src="(/[^"]+\.js)"', f.read()):
+                cand = os.path.join(SITE, m.lstrip('/'))
+                if os.path.exists(cand) and cand not in entries:
+                    entries.append(cand)
+    entries.append(os.path.join(SITE, 'app/app.js'))
+    files += entries
+
+    for src in pages + entries:
         if not os.path.exists(src):
             continue
         with open(src, encoding='utf-8') as f:
@@ -176,10 +191,6 @@ def main():
     AHEAD = {
         '--vd-pz':      'the phone mock in the design pack (not built)',
         '--vd-ps':      'the phone mock in the design pack (not built)',
-        '--vd-off':     'vd-option-toggle, inert state (M3)',
-        '--vd-offi':    'vd-option-toggle, inert state (M3)',
-        '--vd-ws':      'vd-caveat, the strong half of the warning pair (M3)',
-        '--vd-r-chip':  'vd-option-toggle (M3)',
     }
     for tok in sorted(declared - read - set(AHEAD)):
         problems.append(f'{tok} is declared in vd-tokens.css but read by nothing — '

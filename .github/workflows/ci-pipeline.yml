@@ -103,6 +103,13 @@ jobs:
         shell: bash
         run: node tests/integration/demo.test.mjs 2>&1 | tee int-demo.log
 
+      # The workflow on the home page (issue 060, M3). Guards the design's
+      # non-negotiables by measurement: no key before run, the routing statement
+      # welded inside the panel and above the fold, a scripted result stamped.
+      - name: Integration test (home workflow — no key before run, nothing sent)
+        shell: bash
+        run: node tests/integration/home-workflow.test.mjs 2>&1 | tee int-home.log
+
       # QA-to-docs (issue 038): the user journeys as screenshot-verified QA.
       # Missing baselines produce candidates (uploaded below) and pass; a
       # baseline diff over threshold fails the gate like any other test.
@@ -129,10 +136,11 @@ jobs:
           CHAT=$(grep -c '^ok ' int-chat.log)
           XL=$(grep -c '^ok ' int-translate.log)
           DEMO=$(grep -c '^ok ' int-demo.log)
+          HOME=$(grep -c '^ok ' int-home.log)
           QTD=$(grep -c '^ok ' qa-docs.log)
           BUNIT=$(grep -c '^ok ' browser.log)
-          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "browser-unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "integration-translate": {"pass": %s, "total": %s},\n  "integration-demo": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
-            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BUNIT" "$BUNIT" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$XL" "$XL" "$DEMO" "$DEMO" "$QTD" "$QTD" > test-results.json
+          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "browser-unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "integration-translate": {"pass": %s, "total": %s},\n  "integration-demo": {"pass": %s, "total": %s},\n  "integration-home": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
+            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BUNIT" "$BUNIT" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$XL" "$XL" "$DEMO" "$DEMO" "$HOME" "$HOME" "$QTD" "$QTD" > test-results.json
           cat test-results.json
 
       - name: Upload test results

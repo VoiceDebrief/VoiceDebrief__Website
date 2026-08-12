@@ -18,6 +18,22 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The workflow is on the home page (issue 060)** — the first thing the brief
+  asked for. Drop a recording on the landing page, choose whether you want it
+  translated and whether you want an infographic, read the most it can cost, and
+  run it. It is the same pass the workbench runs, from the same modules, and the
+  test proves it by matching the execution trace rather than by looking at the
+  screen. You are asked for a key when you press run and not before; the
+  statement about where your audio goes is welded to the panel, on screen without
+  scrolling, and deliberately not dressed as a warning.
+  Building it turned up two bugs worth naming. The workflow declaration was
+  fetched relative to the *page*, so it worked from `/app/` and 404'd from the
+  home page — prompts and declaration now resolve against the module that reads
+  them. And a scripted demo result appeared with no DEMO stamp on it, which is
+  the single thing that feature must never do; the stamp is now at the top of the
+  panel and the test presses the actual button rather than calling the API behind
+  it.
+
 - **The home page is now the redesign, and so is every header (issue 060)** —
   the layout landed, not just the colour. The hero puts the panel beside the
   headline on a desktop and *first* on a phone, because the recording is the

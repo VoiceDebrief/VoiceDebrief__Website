@@ -219,3 +219,57 @@ it proved the page answered, not that the page shipped. It is now `Getting the a
 statement, but the body is an honest entry point rather than a mock of a workflow that
 would not run — the button goes to the surface that does. `vd-workflow` replaces the
 contents, not the frame.
+
+
+## 12 Aug — M3: the workflow runs on the home page
+
+The original brief's first requirement, and the last of the three the design was split
+into. `<vd-workflow>` owns the `empty → ready → key → running → results` machine from
+`04-states.md`; `website/home.js` owns the engine and drives it with **the app's own
+modules** — `bootEngine()`, `createPipeline()`, the declared workflow, the demo path. A
+pass on the home page is not a second implementation of the pass, and the integration
+test asserts that by matching the trace: `normalise → ingest → transcribe → classify →
+translate(skipped) → summary`.
+
+The three rules the design says must never be traded away are asserted **by measurement**,
+not from markup:
+
+- **No key before run.** A stranger loads a recording, sets both options and reads the
+  quoted maximum with no password field anywhere on the page; pressing run is what asks.
+  Checked on the panel's state *and* on whether the field is painted.
+- **The routing statement is welded to the panel** — asserted to be inside the panel's
+  bounding box, above the fold at 1100×1000, at ≥14px, and **not** wearing the caveat's
+  amber. The last one matters: framing integrity as a hazard invites the reader to
+  dismiss it.
+- **The caveat replaces it in results**, never before a transcript exists.
+
+### Two things the first run of the panel got wrong
+
+1. **The declaration 404'd from `/`.** `pipeline.js` fetched `./workflows/standard.json`
+   *relative to the page* — fine while the only page that ran a pass lived at `/app/` and
+   was pinned there with `<base href>`, and dead the moment the home page ran the same
+   pipeline from the root. The prompts had the same shape and would have failed a step
+   later. They now resolve against `import.meta.url`, so they follow the code that reads
+   them wherever it is imported from, and no longer depend on `<base>` at all.
+2. **A scripted result shipped with no DEMO stamp.** The workbench stamps every demo
+   artefact; the new panel did not, so a scripted debrief about a fictional company could
+   have been read as the visitor's own recording — the one thing this feature must never
+   do. The stamp is now at the top of the panel, above the artefacts, and the test drives
+   it **through the button a person presses** rather than through `runPass({demo:true})`,
+   because calling the API behind it would have tested everything except the stamp.
+
+Also fixed on the way: the debrief and transcript are markdown, and the first version
+rendered them as source — `## Key points` and `**Nakamura contract:**` on the product's
+front page. The panel renders a deliberately tiny grammar (headings, lists, bold, code),
+escaping first, because the text came back from a model and is never trusted as markup.
+
+`/#privacy` now rides on the `<vd-workflow>` element rather than on the statement inside
+it: the block lives in a shadow root, and a fragment anchor cannot address anything in
+there. Scrolling to the panel lands the reader on it, which is what that published link
+has always meant.
+
+`check_themes.py` gained one more thing it was not looking at: a page can reach a
+component through its own **module**, not only by naming the path in its markup. The home
+page loads `/home.js`, which imports `vd-workflow` — invisible to the walk until it
+followed module entry points. Third time this gate has been widened, same lesson each
+time.

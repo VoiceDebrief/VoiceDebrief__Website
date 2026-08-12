@@ -1,0 +1,209 @@
+/* home.js — the workflow, on the home page (issue 060, M3).
+
+   The original brief asked for "the main workflow available directly from the
+   home page". This is that: <vd-workflow> owns the panel and its states, and
+   this module owns the engine and drives it — the same split app.js has, and the
+   same engine, pipeline, declared workflow and demo path. Nothing here is a
+   second implementation of the pass:
+
+     - `bootEngine()` and `createPipeline()` are the app's own modules, imported
+       from ./app/. A pass run here is byte-for-byte the pass run there.
+     - the quote comes from `getWorkflow({options})`, so the maximum on screen is
+       the declaration's sum, not a number typed into a page.
+     - the demo runs `runPass({demo:true})` — the real state machine on scripted
+       answers, touching no network and no key.
+
+   THE ENGINE IS LOADED LAZILY AND ITS FAILURE IS NOT FATAL. The engine's base
+   class comes from a different origin; the home page's first screen must not
+   depend on that origin answering. So the panel renders from static markup, and
+   the boot happens after — if it never finishes, the panel still explains the
+   product and the workbench link still works. What it must not do is claim to be
+   ready and then do nothing when pressed. */
+
+import { bootEngine } from './app/engine.js'
+import { createPipeline } from './app/pipeline.js'
+import { fmtGbp } from './app/config.js'
+import './components/vd-workflow/v0/v0.1/v0.1.0/vd-workflow.js'
+
+const panel = document.querySelector('vd-workflow')
+if (panel) main().catch(e => {
+    console.warn('[voicedebrief] the workflow could not start:', e)
+    panel.showError({
+        title: 'The workflow could not start on this page.',
+        body: 'Everything it needs is on the workbench, which loads it a different way — ' +
+              'your recording and your key are unaffected.',
+        detail: String(e?.message || e).slice(0, 160),
+        actions: [{ label: 'Open the workbench →', event: 'workbench', primary: true }],
+    })
+})
+
+/* Nine error states are specified in the design (04-states.md). The pass emits
+   typed codes, and these are the ones it can currently tell apart — each with
+   what happened in the reader's terms and a way forward, never a bare status
+   code as the headline. The states we CANNOT yet distinguish (no-speech-detected
+   and a mid-stream network drop both surface as a generic llm-error) are not
+   faked with a guess: they fall to the last entry, which is honest about not
+   knowing rather than confidently wrong. */
+const ERRORS = {
+    'not-audio':       ['We can’t read that file.', 'It doesn’t look like audio we can decode — Opus, Ogg, M4A, MP3 and WAV all work.'],
+    'too-large':       ['That recording is longer than one pass can handle.', 'Split it, or use the longer workflow in the workbench.'],
+    'empty':           ['That file is empty.', 'Re-export the recording and try again.'],
+    'key-invalid':     ['That key was refused.', 'OpenRouter didn’t accept it — it may have been revoked, or copied incompletely.'],
+    'budget-exceeded': ['Your OpenRouter balance is empty.', 'Nothing ran, and nothing was charged. Top up and run it again.'],
+    'key-exhausted':   ['That key is exhausted or revoked.', 'Paste a different one, or raise its limit on OpenRouter.'],
+    'rate-limited':    ['OpenRouter is throttling this key.', 'Wait a moment and run it again — nothing was charged for the refused call.'],
+    'budget-cap':      ['This session’s spend cap stopped the pass.', 'Raise or clear the cap and run it again.'],
+    'network':         ['OpenRouter could not be reached.', 'Check your connection and any ad-blocker, then try again — nothing was stored.'],
+    'prompt-missing':  ['A prompt failed to load.', 'The transcript is unaffected; running it again usually fixes this.'],
+}
+
+async function main() {
+    const engine = await bootEngine()
+    const pipeline = createPipeline({
+        api: engine.api, emit: engine.emit, getKey: engine.getKey,
+        infographicMount: () => mount,
+    })
+    engine.api
+        .register('runPass',    (p) => pipeline.runPass(p), { async: true })
+        .register('getResults', () => pipeline.results(),   { async: false })
+        .register('getWorkflow', (p) => pipeline.getWorkflow(p), { async: true })
+    engine.api.activate()
+
+    // The infographic draws into a detached node; the finished markup is handed
+    // to the panel as one of its tabs rather than the panel owning a canvas.
+    const mount = document.createElement('div')
+
+    let pendingFile = null, runAfterKey = false, ran = null, demoRun = false
+
+    const options = () => ({ ...panel._opts, language: 'English' })
+
+    const quote = async () => {
+        try {
+            const w = await window.__tool.getWorkflow({ options: options() })
+            panel.setQuote(fmtGbp(w.quoteUsd))
+        } catch { panel.setQuote('') }
+    }
+
+    /* ── the panel drives, this listens ────────────────────────────────── */
+
+    panel.addEventListener('vd:file', (e) => take(e.detail.file))
+    panel.addEventListener('vd:option', quote)
+    panel.addEventListener('vd:reset', () => { pendingFile = null; ran = null; demoRun = false })
+
+    panel.addEventListener('vd:sample', async () => {
+        try {
+            const r = await fetch('/app/samples/whatsapp-voice-note-1.opus')
+            const b = await r.blob()
+            take(new File([b], 'sample voice note.opus', { type: 'audio/ogg' }))
+        } catch { panel.showError({ title: 'The sample would not load.',
+            body: 'Your own recording will still work — drop it in.',
+            actions: [{ label: 'Back', event: 'reset', primary: true }] }) }
+    })
+
+    panel.addEventListener('vd:demo', async () => {
+        demoRun = true
+        panel.startRun(steps({ translate: false, infographic: false }, true))
+        try { await window.__tool.runPass({ demo: true, infographic: false, translate: false }) }
+        catch (e) { console.warn('[voicedebrief] demo:', e) }
+    })
+
+    panel.addEventListener('vd:run', () => {
+        if (!pendingFile) return
+        // The key is asked for HERE and nowhere earlier.
+        if (!engine.hasKey()) { runAfterKey = true; return panel.askForKey() }
+        run()
+    })
+
+    panel.addEventListener('vd:key-save', async (e) => {
+        const r = await window.__tool.setApiKey({ apiKey: e.detail.apiKey }).catch(() => ({ ok: false }))
+        if (r.ok && r.present) { if (runAfterKey) { runAfterKey = false; run() } }
+        else panel.askForKey('That key was refused. Check it and paste it again.')
+    })
+
+    panel.addEventListener('vd:workbench', () => { location.href = '/app/' })
+    panel.addEventListener('vd:retry', () => { if (pendingFile) panel.setFile({ name: pendingFile.name, bytes: pendingFile.size }) })
+
+    function take(file) {
+        demoRun = false
+        pendingFile = file
+        panel.setFile({ name: file.name, bytes: file.size })
+        quote()
+    }
+
+    function steps(o, demo = false) {
+        const s = [{ id: 'ingest', label: demo ? 'Reading the sample' : 'Reading the audio in your browser' },
+                   { id: 'transcribe', label: 'Transcribing — via OpenRouter' },
+                   { id: 'classify', label: 'Reading what kind of recording it is' }]
+        if (o.translate) s.push({ id: 'translate', label: 'Translating into your language' })
+        s.push({ id: 'summary', label: 'Writing the debrief' })
+        if (o.infographic) s.push({ id: 'infographic', label: 'Drawing the infographic' })
+        return s
+    }
+
+    async function run() {
+        demoRun = false
+        const o = options()
+        ran = { }
+        panel.startRun(steps(o))
+        try {
+            await window.__tool.runPass({ ...o, file: pendingFile })
+        } catch (e) {
+            const code = e?.code || 'llm-error'
+            const [title, body] = ERRORS[code] ||
+                ['The pass stopped part way.', 'The recording is still loaded here and can be run again.']
+            panel.showError({ title, body, detail: e?.message ? `${code}: ${String(e.message).slice(0, 120)}` : code,
+                actions: [
+                    { label: 'Try again', event: 'retry', primary: true },
+                    ...(code === 'key-invalid' || code === 'key-exhausted'
+                        ? [{ label: 'Get a key', event: 'keyguide' }] : []),
+                ] })
+        }
+    }
+
+    panel.addEventListener('vd:keyguide', () => { location.href = '/openrouter-key/' })
+
+    /* ── the pass, as it happens ───────────────────────────────────────── */
+
+    const on = (name, fn) => window.addEventListener(name, fn)
+    on('wa:ingested',    () => { panel.stepDone('ingest') })
+    on('wa:transcript',  (e) => { panel.stepDone('transcribe'); ran = { ...ran, transcript: e.detail.text } })
+    on('wa:facts',       () => panel.stepDone('classify'))
+    on('wa:facts:error', () => panel.stepFail('classify'))
+    on('wa:translation', (e) => { panel.stepDone('translate'); ran = { ...ran, translation: e.detail.text } })
+    on('wa:translation:error', () => panel.stepFail('translate'))
+    on('wa:summary',     (e) => { panel.stepDone('summary'); ran = { ...ran, summary: e.detail.text } })
+    on('wa:summary:error', () => panel.stepFail('summary'))
+    on('wa:infographic', (e) => {
+        panel.stepDone('infographic')
+        ran = { ...ran, infographicHtml: e.detail.svg || (e.detail.image ? `<img alt="" src="${e.detail.image}">` : '') }
+    })
+    on('wa:infographic:error', () => panel.stepFail('infographic'))
+
+    on('wa:pass:complete', async () => {
+        let costText = ''
+        try {
+            const s = await window.__tool.getSpendSummary?.()
+            const item = (s?.perItem || []).slice(-1)[0]
+            costText = item ? fmtGbp(item.usd) : ''
+        } catch { /* the cost line is a nicety; its absence is not a failure */ }
+        const r = window.__tool.getResults?.() || {}
+        panel.showResults({
+            summary: ran?.summary || r.summary,
+            transcript: ran?.transcript || r.transcript,
+            translation: ran?.translation || r.translation,
+            infographicHtml: ran?.infographicHtml,
+            costText,
+            // A scripted result must never be mistakable for the reader's own
+            // recording. The panel stamps it at the top, above the artefacts.
+            demo: demoRun,
+        })
+    })
+
+    on('wa:pass:error', (e) => {
+        const code = e.detail?.code || 'llm-error'
+        const [title, body] = ERRORS[code] ||
+            ['The pass stopped part way.', 'The recording is still loaded here and can be run again.']
+        panel.showError({ title, body, detail: code,
+            actions: [{ label: 'Try again', event: 'retry', primary: true }] })
+    })
+}

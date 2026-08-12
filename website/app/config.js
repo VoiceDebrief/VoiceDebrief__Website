@@ -34,9 +34,20 @@ export const USD_TO_GBP = 0.79
 
 export { fmtMoney, fmtMoney as fmtGbp } from './i18n.js'
 
-/* The summary prompt is a markdown file served from the site (5 Aug decision) —
-   editable without touching code. */
-export const SUMMARY_PROMPT_URL = './prompts/summary-prompt.md'
-export const INFOGRAPHIC_PROMPT_URL = './prompts/infographic-prompt.md'
-export const TRANSLATE_PROMPT_URL = './prompts/translate-prompt.md'
-export const CLASSIFY_PROMPT_URL  = './prompts/classify-prompt.md'
+/* The prompts and the workflow declaration are files served from the site
+   (5 Aug decision) — editable without touching code.
+
+   Resolved against THIS MODULE, not against the document. They used to be plain
+   './prompts/…' strings, which resolve relative to the page: fine while the only
+   page that ran a pass lived at /app/ (and was pinned there with <base href>),
+   and broken the moment the home page ran the same pipeline from / — the
+   declaration 404'd and the pass died before its first step. import.meta.url is
+   the module's own address, so these follow the code that reads them wherever a
+   page imports it from, and they survive the URL rewriting the locale switch
+   does (issue 056) without depending on <base> at all. */
+const here = (p) => new URL(p, import.meta.url).href
+export const SUMMARY_PROMPT_URL = here('./prompts/summary-prompt.md')
+export const INFOGRAPHIC_PROMPT_URL = here('./prompts/infographic-prompt.md')
+export const TRANSLATE_PROMPT_URL = here('./prompts/translate-prompt.md')
+export const CLASSIFY_PROMPT_URL  = here('./prompts/classify-prompt.md')
+export const WORKFLOW_URL = here('./workflows/standard.json')

@@ -28,6 +28,12 @@
     "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription" }
 }
 </script>
+<!-- Issue 037 (S2): pin where code can load from and where data can go. The
+     home page runs the pass now, so it needs the same policy the workbench has —
+     the hardcoded engine origins, OpenRouter for the API calls, and jsdelivr for
+     the pinned ogg-opus-decoder (sg-wasm-cache fetches its text and imports it as
+     a blob: URL, and its inlined WASM needs 'wasm-unsafe-eval'). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'wasm-unsafe-eval' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://cdn.jsdelivr.net; connect-src 'self' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://openrouter.ai https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://dev.tools.sgraph.ai https://tools.sgraph.ai; img-src 'self' data: blob:; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <link rel="stylesheet" href="/vd-tokens.css">
 <style>
 /* The home page, on the design pack's layout (issue 060, M2). Colour comes
@@ -77,22 +83,9 @@
   .artefact span{font-size:.7rem;color:var(--vd-m);margin-top:3px;display:block}
   .artefact.opt span{color:var(--vd-at)}
 
-  /* The panel the workflow will live in (M3). Today it is the entry point to
-     the run, and it is deliberately the same box: when vd-workflow lands it
-     replaces the contents, not the frame. */
-  .panel{border:1px solid var(--vd-L);border-radius:var(--vd-r-panel);background:var(--vd-c);
-         overflow:hidden;box-shadow:0 18px 44px var(--vd-sh)}
-  .panel-head{display:flex;align-items:center;gap:10px;padding:14px 20px;
-              border-bottom:1px solid var(--vd-l);background:var(--vd-b)}
-  .panel-head .dot{width:8px;height:8px;border-radius:50%;background:var(--vd-a);flex:none}
-  .panel-head .state{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
-                     font-weight:600;color:var(--vd-m)}
-  .panel-body{padding:26px 24px}
-  .drop{border:2px dashed var(--vd-tl);background:var(--vd-tn);border-radius:var(--vd-r-card);
-        padding:44px 28px;text-align:center}
-  .drop b{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;color:var(--vd-i)}
-  .drop p{margin-top:10px;font-size:.94rem;color:var(--vd-t)}
-  .drop-actions{margin-top:26px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  /* The panel is <vd-workflow>; its styles live in the component. What stays
+     here is the page's own button pair, used by the closing section. */
+  .drop-actions{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
        font:inherit;font-size:.94rem;font-weight:600;padding:12px 20px;min-height:44px;
        border-radius:var(--vd-r-ctl);text-decoration:none;cursor:pointer;border:1px solid transparent}
@@ -100,15 +93,6 @@
   .btn-primary:hover{background:var(--vd-at);border-color:var(--vd-at);color:var(--vd-ai)}
   .btn-quiet{background:var(--vd-c);border-color:var(--vd-L);color:var(--vd-i)}
   .btn-quiet:hover{border-color:var(--vd-a);color:var(--vd-i)}
-
-  /* The routing statement is welded to the panel: same border, no gap. It is
-     NOT styled as a warning — no amber, no icon — because framing integrity as
-     a hazard invites the reader to dismiss it. Do not move it to a footer, a
-     tooltip, or below the fold to improve conversion. */
-  .honesty{border-top:1px solid var(--vd-tl);background:var(--vd-tn);padding:18px 24px}
-  .honesty .eyebrow{color:var(--vd-at)}
-  .honesty p{margin-top:7px;font-size:.94rem;line-height:1.55;color:var(--vd-ti)}
-  .honesty strong{color:var(--vd-ti);font-weight:700}
 
   .grid{display:grid;gap:14px;margin-top:32px}
   .cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -154,7 +138,7 @@
 
   @media (max-width:1000px){
     .hero{grid-template-columns:1fr;gap:36px;padding:36px 0 8px}
-    .hero .panel{order:-1}           /* the recording first, the words second */
+    .hero vd-workflow{order:-1}      /* the recording first, the words second */
     .hero .lede{max-width:64ch}
     .cols-3{grid-template-columns:repeat(2,minmax(0,1fr))}
     .cols-2,.cost-grid{grid-template-columns:1fr;gap:24px}
@@ -168,6 +152,7 @@
   }
 </style>
 <script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.10/wa-site-nav.js"></script>
+<script type="module" src="/home.js"></script>
 </head>
 <body>
 
@@ -197,35 +182,17 @@
       </div>
     </div>
 
-    <!-- The panel. M3 replaces these contents with <vd-workflow>, which owns the
-         empty → ready → key → running → results machine; the frame, the state
-         header and the welded routing statement are already the ones it needs.
-         Until then this is an honest entry point rather than a mock of a
-         workflow that would not run: the button goes to the surface that does. -->
-    <div class="panel">
-      <div class="panel-head">
-        <span class="dot" aria-hidden="true"></span>
-        <span class="state">Ready for a recording</span>
-      </div>
-      <div class="panel-body">
-        <div class="drop">
-          <b>Drop the recording here</b>
-          <p>Or choose a file — it never leaves your device until you press run.</p>
-          <div class="drop-actions">
-            <a class="btn btn-primary" href="app/">Open the workbench →</a>
-            <a class="btn btn-quiet" href="#sources">Where do I get the file?</a>
-          </div>
-        </div>
-      </div>
-      <div class="honesty" id="privacy">
-        <div class="eyebrow">Where your recording goes</div>
-        <p>Your audio leaves this browser once, to <strong>OpenRouter</strong>, which hands it
-          to whichever model provider it picks. <strong>We do not know which provider gets your
-          recording, and we have no control over what they do with it.</strong> We store
-          nothing — there is no server of ours in the path. Don't send anything you wouldn't
-          hand to a stranger.</p>
-      </div>
-    </div>
+    <!-- The workflow itself (M3). The component owns the empty → ready → key →
+         running → results machine and the welded routing statement; home.js owns
+         the engine and drives it with the SAME pipeline the workbench runs, so a
+         pass here is not a second implementation of the pass. It renders from its
+         own markup before any of that loads: the first screen cannot depend on
+         another origin answering. -->
+    <!-- id="privacy" rides on the ELEMENT, not on the statement inside it: the
+         routing block now lives in the shadow root, and a fragment anchor cannot
+         address anything in there. Scrolling to the panel does land the reader on
+         it, which is what the published /#privacy link has always meant. -->
+    <vd-workflow id="privacy"></vd-workflow>
   </section>
 
   <section id="sources">
