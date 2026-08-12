@@ -76,6 +76,21 @@ Four browser tests, 16 assertions, **no key, no network, no spend**:
 `panel.synthesize` is an injectable seam, the same shape as the module's own
 `fetchImpl`. Live-QA fetches the component so a broken path cannot ship quietly.
 
+## Status 12 Aug — the panel became a TOOL (issue 064), and agents can drive it
+
+Dinis: *"that worked amazingly — in fact so good that … move it away from this
+page, create a new tools section … add the generic workflow to create audio from
+text … add JS API support for it so that it is easy for agents to use these
+capabilities (via playwright)."*
+
+`wa-voice-panel` is **retired**. Its job now lives at `/tools/text-to-speech/`,
+the first entry in a new `/tools/` section, and it publishes `window.__tool` —
+the same SgToolApi primitive the app does. That changes what the publishing half
+below can be built ON: the generator no longer has to be a Node script fighting
+`ERR_UNSUPPORTED_ESM_URL_SCHEME`, because a Playwright driver can open the tool
+page and call `synthesize` against a key it holds. See
+`issues/done/064-tools-section-and-tts-tool.md`.
+
 ### Still open (the publishing half)
 The `## Spoken` script in the post's markdown, the deliberate generator with its
 USD ceiling and hash-skip, MP3 encoding, the RSS `<enclosure>`, and the player

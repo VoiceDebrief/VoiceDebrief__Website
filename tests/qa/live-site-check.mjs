@@ -57,7 +57,9 @@ for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/upda
                               ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles'],
                               ['/engineering/concepts/', 'concept'],
                               ['/tests/browser/', 'qunit'],
-                              ['/design/', 'design candidates']]) {
+                              ['/design/', 'design candidates'],
+                              ['/tools/', 'What makes something a tool here'],
+                              ['/tools/text-to-speech/', 'window.__tool']]) {
     const r = await get(path)
     check(`GET ${path} → 200 + expected content`, r.ok && r.text.includes(marker), `status ${r.status}`)
 }
@@ -96,7 +98,9 @@ for (const ref of stamped) {
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
                     '/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js',
-                    '/components/wa-voice-panel/v0/v0.1/v0.1.1/wa-voice-panel.js',
+                    '/tools/text-to-speech/tts-tool.js', '/tools/text-to-speech/manifest.json',
+                    '/tools/text-to-speech/skills/SKILL__api.md',
+                    '/tools/text-to-speech/skills/SKILL__human.md',
                     '/app/skills/SKILL__api.md', '/app/workflows/standard.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
                     '/engineering/concepts/concepts.json',

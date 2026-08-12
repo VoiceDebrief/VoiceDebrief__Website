@@ -1,10 +1,11 @@
 # Done Issues
 
 Completed tasks, newest first. Maintained manually, in the same commit as any
-issue change. Last updated: 2026-08-06.
+issue change. Last updated: 2026-08-12.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [064](064-tools-section-and-tts-tool.md) | A Tools section, and text to speech as its first tool | `/tools/` + `/tools/text-to-speech/`, `wa-site-nav` v0.1.8 (Tools ▾); `wa-voice-panel` retired off /updates/; one `speak()` serves the button and `window.__tool` (7 actions, base64 not Blob); 6 browser tests, 30 assertions, no key/network/spend |
 | [059](059-design-candidates-live-on-the-site.md) | Design candidates live at /design/ | 3 themes + 4 culture packs runnable with synthetic data behind one A/B hub; prototypes byte-identical on a /design/-only runtime; found the table foster-parenting bug that hid the comparison matrix |
 | [054](054-nav-second-level-mobile.md) | Nav second level + mobile | `wa-site-nav` v0.1.1 — 6 primary + News/Engineering dropdowns, hamburger panel ≤760px; 17 refs flipped; 12 browser tests |
 | [053](053-baselines-record-not-block.md) | Baselines record UI change, not block it (renumbered from 050 on merge) | changed shots update baselines + append `baseline-changes.md/.json` per commit/run; agent review is issue 051 |

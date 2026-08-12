@@ -1,7 +1,13 @@
 /* wa-site-nav v0.1.8 — THE site header (issues 048 + 054). One source for every
    page.
 
-   v0.1.8 is the go-live pass (issue 060, claims audit):
+   v0.1.8 carries two pieces of work that landed together:
+
+   Tools ▾ (issue 064). The site now has small things that are not the product —
+   the first is text to speech — and they needed somewhere to live that is
+   neither the app nor the engine room.
+
+   The go-live pass (issue 060, claims audit):
    - the brand is VoiceDebrief, not "Voice Note Transcribe" — WhatsApp is one of
      several ways audio arrives here, not the product
    - BETA is persistent chrome (see render()), not an opt-in attribute
@@ -59,6 +65,11 @@ const ENGINEERING = [
     ['/design/',               'Design candidates'],
 ]
 
+const TOOLS = [
+    ['/tools/',                'All tools'],
+    ['/tools/text-to-speech/', 'Text to speech'],
+]
+
 const LIBRARY = [
     ['/user-guide/',     'User guide'],
     ['/openrouter-key/', 'Getting a key'],
@@ -82,9 +93,14 @@ const MENU = [
     ['/app/',     'App'],
     ['/#pricing', 'What it costs'],
     { label: 'Library',     href: '/library/',     children: LIBRARY },
+    { label: 'Tools',       href: '/tools/',       children: TOOLS },
     { label: 'News',        href: '/updates/',     children: NEWS },
     { label: 'Engineering', href: '/engineering/', children: ENGINEERING },
 ]
+
+// What a group's own landing page is called in the small-screen panel, where
+// there is no parent link to click — "Library ▸ Library" reads like a mistake.
+const LANDING_LABEL = { Library: 'All documents', Tools: 'All tools', News: 'Updates' }
 
 const CSS = `
 :host{display:block}
@@ -219,7 +235,7 @@ class WaSiteNav extends HTMLElement {
           ${MENU.filter(Array.isArray).map(l => link(l, active)).join('')}
           ${MENU.filter(m => !Array.isArray(m)).map(m => `
             <h6>${m.label}</h6>
-            ${link([m.href, m.label === 'Library' ? 'All documents' : m.label === 'News' ? 'Updates' : 'Overview'], active)}
+            ${link([m.href, LANDING_LABEL[m.label] || 'Overview'], active)}
             ${m.children.filter(([href]) => href !== m.href && href !== '/updates/').map(l => link(l, active)).join('')}`).join('')}`
 
         const inEngineering = path.startsWith('/engineering/')

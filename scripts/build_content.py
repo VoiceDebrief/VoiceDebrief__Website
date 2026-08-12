@@ -494,7 +494,8 @@ def build(out_dir, check_only=False):
              # Nobody can use the product without a key, so the page that gets
              # them one is a landing page in its own right, not an appendix.
              ('/openrouter-key/', None), ('/user-guide/', None),
-             ('/library/', None), ('/engineering/', None), ('/engineering/pipeline/', None),
+             ('/library/', None), ('/tools/', None), ('/tools/text-to-speech/', None),
+             ('/engineering/', None), ('/engineering/pipeline/', None),
              ('/engineering/testing/', None), ('/engineering/docs/', None),
              ('/engineering/security/', None), ('/engineering/team/', None),
              ('/engineering/concepts/', None)]
