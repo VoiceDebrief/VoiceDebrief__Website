@@ -1,7 +1,7 @@
 /* wa-site-nav v0.1.8 — THE site header (issues 048 + 054). One source for every
    page.
 
-   v0.1.8 adds Tools ▾ (issue 063). The site now has small things that are not
+   v0.1.8 adds Tools ▾ (issue 064). The site now has small things that are not
    the product — the first is text to speech — and they needed somewhere to
    live that is neither the app nor the engine room.
 

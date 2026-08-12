@@ -175,7 +175,7 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         assert.strictEqual(sr.querySelectorAll('nav.main > a, nav.main > .i18n-link > a').length, 2,
             'App and Pricing stay primary')
         assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 4,
-            'Library + Tools + News + Engineering groups (Tools added, issue 063)')
+            'Library + Tools + News + Engineering groups (Tools added, issue 064)')
         assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 16,
             '3 library + 2 tools + 3 news + 8 engineering pages in the dropdowns')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/tools/text-to-speech/'),
@@ -354,7 +354,7 @@ QUnit.module('wa-locale-picker — closed means painting nothing', hooks => {
 })
 
 
-/* ── the text-to-speech tool (issue 063): the same code a human clicks and an
+/* ── the text-to-speech tool (issue 064): the same code a human clicks and an
       agent drives, exercised with no key, no network and no spend ────────── */
 QUnit.module('tools/text-to-speech — speak(), the page, and the agent seam', hooks => {
     const POST = { slug: 'a-post', title: 'The menu no longer vanishes — on a phone',

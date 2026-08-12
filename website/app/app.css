@@ -74,3 +74,17 @@ footer a{color:var(--wa-link-on-dark)}
    the rule that reassures — the transcript is never overwritten — sits with it. */
 .translate-lang{font-weight:600;color:var(--wa-ink)}
 .translate-why{font-size:.78rem;color:var(--wa-muted);margin:-4px 0 2px 22px}
+
+/* The keyless demo chip (issue 062) — visibly a different kind of offer from the
+   sample chips beside it: those need a key, this one does not. */
+.demo-chip{border-color:var(--wa-green,#25d366);color:var(--wa-green-soft,#8ff0b6);
+  background:var(--wa-tint-green,rgba(37,211,102,.06));font-weight:700}
+.demo-chip:hover{background:var(--wa-ring-green,rgba(37,211,102,.18))}
+/* Everything a demo pass produced is stamped. A result that could be mistaken
+   for the user's own recording is the one thing this feature must never do. */
+.demo-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  border:1px solid var(--wa-amber-line,#e0a445);background:var(--wa-amber-bg,#fdf1e3);
+  border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:.88rem;
+  color:var(--wa-ink,#1a2433)}
+.demo-banner .badge{font-size:.66rem;font-weight:800;letter-spacing:1px;
+  padding:3px 9px;border-radius:999px;background:var(--wa-amber-ink,#a05a00);color:#fff}

@@ -10,7 +10,7 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-12 (063 done: a Tools section at /tools/ with text to speech
+as any issue change. Last updated: 2026-08-12 (064 done: a Tools section at /tools/ with text to speech
 as its first tool — nav v0.1.8, `window.__tool` for agents, `wa-voice-panel`
 retired. Earlier: 049 done: browser unit tests, QUnit visual runner shipped with
 the site at /tests/browser/. Earlier: 046-048 done. Earlier: 042/043 done: the
@@ -21,8 +21,9 @@ fixes; 007 closed as superseded — Dinis).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
-| [063](done/063-tools-section-and-tts-tool.md) | A Tools section at /tools/ — text to speech as its first tool, with a JS API agents can drive | done | normal | medium |
-| [062](open/062-updates-as-audio.md) | The Updates read aloud — the authoring half shipped as issue 063; the publishing half (Spoken scripts, MP3, RSS enclosure) still open | open | normal | medium |
+| [064](done/064-tools-section-and-tts-tool.md) | A Tools section at /tools/ — text to speech as its first tool, with a JS API agents can drive | done | normal | medium |
+| [063](open/063-keyless-demo-and-collapsing-key-panel.md) | A keyless demo (`runPass({demo:true})` runs the real workflow) + a key panel that collapses once a key is saved | open | high | medium |
+| [062](open/062-updates-as-audio.md) | The Updates read aloud — the authoring half shipped as issue 064; the publishing half (Spoken scripts, MP3, RSS enclosure) still open | open | normal | medium |
 | [059](done/059-design-candidates-live-on-the-site.md) | The design candidates go live at /design/ — seven runnable A/B pages behind one hub | done | high | medium |
 | [056](done/056-per-locale-app-urls.md) | One real URL per language — /app/pt-pt/, direct-linkable | done | high | medium |
 | [055](done/055-translate-before-summarising.md) | Translate before summarising — the debrief in the reader's language | done | high | medium |

@@ -5,7 +5,8 @@ Last updated: 2026-08-12.
 
 | # | Title | Priority | Effort | Latest status |
 |---|-------|----------|--------|---------------|
-| [062](062-updates-as-audio.md) | The Updates read aloud (TTS voice memos) | normal | medium | the authoring half shipped as a TOOL (issue 063, `/tools/text-to-speech/`); the publishing half — `## Spoken` scripts, MP3, RSS enclosure, on-page player, storage decision — is what remains |
+| [063](063-keyless-demo-and-collapsing-key-panel.md) | A keyless demo, and a setup step that gets out of the way | high | medium | shipped on the branch; table row added on merge |
+| [062](062-updates-as-audio.md) | The Updates read aloud (TTS voice memos) | normal | medium | the authoring half shipped as a TOOL (issue 064, `/tools/text-to-speech/`); the publishing half — `## Spoken` scripts, MP3, RSS enclosure, on-page player, storage decision — is what remains |
 | [052](052-three-alternative-designs-ab-test.md) | Three alternative designs shipped alongside the current one, for A/B testing | high | large | design brief written (library/dev_briefs); waits on 050-M1 token extraction |
 | [051](051-agent-review-of-baseline-changes.md) | An agent reviews the screenshot change log | **high** | medium | makes 053 sound — until built, nobody is required to read the log |
 | [050](050-app-i18n-culture-themes.md) | The app in many languages, cultures and designs | high | large | strategy written (dev pack v0.1.22), grounded in the SG/Send record; M1 = extraction |

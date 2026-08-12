@@ -52,5 +52,11 @@
   "stepTranslate": "translating",
   "translateWhy": "The transcript always stays in the language spoken. The summary and infographic are built from the translation.",
   "localeSoon": "soon",
-  "stepClassify": "reading it"
+  "stepClassify": "reading it",
+  "keySaved": "Your OpenRouter key is saved in this browser",
+  "keyChange": "change",
+  "keyCancel": "cancel",
+  "demoTry": "▶ see it work — no key needed",
+  "demoBadge": "DEMO",
+  "demoNote": "This is a scripted example, not a real recording. Nothing was sent anywhere and nothing was charged."
 }

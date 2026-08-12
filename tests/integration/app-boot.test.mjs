@@ -77,9 +77,11 @@ try {
     check('addFiles ingests a real voice note', added.added?.length === 1, JSON.stringify(added.rejected || ''))
 
     // 4. Sample chips exist and load a file into the flow.
-    const chips = await page.locator('.sample-chip').count()
+    // [data-sample], not .sample-chip: the keyless demo button (issue 063) shares
+    // the chip styling but is not a sample — it loads no file.
+    const chips = await page.locator('.sample-chip[data-sample]').count()
     check('three sample chips rendered', chips === 3, String(chips))
-    await page.locator('.sample-chip').first().click()
+    await page.locator('.sample-chip[data-sample]').first().click()
     const fileShown = await page.waitForFunction(() =>
         !document.querySelector('#file-section').hidden &&
         document.querySelector('.file-name').textContent.includes('.opus'), null, { timeout: 10000 }).then(() => true).catch(() => false)
@@ -190,7 +192,7 @@ try {
     // English rather than translating its own last output.
     const inside = await page.evaluate(() => ({
         drop: document.querySelector('wa-drop-zone').shadowRoot.querySelector('.wa-drop__big').textContent.trim(),
-        save: document.querySelector('wa-key-panel').shadowRoot.querySelector('button').textContent.trim(),
+        save: document.querySelector('wa-key-panel').shadowRoot.querySelector('.wa-key__save').textContent.trim(),
         step: document.querySelector('wa-progress-rail').shadowRoot.querySelector('[data-step=\"transcribe\"] .label').textContent.trim(),
     }))
     check('component shadow DOM localises too', /áudio/.test(inside.drop) && inside.save === 'Salvar chave' && inside.step === 'transcrevendo…',
@@ -217,6 +219,41 @@ try {
     check('switching locale rewrites the URL for sharing', /\/app\/pt-br\/$/.test(afterSwitch.url), afterSwitch.url)
     check('relative fetches still resolve after the URL moves', afterSwitch.wf === 'standard', String(afterSwitch.wf))
     check('switching back to the default returns to /app/', /\/app\/$/.test(afterSwitch.back), afterSwitch.back)
+
+    /* The key panel is a SETUP step, and v0.1.2 left it open forever: someone who
+       had already pasted a key saw a full labelled form with an empty input on
+       every visit, which reads as "not finished" (Dinis, issue 063). Tested here
+       rather than in the browser suite because it extends SgComponent from the
+       engine origin, which that harness deliberately does not load. */
+    const keyUx = await page.evaluate(async () => {
+        const el = document.querySelector('wa-key-panel')
+        const sr = el.shadowRoot
+        const shown = (sel) => { const n = sr.querySelector(sel)
+            return !!n && !n.hidden && getComputedStyle(n).display !== 'none' }
+        const out = {}
+        out.openWhenEmpty = shown('.wa-key__form') && !shown('.wa-key__saved')
+        // Drive the same path the app does on a successful save.
+        localStorage.setItem('sg-openrouter-mgmt-key', 'sk-or-v1-integration-test-value')
+        el.confirmSaved(true)
+        out.collapsedWhenSaved = shown('.wa-key__saved') && !shown('.wa-key__form')
+        sr.querySelector('.wa-key__change').click()
+        out.reopensOnChange = shown('.wa-key__form') && shown('.wa-key__cancel')
+        out.inputEmpty = sr.querySelector('input').value === ''
+        out.neverShowsTheKey = !sr.textContent.includes('integration-test')
+        sr.querySelector('.wa-key__cancel').click()
+        out.cancelRecollapses = !shown('.wa-key__form')
+        el.confirmSaved(false, 'That key was not accepted.')
+        out.rejectionReopens = shown('.wa-key__form')
+            && sr.querySelector('.wa-key__status').textContent.includes('not accepted')
+        localStorage.removeItem('sg-openrouter-mgmt-key')
+        return out
+    })
+    check('with no key the setup form is open', keyUx.openWhenEmpty)
+    check('a saved key collapses the setup form', keyUx.collapsedWhenSaved)
+    check('"change" reopens it, with a way back', keyUx.reopensOnChange && keyUx.inputEmpty)
+    check('the key itself is never redisplayed', keyUx.neverShowsTheKey)
+    check('cancel collapses it again', keyUx.cancelRecollapses)
+    check('a REJECTED key reopens the form rather than showing a tick', keyUx.rejectionReopens)
 
     check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 4).join(' | '))
 } catch (e) {

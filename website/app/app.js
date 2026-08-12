@@ -12,7 +12,7 @@ import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 // Components (ours; the SgComponent base loads from the tools origin inside each).
 import '../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 import '../components/wa-facts-card/v0/v0.1/v0.1.0/wa-facts-card.js'
-import '../components/wa-key-panel/v0/v0.1/v0.1.2/wa-key-panel.js'
+import '../components/wa-key-panel/v0/v0.1/v0.1.3/wa-key-panel.js'
 import '../components/wa-drop-zone/v0/v0.1/v0.1.2/wa-drop-zone.js'
 import '../components/wa-progress-rail/v0/v0.1/v0.1.5/wa-progress-rail.js'
 import '../components/wa-result-card/v0/v0.1/v0.1.3/wa-result-card.js'
@@ -113,9 +113,47 @@ async function main() {
     }
     drop.addEventListener('wa:file-chosen', (e) => takeFile(e.detail.file))
 
+    /* Everything a demo produced sits under this banner. The one thing this
+       feature must never do is let a scripted result be mistaken for the user's
+       own recording, so the stamp goes at the top of the results, not in a
+       footnote. */
+    function showDemoBanner() {
+        const host = $('#results-section')
+        if (host.querySelector('.demo-banner')) return
+        const b = document.createElement('div')
+        b.className = 'demo-banner'
+        const badge = document.createElement('span')
+        badge.className = 'badge'
+        badge.textContent = window.__waI18n?.tOr?.('core.demoBadge', 'DEMO') ?? 'DEMO'
+        const text = document.createElement('span')
+        text.textContent = window.__waI18n?.tOr?.('core.demoNote',
+            'This is a scripted example, not a real recording. Nothing was sent anywhere and nothing was charged.')
+            ?? 'This is a scripted example, not a real recording.'
+        b.append(badge, text)
+        host.prepend(b)
+    }
+    const clearDemoBanner = () => $('#results-section').querySelector('.demo-banner')?.remove()
+
+    /* The keyless demo (issue 063). It runs the REAL declared workflow with
+       scripted model answers, so what a visitor sees is the product's actual
+       path, trace and cards — not a mock-up that can drift from it. No key is
+       read, no request is made, and every artefact is stamped DEMO. */
+    $('#try-demo')?.addEventListener('click', async () => {
+        showDemoBanner()
+        show('#key-section', '#work-section', '#results-section')
+        const infog = $('#want-infographic').checked, trans = $('#want-translate').checked
+        rail.reset(infog, trans); rail.start('ingest')
+        try { await window.__tool.runPass({ demo: true, infographic: infog, translate: trans }) }
+        catch (err) { console.warn('[demo]', err) }
+    })
+
     // --- sample voice notes: click → fetch → the normal options screen, so the
     // infographic toggle (and any future option) stays available (issue 031). ---
-    document.querySelectorAll('.sample-chip').forEach(chip => chip.addEventListener('click', async () => {
+    /* [data-sample], not .sample-chip. The keyless demo button (issue 063) shares
+       the chip styling but loads no file — without this qualifier it also ran the
+       sample loader, which fetched `undefined` and produced "that doesn't look
+       like an audio file we can read" over the top of the demo. */
+    document.querySelectorAll('.sample-chip[data-sample]').forEach(chip => chip.addEventListener('click', async () => {
         const path = chip.dataset.sample
         chip.disabled = true
         const label = chip.textContent
@@ -197,6 +235,7 @@ async function main() {
         tCard.hidden = xCard.hidden = sCard.hidden = cost.hidden = true
         $('#infographic-card').hidden = true; $('#save-svg').hidden = true
         $('#infographic-note').hidden = true
+        clearDemoBanner()   // a real run must never inherit the demo's stamp
         show('#key-section', '#work-section', '#results-section')
         rail.reset(wantInfographic, wantTranslate.checked); rail.start('ingest')
         try {

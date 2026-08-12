@@ -1,4 +1,4 @@
-/* Text to speech — the tool page's logic and its JS API (issue 063).
+/* Text to speech — the tool page's logic and its JS API (issue 064).
 
    Two consumers, one implementation:
 

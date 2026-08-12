@@ -1,0 +1,23 @@
+.wa-key{border:1px solid var(--wa-line,#dbe3ec);border-radius:12px;padding:16px 18px;background:var(--wa-fg)}
+label{display:block;font-size:.76rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--wa-muted,#5b6b7f);margin-bottom:6px}
+.wa-key__row{display:flex;gap:10px;flex-wrap:wrap}
+input{flex:1;min-width:230px;font:inherit;padding:9px 12px;border:1px solid var(--wa-line,#dbe3ec);border-radius:9px}
+button{font:inherit;font-weight:600;padding:9px 16px;border:0;border-radius:9px;cursor:pointer;background:var(--wa-navy,#0b1f3a);color:var(--wa-fg)}
+button:hover{background:var(--wa-navy-2)}
+.wa-key__status{font-size:.82rem;color:var(--wa-muted,#5b6b7f);margin-top:8px}
+.wa-key__status.ok{color:var(--wa-green-dark,#1f7a4d)}
+
+/* Collapsed state (issue 062). The panel is a setup step: once it is done it
+   should get out of the way and stay reachable, not sit open forever. */
+.wa-key__saved{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.9rem;
+  color:var(--wa-green-dark,#1f7a4d)}
+.wa-key__saved .tick{display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:50%;background:var(--wa-green-bg,#e9f9ef);
+  border:1px solid var(--wa-ring-green-2,rgba(37,211,102,.5));font-size:.72rem}
+.wa-key__saved .saved-text{flex:1;min-width:180px}
+.wa-key__change,.wa-key__cancel{background:none;color:var(--wa-muted,#5b6b7f);
+  border:1px solid var(--wa-line,#dbe3ec);font-size:.8rem;font-weight:600;padding:5px 12px}
+.wa-key__change:hover,.wa-key__cancel:hover{background:var(--wa-mist,#f2f5f9);
+  color:var(--wa-ink,#1a2433)}
+/* A saved panel is quieter than an empty one — it is done, not pending. */
+.wa-key.is-saved{padding:11px 16px;background:var(--wa-mist,#f2f5f9)}
