@@ -58,6 +58,9 @@
   table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
   th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
   th{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .api-state{margin-top:10px;font-size:.82rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+        padding:8px 12px;border-radius:8px;background:#eef7f1;color:#1f7a4d;border:1px solid #cfe7da}
+  .api-state[data-state="degraded"]{background:#fdf4e3;color:#8a5a00;border-color:#f0d9a0}
   .note{border:1px dashed var(--line);border-radius:10px;padding:12px 15px;font-size:.88rem;color:var(--muted)}
   .note b{color:var(--ink)}
   footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
@@ -128,6 +131,16 @@ Paste any text here and a synthetic voice will read it back. Nothing is uploaded
         <a href="/app/skills/SKILL__api.md">SgToolApi contract</a> the transcription app uses — so a
         Playwright script (or any browser-driving agent) can make audio without a UI. Audio comes
         back as <b>base64</b>, because a Blob does not survive <code>page.evaluate</code>.</p>
+      <p class="api-state" id="api-state">checking…</p>
+      <p class="note" style="margin-top:12px"><b>It is there before the page finishes loading.</b>
+        <code>window.__tool</code> is assigned while the page's module evaluates, so it does not wait
+        for anything on the network — all seven actions work even if
+        <code>dev.tools.sgraph.ai</code> is slow, blocked, or down, which a sandboxed browser allowed
+        to reach only this page will find it is. The shared <code>SgToolApi</code> primitive then
+        loads and takes over the same name with the same actions; you cannot tell from the calling
+        side, and <code>window.__toolStatus</code> tells you anyway:
+        <code>{ ready, mode: 'local' | 'sg-tool-api', engine: { loaded, error } }</code>. It always
+        exists and is never a <code>console.warn</code> you have to have been listening for.</p>
       <table>
         <thead><tr><th>Action</th><th>params</th><th>returns</th></tr></thead>
         <tbody>
@@ -143,7 +156,8 @@ Paste any text here and a synthetic voice will read it back. Nothing is uploaded
       </table>
       <pre><code>// Playwright: text in, .wav on disk, no UI involved.
 await page.goto('https://voicedebrief.ai/tools/text-to-speech/')
-await page.waitForFunction(() =&gt; window.__tool)
+await page.waitForFunction(() =&gt; window.__tool)        // present before load completes
+console.log(await page.evaluate(() =&gt; window.__toolStatus))   // mode, and why, if you care
 await page.evaluate(k =&gt; window.__tool.setApiKey({ apiKey: k }), process.env.OPENROUTER_KEY)
 
 const r = await page.evaluate(() =&gt; window.__tool.synthesize({
@@ -153,7 +167,9 @@ console.log(r.durationMs, r.costUsd)                  // what it made, what it c
 await writeFile('memo.wav', Buffer.from(r.base64, 'base64'))</code></pre>
       <p class="meta" style="margin-top:12px">Machine-readable: <a href="manifest.json">manifest.json</a> ·
         <a href="skills/SKILL__api.md">SKILL__api.md</a> · the page emits <code>tts:done</code> when a
-        generation finishes.</p>
+        generation finishes, and <code>tool:ready</code> when the API publishes (once locally, again
+        on upgrade) — though <code>window.__toolStatus.ready</code> is the durable fact, so you
+        cannot miss it by attaching a listener too late.</p>
     </section>
 
   </div>

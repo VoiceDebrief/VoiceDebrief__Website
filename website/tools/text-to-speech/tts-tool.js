@@ -103,39 +103,129 @@ export async function speak ({ text, voice = DEFAULT_VOICE, model = DEFAULT_MODE
 
 /* ── the JS API (window.__tool), so agents can use this over Playwright ─────
 
-   Exactly the primitive the app uses (`engine.js`): construct, register every
-   action, then activate() — which is what puts the instance on window.__tools,
-   sets the window.__tool alias (only when this page has a single tool, which it
-   does) and fires `tool:ready`. Agents wait for that, never for a timer. */
-export async function publishApi () {
-    const { SgToolApi } = await import(`${ORIGIN}/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js`)
-    const api = new SgToolApi({
-        name: 'text-to-speech',
-        version: { api: '0.1.0', ui: 'site', content: '0.1.0' },
-        panelId: 'root',
-        manifest: './manifest.json',
-        skills: { api: './skills/SKILL__api.md', human: './skills/SKILL__human.md' },
-    })
-    api.register('synthesize', speak, { async: true, sanitiseParams: p => ({ ...p, apiKey: p?.apiKey ? '***' : undefined }) })
-       .register('getVoices', () => ({ voices: VOICES, default: DEFAULT_VOICE, model: DEFAULT_MODEL }), { async: false })
-       .register('setApiKey', ({ apiKey } = {}) => { setKey(String(apiKey || '').trim()); return { saved: !!getKey() } },
-                 { async: false, sanitiseParams: () => ({ apiKey: '***' }) })
-       .register('hasApiKey', () => ({ present: !!getKey() }), { async: false })
-       // The audio itself, base64 — a Blob cannot cross page.evaluate().
-       .register('getLastAudio', () => last, { async: false })
-       // Triggers a real browser download, which Playwright can capture.
-       .register('saveLastAudio', ({ filename } = {}) => {
-           if (!last) throw Object.assign(new Error('Nothing generated yet.'), { code: 'no-audio' })
-           const a = document.createElement('a')
-           a.href = URL.createObjectURL(base64ToBlob(last.base64, last.mime))
-           a.download = filename || `speech-${last.voice}.wav`
-           document.body.appendChild(a); a.click(); a.remove()
-           setTimeout(() => URL.revokeObjectURL(a.href), 10000)
-           return { filename: a.download, bytes: last.bytes }
-       }, { async: false })
-       .register('newsScriptFor', ({ post } = {}) => ({ script: newsScript(post) }), { async: false })
-    api.activate()          // → window.__tool + tool:ready
+   PUBLISHED SYNCHRONOUSLY, THEN UPGRADED. A diagnostic from an agent on 12 Aug
+   found `window.__tool` undefined after a normal load, and it was right twice
+   over — the first version of this awaited `sg-tool-api.js` from the engine
+   origin BEFORE publishing anything, which made the advertised entry point
+   depend on a second origin and three sequential cross-origin module fetches:
+
+   - if that origin is slow, `window.__tool` simply does not exist yet. Measured
+     at ~1.9s after `goto` on a fast path, which is AFTER `readyState` reaches
+     "complete" — so the obvious check ("wait for the page to load, then read
+     window.__tool") loses a race it does not know it is in;
+   - if that origin is blocked — normal for a sandboxed browser allowed to reach
+     only the page it navigated to — `window.__tool` never appears at all;
+   - and four of the seven actions need nothing from that origin anyway. An API
+     should never be less available than the button beside it.
+
+   So the local implementation IS the API and is assigned during module
+   evaluation. The shared SgToolApi primitive is an upgrade that arrives later
+   and takes over `window.__tool` through its own registry (identical actions,
+   same `speak()` underneath, so a held reference keeps working either way).
+
+   And it is never silent: `window.__toolStatus` always exists and always says
+   which mode is live and why — a caught error in a console.warn is invisible to
+   an agent reading only console errors, which is exactly what happened. */
+
+const VERSION = { api: '0.1.0', ui: 'site', content: '0.1.0' }
+const SG_TOOL_API = `${ORIGIN}/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js`
+const mask = (p) => ({ ...p, apiKey: p?.apiKey ? '***' : undefined })
+
+/* One list, both implementations — there is no second definition of the API to
+   drift from this one. Shape matches SgToolApi.register(name, fn, opts). */
+const ACTIONS = [
+    ['synthesize', speak, { async: true, sanitiseParams: mask }],
+    ['getVoices', () => ({ voices: VOICES, default: DEFAULT_VOICE, model: DEFAULT_MODEL }), { async: false }],
+    ['setApiKey', ({ apiKey } = {}) => { setKey(String(apiKey || '').trim()); return { saved: !!getKey() } },
+        { async: false, sanitiseParams: () => ({ apiKey: '***' }) }],
+    ['hasApiKey', () => ({ present: !!getKey() }), { async: false }],
+    // The audio itself, base64 — a Blob cannot cross page.evaluate().
+    ['getLastAudio', () => last, { async: false }],
+    // Triggers a real browser download, which Playwright can capture.
+    ['saveLastAudio', ({ filename } = {}) => {
+        if (!last) throw Object.assign(new Error('Nothing generated yet.'), { code: 'no-audio' })
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(base64ToBlob(last.base64, last.mime))
+        a.download = filename || `speech-${last.voice}.wav`
+        document.body.appendChild(a); a.click(); a.remove()
+        setTimeout(() => URL.revokeObjectURL(a.href), 10000)
+        return { filename: a.download, bytes: last.bytes }
+    }, { async: false }],
+    ['newsScriptFor', ({ post } = {}) => ({ script: newsScript(post) }), { async: false }],
+]
+
+/* A local stand-in for SgToolApi: same method names, same call shape, every
+   action a Promise (SgToolApi's _invoke is async whatever `async:false` says),
+   same `meta` surface, same execution log. Deliberately small — its job is to
+   exist instantly and never need the network. */
+function makeLocalApi (status) {
+    const log = []
+    const api = {
+        meta: {
+            getManifest: () => fetch('./manifest.json').then(r => r.json()),
+            getMethods: () => ACTIONS.map(([name]) => name),
+            getSkills: () => Promise.all([
+                fetch('./skills/SKILL__api.md').then(r => r.text()),
+                fetch('./skills/SKILL__human.md').then(r => r.text()),
+            ]).then(([api_, human]) => ({ api: api_, human })),
+            getVersion: () => ({ ...VERSION }),
+            getEvents: () => ['tool:ready', 'tts:done'],
+            health: () => ({ ...status, methods: ACTIONS.length }),
+            getLog: () => [...log],
+        },
+    }
+    for (const [name, fn, opts = {}] of ACTIONS) {
+        api[name] = async (params = {}) => {
+            const entry = { timestamp: new Date().toISOString(), method: name,
+                            params: opts.sanitiseParams ? opts.sanitiseParams(params) : params }
+            const t0 = Date.now()
+            try {
+                const result = await fn(params)
+                log.push({ ...entry, result, duration: Date.now() - t0 })
+                return result
+            } catch (err) {
+                log.push({ ...entry, error: { message: err.message, code: err.code }, duration: Date.now() - t0 })
+                throw err
+            }
+        }
+    }
     return api
+}
+
+/* Synchronous. `window.__tool` and `window.__toolStatus` exist the moment this
+   returns; `upgraded` resolves to the SgToolApi instance, or to null when the
+   engine origin cannot be reached — which is a downgrade in provenance, not in
+   capability, and is stated rather than logged. */
+export function publishApi () {
+    const status = {
+        tool: 'text-to-speech', ready: true, mode: 'local', methods: ACTIONS.length,
+        engine: { origin: ORIGIN, module: 'sg-tool-api', loaded: false, error: null },
+    }
+    const local = makeLocalApi(status)
+    window.__tool = local
+    window.__tools = Object.assign(window.__tools || {}, { 'text-to-speech:root': local })
+    window.__toolStatus = status
+    window.dispatchEvent(new CustomEvent('tool:ready', {
+        detail: { tool: 'text-to-speech', instanceId: 'text-to-speech:root', version: { ...VERSION }, mode: 'local' },
+    }))
+
+    const upgraded = import(/* @vite-ignore */ SG_TOOL_API).then(({ SgToolApi }) => {
+        const api = new SgToolApi({
+            name: 'text-to-speech', version: { ...VERSION }, panelId: 'root',
+            manifest: './manifest.json',
+            skills: { api: './skills/SKILL__api.md', human: './skills/SKILL__human.md' },
+        })
+        for (const [name, fn, opts] of ACTIONS) api.register(name, fn, opts)
+        api.activate()            // its registry takes over window.__tool + fires tool:ready again
+        status.mode = 'sg-tool-api'
+        status.engine.loaded = true
+        return api
+    }).catch((err) => {
+        status.engine.error = err.message      // queryable, not just console noise
+        return null
+    })
+
+    return { api: local, upgraded, status }
 }
 
 /* ── the page ──────────────────────────────────────────────────────────────

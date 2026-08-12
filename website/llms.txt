@@ -34,7 +34,7 @@ so an agent can do what a person does there without a UI.
 
 - [Tools](https://voicedebrief.ai/tools/): the index — small, single-purpose browser tools built alongside the app
 - [Text to speech](https://voicedebrief.ai/tools/text-to-speech/): text in, a spoken `.wav` out, in the browser on the caller's own OpenRouter key
-- [Text to speech — API skill](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__api.md): every action with params, returns, typed errors and a Playwright example. Audio comes back as base64, because a Blob does not survive `page.evaluate`
+- [Text to speech — API skill](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__api.md): every action with params, returns, typed errors and a Playwright example. `window.__tool` is assigned while the page's module evaluates — before load completes and without waiting on any network — and `window.__toolStatus` always states the mode and any engine error. Wait with `waitForFunction(() => window.__tool)`, not on `readyState`. Audio comes back as base64, because a Blob does not survive `page.evaluate`
 - [Text to speech — human guide](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__human.md)
 - [Text to speech — action manifest](https://voicedebrief.ai/tools/text-to-speech/manifest.json)
 

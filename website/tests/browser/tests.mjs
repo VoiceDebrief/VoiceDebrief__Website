@@ -20,7 +20,7 @@ import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
 import '../../components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
-import { newsScript, speak, wirePage, bytesToBase64, VOICES } from '../../tools/text-to-speech/tts-tool.js'
+import { newsScript, speak, wirePage, publishApi, bytesToBase64, VOICES } from '../../tools/text-to-speech/tts-tool.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -496,6 +496,64 @@ QUnit.module('tools/text-to-speech — speak(), the page, and the agent seam', h
         assert.deepEqual(calls, [], 'nothing is sent without a key')
         assert.true(/key/i.test(root.getElementById('status').textContent), 'and the page says so')
         assert.true(root.getElementById('status').classList.contains('err'), 'as an error, not a shrug')
+    })
+
+    /* The regression this suite exists for now. An agent's diagnostic (12 Aug)
+       found window.__tool undefined after a normal load: the API used to be
+       published only AFTER awaiting sg-tool-api.js from the engine origin, so a
+       slow origin lost a race and a blocked one lost the API entirely. The fix
+       is ordering, and ordering is what this asserts — synchronously, with the
+       engine origin unreachable from this test runner, which is precisely the
+       failing condition. */
+    /* QUnit's noglobals check compares the set of window KEYS, so restoring a
+       global by assigning undefined still leaves it "introduced". Snapshot what
+       was there and delete what was not. */
+    const globalsGuard = () => {
+        const names = ['__tool', '__tools', '__toolStatus']
+        const before = names.map(n => [n, n in window, window[n]])
+        return () => { for (const [n, had, val] of before) { if (had) window[n] = val; else delete window[n] } }
+    }
+
+    QUnit.test('window.__tool exists SYNCHRONOUSLY, with no network at all', assert => {
+        const restore = globalsGuard()
+        try {
+            const { upgraded, status } = publishApi()          // deliberately not awaited
+            assert.strictEqual(typeof window.__tool, 'object', 'published before this line runs')
+            assert.strictEqual(window.__toolStatus.ready, true, 'and it says so')
+            assert.strictEqual(window.__toolStatus.mode, 'local', 'in local mode until the upgrade lands')
+            assert.deepEqual(window.__tool.meta.getMethods(),
+                ['synthesize', 'getVoices', 'setApiKey', 'hasApiKey', 'getLastAudio', 'saveLastAudio', 'newsScriptFor'],
+                'all seven actions, not a subset — the local one is the API, not a stub')
+            assert.strictEqual(status.engine.origin, 'https://dev.tools.sgraph.ai')
+            assert.ok(upgraded instanceof Promise, 'the upgrade is a promise nobody has to await')
+        } finally { restore() }
+    })
+
+    QUnit.test('the local API really works — every action, no engine origin', async assert => {
+        const restore = globalsGuard()
+        try {
+            const { api } = publishApi()
+            assert.deepEqual(await api.getVoices(), { voices: VOICES, default: 'onyx', model: 'openai/gpt-audio' })
+            assert.deepEqual(await api.hasApiKey(), { present: false }, 'no key stored in this fixture')
+            assert.deepEqual(await api.setApiKey({ apiKey: 'sk-or-v1-test' }), { saved: true })
+            assert.deepEqual(await api.hasApiKey(), { present: true }, 'and it round-trips')
+            const { script } = await api.newsScriptFor({ post: POST })
+            assert.true(script.includes('It used to disappear entirely.'))
+
+            const r = await api.synthesize({ text: 'Read this out.', voice: 'echo' })
+            assert.strictEqual(r.voice, 'echo', 'synthesis runs through the same speak()')
+            assert.strictEqual(atob(r.base64).length, 64, 'and returns base64 an agent can decode')
+            assert.strictEqual((await api.getLastAudio()).generationId, 'gen-test-1')
+
+            // A rejected action is logged and rethrown, exactly as SgToolApi does.
+            await api.synthesize({ text: '' }).then(
+                () => assert.true(false, 'empty text should reject'),
+                (e) => assert.strictEqual(e.code, 'no-text', 'errors keep their code'))
+            const log = api.meta.getLog()
+            assert.strictEqual(log.at(-1).error.code, 'no-text', 'the failure is in the execution log')
+            assert.strictEqual(log.find(l => l.method === 'setApiKey').params.apiKey, '***',
+                'and the key never reaches the log in the clear')
+        } finally { restore() }
     })
 
     QUnit.test('base64 survives audio bigger than one chunk', assert => {

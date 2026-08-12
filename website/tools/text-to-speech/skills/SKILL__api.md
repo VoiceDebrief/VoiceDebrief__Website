@@ -1,11 +1,46 @@
 # Text to speech — JS API
 
-Published as `window.__tool` (SgToolApi, name `text-to-speech`) after `tool:ready`,
-on <https://voicedebrief.ai/tools/text-to-speech/>.
-Every action returns a Promise. Authoritative list: `../manifest.json` `api` section.
+Published as `window.__tool` on <https://voicedebrief.ai/tools/text-to-speech/>
+(name `text-to-speech`). Every action returns a Promise. Authoritative list:
+`../manifest.json` `api` section.
 
 Audio is returned as **base64**, not a Blob — a Blob does not survive
 `page.evaluate`, which is how an agent drives this page.
+
+## When it is available (read this before concluding it is missing)
+
+`window.__tool` is assigned **while the page's module evaluates** — before load
+completes, and without waiting for any network. All seven actions work
+immediately. There is no lazy initialisation and no first-click requirement.
+
+`window.__toolStatus` always exists alongside it and states the mode:
+
+```js
+{ tool: 'text-to-speech', ready: true, methods: 7,
+  mode: 'local' | 'sg-tool-api',
+  engine: { origin: 'https://dev.tools.sgraph.ai', loaded: false, error: null } }
+```
+
+The page starts in `mode: 'local'` and upgrades to `mode: 'sg-tool-api'` when the
+shared primitive loads from the engine origin — same actions, same results, so
+the calling side cannot tell. If that origin is **blocked or slow** (a sandboxed
+browser permitted to reach only the page it navigated to will find it is),
+`mode` stays `'local'`, `engine.error` names the reason, and everything still
+works. A degraded engine load is a downgrade in provenance, not in capability.
+
+`tool:ready` fires on publish and again on upgrade. Do not *depend* on catching
+it: a listener attached after load has already missed it. `window.__toolStatus.ready`
+is the durable fact.
+
+**Wait like this, not on `readyState`:**
+
+```js
+await page.waitForFunction(() => window.__tool)   // resolves before load completes
+```
+
+Waiting for `document.readyState === 'complete'` and then reading `window.__tool`
+once is not a wait — it is a race. (It was lost by a diagnostic on 12 Aug, against
+an earlier build where the whole API really did wait on the engine origin.)
 
 | Action | params | returns |
 |---|---|---|
@@ -27,6 +62,7 @@ Typed errors: `no-text`, `no-key`, `bad-voice`, plus the module's own
 ```js
 await page.goto('https://voicedebrief.ai/tools/text-to-speech/')
 await page.waitForFunction(() => window.__tool)
+console.log(await page.evaluate(() => window.__toolStatus))   // mode, and why
 await page.evaluate(k => window.__tool.setApiKey({ apiKey: k }), process.env.OPENROUTER_KEY)
 
 const r = await page.evaluate(() => window.__tool.synthesize({

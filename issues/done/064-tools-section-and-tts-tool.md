@@ -87,3 +87,37 @@ Unchanged by this: the `## Spoken` script in a post's markdown, the deliberate
 generator with a USD ceiling and hash-skip, MP3 encoding, the RSS `<enclosure>`
 and a player on the post. The tool is now the authoring surface that makes those
 worth doing, and an agent can drive it — which is the piece that was missing.
+
+## 12 Aug — an agent tried the API and could not find it. It was right.
+
+An external agent's diagnostic against `v0.1.26-qa.5a9ce5a` reported
+`window.__tool` as `undefined` after a normal page load, twice, 1.5s apart. Full
+review: `team/roles/architect/reviews/08/12/v0.1.26__review__tts-js-api-diagnostic.md`.
+
+Reproduced against the **deployed bytes**, routing the engine origin two ways:
+
+| condition | at `readyState=complete` | after +1.5s | ever |
+|---|---|---|---|
+| engine origin reachable | `undefined` | `object` | **1860 ms** after `goto` |
+| engine origin blocked | `undefined` | `undefined` | **never** |
+
+`publishApi()` was `async` and awaited `sg-tool-api.js` from the engine origin
+**before publishing anything**, so the advertised entry point inherited a second
+origin and three sequential cross-origin fetches. That is a race even when it
+works (1860 ms is after `readyState` reaches `complete`) and fatal when the
+origin is blocked — the normal condition for a sandboxed agent browser. Four of
+the seven actions needed that origin for nothing, and the failure surfaced only
+as a `console.warn`, invisible to a caller reading console errors.
+
+**Fixed:** the API is published **synchronously** during module evaluation from a
+local implementation of all seven actions; `SgToolApi` still loads and takes over
+the same name as an upgrade, both driven from one shared `ACTIONS` list.
+`window.__toolStatus` always exists and names the mode and any engine error, and
+the page states it in a visible line. The page, `SKILL__api.md` and
+`manifest.json` now document the timing, including that waiting on `readyState`
+is the wrong wait.
+
+Two browser tests lock it: `window.__tool` must exist on the line after
+`publishApi()` returns, and every action must work with the engine origin
+unreachable — which is CI's actual condition, so the regression cannot return
+quietly.

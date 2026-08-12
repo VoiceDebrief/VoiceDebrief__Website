@@ -18,6 +18,30 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **An agent could not find the JS API, and it was right (issue 064)** — an
+  external diagnostic reported `window.__tool` as `undefined` after a normal load
+  of the text-to-speech tool. Reproducing it against the deployed bytes with the
+  engine origin routed two ways gave the measurement: **1860 ms** to appear when
+  that origin is reachable — *after* `readyState` reaches `complete`, so every
+  natural check loses a race — and **never** when it is blocked, which is the
+  normal condition for a sandboxed agent browser allowed to reach only the page
+  it navigated to. `publishApi()` was `async` and awaited `sg-tool-api.js` from a
+  second origin **before publishing anything**, so the advertised entry point
+  inherited a CDN's availability for no capability gained: four of the seven
+  actions never touch that origin. Worse, the failure was a `console.warn` inside
+  a `.catch()` — invisible to a caller reading console errors, which is why the
+  report could only offer hypotheses.
+
+  The API is now published **synchronously** during module evaluation, from a
+  local implementation of all seven actions; the shared `SgToolApi` still loads
+  and takes over the same name as an upgrade, both driven from one `ACTIONS` list
+  so there is no second definition to drift. `window.__toolStatus` always exists
+  and names the mode and any engine error, and the page says it in a visible
+  line. The rule this leaves behind, for every tool that follows: **an
+  agent-facing API must be at least as available as the UI beside it**, and
+  readiness must be state you can query, not an event you had to be listening
+  for.
+
 - **The domain moved, and 39 files were still naming the old one (issue 060)** —
   `voicedebrief.ai` / `qa.voicedebrief.ai` are live, and the old hosts have **no
   DNS at all**: not a redirect, not a 404, nothing resolves. The rename pass had

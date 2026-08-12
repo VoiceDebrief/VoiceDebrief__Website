@@ -7,33 +7,101 @@
   "version": "0.1.0",
   "status": "beta",
   "category": "media",
-  "keywords": ["tts", "text to speech", "voice", "audio", "openrouter", "browser", "byok"],
+  "keywords": [
+    "tts",
+    "text to speech",
+    "voice",
+    "audio",
+    "openrouter",
+    "browser",
+    "byok"
+  ],
   "locale": "en-gb",
   "dependencies": {
     "engine-origin": "https://dev.tools.sgraph.ai",
     "core": [
-      { "module": "sg-tts-openrouter", "path": "/core/sg-tts-openrouter/v0/v0.1/v0.1.0/sg-tts-openrouter.js",
-        "loaded": "on first synthesis — a visitor who only reads the page fetches none of it" },
-      { "module": "sg-tool-api", "path": "/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js",
-        "loaded": "on page load, to publish window.__tool" }
+      {
+        "module": "sg-tts-openrouter",
+        "path": "/core/sg-tts-openrouter/v0/v0.1/v0.1.0/sg-tts-openrouter.js",
+        "loaded": "on first synthesis — a visitor who only reads the page fetches none of it"
+      },
+      {
+        "module": "sg-tool-api",
+        "path": "/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js",
+        "loaded": "on page load, to UPGRADE the API that is already published; if this origin is blocked or slow the local implementation serves every action unchanged"
+      }
     ]
   },
   "api": {
-    "published_as": "window.__tool",
-    "ready_event": "tool:ready",
+    "published_as": "window.__tool (assigned during module evaluation — no network wait, no lazy init)",
+    "ready_event": "tool:ready (fires on publish and again on upgrade; window.__toolStatus.ready is the durable fact)",
     "actions": [
-      { "name": "synthesize", "async": true,
-        "params": { "text": "string (required)", "voice": "one of getVoices().voices", "model": "openrouter audio model", "apiKey": "optional; falls back to the stored key" },
-        "returns": "{ base64, mime, bytes, durationMs, generationId, costUsd, voice, model, tookMs }" },
-      { "name": "getVoices", "async": false, "returns": "{ voices, default, model }" },
-      { "name": "setApiKey", "async": false, "params": { "apiKey": "sk-or-v1-…" }, "returns": "{ saved }" },
-      { "name": "hasApiKey", "async": false, "returns": "{ present }" },
-      { "name": "getLastAudio", "async": false, "returns": "the last synthesize result, or null" },
-      { "name": "saveLastAudio", "async": false, "params": { "filename": "optional" }, "returns": "{ filename, bytes }" },
-      { "name": "newsScriptFor", "async": false, "params": { "post": "an updates.json post" }, "returns": "{ script }" }
+      {
+        "name": "synthesize",
+        "async": true,
+        "params": {
+          "text": "string (required)",
+          "voice": "one of getVoices().voices",
+          "model": "openrouter audio model",
+          "apiKey": "optional; falls back to the stored key"
+        },
+        "returns": "{ base64, mime, bytes, durationMs, generationId, costUsd, voice, model, tookMs }"
+      },
+      {
+        "name": "getVoices",
+        "async": false,
+        "returns": "{ voices, default, model }"
+      },
+      {
+        "name": "setApiKey",
+        "async": false,
+        "params": {
+          "apiKey": "sk-or-v1-…"
+        },
+        "returns": "{ saved }"
+      },
+      {
+        "name": "hasApiKey",
+        "async": false,
+        "returns": "{ present }"
+      },
+      {
+        "name": "getLastAudio",
+        "async": false,
+        "returns": "the last synthesize result, or null"
+      },
+      {
+        "name": "saveLastAudio",
+        "async": false,
+        "params": {
+          "filename": "optional"
+        },
+        "returns": "{ filename, bytes }"
+      },
+      {
+        "name": "newsScriptFor",
+        "async": false,
+        "params": {
+          "post": "an updates.json post"
+        },
+        "returns": "{ script }"
+      }
     ],
-    "events": ["tts:done"],
-    "errors": ["no-text", "no-key", "bad-voice", "tts-http", "tts-no-audio", "tts-no-stream"]
+    "events": [
+      "tts:done"
+    ],
+    "errors": [
+      "no-text",
+      "no-key",
+      "bad-voice",
+      "tts-http",
+      "tts-no-audio",
+      "tts-no-stream"
+    ],
+    "status_probe": "window.__toolStatus — { ready, mode: 'local'|'sg-tool-api', methods, engine: { origin, loaded, error } }; always present"
   },
-  "skills": { "api": "./skills/SKILL__api.md", "human": "./skills/SKILL__human.md" }
+  "skills": {
+    "api": "./skills/SKILL__api.md",
+    "human": "./skills/SKILL__human.md"
+  }
 }
