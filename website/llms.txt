@@ -53,7 +53,7 @@ so an agent can do what a person does there without a UI.
 ## Pages
 
 - [How it works, where the audio goes, what it costs](https://voicedebrief.ai/): the landing page — the tool runs on the page itself; the beta is bring-your-own-key and there is no plan, credit or card
-- [The app](https://voicedebrief.ai/app/)
+- [The Workbench](https://voicedebrief.ai/app/): the working surface — the same one pass, plus chat with the debrief, the declared workflow and its trace, the raw OpenRouter calls, and prompt overrides. Still served from `/app/`: the address is not the name
 - [Getting an OpenRouter key](https://voicedebrief.ai/openrouter-key/): why the product is bring-your-own-key, the five steps to create one, how to cap its spend, and how to revoke it. Nobody can use the product without this
 - [User guide](https://voicedebrief.ai/user-guide/): step-by-step usage — every screenshot taken by a passing test on the same build
 - [Engineering](https://voicedebrief.ai/engineering/): how it is built — pipeline, testing, docs, security posture (including open findings, honestly labelled), team, concepts

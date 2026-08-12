@@ -48,7 +48,10 @@ if (EXPECT_VERSION) {
 }
 
 // 1. The pages of the product.
-for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/updates/', 'Updates'],
+// The home page's marker is a section only the redesign has (issue 060, M2):
+// 'Voice' matched the old page and the new one alike, so it proved the page
+// answered, not that the page shipped.
+for (const [path, marker] of [['/', 'Getting the audio'], ['/app/', 'wa-drop-zone'], ['/updates/', 'Updates'],
                               ['/versions/', 'Every version'], ['/library/', 'Library'],
                               ['/videos/', 'See it work'], ['/user-guide/', 'step by step'],
                               ['/openrouter-key/', 'spend limit'],
@@ -97,7 +100,7 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
-                    '/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js',
+                    '/components/wa-site-nav/v0/v0.1/v0.1.10/wa-site-nav.js',
                     '/tools/text-to-speech/tts-tool.js', '/tools/text-to-speech/manifest.json',
                     '/tools/text-to-speech/skills/SKILL__api.md',
                     '/tools/text-to-speech/skills/SKILL__human.md',

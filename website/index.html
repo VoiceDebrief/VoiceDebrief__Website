@@ -30,248 +30,337 @@
 </script>
 <link rel="stylesheet" href="/vd-tokens.css">
 <style>
-/* Colour comes from /vd-tokens.css — the page-level names (--navy, --ink,
-   --line, --accent, --muted, --radius…) are declared there, once, from the
-   --vd-* schemes. This page used to carry its own copy of the same hexes. */
+/* The home page, on the design pack's layout (issue 060, M2). Colour comes
+   entirely from /vd-tokens.css: there is not one hex in this file, and CI fails
+   the build if one appears. Shape and type follow the pack's scale —
+   h1 40/52px · h2 27/34px · body 16/17-18px · nothing under 13px. */
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-       color:var(--ink);background:var(--paper);line-height:1.6}
-  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
-  .hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:var(--vd-ki);
-        padding:64px 0 72px;text-align:left}
-  .hero h1{font-size:clamp(1.7rem,4.2vw,2.7rem);line-height:1.15;max-width:760px}
-  .hero p.lead{margin-top:18px;max-width:640px;font-size:1.08rem;color:var(--vd-km)}
-  .badge{display:inline-block;background:var(--vd-kl);border:1px solid var(--vd-tl);
-         color:var(--vd-tl);font-size:.78rem;padding:4px 12px;border-radius:999px;margin-bottom:18px;letter-spacing:.4px}
-  .badge a{color:var(--vd-ki);text-decoration:underline;text-underline-offset:2px}
-  .cta-row{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap}
-  .btn{display:inline-block;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:600;font-size:.95rem}
-  .btn-primary{background:var(--vd-a);color:var(--vd-ai)}
-  .btn-primary:hover{background:var(--vd-at)}
-  .btn-ghost{border:1px solid var(--vd-km);color:var(--vd-km)}
-  .btn-ghost:hover{border-color:var(--vd-km);color:var(--vd-ki)}
-  .pass{margin-top:44px;background:var(--vd-kl);border:1px solid var(--vd-kl);
-        border-radius:var(--radius);padding:22px;max-width:760px;overflow-x:auto}
-  .pass pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem;
-            color:var(--vd-tl);line-height:1.7;white-space:pre}
-  section{padding:56px 0}
-  section.alt{background:var(--mist)}
-  h2{font-size:1.5rem;margin-bottom:8px}
-  .kicker{color:var(--accent-2);font-size:.8rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
-  .sub{color:var(--muted);max-width:640px;margin-bottom:28px}
-  .grid{display:grid;gap:18px}
-  .grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-  .grid.cols-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-  .card{background:var(--vd-c);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
-  section.alt .card{box-shadow:0 1px 3px var(--vd-sh)}
-  .card h3{font-size:1.02rem;margin-bottom:6px}
-  .card p{font-size:.92rem;color:var(--muted)}
-  .step-n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--vd-ki);
-          align-items:center;justify-content:center;font-size:.8rem;font-weight:700;margin-bottom:10px}
-  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--vd-c)}
-  table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:560px}
-  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line)}
-  th{background:var(--navy);color:var(--vd-ki);font-weight:600;font-size:.85rem}
-  tr:last-child td{border-bottom:none}
-  .tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;letter-spacing:.3px}
-  .tag.default{background:var(--vd-tn);color:var(--accent-2)}
-  .tag.private{background:var(--vd-tn);color:var(--accent)}
-  .tag.higher{background:var(--vd-wb);color:var(--warn)}
-  .price-note{font-size:.9rem;color:var(--muted);margin-top:14px;max-width:640px}
-  .honest{border-left:4px solid var(--accent);background:var(--vd-c);border-radius:0 var(--radius) var(--radius) 0;
-          padding:18px 20px;margin-top:26px;font-size:.93rem;color:var(--muted)}
-  .honest strong{color:var(--ink)}
-  footer{background:var(--navy);color:var(--vd-km);padding:36px 0;font-size:.85rem}
-  footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
-  footer a{color:var(--vd-km)}
-  @media (max-width:640px){ .hero{padding:44px 0 52px} }
+  body{font-family:var(--vd-font);color:var(--vd-t);background:var(--vd-p);
+       line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+  a{color:var(--vd-at);text-decoration:underline;text-underline-offset:3px}
+  a:hover{color:var(--vd-i)}
+  ::selection{background:var(--vd-tl);color:var(--vd-i)}
+  :focus-visible{outline:2px solid var(--vd-a);outline-offset:2px;border-radius:3px}
+
+  h1{font-size:clamp(2.1rem,4.6vw,3.25rem);line-height:1.03;letter-spacing:-.033em;
+     font-weight:700;color:var(--vd-i);text-wrap:balance}
+  h2{font-size:clamp(1.55rem,3vw,2.12rem);letter-spacing:-.026em;font-weight:700;
+     color:var(--vd-i);margin-top:12px;text-wrap:balance}
+  h3{font-size:1.06rem;font-weight:700;color:var(--vd-i)}
+  .eyebrow{font-size:.69rem;letter-spacing:.12em;text-transform:uppercase;
+           color:var(--vd-f);font-weight:600}
+  .lede{margin-top:14px;font-size:1.06rem;line-height:1.55;color:var(--vd-t);
+        max-width:64ch;text-wrap:pretty}
+
+  section{padding:64px 0 0;border-top:1px solid var(--vd-l);margin-top:56px}
+  section:first-of-type{border-top:0;margin-top:0}
+
+  /* Hero: the design's 0.86 / 1.14 split, one column under 1000px with the
+     panel first — the recording is the point, the explanation is second. */
+  .hero{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);
+        gap:56px;align-items:start;padding:56px 0 24px;border:0;margin:0}
+  .hero .lede{font-size:1.13rem;max-width:44ch}
+
+  .pipeline{margin-top:34px;border-top:1px solid var(--vd-l);padding-top:22px}
+  .pipe-row{display:flex;align-items:stretch;gap:14px;margin-top:16px;flex-wrap:wrap}
+  .pipe-in{display:flex;flex-direction:column;justify-content:center;gap:4px;
+           padding:12px 14px;border:1px dashed var(--vd-L);border-radius:var(--vd-r-ctl);min-width:132px}
+  .pipe-in b{font-size:.83rem;font-weight:600;color:var(--vd-i)}
+  .pipe-in code{font-family:var(--vd-font-mono);font-size:.7rem;color:var(--vd-m)}
+  .pipe-arrow{display:flex;align-items:center;color:var(--vd-a);font-size:1.15rem}
+  .pipe-out{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-width:260px}
+  .artefact{border:1px solid var(--vd-l);background:var(--vd-b);
+            border-radius:var(--vd-r-ctl);padding:10px 12px}
+  .artefact b{display:block;font-size:.83rem;font-weight:600;color:var(--vd-i)}
+  .artefact span{font-size:.7rem;color:var(--vd-m);margin-top:3px;display:block}
+  .artefact.opt span{color:var(--vd-at)}
+
+  /* The panel the workflow will live in (M3). Today it is the entry point to
+     the run, and it is deliberately the same box: when vd-workflow lands it
+     replaces the contents, not the frame. */
+  .panel{border:1px solid var(--vd-L);border-radius:var(--vd-r-panel);background:var(--vd-c);
+         overflow:hidden;box-shadow:0 18px 44px var(--vd-sh)}
+  .panel-head{display:flex;align-items:center;gap:10px;padding:14px 20px;
+              border-bottom:1px solid var(--vd-l);background:var(--vd-b)}
+  .panel-head .dot{width:8px;height:8px;border-radius:50%;background:var(--vd-a);flex:none}
+  .panel-head .state{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+                     font-weight:600;color:var(--vd-m)}
+  .panel-body{padding:26px 24px}
+  .drop{border:2px dashed var(--vd-tl);background:var(--vd-tn);border-radius:var(--vd-r-card);
+        padding:44px 28px;text-align:center}
+  .drop b{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;color:var(--vd-i)}
+  .drop p{margin-top:10px;font-size:.94rem;color:var(--vd-t)}
+  .drop-actions{margin-top:26px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+       font:inherit;font-size:.94rem;font-weight:600;padding:12px 20px;min-height:44px;
+       border-radius:var(--vd-r-ctl);text-decoration:none;cursor:pointer;border:1px solid transparent}
+  .btn-primary{background:var(--vd-a);color:var(--vd-ai);border-color:var(--vd-a)}
+  .btn-primary:hover{background:var(--vd-at);border-color:var(--vd-at);color:var(--vd-ai)}
+  .btn-quiet{background:var(--vd-c);border-color:var(--vd-L);color:var(--vd-i)}
+  .btn-quiet:hover{border-color:var(--vd-a);color:var(--vd-i)}
+
+  /* The routing statement is welded to the panel: same border, no gap. It is
+     NOT styled as a warning — no amber, no icon — because framing integrity as
+     a hazard invites the reader to dismiss it. Do not move it to a footer, a
+     tooltip, or below the fold to improve conversion. */
+  .honesty{border-top:1px solid var(--vd-tl);background:var(--vd-tn);padding:18px 24px}
+  .honesty .eyebrow{color:var(--vd-at)}
+  .honesty p{margin-top:7px;font-size:.94rem;line-height:1.55;color:var(--vd-ti)}
+  .honesty strong{color:var(--vd-ti);font-weight:700}
+
+  .grid{display:grid;gap:14px;margin-top:32px}
+  .cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cols-2{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)}
+  .card{border:1px solid var(--vd-l);background:var(--vd-b);
+        border-radius:var(--vd-r-card);padding:18px}
+  .card .fmt{font-family:var(--vd-font-mono);font-size:.7rem;color:var(--vd-at)}
+  .card p{font-size:.88rem;line-height:1.55;color:var(--vd-t);margin-top:7px;text-wrap:pretty}
+  .card-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .note{font-size:.81rem;line-height:1.55;color:var(--vd-m);margin-top:16px}
+
+  /* Workbench: the accented half of the pair, so the eye goes to the thing that
+     is a step up rather than to the thing you are already on. */
+  .wb-quiet{border:1px solid var(--vd-l);background:var(--vd-b);border-radius:var(--vd-r-card);padding:22px}
+  .wb-loud{border:1px solid var(--vd-tl);background:var(--vd-tn);border-radius:var(--vd-r-card);padding:22px}
+  .wb-loud p{color:var(--vd-ti)}
+  .tagm{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+        border-radius:4px;padding:2px 6px;background:var(--vd-c)}
+  .tagm.grey{color:var(--vd-m);border:1px solid var(--vd-L)}
+  .tagm.accent{color:var(--vd-at);border:1px solid var(--vd-tl)}
+  .wb-feats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  .wb-feat{background:var(--vd-c);border:1px solid var(--vd-tl);
+           border-radius:var(--vd-r-ctl);padding:14px}
+  .wb-feat b{font-size:.86rem;color:var(--vd-i)}
+  .wb-feat span{display:block;font-size:.81rem;line-height:1.5;color:var(--vd-t);margin-top:5px}
+  .wb-shared{font-size:.81rem;line-height:1.55;color:var(--vd-ti);margin-top:16px;
+             border-top:1px solid var(--vd-tl);padding-top:14px}
+  .points{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+  .points div{display:flex;gap:10px;font-size:.88rem;line-height:1.5;color:var(--vd-t)}
+  .points b{color:var(--vd-a)}
+
+  .cost-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+  .cost-rows{display:flex;flex-direction:column;gap:10px}
+  .cost-row{display:flex;justify-content:space-between;gap:20px;border:1px solid var(--vd-l);
+            border-radius:var(--vd-r-card);padding:16px 18px;background:var(--vd-b);font-size:.94rem}
+  .cost-row span:last-child{font-weight:700;color:var(--vd-at);white-space:nowrap}
+
+  footer{margin-top:72px;padding:28px 0 64px;border-top:1px solid var(--vd-l)}
+  footer .wrap{display:flex;gap:24px;flex-wrap:wrap;align-items:baseline}
+  footer .line{font-size:.88rem;color:var(--vd-m);max-width:62ch}
+  footer .line b{color:var(--vd-at)}
+  footer nav{margin-left:auto;display:flex;gap:22px;font-size:.88rem;flex-wrap:wrap}
+
+  @media (max-width:1000px){
+    .hero{grid-template-columns:1fr;gap:36px;padding:36px 0 8px}
+    .hero .panel{order:-1}           /* the recording first, the words second */
+    .hero .lede{max-width:64ch}
+    .cols-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .cols-2,.cost-grid{grid-template-columns:1fr;gap:24px}
+  }
+  @media (max-width:620px){
+    .wrap{padding:0 20px}
+    .cols-3{grid-template-columns:1fr}
+    .wb-feats{grid-template-columns:1fr}
+    .pipe-out{grid-template-columns:1fr}
+    section{padding:44px 0 0;margin-top:40px}
+  }
 </style>
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.10/wa-site-nav.js"></script>
 </head>
 <body>
 
 <wa-site-nav></wa-site-nav>
 
-<div class="hero">
-  <div class="wrap">
-    <!-- "BETA — LIVE NOW" used to live here (claims audit item 7). A beta mark
-         made of hero copy scrolls away on the second screen, and "LIVE NOW" is
-         marketing register this product's own culture.json rules out. BETA is
-         now in the header on every page; what stays here is the one thing a
-         reader has to know before clicking Try. -->
-    <span class="badge">BRING YOUR OWN OPENROUTER KEY · <a href="openrouter-key/">how to get one</a></span>
-    <h1>Drop a voice note or an audio file. Get the debrief.</h1>
-    <p class="lead">Transcript, a translation into your language, and a short written debrief —
-      points, actions and one sentence — in a single pass. An infographic too, if you ask for one.
-      No account, no setup: it runs in this browser on your own OpenRouter key.</p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="app/">Try the beta →</a>
-      <a class="btn btn-ghost" href="#how">See how it works</a>
+<div class="wrap">
+
+  <section class="hero">
+    <div>
+      <h1>Drop a voice note or an audio file. Get the debrief.</h1>
+      <p class="lede">One pass, in your browser. No account, no upload to us, nothing to
+        install. You bring an OpenRouter key and pay the model provider directly — a few
+        pence at most.</p>
+
+      <div class="pipeline" id="how">
+        <div class="eyebrow">One pass, four artefacts</div>
+        <div class="pipe-row">
+          <div class="pipe-in"><b>1 recording</b><code>opus ogg m4a mp3 wav</code></div>
+          <div class="pipe-arrow" aria-hidden="true">→</div>
+          <div class="pipe-out">
+            <div class="artefact"><b>Transcript</b><span>in the language spoken</span></div>
+            <div class="artefact opt"><b>Translation</b><span>optional · on by default</span></div>
+            <div class="artefact"><b>Debrief</b><span>points, actions, one sentence</span></div>
+            <div class="artefact opt"><b>Infographic</b><span>optional · only if asked</span></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="pass" aria-label="The one-pass pipeline">
-<pre>drop in the audio  (.opus / .ogg / .m4a)
-         |
-         v
-ONE PASS  ->  transcript      (what was said, in the language it was said)
-          ->  translation     (only when it is not already your language)
-          ->  debrief         (key points, actions, one sentence)
-          ->  infographic     (only if asked)
-         |
-         v
-done.  no account, no setup, your own key.</pre>
+
+    <!-- The panel. M3 replaces these contents with <vd-workflow>, which owns the
+         empty → ready → key → running → results machine; the frame, the state
+         header and the welded routing statement are already the ones it needs.
+         Until then this is an honest entry point rather than a mock of a
+         workflow that would not run: the button goes to the surface that does. -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="state">Ready for a recording</span>
+      </div>
+      <div class="panel-body">
+        <div class="drop">
+          <b>Drop the recording here</b>
+          <p>Or choose a file — it never leaves your device until you press run.</p>
+          <div class="drop-actions">
+            <a class="btn btn-primary" href="app/">Open the workbench →</a>
+            <a class="btn btn-quiet" href="#sources">Where do I get the file?</a>
+          </div>
+        </div>
+      </div>
+      <div class="honesty" id="privacy">
+        <div class="eyebrow">Where your recording goes</div>
+        <p>Your audio leaves this browser once, to <strong>OpenRouter</strong>, which hands it
+          to whichever model provider it picks. <strong>We do not know which provider gets your
+          recording, and we have no control over what they do with it.</strong> We store
+          nothing — there is no server of ours in the path. Don't send anything you wouldn't
+          hand to a stranger.</p>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <section id="sources">
+    <div class="eyebrow">Getting the audio</div>
+    <h2>Wherever the recording came from, getting it out is one step</h2>
+    <p class="lede">Most people arrive with a voice message from a chat app; plenty arrive with
+      a memo, a call recording or a meeting export. We read the format from the file's contents
+      rather than its name, so the extension does not have to be right.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <div class="card-head"><h3>Chat voice messages</h3><span class="fmt">opus / m4a</span></div>
+        <p>On the phone, open the message menu and share it to Files or straight into this page.
+          On desktop, download it from the message. WhatsApp notes arrive as Opus, or M4A once
+          they have passed through an Apple app.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Voice Memos</h3><span class="fmt">m4a</span></div>
+        <p>iPhone and iPad memos: Share, then Save to Files. Nothing needs converting first.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Android recorder</h3><span class="fmt">m4a / amr</span></div>
+        <p>Recordings sit in Files under Recordings or Sounds. Share from there, or pick the
+          file here.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Meeting recordings</h3><span class="fmt">mp3 / m4a</span></div>
+        <p>Download the recording from Zoom, Teams or Meet and drop the audio in. Long files
+          cost more per pass — the maximum is quoted before you commit.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Dictaphones and cameras</h3><span class="fmt">wav / mp3</span></div>
+        <p>Copy the file off the device as you normally would. WAV is fine; large files just
+          take longer.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Anything else</h3><span class="fmt">we detect it</span></div>
+        <p>If your device can produce an audio file, this will read it. We work out the format
+          from the file's contents, never from its name.</p>
+      </div>
+    </div>
+    <!-- The trademark position, not decoration. It stays on the page. -->
+    <p class="note">Chat apps are named here descriptively. VoiceDebrief is not affiliated
+      with, or endorsed by, any of them.</p>
+  </section>
+
+  <section id="workbench">
+    <div class="eyebrow">Two surfaces, one product</div>
+    <h2>This page does one pass. The workbench does everything else.</h2>
+    <p class="lede">The home page stays deliberately thin: a stranger with a recording should
+      never have to learn anything. The heavier tools keep their own page, reached from the top
+      menu and from every finished result — never in the way of the first pass.</p>
+    <div class="grid cols-2">
+      <div class="wb-quiet">
+        <div class="card-head"><h3>This page</h3><span class="tagm grey">default</span></div>
+        <p>One recording in, four artefacts out. Nothing to configure and nothing to learn.</p>
+        <div class="points">
+          <div><b>·</b>The key is asked for when you press run, not before.</div>
+          <div><b>·</b>The maximum a pass can cost is quoted before it starts.</div>
+          <div><b>·</b>Close the tab and nothing of it remains anywhere.</div>
+        </div>
+      </div>
+      <div class="wb-loud">
+        <div class="card-head"><h3>Workbench</h3><span class="tagm accent">its own page</span></div>
+        <p>For people who want to work the recording rather than just read it.</p>
+        <div class="wb-feats">
+          <div class="wb-feat"><b>Chat with the debrief</b><span>Ask follow-up questions of what
+            was actually said, grounded in the transcript.</span></div>
+          <div class="wb-feat"><b>Read the declared workflow</b><span>Every step, the model it
+            uses and its spending ceiling — and what this run actually did.</span></div>
+          <div class="wb-feat"><b>See the raw calls</b><span>Every request and response as sent
+            to OpenRouter, with tokens and real cost.</span></div>
+          <div class="wb-feat"><b>Edit the prompts</b><span>Override any prompt in the pass and
+            keep it in this browser.</span></div>
+        </div>
+        <div class="wb-shared">Same browser storage, so the key and the last result are already
+          there — the two surfaces are one session, not two products.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cost">
+    <div class="cost-grid">
+      <div>
+        <div class="eyebrow">What it costs</div>
+        <h2>Pence a recording, paid to OpenRouter, not to us</h2>
+        <p class="lede">There is no plan, no credit and no card on this site — today the only
+          way to run it is your own key. We see none of that money and we add no margin. When
+          there is something to sell you, this section will say so.
+          <a href="openrouter-key/">Getting a key takes about two minutes</a>, and the page that
+          explains it also explains how to cap what the key can ever spend.</p>
+      </div>
+      <div class="cost-rows">
+        <div class="cost-row"><span>A 42-second note, transcript + debrief</span><span>~£0.003</span></div>
+        <div class="cost-row"><span>A three-minute note, everything on</span><span>under £0.20</span></div>
+        <div class="cost-row"><span>What VoiceDebrief adds</span><span>nothing</span></div>
+      </div>
+    </div>
+    <p class="note">Those two figures are what we measured on real runs at current model
+      prices, not a tariff — OpenRouter sets the price and it changes. The number that is
+      always right is the maximum quoted on screen before a pass starts.</p>
+  </section>
+
+  <section id="open">
+    <div class="eyebrow">Built in the open</div>
+    <h2>Everything about this product is public, including what is wrong with it</h2>
+    <p class="lede">The code, the documentation, the design decisions and the issue queue are
+      published as they are produced, under open licences. The
+      <a href="engineering/">engine room</a> renders the test gate this deploy passed and the
+      work in progress, live, from files CI writes — including the open findings, labelled
+      honestly.</p>
+    <div class="drop-actions" style="justify-content:flex-start;margin-top:26px">
+      <a class="btn btn-primary" href="app/">Open the workbench →</a>
+      <a class="btn btn-quiet" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">View the repository</a>
+    </div>
+  </section>
+
 </div>
-
-<section id="why">
-  <div class="wrap">
-    <span class="kicker">Why this exists</span>
-    <h2>General assistants can read your voice note. They just can't always transcribe it.</h2>
-    <p class="sub">A general assistant will happily identify a voice note — codec, container,
-      duration, sample rate — and then tell you it has no speech recognition available in that
-      session. Whether it transcribes is not something you can predict before you need it.
-      This does one job, and tells you plainly when it cannot: every failure has a named cause
-      and a way forward, because it depends on providers we do not control.</p>
-    <div class="grid cols-3">
-      <div class="card"><h3>The formats voice notes actually arrive in</h3>
-        <p>Chat voice messages are usually Opus in an Ogg container; forwarded between iPhone apps they
-           arrive as AAC in .m4a. We take both, and detect the format from the file's <em>content</em>
-           rather than its extension — because the extension is often wrong.</p></div>
-      <div class="card"><h3>One complete job</h3>
-        <p>Not a step in someone else's workflow. Drop in a recording and get everything back at
-           once: the words, a translation if you need one, the debrief — and a visual if you want it.</p></div>
-      <div class="card"><h3>Nothing to install, nothing stored</h3>
-        <p>Everything runs in this browser. There is no backend of ours holding your audio, no
-           account and nothing to install — though the audio itself is sent onward for
-           transcription, which is the next section.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="how" class="alt">
-  <div class="wrap">
-    <span class="kicker">How it works</span>
-    <h2>From a recording to a debrief, in one pass</h2>
-    <p class="sub">The whole journey, end to end:</p>
-    <div class="grid cols-4">
-      <div class="card"><span class="step-n">1</span><h3>Upload</h3><p>Drag in any voice note or recording — a chat voice message, a phone memo, a meeting recording, a dictaphone file.</p></div>
-      <div class="card"><span class="step-n">2</span><h3>Choose options</h3><p>Decide whether you'd like an infographic with your results — and which model draws it.</p></div>
-      <div class="card"><span class="step-n">3</span><h3>One pass</h3><p>Transcript, a translation when the recording is not already in your language, and the debrief — together, without chaining steps.</p></div>
-      <div class="card"><span class="step-n">4</span><h3>Export</h3><p>Copy, download as markdown, or save the infographic. Your results are yours.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="privacy">
-  <div class="wrap">
-    <span class="kicker">Where your audio goes</span>
-    <h2>We cannot tell you who processes your recording</h2>
-    <p class="sub">This used to describe three privacy modes and let you pick one. Two of the three
-      did not exist, so it was not a choice — and offering a privacy <em>selector</em> implies a
-      control we do not have. Here is what actually happens:</p>
-    <div class="honest"><strong>Your audio and its transcript are sent to OpenRouter</strong>, which
-      passes them to a model provider. <strong>We do not know which provider handles your recording,
-      and we have no control over what they do with it.</strong> Do not use this for anything you
-      would not hand to a third party.</div>
-    <div class="grid cols-3">
-      <div class="card"><h3>What we genuinely do not hold</h3>
-        <p>There is no backend of ours. Your audio is never stored on a server we run, there is no
-           account, and nothing about you is tracked. Your key stays in this browser's local storage
-           and goes only to OpenRouter with each request.</p></div>
-      <div class="card"><h3>What that does not protect you from</h3>
-        <p>The recording still leaves your device, because transcription happens at a model provider.
-           "No backend" is a statement about us; it is not a statement about them.</p></div>
-      <div class="card"><h3>What would change it</h3>
-        <p>Processing on your own device would mean nothing leaves at all, and restricting to named
-           providers would mean we could tell you who. Neither is built. When one is, it will appear
-           here as a thing you can use, not as a mode you can select and then not have.</p></div>
-    </div>
-    <p class="price-note">A full privacy notice is being written and will be published here; until it
-      is, this section and the
-      <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">open repository</a>
-      are the record.</p>
-  </div>
-</section>
-
-<section id="sources" class="alt">
-  <div class="wrap">
-    <span class="kicker">Getting the audio</span>
-    <h2>Six ways a recording reaches this page</h2>
-    <p class="sub">Voice notes are the common case and chat apps are the common source — but nothing
-      here is specific to one app. If it is audio, it works.</p>
-    <div class="grid cols-3">
-      <div class="card"><h3>Chat voice messages</h3>
-        <p>WhatsApp, Signal, Telegram. On a laptop: open the web or desktop client, hover the message,
-           download. On Android: share or export the message. Arrives as <code>.opus</code> or
-           <code>.ogg</code>.</p></div>
-      <div class="card"><h3>iPhone Voice Memos</h3>
-        <p>Share → Save to Files, or AirDrop it to yourself. Arrives as <code>.m4a</code>.</p></div>
-      <div class="card"><h3>Android recorder</h3>
-        <p>The built-in Recorder app, or whatever your phone ships. Share → Save, usually
-           <code>.m4a</code> or <code>.ogg</code>.</p></div>
-      <div class="card"><h3>Meeting recordings</h3>
-        <p>Zoom, Meet and Teams all export an audio-only file. Use that rather than the video — it is
-           smaller and costs less to transcribe.</p></div>
-      <div class="card"><h3>Dictaphones and cameras</h3>
-        <p>Anything that writes a file to a card. If it is <code>.m4a</code>, <code>.ogg</code> or
-           <code>.opus</code>, drop it in.</p></div>
-      <div class="card"><h3>Anything else</h3>
-        <p>Format is detected from the file's content, not its name, so a wrongly-named file usually
-           still works. If it genuinely cannot be read, you get told which format arrived.</p></div>
-    </div>
-    <p class="price-note">WhatsApp is a trademark of Meta Platforms, Inc. This product is not
-      affiliated with, endorsed by or connected to WhatsApp or Meta — it simply reads the files their
-      app produces, along with everyone else's.</p>
-  </div>
-</section>
-
-<section id="pricing">
-  <div class="wrap">
-    <span class="kicker">What it costs</span>
-    <h2>There is no plan, no credit and no card. You pay OpenRouter directly.</h2>
-    <p class="sub">This page used to describe a credit product with prices. It does not exist, and
-      labelling it PROPOSED did not stop it reading as a price list — so it is gone. What is true
-      today: you bring your own <a href="openrouter-key/">OpenRouter key</a>, every model
-      call is billed to you by them, and <strong>we add no margin</strong> because there is nothing
-      of ours in the path to add it to.</p>
-    <div class="grid cols-3">
-      <div class="card"><h3>What a pass actually cost</h3>
-        <p>Measured on real runs of a 90-second note: a few tenths of a penny for the transcript, the
-           metadata and the debrief together. The infographic is the expensive part when you ask for
-           one — it is an image model.</p></div>
-      <div class="card"><h3>You see the ceiling first</h3>
-        <p>Before anything runs, the page quotes the maximum this pass can cost with the options you
-           chose. A run can come in under it — a recording already in your language does not pay to be
-           translated — and it cannot go over without stopping.</p></div>
-      <div class="card"><h3>We do not set the price</h3>
-        <p>OpenRouter does, per model, and it changes. Any figure here is something we observed, not
-           something we charge. Set a spend limit on your key and the ceiling is yours, not ours.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="open">
-  <div class="wrap">
-    <span class="kicker">Built in the open</span>
-    <h2>Everything about this product is public</h2>
-    <p class="sub">The code, the documentation, the design decisions — even the commercial
-      arrangement behind it — are published as they are produced, under open licences
-      (docs CC BY 4.0). Openness is the strategy, not a side effect.</p>
-    <a class="btn btn-primary" href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">View the repository</a>
-  </div>
-</section>
 
 <footer>
   <div class="wrap">
-    <div>© 2026 SGraph / The Cyber Boardroom — Simple. Private. Portable.<br>
-      Site content released under CC BY 4.0. &nbsp;·&nbsp; <a href="versions/" style="color:#dbe6f5"><span id="site-version">v0.1.0</span></a></div>
-    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a>
-      &nbsp;·&nbsp; <a href="openrouter-key/">Getting a key</a>
-      &nbsp;·&nbsp; <a href="library/">Library</a> &nbsp;·&nbsp; <a href="updates/">Updates</a>
-      &nbsp;·&nbsp; <a href="engineering/">Engineering</a></div>
+    <div class="line">VoiceDebrief <b>beta</b> — voice notes and recordings, turned into a
+      debrief. Runs in your browser; we have no server holding your audio.
+      Site content under CC BY 4.0, code under Apache 2.0.
+      <a href="versions/"><span id="site-version">dev</span></a></div>
+    <nav>
+      <a href="app/">Workbench</a>
+      <a href="openrouter-key/">Get an OpenRouter key</a>
+      <a href="library/">Library</a>
+      <a href="updates/">Updates</a>
+      <a href="engineering/">Engineering</a>
+      <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">Repository</a>
+    </nav>
   </div>
 </footer>
 
+<script>fetch('/version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'dev').then(v=>{document.getElementById('site-version').textContent=v.trim()}).catch(()=>{})</script>
 </body>
 </html>

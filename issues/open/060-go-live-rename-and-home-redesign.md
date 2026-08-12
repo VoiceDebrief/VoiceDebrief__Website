@@ -173,3 +173,49 @@ untouched layout, and the evidence that this step changed colour and nothing els
 
 **Deliberately still true after M1:** the site has its old *shape*. The header is still
 dark, the home page is still the previous layout. That is M2.
+
+
+## 12 Aug — M2 of the design: the home page is the design's home page
+
+The layout, not just the palette. `website/index.html` is rebuilt on the pack's
+structure and its copy deck: the 0.86/1.14 hero grid with the panel beside the headline
+(and **first** under 1000px — the recording is the point, the explanation is second), the
+one-recording → four-artefacts diagram, six source cards with the trademark line, the
+two-surfaces section, three cost rows, and a light footer. There is not one hex in the
+file.
+
+**`wa-site-nav` v0.1.10 is the design's header**, which means every page gets it: page
+colour, one hairline, no navy bar. The wordmark is type only — **Voice** in ink,
+**Debrief** in the accent — so there is no image to go stale and it survives all five
+schemes. The green dot is gone with the navy: on a white bar it read as a service status
+light, which is a claim we were not making. This is also the first component to read
+`--vd-*` directly rather than through the bridge, and the gate noticed immediately —
+`--wa-navy-hover` and `--vd-kh` lost their last reader and were removed. Layer B is
+already shrinking, which was the point of building it that way.
+
+**Workbench** (design decision 9) is now the name of the `/app/` surface, in the menu and
+on the home page. "Advanced" describes the user and implies this page is Basic; Workbench
+names a place you go to work a recording. **The URL does not move** — renaming a
+published address breaks links for no gain, and the address is not the name.
+
+### The dead link that returns 200
+
+Rewriting the sections from `#how`/`#privacy`/`#pricing` to `#sources`/`#workbench`/`#cost`
+broke four published anchors — three in the shipped nav and one on the key guide. Nothing
+would have caught it: `/#privacy` fetches the home page and reports **200** whether or not
+anything on it carries that id, so the live-QA link check passes and the reader just
+assumes they misread the menu.
+
+Two of those anchors are older than the redesign and are published elsewhere, so they are
+kept alive on the sections that now do the job rather than dropped. `tests/unit/home-anchors.test.mjs`
+is the gate: every `/#…` the nav names must exist on the home page, and every same-page
+anchor **any** page writes must exist on the page it points at. Proven to fail by pointing
+the nav at an id that is not there.
+
+The live-QA marker for `/` was `Voice`, which matched the old page and the new one alike —
+it proved the page answered, not that the page shipped. It is now `Getting the audio`.
+
+**Left for M3:** the panel is the design's frame, its state header and its welded routing
+statement, but the body is an honest entry point rather than a mock of a workflow that
+would not run — the button goes to the surface that does. `vd-workflow` replaces the
+contents, not the frame.

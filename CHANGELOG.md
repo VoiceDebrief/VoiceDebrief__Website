@@ -18,6 +18,21 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The home page is now the redesign, and so is every header (issue 060)** —
+  the layout landed, not just the colour. The hero puts the panel beside the
+  headline on a desktop and *first* on a phone, because the recording is the
+  point and the explanation is second. Below it: how a recording gets out of six
+  different apps and devices, what the workbench does that this page deliberately
+  does not, and three real cost figures. The header is page-coloured with a
+  hairline instead of a navy bar, and the wordmark is type only — no image to go
+  stale, and it survives all five colour schemes. The `/app/` surface is now
+  called the **Workbench**; its address does not change.
+  Rewriting the sections broke four published `#anchor` links, and that is a kind
+  of dead link that **returns 200** — the page answers, the browser just does not
+  scroll, and no link checker can see it. The old anchors are kept alive on the
+  sections that now do their job, and a new test asserts that every same-page
+  anchor on the site points at something that exists.
+
 - **The design starts shipping: colour is now one file (issue 060)** — the site's
   palette moved to the design pack's system. `website/vd-tokens.css` holds five
   schemes and derives from them every colour name the components and pages

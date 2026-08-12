@@ -178,11 +178,7 @@ def main():
         '--vd-ps':      'the phone mock in the design pack (not built)',
         '--vd-off':     'vd-option-toggle, inert state (M3)',
         '--vd-offi':    'vd-option-toggle, inert state (M3)',
-        '--vd-m':       'vd-workflow secondary text (M3)',
-        '--vd-ti':      'vd-honesty, ink on the accent tint (M3)',
         '--vd-ws':      'vd-caveat, the strong half of the warning pair (M3)',
-        '--vd-r-panel': 'vd-workflow (M3)',
-        '--vd-r-ctl':   'vd-workflow controls (M3)',
         '--vd-r-chip':  'vd-option-toggle (M3)',
     }
     for tok in sorted(declared - read - set(AHEAD)):

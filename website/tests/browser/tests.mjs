@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.10/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 import { newsScript, speak, wirePage, publishApi, bytesToBase64, VOICES } from '../../tools/text-to-speech/tts-tool.js'
 
@@ -164,7 +164,7 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: two primary links, four groups, seventeen grouped pages (v0.1.8)', assert => {
+    QUnit.test('two-level menu: two primary links, four groups, eighteen grouped pages (v0.1.10)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
@@ -176,8 +176,8 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
             'App and What it costs stay primary')
         assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 4,
             'Library + Tools + News + Engineering groups (Tools added, issue 064)')
-        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 17,
-            '4 library + 2 tools + 3 news + 8 engineering pages in the dropdowns')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 18,
+            '5 library + 2 tools + 3 news + 8 engineering pages in the dropdowns')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/tools/text-to-speech/'),
             'the first tool is reachable from every page on the site')
         assert.strictEqual(sr.querySelector('.badge').textContent, 'BETA')
@@ -254,7 +254,14 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
        colour — blue, and purple once visited, on a navy bar. Nothing in the markup
        looked wrong; only the painted colour was. Asserted from computed style, for
        the same reason the picker tests are. */
-    QUnit.test('every top-level nav link is the same colour — the flag wrapper does not orphan one (v0.1.6)', assert => {
+    /* The bug this guards (v0.1.6): wrapping the product link in .i18n-link for
+       its locale flag took it out of the `nav.main > a` selector, so it fell
+       back to the BROWSER DEFAULT link colour — blue, and purple once visited.
+       v0.1.10 deliberately gives that link its own accent treatment, so "same
+       colour as its siblings" is no longer the invariant. The invariant that
+       survives, and the one the bug actually violated, is that the wrapper never
+       leaves the link unstyled: it is a colour this design chose. */
+    QUnit.test('the flag wrapper never leaves the product link on the browser default (v0.1.10)', assert => {
         const el = document.createElement('wa-site-nav')
         document.getElementById('qunit-fixture').appendChild(el)
         const sr = el.shadowRoot
@@ -262,10 +269,25 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         const plain = colourOf('nav.main > a')
         const flagged = colourOf('nav.main > .i18n-link > a')
         assert.ok(plain, 'an unwrapped primary link exists')
-        assert.ok(flagged, 'the flag-wrapped App link exists')
-        assert.strictEqual(flagged, plain,
-            `the App link matches its siblings (was ${flagged} vs ${plain} before v0.1.6)`)
-        assert.notStrictEqual(flagged, 'rgb(0, 0, 238)', 'and is not the browser default blue')
+        assert.ok(flagged, 'the flag-wrapped Workbench link exists')
+        for (const [what, c] of [['plain', plain], ['flagged', flagged]]) {
+            assert.notStrictEqual(c, 'rgb(0, 0, 238)', `the ${what} link is not the default blue`)
+            assert.notStrictEqual(c, 'rgb(85, 26, 139)', `the ${what} link is not the visited purple`)
+        }
+        // And it is the accent the design asks for, read from the token rather
+        // than written here — a test that hardcodes #0A7D5A would have to be
+        // edited every time the scheme moves, which is the thing tokens exist
+        // to stop.
+        const accent = getComputedStyle(document.documentElement).getPropertyValue('--vd-at').trim()
+        if (accent) {
+            const probe = document.createElement('span')
+            probe.style.color = accent
+            document.getElementById('qunit-fixture').appendChild(probe)
+            assert.strictEqual(flagged, getComputedStyle(probe).color,
+                'the product link carries the accent, because it is the surface the page is for')
+        } else {
+            assert.ok(true, 'no token sheet on this harness — the default-colour checks above still hold')
+        }
     })
 
     /* The phone regression (v0.1.4). The bar is a space-between row; when it
@@ -292,9 +314,12 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         // the margin exists to produce: the cluster sits flush with the bar's
         // right content edge.
         const wrap = sr.querySelector('header > .wrap')
+        // Read the padding rather than hardcode it: v0.1.10 widened the bar to
+        // the design's 32px and a literal 20 here went stale the moment it did.
+        const pad = parseFloat(getComputedStyle(wrap).paddingRight)
         const gap = wrap.getBoundingClientRect().right - cluster.getBoundingClientRect().right
-        assert.true(Math.abs(gap - 20) < 2,
-            `the cluster is flush right against the bar's 20px padding (gap ${gap.toFixed(1)}px)`)
+        assert.true(Math.abs(gap - pad) < 2,
+            `the cluster is flush right against the bar's ${pad}px padding (gap ${gap.toFixed(1)}px)`)
     })
 })
 

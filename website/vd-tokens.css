@@ -66,7 +66,7 @@
   --vd-wl:#DFA100; --vd-wb:#FFF8E8; --vd-wi:#6E5000; --vd-ws:#513A00;
   --vd-e:#C0392B; --vd-sh:rgba(11,27,43,.09); --vd-pz:#26394D; --vd-ps:#F2F5F8;
   --vd-off:#EDF1F5; --vd-offi:#8697A8;
-  --vd-k:#12283C; --vd-k2:#1B3A55; --vd-kh:#17334B;
+  --vd-k:#12283C; --vd-k2:#1B3A55;
   --vd-scrim:rgba(11,27,43,.62);
   --vd-ki:#F2F6FA; --vd-km:#A9BDD2; --vd-kl:rgba(255,255,255,.12);
 }
@@ -80,7 +80,7 @@
   --vd-wl:#F0B429; --vd-wb:rgba(240,180,41,.09); --vd-wi:#E8D9B4; --vd-ws:#F5C860;
   --vd-e:#FF7A6B; --vd-sh:rgba(0,0,0,.45); --vd-pz:#12202E; --vd-ps:#050D16;
   --vd-off:rgba(255,255,255,.07); --vd-offi:#6E869D;
-  --vd-k:#050D16; --vd-k2:#12202E; --vd-kh:#0D1A28;
+  --vd-k:#050D16; --vd-k2:#12202E;
   --vd-ki:#F2F6FA; --vd-km:#8CA2B8; --vd-kl:rgba(255,255,255,.10);
   --vd-scrim:rgba(0,0,0,.70);
 }
@@ -93,7 +93,7 @@
   --vd-wl:#8A6A18; --vd-wb:#F3EAD2; --vd-wi:#5C4711; --vd-ws:#3D2F07;
   --vd-e:#96271A; --vd-sh:rgba(70,52,30,.14); --vd-pz:#3B3125; --vd-ps:#F0E7D6;
   --vd-off:#EDE4D5; --vd-offi:#95886F;
-  --vd-k:#2E2619; --vd-k2:#3B3125; --vd-kh:#372E21;
+  --vd-k:#2E2619; --vd-k2:#3B3125;
   --vd-ki:#FBF7F0; --vd-km:#C3B49B; --vd-kl:rgba(255,255,255,.13);
   --vd-scrim:rgba(33,28,21,.62);
 }
@@ -106,7 +106,7 @@
   --vd-wl:#B45309; --vd-wb:#FDF3E7; --vd-wi:#7A3D06; --vd-ws:#54280A;
   --vd-e:#C81E1E; --vd-sh:rgba(16,19,24,.10); --vd-pz:#101318; --vd-ps:#EEF0F4;
   --vd-off:#EDEFF3; --vd-offi:#828C9C;
-  --vd-k:#101318; --vd-k2:#1D222B; --vd-kh:#181D25;
+  --vd-k:#101318; --vd-k2:#1D222B;
   --vd-ki:#FFFFFF; --vd-km:#A8B0BE; --vd-kl:rgba(255,255,255,.14);
   --vd-scrim:rgba(16,19,24,.62);
 }
@@ -120,7 +120,7 @@
   --vd-wl:#8FB08A; --vd-wb:rgba(143,176,138,.10); --vd-wi:#CDE0C9; --vd-ws:#A8CBA3;
   --vd-e:#E4705C; --vd-sh:rgba(0,0,0,.50); --vd-pz:#2A241C; --vd-ps:#100D0A;
   --vd-off:rgba(255,255,255,.08); --vd-offi:#8A7C68;
-  --vd-k:#100D0A; --vd-k2:#2A241C; --vd-kh:#1B1712;
+  --vd-k:#100D0A; --vd-k2:#2A241C;
   --vd-ki:#F7F1E7; --vd-km:#A99A85; --vd-kl:rgba(255,255,255,.10);
   --vd-scrim:rgba(0,0,0,.70);
 }
@@ -157,9 +157,12 @@
 
 :root {
   /* Brand and chrome */
+  /* --wa-navy-hover went with the nav's navy bar: v0.1.10 reads --vd-* directly
+     and was its only reader — and --vd-kh, the chrome hover it pointed at, went
+     with it. Layer B shrinks as components come off the bridge, which is the
+     intended direction of travel. */
   --wa-navy:          var(--vd-k);
   --wa-navy-2:        var(--vd-k2);
-  --wa-navy-hover:    var(--vd-kh);
   --wa-ink:           var(--vd-i);
   --wa-fg:            var(--vd-c);
 
