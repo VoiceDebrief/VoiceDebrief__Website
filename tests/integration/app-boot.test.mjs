@@ -87,6 +87,35 @@ try {
         document.querySelector('.file-name').textContent.includes('.opus'), null, { timeout: 10000 }).then(() => true).catch(() => false)
     check('clicking a sample loads it into the flow', fileShown)
 
+    /* The key is asked for at RUN time, never on arrival (issue 060, build-order
+       task 5). The whole point is that a stranger can get all the way to a
+       quoted price before being asked for anything, so this asserts the SECTION
+       is not painted — `hidden` alone has lied here before (the locale panel
+       kept display:grid through it), hence the computed check. */
+    const keyGating = await page.evaluate(() => {
+        const sec = document.querySelector('#key-section')
+        const painted = (n) => !!n && getComputedStyle(n).display !== 'none'
+        return { beforeRun: painted(sec), quote: document.querySelector('#max-cost').textContent }
+    })
+    check('no key is asked for before a run — the panel is not on the page at all',
+        keyGating.beforeRun === false)
+    check('and the maximum is quoted anyway, without one', /max cost/.test(keyGating.quote || ''))
+
+    await page.locator('#go').click()
+    const keyOnDemand = await page.evaluate(() => {
+        const sec = document.querySelector('#key-section')
+        const sr = document.querySelector('wa-key-panel').shadowRoot
+        return { painted: getComputedStyle(sec).display !== 'none',
+                 formOpen: !sr.querySelector('.wa-key__form').hidden,
+                 // A run must NOT have started: nothing may reach OpenRouter
+                 // before there is a key to reach it with.
+                 working: !document.querySelector('#work-section').hidden,
+                 guide: !!sr.querySelector('.wa-key__help a') }
+    })
+    check('pressing Transcribe without a key opens the key panel', keyOnDemand.painted && keyOnDemand.formOpen)
+    check('and starts nothing until one is saved', keyOnDemand.working === false)
+    check('the panel links to the guide for people who have no key at all', keyOnDemand.guide)
+
     // 5. The debug pane: opens, tabs work, prompts render.
     const dbg = page.locator('wa-debug-panel')
     await page.waitForFunction(() => document.querySelector('wa-debug-panel')?.shadowRoot?.querySelector('.wa-dbg__toggle'), null, { timeout: 10000 })

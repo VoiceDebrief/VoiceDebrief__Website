@@ -1,6 +1,6 @@
 {
   "id": "whatsapp-transcribe",
-  "name": "WhatsApp Voice Note Transcribe",
+  "name": "VoiceDebrief",
   "slug": "whatsapp-transcribe",
   "description": "Drop in a WhatsApp voice note (.opus/.ogg/.m4a) and get a transcript and a summary document in one pass - entirely in the browser, BYOK OpenRouter, engine imported from dev.tools.sgraph.ai.",
   "icon": "\ud83c\udf99",

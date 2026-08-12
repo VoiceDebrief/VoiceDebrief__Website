@@ -1,4 +1,4 @@
-# WhatsApp Voice Note Transcribe — for browser agents
+# VoiceDebrief — for browser agents
 
 - Wait for `tool:ready` (detail: `{ instanceId, tool: 'whatsapp-transcribe', version }`).
 - Drive `window.__tool` — never the DOM internals (they may change without notice).

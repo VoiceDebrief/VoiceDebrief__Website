@@ -1,9 +1,9 @@
 {
   "_note": "Português brasileiro. NÃO é o pt-PT reescrito: arquivo (não ficheiro), tela (não ecrã), usuário (não utilizador), gerúndio em vez de 'estar a + infinitivo'. E o termo que importa: no Brasil isto é um ÁUDIO, não uma 'nota de voz' — é assim que as pessoas procuram. Tom: direto e próximo, sem exageros de marketing.",
-  "title": "Transcrever — Voice Note Transcribe (beta)",
-  "metaDescription": "Solte aqui o seu áudio do WhatsApp e receba a transcrição e um resumo em uma única passada — tudo roda no seu navegador, com a sua própria chave OpenRouter.",
+  "title": "Transcrever — VoiceDebrief (beta)",
+  "metaDescription": "Solte aqui um áudio ou uma gravação e receba a transcrição, um resumo e um infográfico em uma única passada — tudo roda no seu navegador, com a sua própria chave OpenRouter.",
   "heroHeading": "Solte aqui o seu áudio. É só isso.",
-  "heroLeadHtml": "Transcrição, resumo e um infográfico em uma única passada — tudo roda neste navegador.\n       Beta: use a sua própria <a href=\"https://openrouter.ai/keys\">chave OpenRouter</a>.",
+  "heroLeadHtml": "Transcrição, resumo e um infográfico em uma única passada — tudo roda neste navegador.\n       Beta: use a sua própria <a href=\"/openrouter-key/\">chave OpenRouter</a>.",
   "samplesRegion": "Áudios de exemplo",
   "samplesLabel": "não tem nenhum áudio à mão? experimente um exemplo:",
   "sample1": "▶ áudio 1 (.opus)",
@@ -12,13 +12,6 @@
   "findNoteSummary": "onde encontro o meu áudio?",
   "findNoteBodyHtml": "Computador: abra o WhatsApp Web/Desktop → a mensagem de voz → baixar (<code>.opus</code>).\n         Android: compartilhe/exporte a mensagem (<code>.opus</code>/<code>.ogg</code>).\n         iPhone: encaminhar entre aplicativos gera <code>.m4a</code> — também funciona.",
   "fileRemove": "Remover",
-  "privacyLabel": "privacidade",
-  "modeRouted": " Roteado — mais barato",
-  "modeRestricted": " Restrito*",
-  "modeRestrictedTitle": "Aplicado na chave no lado do servidor — chega com a beta",
-  "modeOnDevice": " No dispositivo*",
-  "modeOnDeviceTitle": "Nada sai do seu dispositivo — mais para frente",
-  "modeHonest": "Roteado: qualquer um dos nossos provedores de modelos pode processar esta gravação — não temos como prometer qual.",
   "wantInfographic": " criar também um infográfico",
   "go": "Transcrever →",
   "labelTranscript": "TRANSCRIÇÃO",
@@ -56,7 +49,10 @@
   "keySaved": "A sua chave OpenRouter está salva neste navegador",
   "keyChange": "alterar",
   "keyCancel": "cancelar",
+  "keyGuideLink": "Como consigo uma chave? — cinco passos, e como limitar o quanto ela pode gastar",
   "demoTry": "▶ ver como funciona — sem chave",
   "demoBadge": "DEMONSTRAÇÃO",
-  "demoNote": "Este é um exemplo preparado, não uma gravação real. Nada foi enviado para lugar nenhum e nada foi cobrado."
+  "demoNote": "Este é um exemplo preparado, não uma gravação real. Nada foi enviado para lugar nenhum e nada foi cobrado.",
+  "routingHonest": "O seu áudio e a transcrição dele são enviados para a OpenRouter, que os encaminha para um provedor de modelos. Não sabemos qual provedor cuida da sua gravação e não temos nenhum controle sobre o que fazem com ela. Não use isto para nada que você não entregaria a terceiros.",
+  "modelCaveat": "Escrito por um modelo, não por um estenógrafo. Pode ouvir errado e pode acrescentar palavras que ninguém disse. Confira no áudio tudo o que for importante."
 }

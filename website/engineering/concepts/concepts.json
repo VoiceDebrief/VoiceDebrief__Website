@@ -1,16 +1,19 @@
 {
-  "_note": "The concept scheme (issue 057). Meaning lives HERE, in a definition written in English, and each locale attaches a LABEL to it. That is the concept/term distinction from SKOS, and it is the whole point: a nuance survives translation because it was never stored in a word. This file is DELIBERATELY NOT WIRED to website/app/locales — nothing on the app page reads it. It is the review surface, and `current` records what actually ships so the two cannot drift silently (tests/unit/concepts.test.mjs asserts every `current` value against the real locale files, and fails the build when they diverge). Field names borrow SKOS vocabulary — definition, scopeNote, broader, narrower, related, prefLabel, altLabel — WITHOUT the RDF stack: no triple store, no SPARQL, no skos-xl reification. This site has no backend, and for fifteen concepts the machinery would be all cost. Scope is TERMS, not strings: the app ships 53 keys and most are prose. A sentence does not have a concept, it has meaning in context. Only the ~20 that are genuinely terms are modelled, in the three schemes below.",
-  "version": "0.1.0",
-  "reviewed": "2026-08-08",
+  "_note": "The concept scheme (issue 057). Meaning lives HERE, in a definition written in English, and each locale attaches a LABEL to it. That is the concept/term distinction from SKOS, and it is the whole point: a nuance survives translation because it was never stored in a word. This file is DELIBERATELY NOT WIRED to website/app/locales — nothing on the app page reads it. It is the review surface, and `current` records what actually ships so the two cannot drift silently (tests/unit/concepts.test.mjs asserts every `current` value against the real locale files, and fails the build when they diverge). Field names borrow SKOS vocabulary — definition, scopeNote, broader, narrower, related, prefLabel, altLabel — WITHOUT the RDF stack: no triple store, no SPARQL, no skos-xl reification. This site has no backend, and for eleven concepts the machinery would be all cost. Scope is TERMS, not strings: the app ships 53 keys and most are prose. A sentence does not have a concept, it has meaning in context. Only the ~20 that are genuinely terms are modelled, in the three schemes below.",
+  "version": "0.2.0",
+  "reviewed": "2026-08-12",
   "source": "en-gb",
-  "locales": ["en-gb", "en-us", "pt-pt", "pt-br"],
-
+  "locales": [
+    "en-gb",
+    "en-us",
+    "pt-pt",
+    "pt-br"
+  ],
   "verdicts": {
     "keep": "The English label names the concept correctly. Nothing to change.",
     "change": "The English label names something other than the concept. Every translation inherits the error, so the fix belongs in English first.",
     "decide": "A real question that a person has to answer — usually because two defensible readings exist, or because the change touches a claim we make to users."
   },
-
   "findings": {
     "wrong-axis": "The label describes a different dimension from the one the concept lives on — the commonest failure, and invisible in English because a reader supplies a plausible meaning without noticing they are guessing.",
     "mixed-axes": "Sibling concepts in one scheme are labelled on different dimensions, so the set does not read as a scale.",
@@ -18,7 +21,6 @@
     "off-register": "The label contradicts the tone the locale's own culture.json declares.",
     "culture-split": "The locales legitimately differ. Not a defect — the model working."
   },
-
   "schemes": [
     {
       "id": "locale-state",
@@ -26,44 +28,66 @@
       "note": "How far along a locale is, and what the axis itself is called. Three of the four concepts here are wrong in English, which is why this scheme was reviewed first."
     },
     {
-      "id": "privacy-mode",
-      "label": "Privacy modes",
-      "note": "Where the recording goes. The highest-stakes vocabulary on the page: these are claims made to users about their audio, and two of the three are labelled on a different axis from the one the scheme is about."
-    },
-    {
       "id": "artefact",
       "label": "What a pass produces",
       "note": "The materials the one-pass flow creates. This scheme is in good shape and is included as the control — it shows what the model looks like when it is already working."
     }
   ],
-
   "concepts": [
     {
       "id": "culture",
       "scheme": "locale-state",
       "definition": "The pairing of a language with a country whose conventions the product follows: the words, the currency, the number and date formats, and the register.",
       "scopeNote": "NOT the same as a language. The whole reason pt-PT and pt-BR are separate is that they share a language and disagree about almost everything else. locales/index.json already says this in prose; the interface does not.",
-      "keys": ["core.localeLabel"],
-      "current": { "en-gb": "language", "en-us": "language", "pt-pt": "idioma", "pt-br": "idioma" },
+      "keys": [
+        "core.localeLabel"
+      ],
+      "current": {
+        "en-gb": "language",
+        "en-us": "language",
+        "pt-pt": "idioma",
+        "pt-br": "idioma"
+      },
       "verdict": "decide",
       "finding": "wrong-axis",
-      "proposed": { "en-gb": "language & region", "en-us": "language & region", "pt-pt": "idioma e região", "pt-br": "idioma e região" },
+      "proposed": {
+        "en-gb": "language & region",
+        "en-us": "language & region",
+        "pt-pt": "idioma e região",
+        "pt-br": "idioma e região"
+      },
       "reasoning": "The architecture is explicit that the unit is a culture; the control calls it a language. But 'culture' is the wrong word to put in front of a user — nobody chooses their culture from a menu. This is exactly what altLabel is for: the concept is `culture`, and the label users see can be the familiar one. 'language & region' is the common industry phrasing and is true. Flagged decide rather than change because it is a judgement about user vocabulary, not an error of fact.",
-      "narrower": ["locale-reviewed", "locale-unreviewed", "locale-planned"],
-      "related": ["spoken-language"]
+      "narrower": [
+        "locale-reviewed",
+        "locale-unreviewed",
+        "locale-planned"
+      ],
+      "related": [
+        "spoken-language"
+      ]
     },
     {
       "id": "spoken-language",
       "scheme": "locale-state",
       "definition": "The language a person actually spoke in the recording, which the transcript preserves and which nothing in the product changes.",
       "scopeNote": "Distinct from `culture`, which is the reader's setting. The translate step exists precisely because these two can differ — that is the whole feature.",
-      "keys": ["core.wantTranslate", "core.translateWhy"],
-      "current": { "en-gb": "language", "en-us": "language", "pt-pt": "língua", "pt-br": "idioma" },
+      "keys": [
+        "core.wantTranslate",
+        "core.translateWhy"
+      ],
+      "current": {
+        "en-gb": "language",
+        "en-us": "language",
+        "pt-pt": "língua",
+        "pt-br": "idioma"
+      },
       "verdict": "decide",
       "finding": "two-things-one-label",
       "proposed": null,
       "reasoning": "English uses one word, 'language', for both the setting and the tongue that was spoken — and gets away with it because context disambiguates. pt-PT does not: the picker says `idioma`, the translate checkbox says `a minha língua`, and the note under it says `a língua falada`. Two of those are this concept and one is `culture`, so pt-PT is arguably CORRECT to split them and the apparent inconsistency is the language being more precise than English. pt-BR uses `idioma` for all three, which loses the distinction. This needs a native-speaker call, and it is the clearest example in the set of a genuine lexical gap rather than a translation defect: recording it is right, forcing agreement would destroy information.",
-      "related": ["culture"]
+      "related": [
+        "culture"
+      ]
     },
     {
       "id": "locale-reviewed",
@@ -71,165 +95,216 @@
       "definition": "A locale whose strings are all present AND whose rendered screens a human has looked at.",
       "scopeNote": "The only state in which a locale is served automatically to someone whose browser asks for it. It currently has no label at all: a reviewed locale shows no badge, and the absence is the message.",
       "keys": [],
-      "current": { "en-gb": null, "en-us": null, "pt-pt": null, "pt-br": null },
+      "current": {
+        "en-gb": null,
+        "en-us": null,
+        "pt-pt": null,
+        "pt-br": null
+      },
       "verdict": "keep",
       "finding": null,
       "proposed": null,
       "reasoning": "A concept can legitimately have no label. Badging the normal case would make the exception harder to see, not easier. Recorded here so the scheme is complete and so the other two are defined against something.",
-      "broader": ["culture"],
-      "related": ["locale-unreviewed", "locale-planned"]
+      "broader": [
+        "culture"
+      ],
+      "related": [
+        "locale-unreviewed",
+        "locale-planned"
+      ]
     },
     {
       "id": "locale-unreviewed",
       "scheme": "locale-state",
       "definition": "A locale carrying every string the source locale carries, which no human has yet checked on screen.",
       "scopeNote": "Nothing is missing. All four locales ship 53 of 53 keys — verified by the parity gate. The gap is verification, not coverage. A user may choose this locale; the product will never assign it to them.",
-      "keys": ["core.localeDraft"],
-      "current": { "en-gb": "draft", "en-us": "draft", "pt-pt": "rascunho", "pt-br": "rascunho" },
+      "keys": [
+        "core.localeDraft"
+      ],
+      "current": {
+        "en-gb": "draft",
+        "en-us": "draft",
+        "pt-pt": "rascunho",
+        "pt-br": "rascunho"
+      },
       "verdict": "change",
       "finding": "wrong-axis",
-      "proposed": { "en-gb": "unreviewed", "en-us": "unreviewed", "pt-pt": "por rever", "pt-br": "não revisado" },
+      "proposed": {
+        "en-gb": "unreviewed",
+        "en-us": "unreviewed",
+        "pt-pt": "por rever",
+        "pt-br": "não revisado"
+      },
       "reasoning": "This is the case that started the whole exercise, and the answer is not the one anybody guessed. 'draft' names a stage of AUTHORING — an unfinished thing its author is still working on. The concept is a state of VERIFICATION — a finished thing nobody has checked. Different axis entirely, which is why 'incomplete' and 'partial' are also wrong: they describe coverage, and our coverage is complete. `rascunho` is not a bad translation; it is a faithful translation of a word that was already pointing at the wrong axis, which is the property worth building this layer for. Note the Portuguese then diverges legitimately: pt-PT `por rever` (idiomatic 'to be reviewed'), pt-BR `não revisado`.",
-      "broader": ["culture"],
-      "related": ["locale-reviewed", "locale-planned"]
+      "broader": [
+        "culture"
+      ],
+      "related": [
+        "locale-reviewed",
+        "locale-planned"
+      ]
     },
     {
       "id": "locale-planned",
       "scheme": "locale-state",
       "definition": "A culture we intend to support and have not started.",
       "scopeNote": "Listed deliberately rather than hidden, so someone can see their culture coming and ask for it. Not selectable.",
-      "keys": ["core.localeSoon"],
-      "current": { "en-gb": "soon", "en-us": "soon", "pt-pt": "em breve", "pt-br": "em breve" },
+      "keys": [
+        "core.localeSoon"
+      ],
+      "current": {
+        "en-gb": "soon",
+        "en-us": "soon",
+        "pt-pt": "em breve",
+        "pt-br": "em breve"
+      },
       "verdict": "change",
       "finding": "off-register",
-      "proposed": { "en-gb": "planned", "en-us": "planned", "pt-pt": "planeado", "pt-br": "planejado" },
+      "proposed": {
+        "en-gb": "planned",
+        "en-us": "planned",
+        "pt-pt": "planeado",
+        "pt-br": "planejado"
+      },
       "reasoning": "'soon' is a promise about time that nothing backs. en-gb's own culture.json declares the register as 'Plain, direct British English. No marketing register' — and 'soon' is marketing. The concept is intent, not imminence, and 'planned' says exactly that without claiming a date. The product is honest about routing and about cost; being honest here costs nothing. The Portuguese then carries a real orthographic culture split: pt-PT `planeado`, pt-BR `planejado`.",
-      "broader": ["culture"],
-      "related": ["locale-reviewed", "locale-unreviewed"]
+      "broader": [
+        "culture"
+      ],
+      "related": [
+        "locale-reviewed",
+        "locale-unreviewed"
+      ]
     },
-
-    {
-      "id": "privacy-mode",
-      "scheme": "privacy-mode",
-      "definition": "How far the recording travels from the person's device in order to be processed.",
-      "scopeNote": "The scheme's own label. Its three narrower concepts should form a scale on ONE axis — how far the audio goes — and currently do not.",
-      "keys": ["core.privacyLabel"],
-      "current": { "en-gb": "privacy", "en-us": "privacy", "pt-pt": "privacidade", "pt-br": "privacidade" },
-      "verdict": "keep",
-      "finding": null,
-      "proposed": null,
-      "reasoning": "Correct and understood everywhere. It is the children that are wrong.",
-      "narrower": ["routing-any-provider", "routing-approved-providers", "routing-none"]
-    },
-    {
-      "id": "routing-any-provider",
-      "scheme": "privacy-mode",
-      "definition": "The recording may be processed by any of the model providers we route to, and we cannot say in advance which.",
-      "scopeNote": "The default and the only mode that works today. The honest sentence under the chips already states this precisely; the chip's own label does not.",
-      "keys": ["core.modeRouted"],
-      "current": { "en-gb": " Routed — cheapest", "en-us": " Routed — cheapest", "pt-pt": " Encaminhado — mais barato", "pt-br": " Roteado — mais barato" },
-      "verdict": "decide",
-      "finding": "mixed-axes",
-      "proposed": { "en-gb": "Any provider", "en-us": "Any provider", "pt-pt": "Qualquer fornecedor", "pt-br": "Qualquer provedor" },
-      "reasoning": "Two faults. 'Routed' names a MECHANISM the user has no model for — routed where, by whom? — inside a group labelled 'privacy', where the question being asked is where the audio goes. And the label leads with PRICE ('cheapest') in a privacy control, which is a second axis smuggled into the same string. The product already knows how to say this plainly: the honest line underneath reads 'any of our model providers may process this recording — we can't promise which.' The chip should carry the same claim, and price should be its own element if it is worth showing. Flagged decide, not change: this is a privacy claim shown to users and wants sign-off, not a unilateral edit.",
-      "broader": ["privacy-mode"],
-      "related": ["routing-approved-providers", "routing-none"]
-    },
-    {
-      "id": "routing-approved-providers",
-      "scheme": "privacy-mode",
-      "definition": "The recording may be processed only by providers we have approved, enforced on the key itself rather than by the page.",
-      "scopeNote": "Not built. Marked with an asterisk and disabled.",
-      "keys": ["core.modeRestricted"],
-      "current": { "en-gb": " Restricted*", "en-us": " Restricted*", "pt-pt": " Restrito*", "pt-br": " Restrito*" },
-      "verdict": "decide",
-      "finding": "mixed-axes",
-      "proposed": { "en-gb": "Approved providers only", "en-us": "Approved providers only", "pt-pt": "Apenas fornecedores aprovados", "pt-br": "Apenas provedores aprovados" },
-      "reasoning": "'Restricted' states that a limit exists without saying what it limits — restricted to whom, by what? The tooltip carries the real content ('Enforced on the key server-side'), which is a sign the label is not doing its job. Naming the constraint puts all three chips on one axis: any provider → approved providers only → none. Same sign-off caveat as its sibling.",
-      "broader": ["privacy-mode"],
-      "related": ["routing-any-provider", "routing-none"]
-    },
-    {
-      "id": "routing-none",
-      "scheme": "privacy-mode",
-      "definition": "The recording is processed on the device and never transmitted.",
-      "scopeNote": "Not built. Marked with an asterisk and disabled.",
-      "keys": ["core.modeOnDevice"],
-      "current": { "en-gb": " On-device*", "en-us": " On-device*", "pt-pt": " No dispositivo*", "pt-br": " No dispositivo*" },
-      "verdict": "keep",
-      "finding": null,
-      "proposed": null,
-      "reasoning": "The one chip already labelled on the scheme's own axis — it says where the audio is, which is the question. It is the model the other two should follow, which is how the mixed-axes finding was spotted at all.",
-      "broader": ["privacy-mode"],
-      "related": ["routing-any-provider", "routing-approved-providers"]
-    },
-
     {
       "id": "source-recording",
       "scheme": "artefact",
-      "definition": "The audio a person brings to the product: one voice message exported from WhatsApp.",
-      "scopeNote": "The input, not an output. Included in this scheme because everything else is derived from it.",
-      "keys": ["core.dropBig", "core.samplesLabel", "core.findNoteSummary", "core.again"],
-      "current": { "en-gb": "voice note", "en-us": "voice message", "pt-pt": "nota de voz", "pt-br": "áudio" },
+      "definition": "The audio a person brings to the product: one recording, from wherever it was made — a chat voice message, a phone's voice-memo app, a meeting recording, a dictaphone.",
+      "scopeNote": "The input, not an output. Included in this scheme because everything else is derived from it. The concept deliberately does NOT name WhatsApp: WhatsApp is one route in, and building the source of a file into the word for it would have to be undone the first time someone dropped in a Voice Memo.",
+      "keys": [
+        "core.dropBig",
+        "core.samplesLabel",
+        "core.findNoteSummary",
+        "core.again"
+      ],
+      "current": {
+        "en-gb": "voice note",
+        "en-us": "voice message",
+        "pt-pt": "nota de voz",
+        "pt-br": "áudio"
+      },
       "verdict": "keep",
       "finding": "culture-split",
       "proposed": null,
       "reasoning": "Four labels, one concept, and every one of them is what its culture actually says: WhatsApp's own UK interface says 'voice message' but British users say 'voice note'; Brazilians overwhelmingly say 'áudio' — 'me manda um áudio' — and would find 'nota de voz' stilted. This is the textbook case for the whole model and it already works. Recorded as the control: it shows what a healthy concept looks like, and it is the reason the divergence check must classify rather than flag.",
-      "related": ["transcript"]
+      "related": [
+        "transcript"
+      ]
     },
     {
       "id": "transcript",
       "scheme": "artefact",
       "definition": "The words that were spoken, written down, in the language they were spoken in.",
       "scopeNote": "Never overwritten and never translated in place: it is the record of what was actually said. Everything downstream may be derived from a translation of it, but this stays put.",
-      "keys": ["core.labelTranscript", "core.stepTranscribe"],
-      "current": { "en-gb": "TRANSCRIPT", "en-us": "TRANSCRIPT", "pt-pt": "TRANSCRIÇÃO", "pt-br": "TRANSCRIÇÃO" },
+      "keys": [
+        "core.labelTranscript",
+        "core.stepTranscribe"
+      ],
+      "current": {
+        "en-gb": "TRANSCRIPT",
+        "en-us": "TRANSCRIPT",
+        "pt-pt": "TRANSCRIÇÃO",
+        "pt-br": "TRANSCRIÇÃO"
+      },
       "verdict": "keep",
       "finding": null,
       "proposed": null,
       "reasoning": "Accurate, and the Portuguese noun covers the same ground. Both variants agree, correctly — there is no cultural difference here to preserve.",
-      "broader": ["artefact"],
-      "related": ["source-recording", "translation"]
+      "broader": [
+        "artefact"
+      ],
+      "related": [
+        "source-recording",
+        "translation"
+      ]
     },
     {
       "id": "translation",
       "scheme": "artefact",
       "definition": "The transcript rendered into the reader's language, as its own material rather than a replacement.",
       "scopeNote": "Optional and on by default. The summary and the infographic are built FROM this when it exists — which is the only reason the step sits between transcribe and summary rather than at the end.",
-      "keys": ["core.labelTranslation", "core.stepTranslate"],
-      "current": { "en-gb": "TRANSLATION", "en-us": "TRANSLATION", "pt-pt": "TRADUÇÃO", "pt-br": "TRADUÇÃO" },
+      "keys": [
+        "core.labelTranslation",
+        "core.stepTranslate"
+      ],
+      "current": {
+        "en-gb": "TRANSLATION",
+        "en-us": "TRANSLATION",
+        "pt-pt": "TRADUÇÃO",
+        "pt-br": "TRADUÇÃO"
+      },
       "verdict": "keep",
       "finding": null,
       "proposed": null,
       "reasoning": "Correct. Worth noting that the concept's SCOPE NOTE carries the load-bearing fact — that downstream artefacts derive from it — and no label in any language could carry that. Which is the argument for definitions living here rather than being inferred from words.",
-      "broader": ["artefact"],
-      "related": ["transcript", "summary"]
+      "broader": [
+        "artefact"
+      ],
+      "related": [
+        "transcript",
+        "summary"
+      ]
     },
     {
       "id": "summary",
       "scheme": "artefact",
       "definition": "A short written debrief of what the recording was about, built from the translation when there is one and from the transcript when there is not.",
-      "keys": ["core.labelSummary", "core.stepSummary"],
-      "current": { "en-gb": "SUMMARY", "en-us": "SUMMARY", "pt-pt": "RESUMO", "pt-br": "RESUMO" },
+      "keys": [
+        "core.labelSummary",
+        "core.stepSummary"
+      ],
+      "current": {
+        "en-gb": "SUMMARY",
+        "en-us": "SUMMARY",
+        "pt-pt": "RESUMO",
+        "pt-br": "RESUMO"
+      },
       "verdict": "keep",
       "finding": null,
       "proposed": null,
       "reasoning": "Correct in all four. The product name under consideration ('VoiceDebrief') suggests 'debrief' may become the preferred label later; that is a naming decision, not a concept change, and the concept would not move.",
-      "broader": ["artefact"],
-      "related": ["translation", "infographic"]
+      "broader": [
+        "artefact"
+      ],
+      "related": [
+        "translation",
+        "infographic"
+      ]
     },
     {
       "id": "infographic",
       "scheme": "artefact",
       "definition": "A single drawn image of the summary's content, produced only when asked.",
-      "keys": ["core.labelInfographic", "core.wantInfographic", "core.stepInfographic"],
-      "current": { "en-gb": "INFOGRAPHIC", "en-us": "INFOGRAPHIC", "pt-pt": "INFOGRÁFICO", "pt-br": "INFOGRÁFICO" },
+      "keys": [
+        "core.labelInfographic",
+        "core.wantInfographic",
+        "core.stepInfographic"
+      ],
+      "current": {
+        "en-gb": "INFOGRAPHIC",
+        "en-us": "INFOGRAPHIC",
+        "pt-pt": "INFOGRÁFICO",
+        "pt-br": "INFOGRÁFICO"
+      },
       "verdict": "keep",
       "finding": null,
       "proposed": null,
       "reasoning": "A borrowed word that travelled intact into both Portuguese variants. No decision needed.",
-      "broader": ["artefact"],
-      "related": ["summary"]
+      "broader": [
+        "artefact"
+      ],
+      "related": [
+        "summary"
+      ]
     },
     {
       "id": "artefact",
@@ -237,12 +312,23 @@
       "definition": "Anything a pass produces from the recording and shows on its own card.",
       "scopeNote": "Has no label in the interface — it is the parent that makes the four siblings a set. Present so the graph has the edge that explains why they share a layout.",
       "keys": [],
-      "current": { "en-gb": null, "en-us": null, "pt-pt": null, "pt-br": null },
+      "current": {
+        "en-gb": null,
+        "en-us": null,
+        "pt-pt": null,
+        "pt-br": null
+      },
       "verdict": "keep",
       "finding": null,
       "proposed": null,
       "reasoning": "An unlabelled organising concept. Its existence is the reason 'transcript' and 'summary' are siblings rather than unrelated strings, and it is what a divergence check would compare structure against.",
-      "narrower": ["transcript", "translation", "summary", "infographic"]
+      "narrower": [
+        "transcript",
+        "translation",
+        "summary",
+        "infographic"
+      ]
     }
-  ]
+  ],
+  "_resolved": "The privacy-mode scheme is GONE, and how it went is the most useful thing this review produced. The pass marked two of its three chips `decide` — they named a mechanism (Routed, Restricted) inside a group asking where the audio goes, and one of them smuggled price into a privacy control. The sign-off those verdicts asked for (issue 060, go-live claims audit) did not relabel them: it deleted the control. Two of the three modes had never been built, and a SELECTOR implies a choice — offering privacy modes we cannot honour is a worse defect than labelling them on the wrong axis. What ships in their place is a plain statement of where the recording actually goes (core.routingHonest), which is prose and therefore out of scope here: a sentence does not have a concept. So the scheme is not renamed or retargeted, it is removed, and this note is the record that the review reached a verdict which was then overtaken by a better answer."
 }

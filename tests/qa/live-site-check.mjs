@@ -51,6 +51,7 @@ if (EXPECT_VERSION) {
 for (const [path, marker] of [['/', 'Voice'], ['/app/', 'wa-drop-zone'], ['/updates/', 'Updates'],
                               ['/versions/', 'Every version'], ['/library/', 'Library'],
                               ['/videos/', 'See it work'], ['/user-guide/', 'step by step'],
+                              ['/openrouter-key/', 'spend limit'],
                               ['/engineering/', 'engine room'], ['/engineering/pipeline/', 'live QA'],
                               ['/engineering/testing/', 'Three layers'], ['/engineering/docs/', 'reality doc'],
                               ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles'],
@@ -94,8 +95,8 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
-                    '/components/wa-site-nav/v0/v0.1/v0.1.7/wa-site-nav.js',
-                    '/components/wa-voice-panel/v0/v0.1/v0.1.0/wa-voice-panel.js',
+                    '/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js',
+                    '/components/wa-voice-panel/v0/v0.1/v0.1.1/wa-voice-panel.js',
                     '/app/skills/SKILL__api.md', '/app/workflows/standard.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
                     '/engineering/concepts/concepts.json',

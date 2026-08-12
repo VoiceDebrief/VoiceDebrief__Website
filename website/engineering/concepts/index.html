@@ -8,7 +8,7 @@
 <meta name="description" content="The concept scheme behind the interface vocabulary: meaning stored in a definition, labels attached per culture, and the English review that found three words naming the wrong thing.">
 <link rel="stylesheet" href="../eng.css">
 <link rel="stylesheet" href="concepts.css">
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.7/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
 </head>
 <body>
 
@@ -41,7 +41,7 @@
     <div class="grid cols-3">
       <div class="card"><h3>Scope is terms, not strings</h3>
         <p>The app ships 53 keys and most are prose. A sentence does not have a concept — it
-        has meaning in context. Only the terms are modelled here, in three schemes.</p></div>
+        has meaning in context. Only the terms are modelled here, in two schemes.</p></div>
       <div class="card"><h3>The vocabulary, not the stack</h3>
         <p>Field names are borrowed from SKOS — definition, scopeNote, broader, narrower,
         related — without the RDF machinery. No triple store, no SPARQL. For fifteen
@@ -57,7 +57,7 @@
 <section class="alt">
   <div class="wrap">
     <span class="kicker">The scheme</span>
-    <h2>Fifteen concepts, three schemes</h2>
+    <h2>Eleven concepts, two schemes</h2>
     <p class="sub">Three views of the same data, because part of the exercise is working out
       which way of looking at this is actually useful. <strong>Cards</strong> put the
       definition first and the labels underneath — good for deciding. <strong>Matrix</strong>
@@ -80,7 +80,7 @@
 <section>
   <div class="wrap">
     <span class="kicker">What the pass found</span>
-    <h2>Three words name the wrong thing, and one of them is on screen right now</h2>
+    <h2>Two words name the wrong thing — and the third finding got the control deleted</h2>
     <p class="sub">The full reasoning sits on each concept above. The short version:</p>
     <div class="grid cols-2">
       <div class="card"><h3><code>draft</code> → <code>unreviewed</code></h3>
@@ -94,13 +94,18 @@
         <p>A promise about time that nothing backs. <code>en-gb/culture.json</code> declares
         this product's register as <em>“Plain, direct British English. No marketing register”</em>
         — and <em>soon</em> is marketing. The concept is intent, not imminence.</p></div>
-      <div class="card"><h3><code>Routed — cheapest</code> and <code>Restricted*</code></h3>
-        <p>Both name a mechanism inside a group labelled <em>privacy</em>, where the question
-        is where the audio goes — and the first smuggles a second axis, price, into the same
-        string. <code>On-device</code> is the only chip already labelled on the scheme's own
-        axis, which is how the inconsistency was spotted. These are claims made to users about
-        their recordings, so they are marked <strong>decide</strong> and want sign-off rather
-        than a unilateral edit.</p></div>
+      <div class="card"><h3>The finding that deleted its own control</h3>
+        <p><code>Routed — cheapest</code> and <code>Restricted*</code> both named a mechanism
+        inside a group labelled <em>privacy</em>, where the question is where the audio goes —
+        and the first smuggled a second axis, price, into the same string. Both were marked
+        <strong>decide</strong>, because a claim made to users about their recordings wants
+        sign-off rather than a unilateral edit. The sign-off (issue 060) did not relabel them.
+        It removed the chips: two of the three modes had never been built, and a
+        <em>selector</em> promises a choice — offering privacy modes we cannot honour is a
+        worse defect than labelling them on the wrong axis. In their place is a plain sentence
+        saying where the recording actually goes, which is prose and so out of scope here.
+        The scheme is gone from the data; <code>_resolved</code> in
+        <a href="concepts.json">concepts.json</a> is the record of why.</p></div>
       <div class="card"><h3>The one that is not a defect</h3>
         <p>pt-PT uses <em>idioma</em> for the setting and <em>língua</em> for the tongue that
         was spoken. English uses one word for both and gets away with it because context

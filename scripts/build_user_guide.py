@@ -33,11 +33,12 @@ TEMPLATE = os.path.join(ROOT, 'scripts/templates/user-guide.html')
 # adding a journey should force a deliberate decision about where it is taught.
 SECTIONS = [
     ('getting-started', 'Getting started',
-     'What you need before the first voice note: the page itself, and your own '
-     'OpenRouter key. There is no account and nothing to install.'),
+     'What you need before the first voice note: the page, and nothing else. No '
+     'account, nothing to install, and no key until something is ready to run.'),
     ('one-pass', 'The one pass',
      'Drop the voice note in and everything happens in a single pass — transcript, '
-     'summary, and an infographic if you asked for one.'),
+     'a translation when you need one, the debrief, and an infographic if you asked '
+     'for one. Your OpenRouter key is asked for at the moment it is needed, once.'),
     ('chat', 'Chatting with your materials',
      'Once the pass is done you can talk to what it produced — and ask the assistant '
      'to do the work, not just describe it.'),

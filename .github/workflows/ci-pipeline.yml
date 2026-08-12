@@ -95,6 +95,14 @@ jobs:
         shell: bash
         run: node tests/integration/translate.test.mjs 2>&1 | tee int-translate.log
 
+      # The keyless demo (issue 063). This one guards a SECURITY-ish property as
+      # much as a feature: it sets no key and ABORTS any request to OpenRouter,
+      # so a demo that quietly started calling the network fails the build rather
+      # than billing whoever opened the page.
+      - name: Integration test (keyless demo — the real workflow, no network)
+        shell: bash
+        run: node tests/integration/demo.test.mjs 2>&1 | tee int-demo.log
+
       # QA-to-docs (issue 038): the user journeys as screenshot-verified QA.
       # Missing baselines produce candidates (uploaded below) and pass; a
       # baseline diff over threshold fails the gate like any other test.
@@ -120,10 +128,11 @@ jobs:
           BOOT=$(grep -c '^ok ' int-boot.log)
           CHAT=$(grep -c '^ok ' int-chat.log)
           XL=$(grep -c '^ok ' int-translate.log)
+          DEMO=$(grep -c '^ok ' int-demo.log)
           QTD=$(grep -c '^ok ' qa-docs.log)
           BUNIT=$(grep -c '^ok ' browser.log)
-          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "browser-unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "integration-translate": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
-            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BUNIT" "$BUNIT" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$XL" "$XL" "$QTD" "$QTD" > test-results.json
+          printf '{\n  "unit": {"pass": %s, "total": %s},\n  "browser-unit": {"pass": %s, "total": %s},\n  "integration-boot": {"pass": %s, "total": %s},\n  "integration-chat": {"pass": %s, "total": %s},\n  "integration-translate": {"pass": %s, "total": %s},\n  "integration-demo": {"pass": %s, "total": %s},\n  "qa-to-docs": {"pass": %s, "total": %s}\n}\n' \
+            "$UNIT_PASS" "$((UNIT_PASS + UNIT_FAIL))" "$BUNIT" "$BUNIT" "$BOOT" "$BOOT" "$CHAT" "$CHAT" "$XL" "$XL" "$DEMO" "$DEMO" "$QTD" "$QTD" > test-results.json
           cat test-results.json
 
       - name: Upload test results

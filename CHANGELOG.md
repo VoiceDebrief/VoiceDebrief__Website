@@ -18,6 +18,42 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **Go live honestly: the claims pass (issue 060)** — Claude Design's audit found
+  thirteen claims on the site that were not true. All thirteen are fixed, and the
+  three that mattered most were fixed by deleting something rather than rewording
+  it. **The privacy chips are gone**: two of the three modes had never been built,
+  and a privacy *selector* promises a control we do not have. In their place is a
+  plain statement — your audio and its transcript go to OpenRouter, which passes
+  them to a model provider we neither choose nor know — placed where a file could
+  still leave the device, and deliberately not styled as a warning, because framing
+  integrity as a hazard invites the reader to dismiss it. **The pricing claims are
+  gone**: no plan, no credit, no card; we add no margin and we do not set the price.
+  **The phantom "analysis" artefact is gone** from the hero, the pipeline diagram
+  and the cards, along with "it works every time", "in seconds", "browser or app"
+  and "your credits stay with you". An LLM caveat now appears *with* the transcript,
+  never before the thing it qualifies exists, and BETA is persistent chrome beside
+  the name instead of hero copy that scrolls away.
+- **You are no longer asked for a key before you have seen anything** — the app's
+  first screen was a password field for an account most visitors did not have. Now
+  a stranger can load a recording, choose a translation and an infographic, and read
+  the quoted maximum without meeting one; pressing Transcribe asks for the key, and
+  the pass carries on by itself once it is saved. **`/openrouter-key/`** is the page
+  that gets someone from nothing to a working key in five steps, with *set a spend
+  limit* called out as the one that matters — reachable from the key panel itself,
+  the nav, the home page and the footer.
+- **VoiceDebrief** — the rename is complete on every page the site serves. WhatsApp
+  is one of several ways audio arrives here, so the home page now names six of them
+  (chat voice messages, iPhone Voice Memos, Android recorders, meeting exports,
+  dictaphones, anything else) with the Meta non-affiliation line beside them.
+- **Two gates that were not running now run.** `demo.test.mjs` — the test that
+  proves the keyless demo touches no network — had been written and never added to
+  a workflow. And the locale gate only walked `website/app`, so a `data-i18n` key
+  added to a component template was unchecked, even though components localise
+  their own shadow DOM through the same call.
+- The concept scheme lost its privacy-mode scheme (11 concepts, 2 schemes). The
+  English pass had marked two of those chips `decide`; the sign-off deleted the
+  control rather than relabelling it, and `_resolved` in `concepts.json` records
+  that a review reached a verdict which was then overtaken by a better answer.
 - **The Updates can read themselves aloud (issue 062, Dinis's steer)** — a 🎙
   side pane on `/updates/`, in the family of the chat, debug and flow panes:
   pick a post, edit the news-style script it pre-fills, pick a voice, hear it,

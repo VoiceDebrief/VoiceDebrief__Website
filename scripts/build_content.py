@@ -421,7 +421,7 @@ def render_feed(posts):
             '    </item>')
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<rss version="2.0">\n  <channel>\n'
-            '    <title>Voice Note Transcribe — Updates</title>\n'
+            '    <title>VoiceDebrief — Updates</title>\n'
             '    <link>https://whatsapp-voice-transcription.sgraph.ai/updates/</link>\n'
             '    <description>What shipped, and what it means for you.</description>\n'
             + '\n'.join(items) + '\n  </channel>\n</rss>\n')
@@ -491,6 +491,9 @@ def build(out_dir, check_only=False):
     pages = [('/', content_mod), ('/app/', None), ('/updates/', max(p['date'] for p in published)),
              ('/versions/', max(v['date'] for v in versions)),
              ('/videos/', max((v['date'] for v in live_videos), default=None)),
+             # Nobody can use the product without a key, so the page that gets
+             # them one is a landing page in its own right, not an appendix.
+             ('/openrouter-key/', None), ('/user-guide/', None),
              ('/library/', None), ('/engineering/', None), ('/engineering/pipeline/', None),
              ('/engineering/testing/', None), ('/engineering/docs/', None),
              ('/engineering/security/', None), ('/engineering/team/', None),

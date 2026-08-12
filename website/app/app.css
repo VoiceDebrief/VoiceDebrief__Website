@@ -88,3 +88,18 @@ footer a{color:var(--wa-link-on-dark)}
   color:var(--wa-ink,#1a2433)}
 .demo-banner .badge{font-size:.66rem;font-weight:800;letter-spacing:1px;
   padding:3px 9px;border-radius:999px;background:var(--wa-amber-ink,#a05a00);color:#fff}
+
+/* The routing statement (issue 060). Body-text size, attached to the options it
+   belongs with, and NOT styled as a warning — no amber, no icon. It is a
+   statement of fact about where the file goes, and dressing it as a hazard is
+   what teaches people to dismiss it. */
+.routing{font-size:.92rem;line-height:1.55;color:var(--wa-ink,#1a2433);
+  background:var(--wa-mist,#f2f5f9);border:1px solid var(--wa-line,#dbe3ec);
+  border-left:3px solid var(--wa-blue,#2563eb);border-radius:10px;
+  padding:12px 15px;margin:4px 0 14px;max-width:70ch}
+/* The model caveat sits with the TRANSCRIPT, because a transcript looks
+   authoritative in a way a debrief does not — the caveat belongs where that
+   impression is created, not on a page nobody has results on yet. */
+.model-caveat{font-size:.88rem;line-height:1.5;color:var(--wa-amber-ink,#a05a00);
+  background:var(--wa-amber-bg,#fdf1e3);border:1px solid var(--wa-amber-line,#e0a445);
+  border-radius:10px;padding:10px 14px;margin:-6px 0 16px;max-width:70ch}

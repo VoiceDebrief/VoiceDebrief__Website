@@ -1,12 +1,17 @@
-# Voice Note Transcribe
+# VoiceDebrief
 
-> Drop in a WhatsApp voice note (.opus / .ogg / .m4a) and get back a transcript, a
-> structured summary and an infographic in one pass. Everything runs in the
-> browser with the user's own OpenRouter key — there is no backend, nothing is
-> uploaded to us, and nothing is tracked or stored server-side. Free beta;
-> a typical pass costs the key holder well under £0.01, with a declared maximum
-> shown before each run. Built in the open by an agentic team; every claim on
-> this site links to its source in the public repository.
+> Drop in a voice note or an audio recording (.opus / .ogg / .m4a / .mp3 / .wav /
+> .aac / .flac) and get back a transcript, an optional translation, a written
+> debrief and — if asked — an infographic, in one pass. WhatsApp is one of several
+> ways audio arrives here, not the product. Everything runs in the browser with the
+> user's own OpenRouter key: there is no backend of ours and no account system, so
+> nothing is uploaded to us or stored server-side. The audio IS sent to OpenRouter
+> and on to a model provider we neither choose nor know — see the privacy section
+> on the landing page before uploading anything sensitive. In beta. We charge
+> nothing and add no margin; the key holder pays OpenRouter directly, typically
+> well under £0.01 per pass, with a declared maximum shown before each run. Built
+> in the open by an agentic team; every claim on this site links to its source in
+> the public repository.
 
 The app is a JavaScript tool published as `window.__tool` (an SgToolApi named
 `whatsapp-transcribe`). If you are an agent operating the app or explaining it,
@@ -35,8 +40,9 @@ step with the deployed build.
 
 ## Pages
 
-- [How it works + pricing](https://whatsapp-voice-transcription.sgraph.ai/): the landing page — today's beta is bring-your-own-key; the credit product is labelled PROPOSED
+- [How it works, where the audio goes, what it costs](https://whatsapp-voice-transcription.sgraph.ai/): the landing page — the tool runs on the page itself; the beta is bring-your-own-key and there is no plan, credit or card
 - [The app](https://whatsapp-voice-transcription.sgraph.ai/app/)
+- [Getting an OpenRouter key](https://whatsapp-voice-transcription.sgraph.ai/openrouter-key/): why the product is bring-your-own-key, the five steps to create one, how to cap its spend, and how to revoke it. Nobody can use the product without this
 - [User guide](https://whatsapp-voice-transcription.sgraph.ai/user-guide/): step-by-step usage — every screenshot taken by a passing test on the same build
 - [Engineering](https://whatsapp-voice-transcription.sgraph.ai/engineering/): how it is built — pipeline, testing, docs, security posture (including open findings, honestly labelled), team, concepts
 - [Concepts](https://whatsapp-voice-transcription.sgraph.ai/engineering/concepts/): the concept scheme behind the interface vocabulary — meaning stored in a definition, one label per culture, and the English review that found three words naming the wrong thing. NOT wired to the shipped strings; it is a review surface

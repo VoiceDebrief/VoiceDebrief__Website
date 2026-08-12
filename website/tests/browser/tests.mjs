@@ -18,9 +18,9 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.7/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
-import { draftScript } from '../../components/wa-voice-panel/v0/v0.1/v0.1.0/wa-voice-panel.js'
+import { draftScript } from '../../components/wa-voice-panel/v0/v0.1/v0.1.1/wa-voice-panel.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -164,7 +164,7 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: App + Pricing primary, three groups, fourteen grouped pages (v0.1.7)', assert => {
+    QUnit.test('two-level menu: two primary links, three groups, fifteen grouped pages (v0.1.8)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
@@ -173,14 +173,44 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         // that exists in other languages), so it is no longer a DIRECT child of
         // nav.main — count both shapes rather than only the old one.
         assert.strictEqual(sr.querySelectorAll('nav.main > a, nav.main > .i18n-link > a').length, 2,
-            'App and Pricing stay primary')
+            'App and What it costs stay primary')
         assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 3, 'Library + News + Engineering groups')
-        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 14,
-            '3 library + 3 news + 7 engineering pages in the dropdowns (Concepts added, issue 057)')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 15,
+            '4 library + 3 news + 8 engineering pages in the dropdowns')
         assert.strictEqual(sr.querySelector('.badge').textContent, 'BETA')
         assert.strictEqual(sr.querySelector('.sub'), null, 'no section row outside /engineering/')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/app/'),
             'the App is always in the menu (it was not, before issue 048)')
+        // Nobody can use this product without an OpenRouter key, so the page that
+        // explains how to get one has to be reachable from every page, not only
+        // from inside the app (issue 060).
+        assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/openrouter-key/'),
+            'the key guide is in the menu')
+    })
+
+    /* BETA is a standing statement about the product, so it cannot depend on a
+       page remembering to ask for it. v0.1.7 put it on the app page alone while
+       the home page made the same claim in hero copy that scrolls away. */
+    QUnit.test('BETA is persistent chrome, not an opt-in attribute (v0.1.8)', assert => {
+        const el = document.createElement('wa-site-nav')            // NO badge attribute
+        document.getElementById('qunit-fixture').appendChild(el)
+        assert.strictEqual(el.shadowRoot.querySelector('.badge')?.textContent, 'BETA',
+            'a page that says nothing still carries the beta mark')
+
+        const named = document.createElement('wa-site-nav')
+        named.setAttribute('badge', 'ALPHA')
+        document.getElementById('qunit-fixture').appendChild(named)
+        assert.strictEqual(named.shadowRoot.querySelector('.badge').textContent, 'ALPHA',
+            'a page may change the word')
+
+        // The word is overridable; the fact is not. badge="" is the only way to
+        // clear it and it must stay deliberate — this asserts the escape hatch
+        // exists rather than blessing its use.
+        const cleared = document.createElement('wa-site-nav')
+        cleared.setAttribute('badge', '')
+        document.getElementById('qunit-fixture').appendChild(cleared)
+        assert.strictEqual(cleared.shadowRoot.querySelector('.badge'), null,
+            'and clearing it takes an explicit empty badge, never an omission')
     })
 
     QUnit.test('the nav says which pages follow your language, and which do not (v0.1.6)', assert => {
@@ -373,7 +403,7 @@ QUnit.module('wa-voice-panel — generate without spending anything', hooks => {
 
     QUnit.test('the draft script is a news read, not the post pasted in', assert => {
         const s = draftScript(POSTS.posts[0])
-        assert.true(s.startsWith('Here is the latest from Voice Note Transcribe.'), 'it opens with a lead-in')
+        assert.true(s.startsWith('Here is the latest from VoiceDebrief.'), 'it opens with a lead-in')
         assert.true(s.includes('The menu no longer vanishes, on a phone.'), 'the em dash becomes a spoken pause')
         assert.true(s.includes('It used to disappear entirely.'), 'the story follows')
         assert.strictEqual(draftScript(null), '', 'no post, no script')

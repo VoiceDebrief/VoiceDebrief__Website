@@ -12,7 +12,7 @@ import { createChat, CHAT_MODELS, CHAT_SUGGESTIONS } from './chat.js'
 // Components (ours; the SgComponent base loads from the tools origin inside each).
 import '../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 import '../components/wa-facts-card/v0/v0.1/v0.1.0/wa-facts-card.js'
-import '../components/wa-key-panel/v0/v0.1/v0.1.3/wa-key-panel.js'
+import '../components/wa-key-panel/v0/v0.1/v0.1.4/wa-key-panel.js'
 import '../components/wa-drop-zone/v0/v0.1/v0.1.2/wa-drop-zone.js'
 import '../components/wa-progress-rail/v0/v0.1/v0.1.5/wa-progress-rail.js'
 import '../components/wa-result-card/v0/v0.1/v0.1.3/wa-result-card.js'
@@ -32,7 +32,13 @@ window.__waFlow = { fmtGbp }
 window.__waI18n = { t, tOr, applyIn, getLocale, getLocales, defaultLocale, setLocale }
 
 const $ = (s) => document.querySelector(s)
-const sections = ['#key-section', '#file-section', '#work-section', '#results-section', '#error-section']
+/* #key-section is deliberately NOT in this list. It used to be, which is why the
+   first thing a stranger met was a password field for an account they did not
+   have — a setup step demanded before we had shown them anything (issue 060,
+   build-order task 5). It is now governed by showKeySection() and asked for at
+   RUN time: load a file, set the options, read the quoted ceiling, and only then
+   is a key needed. */
+const sections = ['#file-section', '#work-section', '#results-section', '#error-section']
 const show = (...ids) => sections.forEach(s => { $(s).hidden = !ids.includes(s) })
 
 const ERROR_COPY = {
@@ -44,7 +50,7 @@ const ERROR_COPY = {
     'key-exhausted':   ['That key is exhausted or revoked.', 'Paste a different key to continue.'],
     'rate-limited':    ['Busy moment at the model provider.', 'Wait a few seconds and press Transcribe again.'],
     'budget-cap':      ["You've hit this session's spend cap.", 'Raise or clear the cap to continue.'],
-    'no-key':          ['Save your OpenRouter key first.', 'Paste it in the key box above — it stays in this browser.'],
+    'no-key':          ['Save your OpenRouter key first.', 'The key box is open above — it stays in this browser and goes only to OpenRouter.'],
     'network':         ['OpenRouter could not be reached.', 'Check your connection (and any ad-blocker), then try again — nothing was stored.'],
     'prompt-missing':  ['The summary prompt failed to load.', 'The transcript is unaffected; try again for the summary.'],
 }
@@ -98,18 +104,40 @@ async function main() {
     const tCard = $('#transcript-card'), xCard = $('#translation-card'),
           sCard = $('#summary-card'), cost = $('#cost')
 
-    // --- key handling (BYOK, localStorage) ---
+    /* --- key handling (BYOK, localStorage) ---
+       The section is shown when there is already a key (one quiet collapsed line
+       that says so, and offers `change`) and otherwise stays out of the way
+       until a run needs it. `runWhenKeySaved` carries the intent across the
+       interruption: someone who pressed Transcribe asked for a pass, and being
+       stopped for a key should not cost them the click. */
+    const keySection = $('#key-section')
+    const showKeySection = (on) => { keySection.hidden = !on }
+    let runWhenKeySaved = false
+    showKeySection(engine.hasKey())
+
     key.addEventListener('wa:key-submitted', async (e) => {
         const r = await window.__tool.setApiKey({ apiKey: e.detail.apiKey })
-        key.confirmSaved(r.ok && r.present)
+        const ok = r.ok && r.present
+        key.confirmSaved(ok)
+        if (ok && runWhenKeySaved) { runWhenKeySaved = false; startPass() }
     })
+
+    /* Ask for the key at the point of need, not on arrival. Revealing the panel
+       is not enough on its own — on a long page it can land below the fold, and
+       a form nobody can see reads as a button that did nothing. */
+    const requestKey = () => {
+        runWhenKeySaved = true
+        showKeySection(true)
+        key.expand?.()
+        keySection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
 
     // --- file chosen → options row ---
     const takeFile = (file) => {
         pendingFile = file
         $('.file-name').textContent = pendingFile.name
         $('.file-size').textContent = (pendingFile.size / 1024).toFixed(0) + ' KB'
-        show('#key-section', '#file-section')
+        show('#file-section')
     }
     drop.addEventListener('wa:file-chosen', (e) => takeFile(e.detail.file))
 
@@ -140,7 +168,7 @@ async function main() {
        read, no request is made, and every artefact is stamped DEMO. */
     $('#try-demo')?.addEventListener('click', async () => {
         showDemoBanner()
-        show('#key-section', '#work-section', '#results-section')
+        show('#work-section', '#results-section')
         const infog = $('#want-infographic').checked, trans = $('#want-translate').checked
         rail.reset(infog, trans); rail.start('ingest')
         try { await window.__tool.runPass({ demo: true, infographic: infog, translate: trans }) }
@@ -178,7 +206,7 @@ async function main() {
     if (!modelSel.value) modelSel.value = INFOGRAPHIC_MODEL_DEFAULT
     modelSel.addEventListener('change', () => { try { localStorage.setItem('wa-infographic-model', modelSel.value) } catch (_) {} })
     redrawBtn.addEventListener('click', async () => {
-        if (!engine.hasKey()) return showError('no-key', 'infographic')
+        if (!engine.hasKey()) { showKeySection(true); return showError('no-key', 'infographic') }
         try { await window.__tool.redrawInfographic({ model: modelSel.value }) } catch (_) { /* surfaced via events */ }
     })
     // Resetting the page must also stop the machine (issue 046): without the
@@ -189,7 +217,7 @@ async function main() {
     const resetToStart = () => {
         if (passActive) pipeline.cancel()
         pendingFile = null
-        show('#key-section')
+        show()
     }
     $('.file-remove').addEventListener('click', resetToStart)
 
@@ -227,25 +255,35 @@ async function main() {
     updateQuote()
 
     // --- go ---
-    $('#go').addEventListener('click', async () => {
+    async function startPass() {
         if (!pendingFile) return
-        if (!engine.hasKey()) return showError('no-key', 'key')
         const wantInfographic = $('#want-infographic').checked
         $('.working-name').textContent = pendingFile.name
         tCard.hidden = xCard.hidden = sCard.hidden = cost.hidden = true
         $('#infographic-card').hidden = true; $('#save-svg').hidden = true
         $('#infographic-note').hidden = true
         clearDemoBanner()   // a real run must never inherit the demo's stamp
-        show('#key-section', '#work-section', '#results-section')
+        show('#work-section', '#results-section')
         rail.reset(wantInfographic, wantTranslate.checked); rail.start('ingest')
         try {
             await window.__tool.runPass({ ...passOptions(), file: pendingFile,
                 infographic: wantInfographic, infographicModel: modelSel.value })
         } catch (e) {
             const code = await diagnoseLlmFailure(e)
-            if (code === 'key-invalid') key.confirmSaved(false, 'OpenRouter rejected this key — it may be disabled or out of credit. Paste a fresh one.')
+            if (code === 'key-invalid') {
+                // A rejected key means the panel has to be on screen to be fixed,
+                // whatever state it was in when the run started.
+                showKeySection(true)
+                key.confirmSaved(false, 'OpenRouter rejected this key — it may be disabled or out of credit. Paste a fresh one.')
+            }
             showError(code, 'transcribe', e.message)
         }
+    }
+    $('#go').addEventListener('click', () => {
+        if (!pendingFile) return
+        // The key is asked for HERE and nowhere earlier (build-order task 5).
+        if (!engine.hasKey()) return requestKey()
+        startPass()
     })
 
     // A disabled/revoked key surfaces as a bare "Failed to fetch" (the browser
@@ -267,6 +305,8 @@ async function main() {
         // translate step is needed, so the rail cannot skip ahead here.
         rail.start('classify')
         tCard.show(e.detail.text); tCard.hidden = false
+        // The caveat appears WITH the transcript, never before it exists.
+        const caveat = $('#model-caveat'); if (caveat) caveat.hidden = false
         updateCost()
     })
 
@@ -419,7 +459,7 @@ async function main() {
         const [title, body] = ERROR_COPY[code] || ['Something failed on the model side.', 'Nothing was stored — try again. (' + (message || code) + ')']
         $('.error-title').textContent = title
         $('.error-body').textContent = body
-        show('#key-section', '#error-section', ...(pendingFile ? ['#file-section'] : []))
+        show('#error-section', ...(pendingFile ? ['#file-section'] : []))
     }
 }
 

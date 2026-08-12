@@ -9,7 +9,7 @@
     {
       "id": "01-app-start",
       "journey": "one-pass",
-      "caption": "The app as you arrive: drop zone, sample notes, and the key panel.",
+      "caption": "The app as you arrive: a drop zone and three sample notes. No key, no account, nothing to fill in.",
       "slot": "getting-started/arrival",
       "masks": [
         "#site-version"
@@ -17,24 +17,24 @@
       "clip": "viewport"
     },
     {
-      "id": "02-key-saved",
-      "journey": "one-pass",
-      "caption": "Paste your OpenRouter key once — it stays in your browser.",
-      "slot": "getting-started/key",
-      "masks": [
-        "#site-version"
-      ],
-      "clip": "#key-section"
-    },
-    {
       "id": "03-options",
       "journey": "one-pass",
-      "caption": "A loaded voice note: choose whether you want an infographic, then transcribe.",
+      "caption": "A loaded voice note: choose a translation and an infographic, read the quoted maximum, then transcribe.",
       "slot": "one-pass/options",
       "masks": [
         "#site-version"
       ],
       "clip": "#file-section"
+    },
+    {
+      "id": "02-key-saved",
+      "journey": "one-pass",
+      "caption": "Press Transcribe and the key is asked for — once, and it stays in your browser. The pass carries on by itself.",
+      "slot": "one-pass/key",
+      "masks": [
+        "#site-version"
+      ],
+      "clip": "#key-section"
     },
     {
       "id": "04-results",
@@ -46,6 +46,18 @@
         "wa-cost-line"
       ],
       "clip": "#results-section"
+    },
+    {
+      "id": "08-flow-run",
+      "journey": "one-pass",
+      "caption": "The 🧭 flow tab: the declared workflow — every step's model and spending ceiling, and what this run actually did and cost.",
+      "slot": "one-pass/workflow",
+      "masks": [
+        "#site-version",
+        "wa-flow-panel .step__cost",
+        "wa-cost-line"
+      ],
+      "clip": "wa-flow-panel .wa-flow__panel"
     },
     {
       "id": "05-chat-open",
@@ -82,18 +94,6 @@
         "wa-chat-panel .wa-chat__meter"
       ],
       "clip": "#results-section"
-    },
-    {
-      "id": "08-flow-run",
-      "journey": "one-pass",
-      "caption": "The 🧭 flow tab: the declared workflow — every step's model and spending ceiling, and what this run actually did and cost.",
-      "slot": "one-pass/workflow",
-      "masks": [
-        "#site-version",
-        "wa-flow-panel .step__cost",
-        "wa-cost-line"
-      ],
-      "clip": "wa-flow-panel .wa-flow__panel"
     }
   ]
 }

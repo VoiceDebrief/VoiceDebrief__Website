@@ -5,10 +5,14 @@
 ## Why
 
 We are going live. Three things have to land together: the product becomes
-**VoiceDebrief for WhatsApp** at **VoiceDebrief.ai**, the main workflow moves onto the
-home page, and the site stops describing a product we do not have.
+**VoiceDebrief** at **VoiceDebrief.ai**, the main workflow moves onto the home page, and
+the site stops describing a product we do not have.
 
-## Done in this commit
+> **Name change, 12 Aug (Dinis).** The product is **VoiceDebrief**, plain — not
+> "VoiceDebrief for WhatsApp". WhatsApp is one of several ways audio arrives here, not
+> the product. Everything below is written against that.
+
+## Done (8 Aug)
 
 - **Design brief written** — `library/briefs/go-live/v0.1.23__design-brief__home-page-redesign-for-go-live.md`,
   for Claude Design. Covers all five requirements, the non-negotiable constraints
@@ -19,34 +23,74 @@ home page, and the site stops describing a product we do not have.
   back to the browser default link colour on navy. Browser test compares computed
   colours; proven to fail with the selector reverted.
 
-## Still to build (the go-live checklist)
+## Done (12 Aug) — the claims audit worked end to end
 
-- [ ] **Remove the three privacy chips** from the app and replace them with a plain
-      statement that audio and transcripts go to OpenRouter, which routes them to a
-      provider we cannot name and do not control. Two of the three chips do not exist;
-      shipping a privacy *selector* implies a control we do not have.
-- [ ] **The OpenRouter key guide page** — what it is, why we do not bill directly, how
-      to sign up, create a key, set a spend cap, and revoke it. Reachable from the key
-      field, not only from a menu.
-- [ ] **A beta mark** (Gmail-style, persistent, beside the wordmark) and an **LLM
-      caveat** — likely next to the transcript, where it is honest rather than
-      decorative.
-- [ ] **The rename**: 43 hardcoded "Voice Note Transcribe" strings plus the `title` key
-      in all four locale files. Should become **one** `core.productName` key, recorded
-      in the concept scheme as a concept with a scope note saying *not translated* —
-      the concept layer paying for itself.
+Claude Design returned `design_handoff_homepage`, whose `06-claims-audit.md` lists
+thirteen untrue claims. All thirteen are addressed.
+
+- [x] **The three privacy chips are gone** — app page. Two of the three never existed and
+      shipped disabled with an asterisk, and a privacy *selector* implies a control we do
+      not have. What replaces them is `core.routingHonest`: a statement, placed where a
+      file could still leave the device, and deliberately **not** styled as a warning —
+      framing integrity as a hazard invites the reader to dismiss it.
+- [x] **The LLM caveat** — `core.modelCaveat`, revealed *with* the transcript on
+      `wa:transcript`, never before the thing it qualifies exists.
+- [x] **The privacy-modes section and its table are gone** from the home page, replaced
+      by `#privacy` "Where your audio goes", which says plainly that we do not know which
+      provider handles a recording.
+- [x] **The pricing claims are gone** — `#pricing` is now "What it costs": no plan, no
+      credit, no card, we add no margin, and we do not set the price.
+- [x] **The hero, the pipeline diagram and the cards** name the four real artefacts
+      (transcript / translation / debrief / infographic). There is no "analysis" step.
+      "and it works every time", "in seconds", "browser or app", "your files and your
+      credits stay with you" and "Made for WhatsApp audio" are all gone.
+- [x] **A six-source "Getting the audio" section** with the Meta non-affiliation line.
+- [x] **The OpenRouter key guide page** — `/openrouter-key/`: why bring-your-own-key, five
+      numbered steps with *set a spend limit* called out as the one that matters,
+      checking/capping/revoking, a never-paste-it-elsewhere warning, and the three
+      failures people actually hit. Linked from the key panel itself, the nav, the hero
+      badge, the pricing section, the footer, `llms.txt` and the sitemap.
+- [x] **BETA is persistent chrome** — `wa-site-nav` v0.1.8 defaults the badge on; a page
+      may change the word, never omit the fact. The hero's "BETA — LIVE NOW" pill is gone:
+      a beta mark made of hero copy scrolls away, and "LIVE NOW" is marketing register
+      that `en-gb/culture.json` rules out.
+- [x] **The rename** — VoiceDebrief everywhere the site serves. The only survivors are
+      frozen component versions (IFD: published paths are immutable), and no page loads
+      them.
+- [x] **The key is asked for at run time, not on arrival** (build-order task 5). A
+      stranger can load a file, set both options and read the quoted maximum without ever
+      meeting a password field; pressing Transcribe asks for the key and the pass resumes
+      by itself once it is saved. Gated in `app-boot.test.mjs` on the *computed* display
+      of `#key-section`, not on its `hidden` attribute — that attribute has lied here
+      before.
+
+## Still to build
+
+- [ ] **One `core.productName` key.** The name is currently spelled out in `core.title`
+      and hardcoded in the nav component. It should be one key, recorded in the concept
+      scheme with a scope note saying *not translated*.
 - [ ] **Decide `summary` → `debrief`** in the interface, now the product is named after
-      the word. Four languages; the concept scheme already flags it.
-- [ ] **The Pricing page** describes a credit product that does not exist. Make it an
-      honest cost-on-your-own-key page, or remove it.
-- [ ] Home page copy claims "an analysis" as a distinct output. There is no analysis
-      step.
+      the word. Four languages; the concept scheme flags it and the drift gate will force
+      the concept to be revisited with the strings.
+
+## Deliberately NOT done
+
+- **"Language picker to text labels, no flags"** (audit item 6, build-order task 2).
+  Rejected: this product's locale *is* a culture, not a language — en-GB/en-US and
+  pt-PT/pt-BR differ by country, and a flag is the accurate signifier for exactly that
+  distinction. The general rule ("flags are not languages") is right about products that
+  select a language; it is wrong about one that selects a culture. Dinis approved the
+  current picker on 10 Aug.
+- **`--wa-*` → `--vd-*` token rename** (build-order task 1). A pure churn commit across
+  every component's frozen and live versions, with a CI gate that already proves every
+  token read is declared. Worth doing when a component is next revised, not as its own
+  change.
 
 ## Dependencies and notes
 
-- The rename and the home redesign interact: doing the copy rewrite before the design
-  comes back wastes the work. The **rename plumbing** (one string key) does not, and
-  can go first.
-- `WhatsApp` is Meta's trademark — usable descriptively ("for WhatsApp"), cannot lead
-  the name, and our green is close enough to theirs to be worth a second look.
-- Depends on issue 057 (the concept scheme) for the `summary`/`debrief` decision.
+- `WhatsApp` is Meta's trademark — usable descriptively, cannot lead the name. The
+  non-affiliation line is on the home page.
+- Depends on issue 057 (the concept scheme) for the `summary`/`debrief` decision. The
+  privacy-mode scheme was *removed* from `concepts.json` as part of this work: the pass
+  had marked two of its chips `decide`, and the sign-off deleted the control rather than
+  relabelling it. `_resolved` in the file records why.

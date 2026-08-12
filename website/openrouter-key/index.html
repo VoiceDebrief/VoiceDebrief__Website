@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://whatsapp-voice-transcription.sgraph.ai/openrouter-key/">
+<title>Getting an OpenRouter key — VoiceDebrief</title>
+<meta name="description" content="What an OpenRouter key is, why VoiceDebrief asks you to bring your own instead of billing you, how to create one, how to cap what it can spend, and how to revoke it.">
+<link rel="stylesheet" href="../engineering/eng.css">
+<style>
+  ol.steps{counter-reset:s;list-style:none;margin:0;padding:0;max-width:760px}
+  ol.steps>li{counter-increment:s;position:relative;padding:0 0 22px 46px;
+    border-left:2px solid var(--line);margin-left:14px}
+  ol.steps>li:last-child{border-left-color:transparent;padding-bottom:0}
+  ol.steps>li::before{content:counter(s);position:absolute;left:-16px;top:-2px;
+    width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700}
+  ol.steps h3{font-size:1rem;margin-bottom:5px}
+  ol.steps p{font-size:.94rem;margin-bottom:7px}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--accent-2);
+    border-radius:var(--radius);background:var(--mist);padding:14px 18px;margin:18px 0;
+    font-size:.93rem;max-width:760px}
+  .callout.warn{border-left-color:#b45309}
+  ul.plain{margin:0 0 10px 20px;max-width:760px} ul.plain li{margin-bottom:8px;font-size:.94rem}
+  code{background:var(--mist);padding:1px 5px;border-radius:4px;font-size:.9em}
+</style>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
+</head>
+<body>
+
+<wa-site-nav></wa-site-nav>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb">Getting started</div>
+    <h1>You bring the key. We never see it, and we never charge you.</h1>
+    <p class="lead">VoiceDebrief has no accounts and no billing. You create your own key with
+      <strong>OpenRouter</strong> — the service that routes work to the AI models — and every
+      transcription is billed to you by them, at their price, with nothing added by us.
+      This page gets you from nothing to a working key.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">First, why</span>
+    <h2>Why we ask you to do this instead of just charging you</h2>
+    <p class="sub">It is a fair question, and the honest answer has two halves.</p>
+    <div class="grid cols-3">
+      <div class="card"><h3>There is nothing to bill you with</h3>
+        <p>This whole product is a static web page. There is no server of ours, no database and no
+           account system — so there is nowhere to hold a balance, and nothing to put a card
+           number into.</p></div>
+      <div class="card"><h3>You keep the ceiling</h3>
+        <p>Your key, your spend limit, your provider account. You can cap it at a couple of pounds,
+           watch what it actually costs, and revoke it in one click. None of that is true of a
+           credit balance held by us.</p></div>
+      <div class="card"><h3>We add nothing to the price</h3>
+        <p>We are not in the payment path, so there is no margin to add. What you pay is what
+           OpenRouter charges for the models — which is typically a fraction of a penny per
+           voice note.</p></div>
+    </div>
+    <div class="callout"><strong>What this does not mean.</strong> Bringing your own key protects
+      your money, not your recording. The audio still goes to OpenRouter and on to a model
+      provider we cannot name — see
+      <a href="../#privacy">where your audio goes</a> before you upload anything sensitive.</div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">The steps</span>
+    <h2>From nothing to a working key</h2>
+    <p class="sub">Five minutes, and about £2 if you want to be able to run more than the free
+      models. You do not need to install anything.</p>
+    <ol class="steps">
+      <li><h3>Create an OpenRouter account</h3>
+        <p>Go to <a href="https://openrouter.ai">openrouter.ai</a> and sign up — Google, GitHub or
+           email. It is a routing service, not a model maker: it forwards your request to whichever
+           provider serves the model you asked for.</p></li>
+      <li><h3>Add a little credit</h3>
+        <p>Under <strong>Credits</strong>, add the smallest amount you are comfortable with. A pass
+           over a 90-second voice note costs a fraction of a penny for the transcript and debrief;
+           the infographic is the expensive part, because it is an image model. £2 will run a great
+           many voice notes.</p>
+        <p>You can also skip this and use free models only, but transcription quality on the free
+           tier varies and some free models will not accept audio at all.</p></li>
+      <li><h3>Create the key</h3>
+        <p>Go to <a href="https://openrouter.ai/keys">openrouter.ai/keys</a> → <strong>Create
+           key</strong>. Give it a name you will recognise later — <code>voicedebrief</code> is a
+           good one, so you know what to revoke if you ever want to.</p></li>
+      <li><h3>Set a spend limit on it — do this bit</h3>
+        <p>While creating the key, set a <strong>credit limit</strong>. This is the single most
+           useful thing on this page: it caps what that key can ever spend, whatever happens. Set it
+           to something you would not mind losing — a pound or two is plenty to start.</p>
+        <p>A key with a limit cannot cost you more than the limit. A key without one can spend
+           whatever is in your account.</p></li>
+      <li><h3>Copy it and paste it in</h3>
+        <p>The key starts <code>sk-or-</code> and is shown <strong>once</strong> — copy it before
+           you close the dialog. Paste it into the key field on the
+           <a href="../app/">app page</a> and press save.</p>
+        <p>It is stored in your browser's local storage on this device only, and sent to OpenRouter
+           with each request. It is not sent to us, because there is no us to send it to.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">Afterwards</span>
+    <h2>Checking, capping and revoking</h2>
+    <ul class="plain">
+      <li><strong>See what you actually spent.</strong> OpenRouter's <em>Activity</em> page lists
+        every call with its cost. The app also shows the cost of each pass as it runs, and quotes
+        the maximum before it starts.</li>
+      <li><strong>Change the limit later.</strong> The credit limit on a key can be edited at any
+        time from the keys page.</li>
+      <li><strong>Revoke it.</strong> Delete the key on OpenRouter and it stops working
+        immediately, everywhere. Nothing of ours needs to be told.</li>
+      <li><strong>Remove it from this browser.</strong> Paste a different key over it, or clear the
+        site's data in your browser settings.</li>
+    </ul>
+    <div class="callout warn"><strong>Never paste your key anywhere else.</strong> A key is a
+      password for spending money. We will never ask for it by email or chat, and nothing on this
+      site ever needs it apart from the key field on the app page. If you think one has leaked,
+      delete it on OpenRouter — that is instant and complete.</div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">If it does not work</span>
+    <h2>The three things that usually go wrong</h2>
+    <div class="grid cols-3">
+      <div class="card"><h3>"That key was not accepted"</h3>
+        <p>Usually a truncated paste — the key is long. Copy it again from OpenRouter, or create a
+           new one. If it was created a moment ago, give it a few seconds.</p></div>
+      <div class="card"><h3>It worked, then stopped</h3>
+        <p>Either the key hit its credit limit or the account ran out. Both are visible on the
+           OpenRouter keys page, and both are fixed by topping up or raising the limit.</p></div>
+      <div class="card"><h3>A model refuses the audio</h3>
+        <p>Not every model accepts audio, and free models often do not. The app names the model it
+           used in the debug pane, and the workflow declaration says which one each step asks
+           for.</p></div>
+    </div>
+    <p class="sub" style="margin-top:20px">Still stuck? Everything about this product is public —
+      the <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/issues">issue
+      queue</a> is the place to say so.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 &nbsp;·&nbsp;
+      <a href="../versions/"><span id="site-version">dev</span></a></div>
+    <div><a href="../">Home</a> &nbsp;·&nbsp; <a href="../app/">The app</a>
+      &nbsp;·&nbsp; <a href="../library/">Library</a></div>
+  </div>
+</footer>
+<script>fetch('/version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'dev').then(v=>{document.getElementById('site-version').textContent=v.trim()}).catch(()=>{})</script>
+</body>
+</html>

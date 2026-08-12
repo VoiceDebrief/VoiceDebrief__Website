@@ -139,7 +139,7 @@ async function capture(id) {
         writeFileSync(path.join(UPDATED_DIR, `${id}.png`), png)
         changes.push({ id, kind: 'resized', from: `${a.width}x${a.height}`, to: `${b.width}x${b.height}`,
                        caption: spec.caption, slot: spec.slot })
-        console.log(`ok    ${id}: CHANGED — resized ${a.width}x${a.height} → ${b.width}x${b.height} (baseline updated, logged for review)`)
+        console.log(`ok    ${id}: CHANGED — resized ${a.width}x${a.height} → ${b.width}x${b.height} (new capture recorded — CI commits it as the baseline)`)
         return
     }
     const diff = new PNG({ width: a.width, height: a.height })
@@ -154,7 +154,7 @@ async function capture(id) {
         changes.push({ id, kind: 'changed', pixels: differing, area: a.width * a.height,
                        percent: +(fraction * 100).toFixed(3), threshold: +(limit * 100).toFixed(3),
                        caption: spec.caption, slot: spec.slot })
-        console.log(`ok    ${id}: CHANGED — ${(fraction * 100).toFixed(3)}% of pixels moved (baseline updated, logged for review)`)
+        console.log(`ok    ${id}: CHANGED — ${(fraction * 100).toFixed(3)}% of pixels moved (new capture recorded — CI commits it as the baseline)`)
     } else {
         console.log(`ok    ${id}: matches baseline (${(fraction * 100).toFixed(3)}% < ${(limit * 100).toFixed(3)}%)`)
     }
@@ -169,6 +169,33 @@ try {
     check('one-pass: app boots', true)
     await capture('01-app-start')
 
+    /* The journey follows the product's own order, and that order CHANGED with
+       issue 060: the key is no longer the first thing on the page. A visitor
+       loads a file, sets the options and reads the quoted maximum first; only
+       pressing Transcribe asks for a key. The guide is generated from these
+       shots, so walking the old order would document a page that no longer
+       exists. */
+
+    // [data-sample]: the keyless demo button shares the styling but loads no file.
+    await page.locator('.sample-chip[data-sample]').first().click()
+    await page.waitForFunction(() => !document.querySelector('#file-section').hidden, null, { timeout: 10000 })
+    check('one-pass: sample loads into the options screen', true)
+    check('one-pass: no key was asked for to get this far',
+        await page.evaluate(() => getComputedStyle(document.querySelector('#key-section')).display === 'none'))
+    await capture('03-options')
+
+    // The drawn-SVG model renders the mock's deterministic SVG stream — the
+    // image-model path would need a mocked image payload instead. The picker
+    // lives on the (still hidden) results card, so set it directly.
+    await page.evaluate(() => {
+        const sel = document.querySelector('#infographic-model')
+        sel.value = 'google/gemini-3.5-flash'
+        sel.dispatchEvent(new Event('change'))
+    })
+
+    // Transcribe → the key is requested here, and the pass resumes by itself
+    // once it is saved: being stopped for a key must not cost the click.
+    await page.locator('#go').click()
     const key = page.locator('wa-key-panel input')
     await key.fill('sk-or-v1-mock-qa-to-docs')
     // Named, not positional: the panel gained a change/cancel pair when it
@@ -184,22 +211,6 @@ try {
     }, null, { timeout: 10000 })
     check('one-pass: key saves via the panel', true)
     await capture('02-key-saved')
-
-    // [data-sample]: the keyless demo button shares the styling but loads no file.
-    await page.locator('.sample-chip[data-sample]').first().click()
-    await page.waitForFunction(() => !document.querySelector('#file-section').hidden, null, { timeout: 10000 })
-    check('one-pass: sample loads into the options screen', true)
-    await capture('03-options')
-
-    // The drawn-SVG model renders the mock's deterministic SVG stream — the
-    // image-model path would need a mocked image payload instead. The picker
-    // lives on the (still hidden) results card, so set it directly.
-    await page.evaluate(() => {
-        const sel = document.querySelector('#infographic-model')
-        sel.value = 'google/gemini-3.5-flash'
-        sel.dispatchEvent(new Event('change'))
-    })
-    await page.locator('#go').click()
     // DOM-state predicate only: waitForFunction does not await async
     // predicates on every poll, so window.__tool calls cannot be used here.
     // #work-section hides on wa:pass:complete; the cards unhide as they fill.
@@ -256,7 +267,7 @@ writeFileSync(path.join(OUT_DIR, 'changes.json'), JSON.stringify({ changes, cand
 
 if (candidates) console.log(`\n${candidates} new shot(s) in tests/qa-to-docs/output/candidates/ — CI commits these as baselines`)
 if (changes.length) {
-    console.log(`\n${changes.length} shot(s) CHANGED — the baseline moves to the new capture and the change is logged:`)
+    console.log(`\n${changes.length} shot(s) CHANGED — the new capture is recorded for review, and CI commits it as the baseline:`)
     for (const c of changes)
         console.log(`  ${c.id}  ${c.kind === 'resized' ? `${c.from} → ${c.to}` : `${c.percent}% of pixels`}  (${c.slot})`)
     console.log('  Not a failure: UI changes are expected. The question an agent answers from the log is whether')

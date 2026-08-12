@@ -92,14 +92,21 @@ def main():
                                     f'than not offering the language; mark it draft or finish it')
 
     # 4. keys the markup asks for must exist.
+    #    Component templates count as markup. They were outside this walk until a
+    #    key added to wa-key-panel.html went unchecked — the component localises
+    #    its own shadow DOM through the same applyIn(), so a key it names that
+    #    en-gb lacks renders the key string inside the component, which is
+    #    exactly the failure this rule exists to catch. The gate follows the
+    #    mechanism, not the directory.
     used = set()
-    for root, _, files in os.walk(APP):
-        for f in files:
-            if not f.endswith('.html'):
-                continue
-            with open(os.path.join(root, f), encoding='utf-8') as fh:
-                for m in re.findall(r'data-i18n(?:-[a-z-]+)?="([^"]+)"', fh.read()):
-                    used.add(m)
+    for base in (APP, os.path.join(ROOT, 'website/components')):
+        for root, _, files in os.walk(base):
+            for f in files:
+                if not f.endswith('.html'):
+                    continue
+                with open(os.path.join(root, f), encoding='utf-8') as fh:
+                    for m in re.findall(r'data-i18n(?:-[a-z-]+)?="([^"]+)"', fh.read()):
+                        used.add(m)
     for key in sorted(used):
         domain, _, leaf = key.partition('.')
         if domain not in src or leaf not in src[domain]:

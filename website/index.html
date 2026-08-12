@@ -4,26 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://whatsapp-voice-transcription.sgraph.ai/">
-<title>WhatsApp Voice Note Transcription — transcript, analysis and debrief in one pass</title>
-<meta name="description" content="Drop in a WhatsApp voice note and get back a transcript, an analysis and a short debrief in one pass — with an infographic if you ask. No accounts to configure, no steps to chain.">
+<title>VoiceDebrief — a voice note in, a transcript and a debrief out</title>
+<meta name="description" content="Drop in a voice note or an audio recording and get back a transcript, a translation and a short debrief in one pass — with an infographic if you ask. Runs in your browser, on your own OpenRouter key.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Voice Note Transcribe">
-<meta property="og:title" content="WhatsApp voice notes → transcript, analysis and debrief in one pass">
+<meta property="og:site_name" content="VoiceDebrief">
+<meta property="og:title" content="VoiceDebrief — a voice note in, a transcript and a debrief out">
 <meta property="og:description" content="Drop in the audio. That's it. Runs in your browser with your own key — no accounts, no backend, nothing stored.">
 <meta property="og:url" content="https://whatsapp-voice-transcription.sgraph.ai/">
 <meta name="twitter:card" content="summary">
-<link rel="alternate" type="application/rss+xml" title="Voice Note Transcribe — Updates" href="updates/feed.xml">
+<link rel="alternate" type="application/rss+xml" title="VoiceDebrief — Updates" href="updates/feed.xml">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Voice Note Transcribe",
+  "name": "VoiceDebrief",
   "url": "https://whatsapp-voice-transcription.sgraph.ai/",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Web browser",
-  "description": "Drop in a WhatsApp voice note (.opus, .ogg or .m4a) and get back a transcript, a structured summary and an infographic in one pass. Runs entirely in the browser with your own OpenRouter key — no backend, nothing uploaded, nothing tracked.",
+  "description": "Drop in a voice note or an audio recording and get back a transcript, a translation, a written debrief and — if you ask — an infographic, in one pass. WhatsApp is one of several ways audio arrives here. Runs entirely in the browser with your own OpenRouter key: no backend of ours, no account, nothing stored server-side. The audio is sent to OpenRouter and on to a model provider we neither choose nor know.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP",
-    "description": "Free beta: bring your own OpenRouter key and pay the model provider directly — a typical pass costs the key holder well under £0.01, with a declared maximum shown before each run." },
+    "description": "We charge nothing and add no margin. Bring your own OpenRouter key and pay them directly — a typical pass costs the key holder well under £0.01, with a declared maximum shown before each run." },
   "publisher": { "@type": "Organization", "name": "SGraph",
     "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription" }
 }
@@ -45,6 +45,7 @@
   .hero p.lead{margin-top:18px;max-width:640px;font-size:1.08rem;color:#c8d6e8}
   .badge{display:inline-block;background:rgba(37,211,102,.14);border:1px solid rgba(37,211,102,.45);
          color:#8ff0b6;font-size:.78rem;padding:4px 12px;border-radius:999px;margin-bottom:18px;letter-spacing:.4px}
+  .badge a{color:#fff;text-decoration:underline;text-underline-offset:2px}
   .cta-row{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap}
   .btn{display:inline-block;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:600;font-size:.95rem}
   .btn-primary{background:#25d366;color:#07301c}
@@ -87,7 +88,7 @@
   footer a{color:#dbe6f5}
   @media (max-width:640px){ .hero{padding:44px 0 52px} }
 </style>
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.7/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
 </head>
 <body>
 
@@ -95,10 +96,16 @@
 
 <div class="hero">
   <div class="wrap">
-    <span class="badge">BETA — LIVE NOW · BRING YOUR OWN KEY</span>
-    <h1>Your WhatsApp voice notes, turned into a transcript, an analysis and a debrief — in one pass.</h1>
-    <p class="lead">Drop in the audio. That's it. No accounts to configure, no steps to chain,
-      no guessing whether transcription will work today. An infographic too, if you ask for one.</p>
+    <!-- "BETA — LIVE NOW" used to live here (claims audit item 7). A beta mark
+         made of hero copy scrolls away on the second screen, and "LIVE NOW" is
+         marketing register this product's own culture.json rules out. BETA is
+         now in the header on every page; what stays here is the one thing a
+         reader has to know before clicking Try. -->
+    <span class="badge">BRING YOUR OWN OPENROUTER KEY · <a href="openrouter-key/">how to get one</a></span>
+    <h1>Drop a voice note or an audio file. Get the debrief.</h1>
+    <p class="lead">Transcript, a translation into your language, and a short written debrief —
+      points, actions and one sentence — in a single pass. An infographic too, if you ask for one.
+      No account, no setup: it runs in this browser on your own OpenRouter key.</p>
     <div class="cta-row">
       <a class="btn btn-primary" href="app/">Try the beta →</a>
       <a class="btn btn-ghost" href="#how">See how it works</a>
@@ -107,13 +114,13 @@
 <pre>drop in the audio  (.opus / .ogg / .m4a)
          |
          v
-ONE PASS  ->  transcript
-          ->  analysis
-          ->  short debrief
-          ->  infographic (only if asked)
+ONE PASS  ->  transcript      (what was said, in the language it was said)
+          ->  translation     (only when it is not already your language)
+          ->  debrief         (key points, actions, one sentence)
+          ->  infographic     (only if asked)
          |
          v
-done.  no accounts to configure, no steps to chain.</pre>
+done.  no account, no setup, your own key.</pre>
     </div>
   </div>
 </div>
@@ -122,20 +129,23 @@ done.  no accounts to configure, no steps to chain.</pre>
   <div class="wrap">
     <span class="kicker">Why this exists</span>
     <h2>General assistants can read your voice note. They just can't always transcribe it.</h2>
-    <p class="sub">In our tests, a mainstream AI assistant identified a genuine WhatsApp voice note
-      perfectly — codec, container, duration, sample rate — and still answered that it had no speech
-      recognition available in that session. You can't predict when it will work. We do one job,
-      and it works every time.</p>
+    <p class="sub">A general assistant will happily identify a voice note — codec, container,
+      duration, sample rate — and then tell you it has no speech recognition available in that
+      session. Whether it transcribes is not something you can predict before you need it.
+      This does one job, and tells you plainly when it cannot: every failure has a named cause
+      and a way forward, because it depends on providers we do not control.</p>
     <div class="grid cols-3">
-      <div class="card"><h3>Made for WhatsApp audio</h3>
-        <p>Voice notes are Opus audio in an Ogg container — and sometimes AAC when forwarded between
-           iPhone apps. We accept both and detect the format from the file's content, never the extension.</p></div>
+      <div class="card"><h3>The formats voice notes actually arrive in</h3>
+        <p>Chat voice messages are usually Opus in an Ogg container; forwarded between iPhone apps they
+           arrive as AAC in .m4a. We take both, and detect the format from the file's <em>content</em>
+           rather than its extension — because the extension is often wrong.</p></div>
       <div class="card"><h3>One complete job</h3>
-        <p>Not a step in someone else's workflow. Upload a voice note, get everything you need back
-           at once: the words, the meaning, the summary — and a visual if you want it.</p></div>
+        <p>Not a step in someone else's workflow. Drop in a recording and get everything back at
+           once: the words, a translation if you need one, the debrief — and a visual if you want it.</p></div>
       <div class="card"><h3>Nothing to install, nothing stored</h3>
-        <p>Everything runs in your browser or app. There is no backend holding your audio —
-           your files and your credits stay with you.</p></div>
+        <p>Everything runs in this browser. There is no backend of ours holding your audio, no
+           account and nothing to install — though the audio itself is sent onward for
+           transcription, which is the next section.</p></div>
     </div>
   </div>
 </section>
@@ -143,12 +153,12 @@ done.  no accounts to configure, no steps to chain.</pre>
 <section id="how" class="alt">
   <div class="wrap">
     <span class="kicker">How it works</span>
-    <h2>From voice memo to insights in seconds</h2>
+    <h2>From a recording to a debrief, in one pass</h2>
     <p class="sub">The whole journey, end to end:</p>
     <div class="grid cols-4">
-      <div class="card"><span class="step-n">1</span><h3>Upload</h3><p>Drag in the voice note from WhatsApp — laptop download, Android export or iPhone forward.</p></div>
+      <div class="card"><span class="step-n">1</span><h3>Upload</h3><p>Drag in any voice note or recording — a chat voice message, a phone memo, a meeting recording, a dictaphone file.</p></div>
       <div class="card"><span class="step-n">2</span><h3>Choose options</h3><p>Decide whether you'd like an infographic with your results — and which model draws it.</p></div>
-      <div class="card"><span class="step-n">3</span><h3>One pass</h3><p>Transcript, analysis and a short debrief come back together. No chaining steps.</p></div>
+      <div class="card"><span class="step-n">3</span><h3>One pass</h3><p>Transcript, a translation when the recording is not already in your language, and the debrief — together, without chaining steps.</p></div>
       <div class="card"><span class="step-n">4</span><h3>Export</h3><p>Copy, download as markdown, or save the infographic. Your results are yours.</p></div>
     </div>
   </div>
@@ -156,57 +166,89 @@ done.  no accounts to configure, no steps to chain.</pre>
 
 <section id="privacy">
   <div class="wrap">
-    <span class="kicker">Privacy</span>
-    <h2>Privacy is a mode you choose, not a disclaimer you scroll past</h2>
-    <p class="sub">Different voice notes deserve different handling. Three modes are designed;
-      today's beta runs in <strong>routed</strong> mode, and the per-upload selector ships when
-      restricted and browser-local do <span class="tag higher">PROPOSED</span>:</p>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Mode</th><th>Where it runs</th><th>Privacy</th><th>Price</th></tr></thead>
-        <tbody>
-          <tr><td><span class="tag default">ROUTED — DEFAULT</span></td>
-              <td>Any provider via our model router</td>
-              <td>No guarantee which provider processes it — we say so up front</td>
-              <td>Cheapest</td></tr>
-          <tr><td><span class="tag higher">RESTRICTED</span></td>
-              <td>Only providers you choose</td>
-              <td>Named processors</td>
-              <td>Higher</td></tr>
-          <tr><td><span class="tag private">BROWSER-LOCAL</span></td>
-              <td>Your own device</td>
-              <td>Nothing leaves your device</td>
-              <td>Possibly free</td></tr>
-        </tbody>
-      </table>
+    <span class="kicker">Where your audio goes</span>
+    <h2>We cannot tell you who processes your recording</h2>
+    <p class="sub">This used to describe three privacy modes and let you pick one. Two of the three
+      did not exist, so it was not a choice — and offering a privacy <em>selector</em> implies a
+      control we do not have. Here is what actually happens:</p>
+    <div class="honest"><strong>Your audio and its transcript are sent to OpenRouter</strong>, which
+      passes them to a model provider. <strong>We do not know which provider handles your recording,
+      and we have no control over what they do with it.</strong> Do not use this for anything you
+      would not hand to a third party.</div>
+    <div class="grid cols-3">
+      <div class="card"><h3>What we genuinely do not hold</h3>
+        <p>There is no backend of ours. Your audio is never stored on a server we run, there is no
+           account, and nothing about you is tracked. Your key stays in this browser's local storage
+           and goes only to OpenRouter with each request.</p></div>
+      <div class="card"><h3>What that does not protect you from</h3>
+        <p>The recording still leaves your device, because transcription happens at a model provider.
+           "No backend" is a statement about us; it is not a statement about them.</p></div>
+      <div class="card"><h3>What would change it</h3>
+        <p>Processing on your own device would mean nothing leaves at all, and restricting to named
+           providers would mean we could tell you who. Neither is built. When one is, it will appear
+           here as a thing you can use, not as a mode you can select and then not have.</p></div>
     </div>
-    <div class="honest"><strong>Honesty note:</strong> the default mode is the least private —
-      requests are routed to whichever model provider serves them, and we cannot promise which one.
-      If that matters for a recording, wait for restricted or browser-local mode before uploading it.
-      A full privacy notice is being written and will be published here; until it is, this note and
-      the <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">open repository</a>
-      are the record.</div>
+    <p class="price-note">A full privacy notice is being written and will be published here; until it
+      is, this section and the
+      <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">open repository</a>
+      are the record.</p>
   </div>
 </section>
 
-<section id="pricing" class="alt">
+<section id="sources" class="alt">
   <div class="wrap">
-    <span class="kicker">Pricing</span>
-    <h2>Pay for what you use. Pence per transcription.</h2>
-    <p class="sub"><strong>Today (beta):</strong> bring your own <a href="https://openrouter.ai" style="color:inherit">OpenRouter</a>
-      key and pay the provider directly — a typical pass costs a fraction of a penny to a few pence,
-      with no margin added. The credit product below is the plan, not yet the product.</p>
+    <span class="kicker">Getting the audio</span>
+    <h2>Six ways a recording reaches this page</h2>
+    <p class="sub">Voice notes are the common case and chat apps are the common source — but nothing
+      here is specific to one app. If it is audio, it works.</p>
     <div class="grid cols-3">
-      <div class="card"><h3>Pay as you go</h3><p>Each transcription priced at or under ~20p, passed
-        through close to what the work actually costs.</p></div>
-      <div class="card"><h3>Credits from £5 <span class="tag higher">PROPOSED</span></h3><p>Top-ups start at £5 so card fees don't eat your
-        credit — at £1, fixed fees would take 40% of it. We'd rather tell you that than hide it.</p></div>
-      <div class="card"><h3>Your credit, your key <span class="tag higher">PROPOSED</span></h3><p>Your balance is provisioned as your own
-        metered key with a hard spend cap. No invoices, no billing system, no surprises.</p></div>
+      <div class="card"><h3>Chat voice messages</h3>
+        <p>WhatsApp, Signal, Telegram. On a laptop: open the web or desktop client, hover the message,
+           download. On Android: share or export the message. Arrives as <code>.opus</code> or
+           <code>.ogg</code>.</p></div>
+      <div class="card"><h3>iPhone Voice Memos</h3>
+        <p>Share → Save to Files, or AirDrop it to yourself. Arrives as <code>.m4a</code>.</p></div>
+      <div class="card"><h3>Android recorder</h3>
+        <p>The built-in Recorder app, or whatever your phone ships. Share → Save, usually
+           <code>.m4a</code> or <code>.ogg</code>.</p></div>
+      <div class="card"><h3>Meeting recordings</h3>
+        <p>Zoom, Meet and Teams all export an audio-only file. Use that rather than the video — it is
+           smaller and costs less to transcribe.</p></div>
+      <div class="card"><h3>Dictaphones and cameras</h3>
+        <p>Anything that writes a file to a card. If it is <code>.m4a</code>, <code>.ogg</code> or
+           <code>.opus</code>, drop it in.</p></div>
+      <div class="card"><h3>Anything else</h3>
+        <p>Format is detected from the file's content, not its name, so a wrongly-named file usually
+           still works. If it genuinely cannot be read, you get told which format arrived.</p></div>
     </div>
-    <p class="price-note">The beta is live now, bring-your-own-key. PROPOSED next: capped,
-      free-to-try credits provisioned as your own metered key for the first users. The
-      browser-local mode may be entirely free.</p>
+    <p class="price-note">WhatsApp is a trademark of Meta Platforms, Inc. This product is not
+      affiliated with, endorsed by or connected to WhatsApp or Meta — it simply reads the files their
+      app produces, along with everyone else's.</p>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <span class="kicker">What it costs</span>
+    <h2>There is no plan, no credit and no card. You pay OpenRouter directly.</h2>
+    <p class="sub">This page used to describe a credit product with prices. It does not exist, and
+      labelling it PROPOSED did not stop it reading as a price list — so it is gone. What is true
+      today: you bring your own <a href="openrouter-key/">OpenRouter key</a>, every model
+      call is billed to you by them, and <strong>we add no margin</strong> because there is nothing
+      of ours in the path to add it to.</p>
+    <div class="grid cols-3">
+      <div class="card"><h3>What a pass actually cost</h3>
+        <p>Measured on real runs of a 90-second note: a few tenths of a penny for the transcript, the
+           metadata and the debrief together. The infographic is the expensive part when you ask for
+           one — it is an image model.</p></div>
+      <div class="card"><h3>You see the ceiling first</h3>
+        <p>Before anything runs, the page quotes the maximum this pass can cost with the options you
+           chose. A run can come in under it — a recording already in your language does not pay to be
+           translated — and it cannot go over without stopping.</p></div>
+      <div class="card"><h3>We do not set the price</h3>
+        <p>OpenRouter does, per model, and it changes. Any figure here is something we observed, not
+           something we charge. Set a spend limit on your key and the ceiling is yours, not ours.</p></div>
+    </div>
   </div>
 </section>
 
@@ -226,6 +268,7 @@ done.  no accounts to configure, no steps to chain.</pre>
     <div>© 2026 SGraph / The Cyber Boardroom — Simple. Private. Portable.<br>
       Site content released under CC BY 4.0. &nbsp;·&nbsp; <a href="versions/" style="color:#dbe6f5"><span id="site-version">v0.1.0</span></a></div>
     <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a>
+      &nbsp;·&nbsp; <a href="openrouter-key/">Getting a key</a>
       &nbsp;·&nbsp; <a href="library/">Library</a> &nbsp;·&nbsp; <a href="updates/">Updates</a>
       &nbsp;·&nbsp; <a href="engineering/">Engineering</a></div>
   </div>

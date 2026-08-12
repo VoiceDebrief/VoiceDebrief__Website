@@ -1,4 +1,4 @@
-# WhatsApp Voice Note Transcribe — JS API
+# VoiceDebrief — JS API
 
 Published as `window.__tool` (SgToolApi, name `whatsapp-transcribe`) after `tool:ready`.
 Every action returns a Promise. Authoritative list: `../manifest.json` `api` section.
