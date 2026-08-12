@@ -171,13 +171,22 @@ try {
 
     const key = page.locator('wa-key-panel input')
     await key.fill('sk-or-v1-mock-qa-to-docs')
-    await page.locator('wa-key-panel button').click()
-    await page.waitForFunction(() => document.querySelector('wa-key-panel').shadowRoot
-        .querySelector('input').placeholder.includes('key saved'), null, { timeout: 10000 })
+    // Named, not positional: the panel gained a change/cancel pair when it
+    // learned to collapse (issue 062), so "the button" is now three of them.
+    await page.locator('wa-key-panel .wa-key__save').click()
+    // v0.1.3 signals a saved key by COLLAPSING the form rather than by rewriting
+    // the placeholder — the panel is a setup step and a finished setup step
+    // should get out of the way (issue 062).
+    await page.waitForFunction(() => {
+        const sr = document.querySelector('wa-key-panel').shadowRoot
+        const saved = sr.querySelector('.wa-key__saved')
+        return saved && !saved.hidden
+    }, null, { timeout: 10000 })
     check('one-pass: key saves via the panel', true)
     await capture('02-key-saved')
 
-    await page.locator('.sample-chip').first().click()
+    // [data-sample]: the keyless demo button shares the styling but loads no file.
+    await page.locator('.sample-chip[data-sample]').first().click()
     await page.waitForFunction(() => !document.querySelector('#file-section').hidden, null, { timeout: 10000 })
     check('one-pass: sample loads into the options screen', true)
     await capture('03-options')
