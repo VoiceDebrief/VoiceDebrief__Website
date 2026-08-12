@@ -18,6 +18,37 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **A Tools section, and the voice pane becomes a tool (issue 063, Dinis)** — the
+  🎙 pane shipped on `/updates/` yesterday did its job so well that it was
+  obviously in the wrong place: a general capability bolted to one page,
+  reachable only by readers of the news. It is now **`/tools/text-to-speech/`**,
+  the first entry in a new **`/tools/`** section, and `wa-voice-panel` is
+  retired — two implementations of one thing is how a codebase starts lying.
+  The section page says what a tool here has to be (one job one page, no
+  backend, the caller's own key, an API and not just a UI, honest about cost),
+  so the next one has a shape to fit. `wa-site-nav` **v0.1.8** adds *Tools ▾*.
+  The tool's own page states the **whole workflow** with nothing hidden: your
+  text stays local until you press the button, the module loads on first use, one
+  HTTPS call to OpenRouter at `openai/gpt-audio`, and the cost read back from the
+  generation id rather than estimated.
+
+  The part that makes it more than a page move: it **publishes `window.__tool`**
+  — the same SgToolApi primitive the app does, with a manifest and a skills
+  document — so a Playwright script or any browser-driving agent can make audio
+  with no UI at all: `synthesize`, `getVoices`, `setApiKey`, `hasApiKey`,
+  `getLastAudio`, `saveLastAudio`, `newsScriptFor`. Audio crosses as **base64**,
+  because a Blob does not survive `page.evaluate`; `saveLastAudio` covers the
+  other case by triggering a real download Playwright captures. One `speak()`
+  serves both the button and the API, so there is no "API version" to drift from
+  what a human gets. Six browser tests, 30 assertions, **no key, no network, no
+  spend** — and verified beyond the suite against the real `sg-tool-api` bytes in
+  a headless browser, down to the captured download. The page's bootstrap is a
+  **file**, not an inline module, because CI's cache-buster cannot stamp an
+  import written inline in HTML — the trap issue 026 recorded and issue 050 found
+  again. The publishing half of issue 062 (a `## Spoken` script in the markdown,
+  MP3, the RSS enclosure, a player on the post) is still open, but it now has an
+  authoring tool an agent can drive.
+
 - **The Updates can read themselves aloud (issue 062, Dinis's steer)** — a 🎙
   side pane on `/updates/`, in the family of the chat, debug and flow panes:
   pick a post, edit the news-style script it pre-fills, pick a voice, hear it,

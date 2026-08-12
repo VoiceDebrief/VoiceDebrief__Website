@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://whatsapp-voice-transcription.sgraph.ai/tools/">
+<title>Tools — Voice Note Transcribe</title>
+<meta name="description" content="Small, single-purpose browser tools built alongside the WhatsApp voice note transcription app. Your key, your browser, no backend — and every one of them has a JS API agents can drive.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Voice Note Transcribe">
+<meta property="og:title" content="Tools — small things that run in your browser">
+<meta property="og:description" content="Single-purpose tools built alongside the app. Your key, your browser, no backend, and a JS API for agents.">
+<meta property="og:url" content="https://whatsapp-voice-transcription.sgraph.ai/tools/">
+<meta name="twitter:card" content="summary">
+<style>
+  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f2f5f9;--line:#dbe3ec;
+        --accent:#1f7a4d;--accent-2:#2563eb;--muted:#5b6b7f;--radius:14px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:#fff;line-height:1.6}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:40px 0}
+  .page-head h1{font-size:1.8rem}
+  .page-head p{color:#c8d6e8;margin-top:8px;max-width:64ch}
+  main{padding:40px 0 60px}
+  .kicker{color:var(--accent-2);font-size:.78rem;font-weight:700;letter-spacing:1.2px;
+          text-transform:uppercase;margin:0 0 12px}
+  .kicker.later{margin-top:36px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .card{border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;background:#fff}
+  .card h3{font-size:1.05rem;margin-bottom:6px}
+  .card h3 a{color:var(--ink);text-decoration:none}
+  .card h3 a:hover{color:var(--accent-2)}
+  .card p{font-size:.9rem;color:var(--muted)}
+  .card p+p{margin-top:8px}
+  .card .tag{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;
+             background:#e8effc;color:var(--accent-2);margin-bottom:8px;letter-spacing:.3px}
+  .card .tag.soon{background:#f3f0e6;color:#8a6d1f}
+  .card .api{margin-top:10px;font-size:.76rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+             color:var(--muted)}
+  .card.soon{background:var(--mist);border-style:dashed}
+  .rules{background:var(--mist);border-radius:var(--radius);padding:18px 20px;margin-top:34px}
+  .rules h2{font-size:1.1rem;margin-bottom:6px}
+  .rules ul{margin:10px 0 0 18px;font-size:.9rem;color:var(--muted)}
+  .rules li{margin-bottom:6px}
+  .rules b{color:var(--ink)}
+  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
+  footer a{color:#dbe6f5}
+  a{color:var(--accent-2)}
+</style>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
+</head>
+<body>
+<wa-site-nav></wa-site-nav>
+
+<div class="page-head">
+  <div class="wrap">
+    <h1>Tools</h1>
+    <p>Building the transcription app keeps producing small, useful things that are not
+       the app. This is where they live: one job each, running entirely in your browser
+       on your own key — and each one carries a JS API, so an agent can use it exactly
+       as a person does.</p>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+
+    <div class="kicker">Available now</div>
+    <div class="grid">
+      <div class="card"><span class="tag">AUDIO</span>
+        <h3><a href="text-to-speech/">🎙 Text to speech</a></h3>
+        <p>Paste any text, pick one of six voices, and download the spoken <code>.wav</code>.
+           Built for reading the Journalist's updates aloud as news-style voice memos, but it
+           reads whatever you give it.</p>
+        <p>One HTTPS call to OpenRouter with your key; the cost is read back from the
+           generation, not estimated.</p>
+        <p class="api"><a href="text-to-speech/skills/SKILL__api.md">JS API</a> ·
+           <a href="text-to-speech/manifest.json">manifest.json</a></p></div>
+    </div>
+
+    <div class="kicker later">Already elsewhere on this site</div>
+    <div class="grid">
+      <div class="card"><span class="tag">AUDIO</span>
+        <h3><a href="/app/">The transcription app</a></h3>
+        <p>The product itself: a WhatsApp voice note in, a transcript, an analysis and a
+           short brief out. It is the reason everything here exists, and it publishes the
+           same kind of JS API these tools do.</p>
+        <p class="api"><a href="/app/skills/SKILL__api.md">JS API</a> ·
+           <a href="/app/manifest.json">manifest.json</a></p></div>
+      <div class="card"><span class="tag">DESIGN</span>
+        <h3><a href="/design/">Design candidates</a></h3>
+        <p>Three interface themes and four culture packs, each running the real flow, side
+           by side. Not a tool you would use daily — a way to see and argue about what the
+           app should look like.</p></div>
+    </div>
+
+    <div class="rules">
+      <h2>What makes something a tool here</h2>
+      <ul>
+        <li><b>One job, one page.</b> If it needs a tour, it is a product, not a tool.</li>
+        <li><b>No backend.</b> Everything runs in the browser — there is no server here to
+            send your text, your audio or your key to.</li>
+        <li><b>Your key, your bill.</b> Anything that costs money uses your own OpenRouter
+            key, kept in this browser and sent only to OpenRouter.</li>
+        <li><b>An API, not just a UI.</b> Every tool publishes <code>window.__tool</code>
+            with a manifest and a skills document, so a Playwright script or an agent can do
+            what the page does without a human clicking.</li>
+        <li><b>Honest about cost and limits.</b> Where a real number exists, we read it back
+            rather than estimate it.</li>
+      </ul>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 ·
+    <a href="/">Home</a> · <a href="/library/">Library</a> · <a href="/app/">The app</a> ·
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a> ·
+    <a href="/versions/"><span id="site-version">dev</span></a></div>
+</footer>
+<script>fetch('/version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'dev').then(v=>{document.getElementById('site-version').textContent=v.trim()}).catch(()=>{})</script>
+</body>
+</html>

@@ -13,6 +13,10 @@ The app is a JavaScript tool published as `window.__tool` (an SgToolApi named
 the machine-readable surfaces below are maintained for you and are always in
 step with the deployed build.
 
+The same is true of everything under `/tools/`: each is a single-purpose page
+that publishes its own `window.__tool`, with a manifest and a skills document,
+so an agent can do what a person does there without a UI.
+
 ## The app, for agents
 
 - [API skill](https://whatsapp-voice-transcription.sgraph.ai/app/skills/SKILL__api.md): every `window.__tool` action with params and returns — run a pass, read results, drive the chat, read the workflow and its execution trace
@@ -20,6 +24,14 @@ step with the deployed build.
 - [Human guide](https://whatsapp-voice-transcription.sgraph.ai/app/skills/SKILL__human.md): the app explained for people
 - [Action manifest](https://whatsapp-voice-transcription.sgraph.ai/app/manifest.json): the full action list, machine-readable
 - [The declared workflow](https://whatsapp-voice-transcription.sgraph.ai/app/workflows/standard.json): the one-pass as a JSON state machine — steps, models, per-step spending ceilings, transitions, failure behaviour. The app executes from this file
+
+## The tools, for agents
+
+- [Tools](https://whatsapp-voice-transcription.sgraph.ai/tools/): the index — small, single-purpose browser tools built alongside the app
+- [Text to speech](https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/): text in, a spoken `.wav` out, in the browser on the caller's own OpenRouter key
+- [Text to speech — API skill](https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/skills/SKILL__api.md): every action with params, returns, typed errors and a Playwright example. Audio comes back as base64, because a Blob does not survive `page.evaluate`
+- [Text to speech — human guide](https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/skills/SKILL__human.md)
+- [Text to speech — action manifest](https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/manifest.json)
 
 ## Live state, machine-readable
 
@@ -46,6 +58,7 @@ step with the deployed build.
 - [Updates](https://whatsapp-voice-transcription.sgraph.ai/updates/): the dated build-in-public record
 - [Versions](https://whatsapp-voice-transcription.sgraph.ai/versions/): every release, with diffs
 - [Videos](https://whatsapp-voice-transcription.sgraph.ai/videos/): demos and shorts
+- [Tools](https://whatsapp-voice-transcription.sgraph.ai/tools/): small browser tools built alongside the app — today, text to speech
 - [Library](https://whatsapp-voice-transcription.sgraph.ai/library/): every document behind the product
 
 ## Source

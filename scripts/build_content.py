@@ -491,7 +491,8 @@ def build(out_dir, check_only=False):
     pages = [('/', content_mod), ('/app/', None), ('/updates/', max(p['date'] for p in published)),
              ('/versions/', max(v['date'] for v in versions)),
              ('/videos/', max((v['date'] for v in live_videos), default=None)),
-             ('/library/', None), ('/engineering/', None), ('/engineering/pipeline/', None),
+             ('/library/', None), ('/tools/', None), ('/tools/text-to-speech/', None),
+             ('/engineering/', None), ('/engineering/pipeline/', None),
              ('/engineering/testing/', None), ('/engineering/docs/', None),
              ('/engineering/security/', None), ('/engineering/team/', None),
              ('/engineering/concepts/', None)]

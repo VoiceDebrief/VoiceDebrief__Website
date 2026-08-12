@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/">
+<title>Text to speech — Tools</title>
+<meta name="description" content="Turn any text into a spoken audio file in your browser, with your own OpenRouter key. Six voices, a .wav to download, and a JS API so agents can do the same.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Voice Note Transcribe">
+<meta property="og:title" content="Text to speech — text in, a spoken file out">
+<meta property="og:description" content="Paste text, pick a voice, download the .wav. Runs in your browser on your own OpenRouter key, and publishes a JS API agents can drive.">
+<meta property="og:url" content="https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/">
+<meta name="twitter:card" content="summary">
+<!-- Same allowlist as the app (issue 037): the engine origin for the module,
+     OpenRouter for the one call that costs money, and nothing else. The audio
+     never leaves the page, so media-src needs only data: and blob:. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://dev.tools.sgraph.ai https://tools.sgraph.ai; connect-src 'self' https://dev.tools.sgraph.ai https://tools.sgraph.ai https://openrouter.ai; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
+<style>
+  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f4f7fb;--line:#dbe3ec;
+        --green:#25d366;--accent:#2563eb;--muted:#5b6b7f;--radius:14px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:#fff;line-height:1.65}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:38px 0 34px}
+  .crumb{font-size:.8rem;color:#93a7c4;margin-bottom:8px}
+  .crumb a{color:#c8d6e8}
+  .page-head h1{font-size:1.8rem}
+  .page-head p{color:#c8d6e8;margin-top:8px;max-width:62ch}
+  main{padding:34px 0 60px;display:flex;flex-direction:column;gap:26px}
+  .card{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:#fff}
+  .card.alt{background:var(--mist)}
+  label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+        color:var(--muted);display:block;margin-bottom:5px}
+  textarea,input,select{width:100%;font:inherit;font-size:.95rem;padding:10px 12px;border-radius:9px;
+        border:1px solid var(--line);background:#fff;color:var(--ink)}
+  textarea{min-height:190px;line-height:1.6;resize:vertical}
+  .row{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+  .row>div{flex:1;min-width:190px}
+  button{font:inherit;font-weight:700;font-size:.95rem;padding:12px 20px;border:0;border-radius:10px;
+         background:var(--green);color:#06301a;cursor:pointer;margin-top:16px}
+  button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+  .status{margin-top:12px;font-size:.9rem;color:var(--muted);min-height:1.3em}
+  .status.err{color:#b3261e}
+  #out{margin-top:16px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:16px}
+  audio{width:100%}
+  #dl{font-weight:600;color:var(--accent)}
+  #meta,.meta{font-size:.78rem;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  h2{font-size:1.15rem;margin-bottom:8px}
+  p.sub{color:var(--muted);font-size:.95rem}
+  ol.flow{margin:12px 0 0 20px;font-size:.95rem}
+  ol.flow li{margin-bottom:7px}
+  pre{background:#0e1620;color:#dbe6f5;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:.82rem;line-height:1.55;margin-top:10px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .note{border:1px dashed var(--line);border-radius:10px;padding:12px 15px;font-size:.88rem;color:var(--muted)}
+  .note b{color:var(--ink)}
+  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
+  footer a{color:#dbe6f5}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<wa-site-nav></wa-site-nav>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="../">tools</a> / text to speech</div>
+    <h1>Text to speech</h1>
+    <p>Turn any text into a spoken audio file, in this browser, with your own OpenRouter key.
+      Written for the Journalist's news-style voice memos, but it reads whatever you give it.</p>
+  </div>
+</div>
+
+<main>
+  <div class="wrap" style="display:flex;flex-direction:column;gap:26px">
+
+    <section class="card">
+      <label for="text">The text to read</label>
+      <textarea id="text" spellcheck="true" placeholder="Paste or type anything. Punctuation and sentence length are how you steer the pacing — a short lead-in, then the story, reads like the news.">Here is the latest from Voice Note Transcribe. The tool now has a Tools section, and this is the first thing in it.
+
+Paste any text here and a synthetic voice will read it back. Nothing is uploaded to us, and nothing is stored anywhere: the audio is made in your browser and stays there until you download it.</textarea>
+      <select id="prefill" hidden style="margin-top:10px"></select>
+      <div class="row">
+        <div><label for="voice">Voice</label><select id="voice"></select></div>
+        <div><label for="name">File name</label><input id="name" placeholder="speech" value="speech"></div>
+        <div><label for="key">Your OpenRouter key</label><input id="key" type="password" placeholder="sk-or-v1-…"></div>
+      </div>
+      <button id="go">Generate the audio</button>
+      <p class="status" id="status"></p>
+      <div id="out" hidden>
+        <audio id="audio" controls></audio>
+        <a id="dl" download>⬇ Download the .wav</a>
+        <p id="meta"></p>
+      </div>
+    </section>
+
+    <section class="card alt">
+      <h2>What actually happens</h2>
+      <p class="sub">The whole workflow, with nothing hidden — it is four steps and one HTTPS call.</p>
+      <ol class="flow">
+        <li><b>Your text stays here</b> until you press the button. Nothing is sent while you type.</li>
+        <li><b>The module loads on first use</b> — <code>core/sg-tts-openrouter</code> from
+          <code>dev.tools.sgraph.ai</code>, the same origin the transcription app imports its engine
+          from. A visitor who only reads this page fetches none of it.</li>
+        <li><b>One call to OpenRouter</b> with your key, the chosen voice and the model
+          <code>openai/gpt-audio</code>. Audio output must stream, and the only streamable format is
+          16-bit PCM at 24 kHz, so the module wraps the stream into a WAV in the page.</li>
+        <li><b>The cost is read back</b>, not guessed: the response carries a generation id, and the
+          tool asks OpenRouter what that generation actually cost.</li>
+      </ol>
+      <p class="note" style="margin-top:14px"><b>Whose money, whose data.</b> The key is yours
+        (<code>sk-or-v1-…</code>), kept in this browser under the same name the transcription app
+        uses, sent only to OpenRouter, and billed to you — a short read costs a fraction of a penny.
+        There is no backend here to store anything on. A long script may need splitting: audio
+        models cap the length of a single call.</p>
+    </section>
+
+    <section class="card">
+      <h2>For agents: the JS API</h2>
+      <p class="sub">The page publishes <code>window.__tool</code> — the same
+        <a href="/app/skills/SKILL__api.md">SgToolApi contract</a> the transcription app uses — so a
+        Playwright script (or any browser-driving agent) can make audio without a UI. Audio comes
+        back as <b>base64</b>, because a Blob does not survive <code>page.evaluate</code>.</p>
+      <table>
+        <thead><tr><th>Action</th><th>params</th><th>returns</th></tr></thead>
+        <tbody>
+          <tr><td><code>synthesize</code></td><td><code>{ text, voice?, model?, apiKey? }</code></td>
+              <td><code>{ base64, mime, bytes, durationMs, generationId, costUsd, voice, model }</code></td></tr>
+          <tr><td><code>getVoices</code></td><td><code>{}</code></td><td><code>{ voices, default, model }</code></td></tr>
+          <tr><td><code>setApiKey</code></td><td><code>{ apiKey }</code></td><td><code>{ saved }</code> — stored in this browser only</td></tr>
+          <tr><td><code>hasApiKey</code></td><td><code>{}</code></td><td><code>{ present }</code></td></tr>
+          <tr><td><code>getLastAudio</code></td><td><code>{}</code></td><td>the last result, base64 included</td></tr>
+          <tr><td><code>saveLastAudio</code></td><td><code>{ filename? }</code></td><td>triggers a real download — Playwright can capture it</td></tr>
+          <tr><td><code>newsScriptFor</code></td><td><code>{ post }</code></td><td><code>{ script }</code> — the news-read draft from an updates.json post</td></tr>
+        </tbody>
+      </table>
+      <pre><code>// Playwright: text in, .wav on disk, no UI involved.
+await page.goto('https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/')
+await page.waitForFunction(() =&gt; window.__tool)
+await page.evaluate(k =&gt; window.__tool.setApiKey({ apiKey: k }), process.env.OPENROUTER_KEY)
+
+const r = await page.evaluate(() =&gt; window.__tool.synthesize({
+  text: 'Here is the latest from Voice Note Transcribe…', voice: 'onyx' }))
+
+console.log(r.durationMs, r.costUsd)                  // what it made, what it cost
+await writeFile('memo.wav', Buffer.from(r.base64, 'base64'))</code></pre>
+      <p class="meta" style="margin-top:12px">Machine-readable: <a href="manifest.json">manifest.json</a> ·
+        <a href="skills/SKILL__api.md">SKILL__api.md</a> · the page emits <code>tts:done</code> when a
+        generation finishes.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 ·
+    <a href="/">Home</a> · <a href="../">Tools</a> · <a href="/app/">The app</a> ·
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a> ·
+    <a href="/versions/"><span id="site-version">dev</span></a></div>
+</footer>
+
+<script type="module" src="./tts-page.js"></script>
+
+</body>
+</html>
