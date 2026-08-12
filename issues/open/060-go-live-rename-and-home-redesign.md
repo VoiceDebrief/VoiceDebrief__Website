@@ -81,10 +81,13 @@ thirteen untrue claims. All thirteen are addressed.
   distinction. The general rule ("flags are not languages") is right about products that
   select a language; it is wrong about one that selects a culture. Dinis approved the
   current picker on 10 Aug.
-- **`--wa-*` → `--vd-*` token rename** (build-order task 1). A pure churn commit across
-  every component's frozen and live versions, with a CI gate that already proves every
-  token read is declared. Worth doing when a component is next revised, not as its own
-  change.
+- **A blind `--wa-*` → `--vd-*` rename** (build-order task 1's literal instruction).
+  Renaming the tokens *inside* every component would mean a new immutable version of each
+  one for no behaviour change, and the frozen versions could never be renamed at all. What
+  shipped instead achieves the same end from the other side: the new names are the source,
+  and the old names are **derived from them** in `vd-tokens.css`. Every component repaints
+  without being touched, and layer B can be deleted in one edit when the last `--wa-*`
+  reader is retired. See "12 Aug — M1" below.
 
 ## Dependencies and notes
 
@@ -124,3 +127,49 @@ debriefs and comms, `issues/done/`, `CHANGELOG.md`. Those describe what was true
 on the day they were written; rewriting them is not a link fix. The one exception
 is the 29 July Updates post, which is a *live page* — a URL there is an address
 for a page that still exists, so it now points at where that page actually is.
+
+
+## 12 Aug — M1 of the design: the colour system actually landed
+
+Dinis asked for the visual design to ship, in the order proposed: tokens, then the home
+page, then the workflow panel. This is the first.
+
+**`website/vd-tokens.css` is now the only place a colour is written on this site**, and
+that is enforced rather than asserted. It holds the design pack's five schemes
+(Signal/Night/Paper/Blueprint/Ember) and derives from them both the 46 `--wa-*` names the
+shipped components read and the twelve `--navy`/`--ink`/… names each static page used to
+carry its own copy of. One file, linked from all 34 pages, repaints the whole site —
+including through eight shadow roots, because custom properties cross the shadow
+boundary. `themes/default.css` is gone: a scheme is one attribute on `<html>`, not
+another sheet.
+
+Two things were added that the pack does not have, both named as ours in the file: a
+**chrome group** (`--vd-k*`), because the design has no dark chrome at all while the app
+and the engine room still do, and mapping those onto ink would invert them the moment a
+dark scheme was selected; and `--vd-scrim`.
+
+`check_themes.py` now has four rules, and every one of them is broken on purpose in
+`tests/unit/i18n.test.mjs` — a gate nobody has watched fail is a gate nobody knows the
+shape of. Writing those tests found **two real holes in the gate itself**:
+
+1. its CSS parser required a trailing semicolon, so a scheme whose last declaration
+   omitted one was skipped silently — it reported "themes ok" about a block it had not
+   read;
+2. rule 4 tested whether the string `vd-tokens.css` appeared in a page, which a *comment*
+   satisfies. The home page shipped un-themed while the rule reported it linked. It now
+   matches the `<link>` element. Same lesson as the locale panel and the summary prompt
+   before it: assert the thing the browser acts on, never the text that was supposed to
+   cause it.
+
+`wa-site-nav` v0.1.9 is colour only — ten literal `rgba()` overlays became token reads, so
+the one component on every page stops being the exception. `m1-spike-test.html`, a public
+leftover from the very first spike, is deleted.
+
+**Verified by measurement, not by looking:** `data-vd-theme` set on `<html>` changes the
+computed background *inside the nav's shadow root*, and all five schemes resolve to five
+distinct values. The qa-to-docs run moved all seven screenshots by 0.2–3.5% of pixels with
+**no geometry change on any of them** — which is the signature of a palette moving under an
+untouched layout, and the evidence that this step changed colour and nothing else.
+
+**Deliberately still true after M1:** the site has its old *shape*. The header is still
+dark, the home page is still the previous layout. That is M2.

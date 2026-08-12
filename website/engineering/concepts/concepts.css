@@ -8,9 +8,9 @@
    keep = green (nothing to do). */
 
 :root{
-  --v-change:#b45309; --v-change-bg:#fdf1e3; --v-change-line:#e0a445;
-  --v-decide:#2563eb; --v-decide-bg:#e8effc; --v-decide-line:#b9cdf2;
-  --v-keep:#1f7a4d;   --v-keep-bg:#e9f9ef;   --v-keep-line:#a9dcc0;
+  --v-change:var(--vd-wi); --v-change-bg:var(--vd-wb); --v-change-line:var(--vd-wl);
+  --v-decide:var(--vd-at); --v-decide-bg:var(--vd-tn); --v-decide-line:var(--vd-tl);
+  --v-keep:var(--vd-at);   --v-keep-bg:var(--vd-tn);   --v-keep-line:var(--vd-tl);
 }
 
 /* ── view + scheme pickers ─────────────────────────────────────────────── */
@@ -19,7 +19,7 @@
   padding:7px 15px;border-radius:999px;border:1px solid var(--line);
   background:var(--paper);color:var(--muted)}
 .viewpick button:hover{border-color:var(--accent-2);color:var(--accent-2)}
-.viewpick button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.viewpick button.on{background:var(--navy);border-color:var(--navy);color:var(--vd-ki)}
 .filters{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
 .filters button{font:inherit;font-size:.78rem;cursor:pointer;padding:4px 11px;
   border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted)}

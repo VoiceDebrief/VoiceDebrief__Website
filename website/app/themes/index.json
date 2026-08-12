@@ -1,13 +1,31 @@
 {
-  "note": "The theme allowlist (issue 050, M1). A theme is ONE stylesheet of --wa-* tokens on :root, plus an optional data-layout class for genuinely different arrangements. Selection may only ever name a key from this file — never a URL, never a query parameter (the issue-041 rule: nothing outside the repo decides what the page loads). CI checks every listed sheet declares exactly the tokens default.css declares, so a half-finished candidate fails the build instead of shipping with holes.",
-  "default": "default",
-  "themes": {
-    "default": {
-      "label": "Default",
-      "sheet": "default.css",
-      "layout": null,
+  "note": "The colour-scheme allowlist (issue 050, retargeted by issue 060). A scheme is one block of --vd-* tokens in website/vd-tokens.css, selected by data-vd-theme on <html>. Selection may only ever name a key from this file — never a URL, never a query parameter (the issue-041 rule: nothing outside the repo decides what the page loads). CI checks every scheme declares exactly the tokens Signal declares, so a half-finished scheme fails the build instead of shipping with holes. Nothing at runtime reads this file yet: no scheme picker is exposed to users, and until one is, Signal is what everybody gets.",
+  "default": "signal",
+  "schemes": {
+    "signal": {
+      "label": "Signal",
       "status": "live",
-      "description": "The design the product shipped with — extracted from app.css and the nine component stylesheets, unchanged."
+      "description": "Light, green. The default and the only scheme any visitor currently sees. The accent moved off Meta's #25d366 to #0E9E72 — same family, cooler, dark enough to hold 4.5:1 as text on white."
+    },
+    "night": {
+      "label": "Night",
+      "status": "draft",
+      "description": "Dark, green. DRAFT because the --wa-* bridge layer conflates a card surface with text-on-dark; a component must be ported to --vd-* before it can claim to support a dark scheme."
+    },
+    "paper": {
+      "label": "Paper",
+      "status": "draft",
+      "description": "Warm off-white, terracotta. Same caveat as Night for any --wa-* component, though it is a light scheme so the bridge mostly holds."
+    },
+    "blueprint": {
+      "label": "Blueprint",
+      "status": "draft",
+      "description": "White, electric blue, hard greys. Light, so the bridge holds."
+    },
+    "ember": {
+      "label": "Ember",
+      "status": "draft",
+      "description": "Dark, amber. Same caveat as Night."
     }
   }
 }

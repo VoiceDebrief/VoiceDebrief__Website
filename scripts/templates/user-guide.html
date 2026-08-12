@@ -15,17 +15,19 @@
 <meta property="og:description" content="Every picture in this guide was taken by a passing test. The docs cannot drift from the product.">
 <meta property="og:url" content="https://voicedebrief.ai/user-guide/">
 <meta name="twitter:card" content="summary">
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js"></script>
+<link rel="stylesheet" href="/vd-tokens.css">
 <style>
-  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f2f5f9;--line:#dbe3ec;
-        --accent-2:#2563eb;--muted:#5b6b7f;--radius:14px}
+/* Colour comes from /vd-tokens.css — the page-level names (--navy, --ink,
+   --line, --accent, --muted, --radius…) are declared there, once, from the
+   --vd-* schemes. This page used to carry its own copy of the same hexes. */
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-       color:var(--ink);background:#fff;line-height:1.65}
+       color:var(--ink);background:var(--vd-c);line-height:1.65}
   .wrap{max-width:860px;margin:0 auto;padding:0 20px}
-  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:40px 0}
+  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:var(--vd-ki);padding:40px 0}
   .page-head h1{font-size:1.8rem}
-  .page-head p{color:#c8d6e8;margin-top:8px;max-width:640px}
+  .page-head p{color:var(--vd-km);margin-top:8px;max-width:640px}
   main{padding:44px 0 60px}
   .guide-note{border:1px dashed var(--line);border-radius:var(--radius);padding:14px 18px;
      margin-bottom:30px;font-size:.86rem;color:var(--muted)}
@@ -34,14 +36,14 @@
   .guide-group h2{font-size:1.25rem}
   .guide-group__blurb{color:var(--muted);font-size:.92rem;margin:4px 0 18px}
   .shot{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
-        background:#fff;margin:0 0 20px}
+        background:var(--vd-c);margin:0 0 20px}
   .shot img{width:100%;height:auto;display:block;border-bottom:1px solid var(--line)}
   .shot figcaption{padding:12px 18px;font-size:.9rem;color:var(--ink)}
   .shot__pending{padding:34px 18px;text-align:center;color:var(--muted);font-size:.86rem;
      background:var(--mist);border-bottom:1px solid var(--line)}
   .guide-empty{color:var(--muted)}
-  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
-  footer a{color:#dbe6f5}
+  footer{background:var(--navy);color:var(--vd-km);padding:30px 0;font-size:.85rem}
+  footer a{color:var(--vd-km)}
 </style>
 </head>
 <body>

@@ -1,0 +1,250 @@
+/* vd-tokens.css — the site's colour, and the whole of it (issue 060, design
+   pack `02-tokens.css`).
+
+   ONE file, linked from every page, holding three layers:
+
+     A. the --vd-* schemes    the design system Claude Design specified
+     B. the --wa-* layer      the names the shipped components already read
+     C. the page layer        --navy/--ink/--line/… the static pages already read
+
+   B and C are DERIVED from A. That is the whole point: the components are
+   published at immutable paths and cannot be edited to learn new token names,
+   and the pages each had their own `:root` block of hardcoded hexes. Defining
+   the old names *from* the new ones repaints every one of them — including
+   through eight shadow roots, because custom properties inherit across the
+   shadow boundary — without touching a single component or a single page rule.
+
+   Layers B and C are a bridge, not a destination. A new component reads --vd-*
+   directly (see vd-* in website/components/). When the last --wa-* reader is
+   retired, layer B goes with it.
+
+   THE RULE THIS FILE EXISTS TO ENFORCE: no colour is written anywhere else.
+   scripts/check_themes.py fails the build on a hex outside this file in any
+   stylesheet the site ships, on a token read that nothing declares, and on a
+   scheme that is missing one — a scheme with a hole silently inherits Signal's
+   value for it, which is how a theme ends up half-applied and nobody can tell
+   whether it lost on its design or on the parts that never arrived.
+
+   Switch scheme with one attribute on <html>:  data-vd-theme="night"
+   Absent, or an unknown value, is Signal — an unknown scheme must degrade to a
+   readable page, never to an unstyled one. */
+
+
+/* ── A. The schemes ──────────────────────────────────────────────────────────
+
+   --vd-p   page background          --vd-a   accent (fills, marks)
+   --vd-b   band / subtle fill       --vd-ai  ink ON accent fills
+   --vd-c   card / panel surface     --vd-at  accent as text or link
+   --vd-l   hairline                 --vd-tn  accent tint background
+   --vd-L   border (controls)        --vd-tl  accent tint border
+   --vd-i   ink (headings)           --vd-ti  ink on accent tint
+   --vd-t   body text                --vd-w*  model-caveat pair (l/b/i/s)
+   --vd-m   muted text               --vd-e   error
+   --vd-f   faint (eyebrows)         --vd-off inert control fill
+   --vd-sh  shadow                   --vd-offi ink on inert fill
+   --vd-pz  phone bezel              --vd-ps  phone status bar
+
+   Contrast (stated by the design pack): --vd-i, --vd-t and --vd-at meet 4.5:1
+   on --vd-p in all five schemes; --vd-ai meets 4.5:1 on --vd-a. --vd-m is for
+   12-13px secondary text only. Never carry meaning in colour alone: every state
+   also has a label or a mark.
+
+   THE CHROME GROUP (--vd-k*) IS OURS, NOT THE PACK'S. The design has no dark
+   chrome at all — its header and footer are page-coloured. But the app, the
+   engine room and the record pages all still have a dark bar and a dark hero,
+   and they keep them until each is ported. Mapping those onto --vd-i would
+   break the moment a dark scheme is selected (ink is near-white there, so the
+   bar would turn white and take its white text with it), so the chrome surface
+   is declared per scheme instead of derived. It is dark in all five. */
+
+:root,
+[data-vd-theme="signal"] {
+  --vd-p:#FFFFFF; --vd-b:#F8FAFC; --vd-c:#FFFFFF; --vd-l:#E3E9EF; --vd-L:#D8E1E9;
+  --vd-i:#0B1B2B; --vd-t:#45596E; --vd-m:#6B7F94; --vd-f:#8697A8;
+  --vd-a:#0E9E72; --vd-ai:#FFFFFF; --vd-at:#0A7D5A;
+  --vd-tn:#F2FBF7; --vd-tl:#9FD8C4; --vd-ti:#204738;
+  --vd-wl:#DFA100; --vd-wb:#FFF8E8; --vd-wi:#6E5000; --vd-ws:#513A00;
+  --vd-e:#C0392B; --vd-sh:rgba(11,27,43,.09); --vd-pz:#26394D; --vd-ps:#F2F5F8;
+  --vd-off:#EDF1F5; --vd-offi:#8697A8;
+  --vd-k:#12283C; --vd-k2:#1B3A55; --vd-kh:#17334B;
+  --vd-scrim:rgba(11,27,43,.62);
+  --vd-ki:#F2F6FA; --vd-km:#A9BDD2; --vd-kl:rgba(255,255,255,.12);
+}
+
+[data-vd-theme="night"] {
+  --vd-p:#08131F; --vd-b:#0E1E2E; --vd-c:#0C1B2A;
+  --vd-l:rgba(255,255,255,.10); --vd-L:rgba(255,255,255,.16);
+  --vd-i:#F2F6FA; --vd-t:#A8BBCE; --vd-m:#8CA2B8; --vd-f:#6E869D;
+  --vd-a:#12C08A; --vd-ai:#04231A; --vd-at:#3FD6A6;
+  --vd-tn:rgba(18,192,138,.09); --vd-tl:rgba(18,192,138,.38); --vd-ti:#CFEBE0;
+  --vd-wl:#F0B429; --vd-wb:rgba(240,180,41,.09); --vd-wi:#E8D9B4; --vd-ws:#F5C860;
+  --vd-e:#FF7A6B; --vd-sh:rgba(0,0,0,.45); --vd-pz:#12202E; --vd-ps:#050D16;
+  --vd-off:rgba(255,255,255,.07); --vd-offi:#6E869D;
+  --vd-k:#050D16; --vd-k2:#12202E; --vd-kh:#0D1A28;
+  --vd-ki:#F2F6FA; --vd-km:#8CA2B8; --vd-kl:rgba(255,255,255,.10);
+  --vd-scrim:rgba(0,0,0,.70);
+}
+
+[data-vd-theme="paper"] {
+  --vd-p:#FBF7F0; --vd-b:#F4EDE1; --vd-c:#FFFDF9; --vd-l:#E5DBC9; --vd-L:#D6C9B2;
+  --vd-i:#211C15; --vd-t:#54483A; --vd-m:#786A58; --vd-f:#95886F;
+  --vd-a:#A8442A; --vd-ai:#FFF7F2; --vd-at:#8E3620;
+  --vd-tn:#F8E9E0; --vd-tl:#E0B7A3; --vd-ti:#5A2313;
+  --vd-wl:#8A6A18; --vd-wb:#F3EAD2; --vd-wi:#5C4711; --vd-ws:#3D2F07;
+  --vd-e:#96271A; --vd-sh:rgba(70,52,30,.14); --vd-pz:#3B3125; --vd-ps:#F0E7D6;
+  --vd-off:#EDE4D5; --vd-offi:#95886F;
+  --vd-k:#2E2619; --vd-k2:#3B3125; --vd-kh:#372E21;
+  --vd-ki:#FBF7F0; --vd-km:#C3B49B; --vd-kl:rgba(255,255,255,.13);
+  --vd-scrim:rgba(33,28,21,.62);
+}
+
+[data-vd-theme="blueprint"] {
+  --vd-p:#FFFFFF; --vd-b:#F1F3F7; --vd-c:#FFFFFF; --vd-l:#DDE1E9; --vd-L:#C4CAD6;
+  --vd-i:#101318; --vd-t:#3E4653; --vd-m:#616B7A; --vd-f:#828C9C;
+  --vd-a:#1B4DFF; --vd-ai:#FFFFFF; --vd-at:#1540D6;
+  --vd-tn:#EEF1FF; --vd-tl:#B7C4FF; --vd-ti:#152A80;
+  --vd-wl:#B45309; --vd-wb:#FDF3E7; --vd-wi:#7A3D06; --vd-ws:#54280A;
+  --vd-e:#C81E1E; --vd-sh:rgba(16,19,24,.10); --vd-pz:#101318; --vd-ps:#EEF0F4;
+  --vd-off:#EDEFF3; --vd-offi:#828C9C;
+  --vd-k:#101318; --vd-k2:#1D222B; --vd-kh:#181D25;
+  --vd-ki:#FFFFFF; --vd-km:#A8B0BE; --vd-kl:rgba(255,255,255,.14);
+  --vd-scrim:rgba(16,19,24,.62);
+}
+
+[data-vd-theme="ember"] {
+  --vd-p:#16130F; --vd-b:#201B15; --vd-c:#1C1813;
+  --vd-l:rgba(255,255,255,.09); --vd-L:rgba(255,255,255,.16);
+  --vd-i:#F7F1E7; --vd-t:#C6B9A6; --vd-m:#A99A85; --vd-f:#8A7C68;
+  --vd-a:#E0A22B; --vd-ai:#231705; --vd-at:#F0BB56;
+  --vd-tn:rgba(224,162,43,.10); --vd-tl:rgba(224,162,43,.38); --vd-ti:#EBDCC2;
+  --vd-wl:#8FB08A; --vd-wb:rgba(143,176,138,.10); --vd-wi:#CDE0C9; --vd-ws:#A8CBA3;
+  --vd-e:#E4705C; --vd-sh:rgba(0,0,0,.50); --vd-pz:#2A241C; --vd-ps:#100D0A;
+  --vd-off:rgba(255,255,255,.08); --vd-offi:#8A7C68;
+  --vd-k:#100D0A; --vd-k2:#2A241C; --vd-kh:#1B1712;
+  --vd-ki:#F7F1E7; --vd-km:#A99A85; --vd-kl:rgba(255,255,255,.10);
+  --vd-scrim:rgba(0,0,0,.70);
+}
+
+
+/* ── Shape and type ──────────────────────────────────────────────────────────
+   Not per-scheme: a scheme changes colour, never layout. Values from the design
+   pack's closing note. 16px is the floor for any input — anything smaller makes
+   iOS zoom the page on focus. */
+
+:root {
+  --vd-r-panel:18px;   /* the workflow panel                    */
+  --vd-r-card:13px;    /* cards, result blocks                  */
+  --vd-r-ctl:10px;     /* buttons, inputs, chips with corners   */
+  --vd-r-chip:999px;   /* pills                                 */
+  --vd-font: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --vd-font-mono: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+
+/* ── B. The --wa-* layer ─────────────────────────────────────────────────────
+   Every name the shipped components read, defined from a scheme token. The
+   components keep their own literal fallbacks — var(--wa-navy,#0b1f3a) — so
+   each still renders standalone in a harness that loads no sheet at all; this
+   layer is what makes them agree with each other on a real page.
+
+   Two of these names do two jobs, and that is why this layer is a bridge and
+   not the destination: --wa-fg is both "a card surface" and "text on the dark
+   bar", and --wa-green-ink is "ink on the accent" only. In a light scheme both
+   readings land on white and the conflation is invisible. In a dark scheme they
+   diverge, so the honest statement is: this layer is correct for the light
+   schemes, and a component must be ported to --vd-* before it can claim to
+   support Night or Ember. Nothing here pretends otherwise. */
+
+:root {
+  /* Brand and chrome */
+  --wa-navy:          var(--vd-k);
+  --wa-navy-2:        var(--vd-k2);
+  --wa-navy-hover:    var(--vd-kh);
+  --wa-ink:           var(--vd-i);
+  --wa-fg:            var(--vd-c);
+
+  /* Surfaces and borders */
+  --wa-mist:          var(--vd-b);
+  --wa-line:          var(--vd-l);
+
+  /* Secondary text */
+  --wa-muted:         var(--vd-t);
+  --wa-muted-2:       var(--vd-f);
+  --wa-muted-on-dark: var(--vd-km);
+  --wa-muted-dark:    var(--vd-km);
+  --wa-link-on-dark:  var(--vd-ki);
+
+  /* Accent — the green moved off Meta's #25d366 to the design's #0E9E72:
+     same family, cooler, and dark enough to hold 4.5:1 as text on white.
+     Recognition without imitation (design decision 8). */
+  --wa-green:         var(--vd-a);
+  --wa-green-hi:      var(--vd-at);
+  --wa-green-ink:     var(--vd-ai);
+  --wa-green-dark:    var(--vd-at);
+  --wa-green-soft:    var(--vd-tl);
+  --wa-green-bg:      var(--vd-tn);
+
+  /* The old blue was a second accent on a one-accent system. It becomes the
+     accent, so an "informational" panel reads as the product's colour rather
+     than as a browser default that nobody chose. */
+  --wa-blue:          var(--vd-at);
+  --wa-blue-bg:       var(--vd-tn);
+  --wa-blue-line:     var(--vd-l);
+  --wa-blue-line-2:   var(--vd-tl);
+
+  /* Amber is the model-caveat pair, and the design uses it NOWHERE else. */
+  --wa-amber-bg:      var(--vd-wb);
+  --wa-amber-line:    var(--vd-wl);
+  --wa-amber-ink:     var(--vd-wi);
+
+  /* Error */
+  --wa-danger:        var(--vd-e);
+  --wa-danger-ink:    var(--vd-e);
+  --wa-danger-bg:     var(--vd-wb);
+  --wa-danger-bg-2:   var(--vd-b);
+  --wa-danger-line:   var(--vd-L);
+  --wa-danger-line-2: var(--vd-e);
+
+  /* Shadows and focus rings */
+  --wa-shadow-panel:  var(--vd-sh);
+  --wa-ring-blue:     var(--vd-tn);
+  --wa-ring-blue-2:   var(--vd-tl);
+  --wa-ring-blue-3:   var(--vd-a);
+  --wa-ring-green:    var(--vd-tn);
+  --wa-ring-green-2:  var(--vd-tl);
+  --wa-tint-green:    var(--vd-tn);
+
+  /* Overlays used on the dark chrome */
+  --wa-on-dark-04:    rgba(255,255,255,.04);
+  --wa-on-dark-08:    rgba(255,255,255,.08);
+  --wa-on-dark-12:    rgba(255,255,255,.12);
+  --wa-on-dark-28:    rgba(255,255,255,.28);
+  --wa-on-dark-30:    rgba(255,255,255,.30);
+
+  /* Type */
+  --wa-font:       var(--vd-font);
+  --wa-font-mono:  var(--vd-font-mono);
+  --wa-font-mono-2: var(--vd-font-mono);
+}
+
+
+/* ── C. The page layer ───────────────────────────────────────────────────────
+   The static pages (home, engine room, library, tools, the generated record
+   pages) each carried their own `:root` block of the same twelve hexes, copied
+   between them. Those blocks are deleted; these are the same names, defined
+   once, from the schemes. */
+
+:root {
+  --navy:    var(--vd-k);
+  --navy-2:  var(--vd-k2);
+  --ink:     var(--vd-i);
+  --paper:   var(--vd-p);
+  --mist:    var(--vd-b);
+  --line:    var(--vd-l);
+  --accent:  var(--vd-at);
+  --accent-2: var(--vd-a);
+  --warn:    var(--vd-wl);
+  --bad:     var(--vd-e);
+  --muted:   var(--vd-t);
+  --radius:  var(--vd-r-card);
+}

@@ -18,6 +18,25 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The design starts shipping: colour is now one file (issue 060)** — the site's
+  palette moved to the design pack's system. `website/vd-tokens.css` holds five
+  schemes and derives from them every colour name the components and pages
+  already read, so one file repaints everything — including inside eight shadow
+  roots. The green moved off Meta's `#25d366` to `#0E9E72`: same family, cooler,
+  and dark enough to be legible as text on white. Switching scheme is one
+  attribute on `<html>`; the four draft schemes are declared and gated but not
+  offered to anyone yet.
+  The rule the design asked for — *no colour arrives outside the tokens file* —
+  is now a build failure rather than a note, and each of the gate's four rules
+  is broken on purpose in a test. Writing those tests found two holes in the
+  gate: it skipped any CSS block whose last declaration omitted a semicolon, and
+  it checked whether a page *mentioned* the tokens file rather than whether it
+  linked it — which is how the home page shipped un-themed while the check
+  reported it fine.
+  The site still has its old shape: this step changed colour and nothing else,
+  and the seven screenshot baselines moved 0.2–3.5% with no geometry change on
+  any of them, which is the proof.
+
 - **The record was three releases behind, and now it cannot be (Dinis, spotted)**
   — "the versions files doesn't seem to be in sync". The `version` file was fine:
   it is CI-owned, only `dev`/`main` bump it, and a push to `qa` never touches it,

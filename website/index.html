@@ -28,34 +28,33 @@
     "url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription" }
 }
 </script>
+<link rel="stylesheet" href="/vd-tokens.css">
 <style>
-  :root{
-    --navy:#0b1f3a; --navy-2:#122c50; --ink:#1a2433; --paper:#ffffff;
-    --mist:#f2f5f9; --line:#dbe3ec; --accent:#1f7a4d; --accent-2:#2563eb;
-    --warn:#b45309; --muted:#5b6b7f; --radius:14px;
-  }
+/* Colour comes from /vd-tokens.css — the page-level names (--navy, --ink,
+   --line, --accent, --muted, --radius…) are declared there, once, from the
+   --vd-* schemes. This page used to carry its own copy of the same hexes. */
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
        color:var(--ink);background:var(--paper);line-height:1.6}
   .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
-  .hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;
+  .hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:var(--vd-ki);
         padding:64px 0 72px;text-align:left}
   .hero h1{font-size:clamp(1.7rem,4.2vw,2.7rem);line-height:1.15;max-width:760px}
-  .hero p.lead{margin-top:18px;max-width:640px;font-size:1.08rem;color:#c8d6e8}
-  .badge{display:inline-block;background:rgba(37,211,102,.14);border:1px solid rgba(37,211,102,.45);
-         color:#8ff0b6;font-size:.78rem;padding:4px 12px;border-radius:999px;margin-bottom:18px;letter-spacing:.4px}
-  .badge a{color:#fff;text-decoration:underline;text-underline-offset:2px}
+  .hero p.lead{margin-top:18px;max-width:640px;font-size:1.08rem;color:var(--vd-km)}
+  .badge{display:inline-block;background:var(--vd-kl);border:1px solid var(--vd-tl);
+         color:var(--vd-tl);font-size:.78rem;padding:4px 12px;border-radius:999px;margin-bottom:18px;letter-spacing:.4px}
+  .badge a{color:var(--vd-ki);text-decoration:underline;text-underline-offset:2px}
   .cta-row{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap}
   .btn{display:inline-block;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:600;font-size:.95rem}
-  .btn-primary{background:#25d366;color:#07301c}
-  .btn-primary:hover{background:#2ee273}
-  .btn-ghost{border:1px solid #4b6389;color:#dbe6f5}
-  .btn-ghost:hover{border-color:#8fa8cd;color:#fff}
-  .pass{margin-top:44px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+  .btn-primary{background:var(--vd-a);color:var(--vd-ai)}
+  .btn-primary:hover{background:var(--vd-at)}
+  .btn-ghost{border:1px solid var(--vd-km);color:var(--vd-km)}
+  .btn-ghost:hover{border-color:var(--vd-km);color:var(--vd-ki)}
+  .pass{margin-top:44px;background:var(--vd-kl);border:1px solid var(--vd-kl);
         border-radius:var(--radius);padding:22px;max-width:760px;overflow-x:auto}
   .pass pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem;
-            color:#bcd3ef;line-height:1.7;white-space:pre}
+            color:var(--vd-tl);line-height:1.7;white-space:pre}
   section{padding:56px 0}
   section.alt{background:var(--mist)}
   h2{font-size:1.5rem;margin-bottom:8px}
@@ -64,31 +63,31 @@
   .grid{display:grid;gap:18px}
   .grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
   .grid.cols-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px}
-  section.alt .card{box-shadow:0 1px 3px rgba(11,31,58,.06)}
+  .card{background:var(--vd-c);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  section.alt .card{box-shadow:0 1px 3px var(--vd-sh)}
   .card h3{font-size:1.02rem;margin-bottom:6px}
   .card p{font-size:.92rem;color:var(--muted)}
-  .step-n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;
+  .step-n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--vd-ki);
           align-items:center;justify-content:center;font-size:.8rem;font-weight:700;margin-bottom:10px}
-  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--vd-c)}
   table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:560px}
   th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line)}
-  th{background:var(--navy);color:#fff;font-weight:600;font-size:.85rem}
+  th{background:var(--navy);color:var(--vd-ki);font-weight:600;font-size:.85rem}
   tr:last-child td{border-bottom:none}
   .tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;letter-spacing:.3px}
-  .tag.default{background:#e8effc;color:var(--accent-2)}
-  .tag.private{background:#e6f6ec;color:var(--accent)}
-  .tag.higher{background:#fdf1e3;color:var(--warn)}
+  .tag.default{background:var(--vd-tn);color:var(--accent-2)}
+  .tag.private{background:var(--vd-tn);color:var(--accent)}
+  .tag.higher{background:var(--vd-wb);color:var(--warn)}
   .price-note{font-size:.9rem;color:var(--muted);margin-top:14px;max-width:640px}
-  .honest{border-left:4px solid var(--accent);background:#fff;border-radius:0 var(--radius) var(--radius) 0;
+  .honest{border-left:4px solid var(--accent);background:var(--vd-c);border-radius:0 var(--radius) var(--radius) 0;
           padding:18px 20px;margin-top:26px;font-size:.93rem;color:var(--muted)}
   .honest strong{color:var(--ink)}
-  footer{background:var(--navy);color:#a9bcd6;padding:36px 0;font-size:.85rem}
+  footer{background:var(--navy);color:var(--vd-km);padding:36px 0;font-size:.85rem}
   footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
-  footer a{color:#dbe6f5}
+  footer a{color:var(--vd-km)}
   @media (max-width:640px){ .hero{padding:44px 0 52px} }
 </style>
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js"></script>
 </head>
 <body>
 

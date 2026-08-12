@@ -26,18 +26,20 @@
   "publisher": { "@type": "Organization", "name": "SGraph" }
 }
 </script>
+<link rel="stylesheet" href="/vd-tokens.css">
 <style>
-  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f2f5f9;--line:#dbe3ec;
-        --accent-2:#2563eb;--muted:#5b6b7f;--radius:14px}
+/* Colour comes from /vd-tokens.css — the page-level names (--navy, --ink,
+   --line, --accent, --muted, --radius…) are declared there, once, from the
+   --vd-* schemes. This page used to carry its own copy of the same hexes. */
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-       color:var(--ink);background:#fff;line-height:1.65}
+       color:var(--ink);background:var(--vd-c);line-height:1.65}
   .wrap{max-width:860px;margin:0 auto;padding:0 20px}
-  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:40px 0}
+  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:var(--vd-ki);padding:40px 0}
   .page-head h1{font-size:1.8rem}
-  .page-head p{color:#c8d6e8;margin-top:8px;max-width:600px}
+  .page-head p{color:var(--vd-km);margin-top:8px;max-width:600px}
   main{padding:44px 0 60px}
-  article{border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:22px;background:#fff}
+  article{border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:22px;background:var(--vd-c)}
   article h2{font-size:1.15rem;margin-bottom:2px}
   .meta{font-size:.8rem;color:var(--muted);margin-bottom:12px}
   .meta .v,.meta a.v{color:var(--accent-2);font-weight:600;text-decoration:none}
@@ -47,16 +49,16 @@
   article a{color:var(--accent-2)}
   .tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.04em;
        text-transform:uppercase;padding:2px 8px;border-radius:999px;vertical-align:middle;
-       background:#fff3d6;color:#8a5a00;border:1px solid #f0d9a0;margin-left:8px}
-  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
-  footer a{color:#dbe6f5}
+       background:var(--vd-wb);color:var(--vd-wi);border:1px solid var(--vd-wl);margin-left:8px}
+  footer{background:var(--navy);color:var(--vd-km);padding:30px 0;font-size:.85rem}
+  footer a{color:var(--vd-km)}
   article h2 a.permalink{color:inherit;text-decoration:none}
   article h2 a.permalink:hover{color:var(--accent-2)}
   article h3{font-size:1rem;margin:14px 0 6px}
   article blockquote{border-left:3px solid var(--line);padding-left:12px;color:var(--muted);margin-bottom:10px}
   article pre{background:var(--mist);border-radius:8px;padding:10px 12px;overflow-x:auto;font-size:.85rem;margin-bottom:10px}
 </style>
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js"></script>
 </head>
 <body>
 <wa-site-nav></wa-site-nav>

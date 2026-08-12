@@ -97,7 +97,7 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
-                    '/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js',
+                    '/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js',
                     '/tools/text-to-speech/tts-tool.js', '/tools/text-to-speech/manifest.json',
                     '/tools/text-to-speech/skills/SKILL__api.md',
                     '/tools/text-to-speech/skills/SKILL__human.md',

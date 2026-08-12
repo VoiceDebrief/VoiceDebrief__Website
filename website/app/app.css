@@ -77,29 +77,29 @@ footer a{color:var(--wa-link-on-dark)}
 
 /* The keyless demo chip (issue 062) — visibly a different kind of offer from the
    sample chips beside it: those need a key, this one does not. */
-.demo-chip{border-color:var(--wa-green,#25d366);color:var(--wa-green-soft,#8ff0b6);
-  background:var(--wa-tint-green,rgba(37,211,102,.06));font-weight:700}
-.demo-chip:hover{background:var(--wa-ring-green,rgba(37,211,102,.18))}
+.demo-chip{border-color:var(--wa-green,var(--vd-a));color:var(--wa-green-dark,var(--vd-at));
+  background:var(--wa-tint-green,var(--vd-tn));font-weight:700}
+.demo-chip:hover{background:var(--wa-green-bg,var(--vd-tn))}
 /* Everything a demo pass produced is stamped. A result that could be mistaken
    for the user's own recording is the one thing this feature must never do. */
 .demo-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  border:1px solid var(--wa-amber-line,#e0a445);background:var(--wa-amber-bg,#fdf1e3);
+  border:1px solid var(--wa-amber-line,var(--vd-wl));background:var(--wa-amber-bg,var(--vd-wb));
   border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:.88rem;
-  color:var(--wa-ink,#1a2433)}
+  color:var(--wa-ink,var(--vd-i))}
 .demo-banner .badge{font-size:.66rem;font-weight:800;letter-spacing:1px;
-  padding:3px 9px;border-radius:999px;background:var(--wa-amber-ink,#a05a00);color:#fff}
+  padding:3px 9px;border-radius:999px;background:var(--wa-amber-ink,#a05a00);color:var(--vd-ki)}
 
 /* The routing statement (issue 060). Body-text size, attached to the options it
    belongs with, and NOT styled as a warning — no amber, no icon. It is a
    statement of fact about where the file goes, and dressing it as a hazard is
    what teaches people to dismiss it. */
-.routing{font-size:.92rem;line-height:1.55;color:var(--wa-ink,#1a2433);
-  background:var(--wa-mist,#f2f5f9);border:1px solid var(--wa-line,#dbe3ec);
-  border-left:3px solid var(--wa-blue,#2563eb);border-radius:10px;
+.routing{font-size:.92rem;line-height:1.55;color:var(--wa-ink,var(--vd-i));
+  background:var(--wa-mist,var(--vd-b));border:1px solid var(--wa-line,var(--vd-l));
+  border-left:3px solid var(--wa-blue,var(--vd-at));border-radius:10px;
   padding:12px 15px;margin:4px 0 14px;max-width:70ch}
 /* The model caveat sits with the TRANSCRIPT, because a transcript looks
    authoritative in a way a debrief does not — the caveat belongs where that
    impression is created, not on a page nobody has results on yet. */
 .model-caveat{font-size:.88rem;line-height:1.5;color:var(--wa-amber-ink,#a05a00);
-  background:var(--wa-amber-bg,#fdf1e3);border:1px solid var(--wa-amber-line,#e0a445);
+  background:var(--wa-amber-bg,var(--vd-wb));border:1px solid var(--wa-amber-line,var(--vd-wl));
   border-radius:10px;padding:10px 14px;margin:-6px 0 16px;max-width:70ch}

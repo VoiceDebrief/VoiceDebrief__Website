@@ -6,32 +6,34 @@
 <link rel="canonical" href="https://voicedebrief.ai/library/">
 <title>Library — VoiceDebrief</title>
 <meta name="description" content="The documentation library of the WhatsApp voice note transcription tool — product briefs, developer guides, and the agentic team's working documents, all open.">
+<link rel="stylesheet" href="/vd-tokens.css">
 <style>
-  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f2f5f9;--line:#dbe3ec;
-        --accent:#1f7a4d;--accent-2:#2563eb;--muted:#5b6b7f;--radius:14px}
+/* Colour comes from /vd-tokens.css — the page-level names (--navy, --ink,
+   --line, --accent, --muted, --radius…) are declared there, once, from the
+   --vd-* schemes. This page used to carry its own copy of the same hexes. */
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-       color:var(--ink);background:#fff;line-height:1.6}
+       color:var(--ink);background:var(--vd-c);line-height:1.6}
   .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
-  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:40px 0}
+  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:var(--vd-ki);padding:40px 0}
   .page-head h1{font-size:1.8rem}
-  .page-head p{color:#c8d6e8;margin-top:8px;max-width:640px}
+  .page-head p{color:var(--vd-km);margin-top:8px;max-width:640px}
   main{padding:44px 0 60px}
   .kicker{color:var(--accent-2);font-size:.78rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin:26px 0 10px}
   .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
-  .card{border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;background:#fff}
+  .card{border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;background:var(--vd-c)}
   .card h3{font-size:1rem;margin-bottom:6px}
   .card h3 a{color:var(--ink);text-decoration:none}
   .card h3 a:hover{color:var(--accent-2)}
   .card p{font-size:.88rem;color:var(--muted)}
   .card .tag{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;
-             background:#e8effc;color:var(--accent-2);margin-bottom:8px;letter-spacing:.3px}
+             background:var(--vd-tn);color:var(--accent-2);margin-bottom:8px;letter-spacing:.3px}
   .note{background:var(--mist);border-radius:var(--radius);padding:14px 18px;font-size:.88rem;color:var(--muted);margin-top:30px}
-  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
-  footer a{color:#dbe6f5}
+  footer{background:var(--navy);color:var(--vd-km);padding:30px 0;font-size:.85rem}
+  footer a{color:var(--vd-km)}
   
 </style>
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js"></script>
 </head>
 <body>
 <wa-site-nav></wa-site-nav>
