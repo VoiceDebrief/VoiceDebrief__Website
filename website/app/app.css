@@ -103,3 +103,9 @@ footer a{color:var(--wa-link-on-dark)}
 .model-caveat{font-size:.88rem;line-height:1.5;color:var(--wa-amber-ink,#a05a00);
   background:var(--wa-amber-bg,#fdf1e3);border:1px solid var(--wa-amber-line,#e0a445);
   border-radius:10px;padding:10px 14px;margin:-6px 0 16px;max-width:70ch}
+
+/* A file handed over by another page on this site (issue 065) — the
+   extract-audio tool. Stated, never silent: a file that appears without
+   explanation is a file the user does not trust. */
+.handoff-note{background:var(--wa-mist,#f2f5f9);border-left:3px solid var(--wa-green,#25d366);
+  border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:.9rem;color:var(--wa-ink,#1a2433)}

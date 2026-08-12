@@ -18,6 +18,37 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **A video goes in, a transcript comes out (issue 065, Dinis)** — the second
+  tool: **[/tools/extract-audio/](website/tools/extract-audio/)** pulls the
+  soundtrack out of an `.mp4`, `.mov` or `.webm` and hands it to the app. FFmpeg
+  runs as **WebAssembly in your own tab**, so a 400 MB film is not uploaded
+  anywhere — there is no server here to upload it to — and it is the first tool
+  on this site that **costs nothing**: no key, no model, no spend. The first
+  extraction fetches ~32 MB of FFmpeg core on demand; opening the page fetches
+  none of it.
+
+  **The capability brief was verified rather than believed**, which mattered
+  twice. It calls Opus-in-WebM "rare" — it is not: phone and WhatsApp video is
+  AAC and copies losslessly, but **every screen recording** is Opus in WebM,
+  which cannot be copied into an `.m4a`. The underlying module reports that as
+  *"the file may not contain an audio stream"*, which is false and sends people
+  hunting for a fault in their file; this tool catches it, re-encodes to AAC and
+  says so. And the FFmpeg core is hardcoded to `unpkg.com` with no override, so
+  that origin is allowed **on this one page** — a deliberate, recorded AppSec
+  decision (it receives nothing: no key exists, and the video never leaves the
+  tab).
+
+  **Continuing in the app takes one click.** `shared/handoff.js` is a
+  single-slot, same-origin IndexedDB baton: the tool stashes the audio, the app
+  takes it exactly once on arrival and says who sent it. A Blob cannot travel in
+  a URL and base64 in sessionStorage would blow its quota, so this is also the
+  only route that keeps the promise that audio never leaves the browser. **No URL
+  parameter is involved** — issue 041's rule holds, because nothing here switches
+  on a link. Two bugs were found building it: the pickup was first placed after
+  the engine boot (making a local capability depend on a remote origin — issue
+  064's lesson, immediately), and the FFmpeg instance was cached in a way that
+  could outlive its module. Eight browser tests, no download and no network.
+
 - **The record was three releases behind, and now it cannot be (Dinis, spotted)**
   — "the versions files doesn't seem to be in sync". The `version` file was fine:
   it is CI-owned, only `dev`/`main` bump it, and a push to `qa` never touches it,

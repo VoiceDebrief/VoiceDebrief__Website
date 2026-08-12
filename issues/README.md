@@ -10,7 +10,8 @@ adapted from the per-agent `mail/.../issues/` layout to a single repo-level queu
 ## Current Issues (all folders)
 
 Maintained manually — update this table and the folder READMEs **in the same commit**
-as any issue change. Last updated: 2026-08-12 (064 done: a Tools section at /tools/ with text to speech
+as any issue change. Last updated: 2026-08-12 (065 done: extract audio from video, with a same-origin
+hand-off into the app. Earlier: 064 done: a Tools section at /tools/ with text to speech
 as its first tool — nav v0.1.8, `window.__tool` for agents, `wa-voice-panel`
 retired. Earlier: 049 done: browser unit tests, QUnit visual runner shipped with
 the site at /tests/browser/. Earlier: 046-048 done. Earlier: 042/043 done: the
@@ -21,6 +22,7 @@ fixes; 007 closed as superseded — Dinis).
 
 | # | Title | State | Priority | Effort |
 |---|-------|-------|----------|--------|
+| [065](done/065-extract-audio-from-video.md) | Extract audio from a video — the second tool, and a same-origin hand-off into the app | done | normal | medium |
 | [064](done/064-tools-section-and-tts-tool.md) | A Tools section at /tools/ — text to speech as its first tool, with a JS API agents can drive | done | normal | medium |
 | [063](open/063-keyless-demo-and-collapsing-key-panel.md) | A keyless demo (`runPass({demo:true})` runs the real workflow) + a key panel that collapses once a key is saved | open | high | medium |
 | [062](open/062-updates-as-audio.md) | The Updates read aloud — the authoring half shipped as issue 064; the publishing half (Spoken scripts, MP3, RSS enclosure) still open | open | normal | medium |

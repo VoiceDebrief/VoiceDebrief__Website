@@ -33,6 +33,9 @@ so an agent can do what a person does there without a UI.
 ## The tools, for agents
 
 - [Tools](https://voicedebrief.ai/tools/): the index — small, single-purpose browser tools built alongside the app
+- [Extract audio from a video](https://voicedebrief.ai/tools/extract-audio/): a video in, its soundtrack out as `.m4a`, entirely in the browser via FFmpeg WASM — no upload, no key, no cost. `-vn -c:a copy` where the audio is AAC; automatic AAC re-encode where it cannot be copied (Opus in WebM), reported as `reencoded: true`. The first extraction fetches ~32 MB of FFmpeg core from unpkg.com, on demand
+- [Extract audio — API skill](https://voicedebrief.ai/tools/extract-audio/skills/SKILL__api.md): `extractAudio`, `prepare`, `isSupported`, `probe`, `getLastAudio`, `saveLastAudio`, `sendToApp`. Audio is opt-in (`withAudio: true`) because a soundtrack is large. Same synchronous `window.__tool` publication as the other tools
+- [Extract audio — action manifest](https://voicedebrief.ai/tools/extract-audio/manifest.json)
 - [Text to speech](https://voicedebrief.ai/tools/text-to-speech/): text in, a spoken `.wav` out, in the browser on the caller's own OpenRouter key
 - [Text to speech — API skill](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__api.md): every action with params, returns, typed errors and a Playwright example. `window.__tool` is assigned while the page's module evaluates — before load completes and without waiting on any network — and `window.__toolStatus` always states the mode and any engine error. Wait with `waitForFunction(() => window.__tool)`, not on `readyState`. Audio comes back as base64, because a Blob does not survive `page.evaluate`
 - [Text to speech — human guide](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__human.md)
@@ -64,7 +67,7 @@ so an agent can do what a person does there without a UI.
 - [Updates](https://voicedebrief.ai/updates/): the dated build-in-public record
 - [Versions](https://voicedebrief.ai/versions/): every release, with diffs
 - [Videos](https://voicedebrief.ai/videos/): demos and shorts
-- [Tools](https://voicedebrief.ai/tools/): small browser tools built alongside the app — today, text to speech
+- [Tools](https://voicedebrief.ai/tools/): small browser tools built alongside the app — extracting audio from video, and text to speech
 - [Library](https://voicedebrief.ai/library/): every document behind the product
 
 ## Source

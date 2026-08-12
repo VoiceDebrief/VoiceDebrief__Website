@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://voicedebrief.ai/tools/extract-audio/">
+<title>Extract audio from a video — Tools</title>
+<meta name="description" content="Pull the audio track out of any video — mp4, mov, webm — entirely in your browser. Nothing is uploaded, nothing costs anything, and the result goes straight into VoiceDebrief for transcription.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VoiceDebrief">
+<meta property="og:title" content="Extract audio from a video — in your browser">
+<meta property="og:description" content="Drop in a video, get the audio track out as .m4a. Nothing uploaded, nothing to pay, and one click to transcribe it.">
+<meta property="og:url" content="https://voicedebrief.ai/tools/extract-audio/">
+<meta name="twitter:card" content="summary">
+<!-- FFmpeg runs here as WebAssembly. That needs three things beyond the usual
+     allowlist, and each is deliberate (issue 065, AppSec note):
+       unpkg.com   — the FFmpeg core (32 MB) and its two ESM wrappers. sg-video.js
+                     hardcodes this origin; it accepts no override today.
+       blob:       — the module builds a SAME-ORIGIN blob worker, which is the
+                     standard fix for FFmpeg's cross-origin Worker limitation.
+       wasm-unsafe-eval — compiling the WebAssembly module itself.
+     No key and no user data reach any of them: the video never leaves the tab. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'wasm-unsafe-eval' https://tools.sgraph.ai https://dev.tools.sgraph.ai https://unpkg.com; connect-src 'self' blob: https://tools.sgraph.ai https://dev.tools.sgraph.ai https://unpkg.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js"></script>
+<style>
+  :root{--navy:#0b1f3a;--navy-2:#122c50;--ink:#1a2433;--mist:#f4f7fb;--line:#dbe3ec;
+        --green:#25d366;--accent:#2563eb;--muted:#5b6b7f;--radius:14px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:#fff;line-height:1.65}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+  .page-head{background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#fff;padding:38px 0 34px}
+  .crumb{font-size:.8rem;color:#93a7c4;margin-bottom:8px}
+  .crumb a{color:#c8d6e8}
+  .page-head h1{font-size:1.8rem}
+  .page-head p{color:#c8d6e8;margin-top:8px;max-width:62ch}
+  main{padding:34px 0 60px;display:flex;flex-direction:column;gap:26px}
+  .card{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:#fff}
+  .card.alt{background:var(--mist)}
+  .drop{border:2px dashed var(--line);border-radius:12px;padding:34px 20px;text-align:center;
+        cursor:pointer;transition:.15s;background:var(--mist)}
+  .drop:hover,.drop.over{border-color:var(--green);background:#f0fbf4}
+  .drop b{display:block;font-size:1.05rem;margin-bottom:4px}
+  .drop span{font-size:.88rem;color:var(--muted)}
+  input[type=file]{display:none}
+  .chosen{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-top:14px;font-size:.92rem}
+  .chosen .nm{font-weight:600}
+  .chosen .sz,.muted{color:var(--muted);font-size:.85rem}
+  button{font:inherit;font-weight:700;font-size:.95rem;padding:12px 20px;border:0;border-radius:10px;
+         background:var(--green);color:#06301a;cursor:pointer;margin-top:16px}
+  button.secondary{background:#e8effc;color:var(--accent)}
+  button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+  .status{margin-top:12px;font-size:.9rem;color:var(--muted);min-height:1.3em}
+  .status.err{color:#b3261e}
+  progress{width:100%;height:8px;margin-top:10px;border-radius:6px}
+  #out{margin-top:16px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:16px}
+  audio{width:100%}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .actions button{margin-top:0}
+  #meta,.meta{font-size:.78rem;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  h2{font-size:1.15rem;margin-bottom:8px}
+  p.sub{color:var(--muted);font-size:.95rem}
+  ol.flow{margin:12px 0 0 20px;font-size:.95rem}
+  ol.flow li{margin-bottom:7px}
+  pre{background:#0e1620;color:#dbe6f5;border-radius:10px;padding:14px 16px;overflow:auto;
+      font-size:.82rem;line-height:1.55;margin-top:10px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .api-state{margin-top:10px;font-size:.82rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+        padding:8px 12px;border-radius:8px;background:#eef7f1;color:#1f7a4d;border:1px solid #cfe7da}
+  .api-state[data-state="degraded"]{background:#fdf4e3;color:#8a5a00;border-color:#f0d9a0}
+  .note{border:1px dashed var(--line);border-radius:10px;padding:12px 15px;font-size:.88rem;color:var(--muted)}
+  .note b{color:var(--ink)}
+  .free{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.4px;padding:2px 8px;
+        border-radius:999px;background:rgba(37,211,102,.18);color:#0d5c2e;border:1px solid rgba(37,211,102,.45)}
+  footer{background:var(--navy);color:#a9bcd6;padding:30px 0;font-size:.85rem}
+  footer a{color:#dbe6f5}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<wa-site-nav></wa-site-nav>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="../">tools</a> / extract audio</div>
+    <h1>Extract the audio from a video <span class="free">FREE — NO KEY</span></h1>
+    <p>Drop in an <code>.mp4</code>, <code>.mov</code> or <code>.webm</code> and take the sound out
+      of it. It happens in this tab: the video is never uploaded anywhere, and there is nothing to
+      pay because nothing leaves your machine. Then send it straight to the app to be transcribed.</p>
+  </div>
+</div>
+
+<main>
+  <div class="wrap" style="display:flex;flex-direction:column;gap:26px">
+
+    <section class="card">
+      <div class="drop" id="drop">
+        <b>Drop a video here</b>
+        <span>or click to choose one — mp4, mov, webm, mkv, avi…</span>
+      </div>
+      <input type="file" id="file" accept="video/*,.mp4,.mov,.webm,.mkv,.avi,.m4v">
+      <div class="chosen" id="chosen" hidden>
+        <span class="nm" id="nm"></span><span class="sz" id="sz"></span>
+      </div>
+      <button id="go" disabled>Extract the audio</button>
+      <p class="status" id="status"></p>
+      <progress id="bar" max="100" value="0" hidden></progress>
+      <div id="out" hidden>
+        <audio id="audio" controls></audio>
+        <div class="actions">
+          <button id="send">🎙 Transcribe this in VoiceDebrief</button>
+          <button id="dl" class="secondary">⬇ Download the .m4a</button>
+        </div>
+        <p id="meta"></p>
+      </div>
+    </section>
+
+    <section class="card alt">
+      <h2>What actually happens</h2>
+      <p class="sub">Four steps, and not one of them is an upload.</p>
+      <ol class="flow">
+        <li><b>Your video stays in this tab.</b> Choosing a file does not send it anywhere — there is
+          no server here to send it to.</li>
+        <li><b>FFmpeg arrives as WebAssembly, on demand</b> — about <b>32 MB</b>, the first time you
+          press the button, then cached by your browser. A visitor who only reads this page
+          downloads none of it. It is fetched from <code>unpkg.com</code> via SGraph's
+          <code>sg-video.js</code>.</li>
+        <li><b>The audio track is lifted out, not re-made</b>: <code>-vn -c:a copy</code> drops the
+          picture and copies the sound across untouched, so it is fast and loses nothing. The result
+          is an <code>.m4a</code>.</li>
+        <li><b>Then it is yours</b> — play it, download it, or hand it to the app for transcription
+          without it ever touching a disk.</li>
+      </ol>
+      <p class="note" style="margin-top:14px"><b>When it has to re-encode.</b> Copying only works if
+        the audio can live in an MP4 container. A phone or WhatsApp video is AAC and copies
+        perfectly; a <b>screen recording or a web download is usually Opus in WebM</b>, which cannot
+        be copied into <code>.m4a</code>. Rather than tell you the file has no sound — which is what
+        the underlying error says, and it is wrong — this tool notices, re-encodes to AAC, and says
+        so on the result.</p>
+    </section>
+
+    <section class="card">
+      <h2>For agents: the JS API</h2>
+      <p class="sub">The page publishes <code>window.__tool</code> — the same
+        <a href="/app/skills/SKILL__api.md">SgToolApi contract</a> the app and the
+        <a href="../text-to-speech/">text-to-speech tool</a> use.</p>
+      <p class="api-state" id="api-state">checking…</p>
+      <table>
+        <thead><tr><th>Action</th><th>params</th><th>returns</th></tr></thead>
+        <tbody>
+          <tr><td><code>extractAudio</code></td><td><code>{ file, withAudio?, onProgress? }</code></td>
+              <td><code>{ filename, mime, bytes, sourceName, reencoded, tookMs }</code> — plus <code>base64</code> when <code>withAudio</code> is set</td></tr>
+          <tr><td><code>prepare</code></td><td><code>{}</code></td><td>loads the 32 MB core up front, so a later call is instant</td></tr>
+          <tr><td><code>isSupported</code></td><td><code>{}</code></td><td><code>{ supported }</code> — WebAssembly available</td></tr>
+          <tr><td><code>probe</code></td><td><code>{ file }</code></td><td>duration and dimensions, without loading FFmpeg</td></tr>
+          <tr><td><code>getLastAudio</code></td><td><code>{}</code></td><td>the last result's metadata</td></tr>
+          <tr><td><code>saveLastAudio</code></td><td><code>{ filename? }</code></td><td>a real download Playwright can capture</td></tr>
+          <tr><td><code>sendToApp</code></td><td><code>{}</code></td><td>hands the audio to <a href="/app/">/app/</a> for transcription</td></tr>
+        </tbody>
+      </table>
+      <p class="note" style="margin-top:12px"><b>Audio is opt-in here.</b> A film's soundtrack can be
+        tens of megabytes and base64 makes it a third bigger again, so <code>extractAudio</code>
+        returns metadata by default. Ask for <code>withAudio: true</code> when you want the bytes, or
+        use <code>saveLastAudio</code> and catch the download.</p>
+      <pre><code>// Playwright: a video on disk, its audio out, no UI involved.
+await page.goto('https://voicedebrief.ai/tools/extract-audio/')
+await page.waitForFunction(() =&gt; window.__tool)
+
+await page.setInputFiles('#file', 'holiday.mp4')
+const r = await page.evaluate(() =&gt; window.__tool.extractAudio({
+  file: document.getElementById('file').files[0], withAudio: true }))
+
+console.log(r.filename, r.bytes, r.reencoded)   // reencoded === true means it was not AAC
+await writeFile('holiday.m4a', Buffer.from(r.base64, 'base64'))</code></pre>
+      <p class="meta" style="margin-top:12px">Machine-readable: <a href="manifest.json">manifest.json</a> ·
+        <a href="skills/SKILL__api.md">SKILL__api.md</a> · the page emits <code>extract:done</code>.
+        First call pays the 32 MB; call <code>prepare</code> first if you would rather wait once.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 SGraph / The Cyber Boardroom — CC BY 4.0 ·
+    <a href="/">Home</a> · <a href="../">Tools</a> · <a href="/app/">The app</a> ·
+    <a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a> ·
+    <a href="/versions/"><span id="site-version">dev</span></a></div>
+</footer>
+
+<script type="module" src="./extract-page.js"></script>
+
+</body>
+</html>

@@ -48,7 +48,7 @@
   footer a{color:#dbe6f5}
   a{color:var(--accent-2)}
 </style>
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js"></script>
 </head>
 <body>
 <wa-site-nav></wa-site-nav>
@@ -68,6 +68,15 @@
 
     <div class="kicker">Available now</div>
     <div class="grid">
+      <div class="card"><span class="tag">VIDEO</span>
+        <h3><a href="extract-audio/">🎬 Extract audio from a video</a></h3>
+        <p>Drop in an <code>.mp4</code>, <code>.mov</code> or <code>.webm</code> and take the
+           soundtrack out as an <code>.m4a</code> — then send it straight to the app to be
+           transcribed, without a trip through your downloads folder.</p>
+        <p><b>Free, and nothing is uploaded:</b> FFmpeg runs as WebAssembly in your own tab, so
+           there is no key, no model and no cost. The first run fetches 32 MB of it, once.</p>
+        <p class="api"><a href="extract-audio/skills/SKILL__api.md">JS API</a> ·
+           <a href="extract-audio/manifest.json">manifest.json</a></p></div>
       <div class="card"><span class="tag">AUDIO</span>
         <h3><a href="text-to-speech/">🎙 Text to speech</a></h3>
         <p>Paste any text, pick one of six voices, and download the spoken <code>.wav</code>.

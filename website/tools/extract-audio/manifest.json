@@ -1,0 +1,60 @@
+{
+  "id": "extract-audio",
+  "name": "Extract audio from a video",
+  "slug": "extract-audio",
+  "description": "Pull the audio track out of any video (.mp4/.mov/.webm/...) entirely in the browser with FFmpeg WASM, as an .m4a ready to transcribe. No upload, no key, no cost — the video never leaves the tab.",
+  "icon": "🎬",
+  "version": "0.1.0",
+  "status": "beta",
+  "category": "media",
+  "keywords": ["video", "audio", "extract", "ffmpeg", "wasm", "m4a", "browser", "no-upload", "free"],
+  "locale": "en-gb",
+  "cost": "none — nothing leaves the browser, so there is no model and no key",
+  "dependencies": {
+    "engine-origin": "https://tools.sgraph.ai",
+    "core": [
+      {
+        "module": "sg-video",
+        "path": "/core/video/v1/v1.0/v1.0.1/sg-video.js",
+        "loaded": "on first extraction — a visitor who only reads the page fetches none of it"
+      },
+      {
+        "module": "sg-tool-api",
+        "path": "https://dev.tools.sgraph.ai/core/sg-tool-api/v0/v0.1/v0.1.0/sg-tool-api.js",
+        "loaded": "on page load, to UPGRADE the API that is already published"
+      }
+    ],
+    "third-party": [
+      {
+        "origin": "https://unpkg.com",
+        "what": "@ffmpeg/core@0.12.6 (32 MB wasm + js), @ffmpeg/ffmpeg@0.12.10, @ffmpeg/util@0.12.1",
+        "why": "sg-video.js hardcodes this origin and accepts no override today",
+        "note": "allowed in this page's CSP only; no key and no user data reach it — the video never leaves the tab"
+      }
+    ]
+  },
+  "api": {
+    "published_as": "window.__tool (assigned during module evaluation — no network wait, no lazy init)",
+    "ready_event": "tool:ready (fires on publish and again on upgrade; window.__toolStatus.ready is the durable fact)",
+    "status_probe": "window.__toolStatus — { ready, mode: 'local'|'sg-tool-api', methods, engine }; always present",
+    "actions": [
+      { "name": "extractAudio", "async": true,
+        "params": { "file": "File/Blob (required)", "withAudio": "true to include base64 — off by default, a soundtrack is large", "onProgress": "callback" },
+        "returns": "{ filename, mime, bytes, sourceName, sourceBytes, reencoded, tookMs } (+ base64 when withAudio)" },
+      { "name": "prepare", "async": true, "returns": "{ ready } — loads the 32 MB FFmpeg core up front" },
+      { "name": "isSupported", "async": true, "returns": "{ supported } — WebAssembly available" },
+      { "name": "probe", "async": true, "params": { "file": "File/Blob" }, "returns": "duration and dimensions, without loading FFmpeg" },
+      { "name": "getLastAudio", "async": false, "returns": "the last result's metadata, or null" },
+      { "name": "saveLastAudio", "async": false, "params": { "filename": "optional" }, "returns": "{ filename, bytes }" },
+      { "name": "sendToApp", "async": true, "returns": "{ name, size, from } — hands the audio to /app/ for transcription" }
+    ],
+    "events": ["extract:done"],
+    "errors": ["no-file", "no-audio", "no-wasm"]
+  },
+  "notes": {
+    "codecs": "The audio is stream-copied (-vn -c:a copy), which is lossless and fast, and works for AAC — phone and WhatsApp video. Opus in WebM (screen recordings, web downloads) cannot be copied into an .m4a, so the tool re-encodes to AAC and sets reencoded: true rather than reporting the underlying error, which wrongly claims the file has no audio stream.",
+    "first-run": "The first extraction downloads ~32 MB of FFmpeg WASM, then the browser caches it. Call prepare() to pay that cost up front.",
+    "privacy": "There is no backend. The video is read in the tab, processed in the tab, and the result stays there until it is downloaded or handed to /app/ through same-origin storage."
+  },
+  "skills": { "api": "./skills/SKILL__api.md", "human": "./skills/SKILL__human.md" }
+}

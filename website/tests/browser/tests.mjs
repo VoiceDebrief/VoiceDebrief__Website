@@ -18,9 +18,11 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.8/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.9/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 import { newsScript, speak, wirePage, publishApi, bytesToBase64, VOICES } from '../../tools/text-to-speech/tts-tool.js'
+import { extract, publishApi as publishExtractApi } from '../../tools/extract-audio/extract-tool.js'
+import { stash, take, peek, clear, receive } from '../../shared/handoff.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -164,7 +166,7 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: two primary links, four groups, seventeen grouped pages (v0.1.8)', assert => {
+    QUnit.test('two-level menu: two primary links, four groups, eighteen grouped pages (v0.1.9)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
@@ -176,10 +178,11 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
             'App and What it costs stay primary')
         assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 4,
             'Library + Tools + News + Engineering groups (Tools added, issue 064)')
-        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 17,
-            '4 library + 2 tools + 3 news + 8 engineering pages in the dropdowns')
-        assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/tools/text-to-speech/'),
-            'the first tool is reachable from every page on the site')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 18,
+            '4 library + 3 tools + 3 news + 8 engineering pages in the dropdowns')
+        for (const href of ['/tools/text-to-speech/', '/tools/extract-audio/'])
+            assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === href),
+                `every tool is reachable from every page on the site (${href})`)
         assert.strictEqual(sr.querySelector('.badge').textContent, 'BETA')
         assert.strictEqual(sr.querySelector('.sub'), null, 'no section row outside /engineering/')
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/app/'),
@@ -567,3 +570,140 @@ QUnit.module('tools/text-to-speech — speak(), the page, and the agent seam', h
 })
 
 QUnit.start()   // autostart is off — see index.html
+
+
+/* ── extract-audio (issue 065): FFmpeg in the tab, stubbed so CI needs neither
+      32 MB nor a network ──────────────────────────────────────────────────── */
+QUnit.module('tools/extract-audio — copy, fall back, and hand over', hooks => {
+    const m4a = (n = 128) => new Blob([new Uint8Array(n)], { type: 'audio/mp4' })
+    const video = (name = 'holiday.mp4') => new File([new Uint8Array(4096)], name, { type: 'video/mp4' })
+    let calls
+
+    hooks.beforeEach(() => {
+        calls = { exec: [], extract: 0 }
+        // The whole engine behind one seam, exactly as the TTS tool does it.
+        window.__sgVideo = {
+            isWasmSupported: () => true,
+            loadFFmpeg: async () => ({
+                writeFile: async () => {},
+                deleteFile: async () => {},
+                readFile: async () => new Uint8Array(64),
+                exec: async (args) => { calls.exec.push(args); return 0 },
+            }),
+            getVideoInfo: async () => ({ duration: 12, hasAudio: true, width: 1920, height: 1080 }),
+            extractAudio: async (ff, file) => { calls.extract++; return { blob: m4a(), filename: file.name.replace(/\.\w+$/, '_audio.m4a') } },
+        }
+    })
+    hooks.afterEach(async () => { delete window.__sgVideo; await clear() })
+
+    QUnit.test('the happy path copies losslessly and never re-encodes', async assert => {
+        const r = await extract({ file: video() })
+        assert.strictEqual(r.filename, 'holiday_audio.m4a', 'named after the video')
+        assert.strictEqual(r.mime, 'audio/mp4')
+        assert.false(r.reencoded, 'a stream copy, so nothing was re-encoded')
+        assert.deepEqual(calls.exec, [], 'no manual ffmpeg command was needed')
+        assert.strictEqual(calls.extract, 1)
+    })
+
+    /* The finding the capability brief called "rare" and is not: Opus in WebM —
+       every screen recording — cannot be copied into an .m4a. The module reports
+       that as "may not contain an audio stream", which is untrue and sends people
+       looking for a fault in their file. */
+    QUnit.test('a file that cannot be copied is re-encoded, not declared silent', async assert => {
+        window.__sgVideo.extractAudio = async () => {
+            throw new Error('extractAudio: FFmpeg failed — the file may not contain an audio stream.')
+        }
+        const r = await extract({ file: video('screen-recording.webm') })
+        assert.true(r.reencoded, 'the tool noticed and re-encoded instead of giving up')
+        assert.deepEqual(calls.exec[0], ['-i', 'screen-recording.webm', '-vn', '-c:a', 'aac', '-b:a', '128k',
+            'screen-recording_audio.m4a'], 'with an explicit AAC encode')
+        assert.strictEqual(r.mime, 'audio/mp4', 'and still produces an .m4a')
+    })
+
+    QUnit.test('a video with genuinely no audio fails honestly', async assert => {
+        window.__sgVideo.extractAudio = async () => { throw new Error('extractAudio: FFmpeg failed — the file may not contain an audio stream.') }
+        window.__sgVideo.loadFFmpeg = async () => ({
+            writeFile: async () => {}, deleteFile: async () => {}, readFile: async () => new Uint8Array(0),
+            exec: async () => 1,                       // the re-encode fails too
+        })
+        try { await extract({ file: video('silent.mp4') }); assert.true(false, 'should have thrown') }
+        catch (e) { assert.strictEqual(e.code, 'no-audio', e.message) }
+        await extract({ file: null }).then(() => assert.true(false, 'no file should throw'),
+            (e) => assert.strictEqual(e.code, 'no-file'))
+    })
+
+    QUnit.test('the API publishes synchronously, like every tool here', assert => {
+        const names = ['__tool', '__tools', '__toolStatus']
+        const before = names.map(n => [n, n in window, window[n]])
+        try {
+            publishExtractApi()
+            assert.strictEqual(typeof window.__tool, 'object', 'present before this line runs')
+            assert.strictEqual(window.__toolStatus.tool, 'extract-audio')
+            assert.deepEqual(window.__tool.meta.getMethods(),
+                ['extractAudio', 'prepare', 'isSupported', 'probe', 'getLastAudio', 'saveLastAudio', 'sendToApp'])
+        } finally { for (const [n, had, v] of before) { if (had) window[n] = v; else delete window[n] } }
+    })
+
+    /* The hand-off is the point of the tool: a video's audio should reach the app
+       without a trip through the downloads folder. Real IndexedDB, same origin. */
+    QUnit.test('the hand-off carries a real File and is taken exactly once', async assert => {
+        const file = new File([new Uint8Array(32)], 'holiday_audio.m4a', { type: 'audio/mp4' })
+        await stash(file, { from: 'the extract-audio tool', note: 'from holiday.mp4' })
+
+        const waiting = await peek()
+        assert.strictEqual(waiting.name, 'holiday_audio.m4a', 'the app can ask before taking')
+        assert.strictEqual(waiting.from, 'the extract-audio tool', 'and is told who sent it')
+
+        const got = await take()
+        assert.true(got.file instanceof File, 'what arrives is a File, indistinguishable from a dropped one')
+        assert.strictEqual(got.file.name, 'holiday_audio.m4a')
+        assert.strictEqual(got.file.type, 'audio/mp4')
+        assert.strictEqual(got.file.size, 32, 'the bytes survive the trip')
+
+        assert.strictEqual(await take(), null, 'a baton, not an inbox — the second take finds nothing')
+        assert.strictEqual(await peek(), null)
+    })
+
+    /* The receiving half — the same function /app/ calls on arrival. It cannot be
+       tested through the app itself in a sandbox (the app's components import
+       SgComponent from the engine origin, so it will not boot without network),
+       which is exactly why the logic lives in the shared module and not in the
+       page. */
+    QUnit.test('the receiving page gets the file AND is told where it came from', async assert => {
+        const mount = document.createElement('div')
+        document.getElementById('qunit-fixture').appendChild(mount)
+        await stash(new File([new Uint8Array(16)], 'clip_audio.m4a', { type: 'audio/mp4' }),
+                    { from: 'the extract-audio tool', note: 'from clip.mov' })
+
+        let handed = null
+        const got = await receive({ mount, onFile: (f) => { handed = f } })
+        assert.strictEqual(handed?.name, 'clip_audio.m4a', 'the page is handed a real File')
+        assert.strictEqual(got.from, 'the extract-audio tool')
+        const note = mount.querySelector('.handoff-note')
+        assert.ok(note, 'and a note is placed where the file appears')
+        assert.true(note.textContent.includes('clip.mov'), 'naming the video it came from')
+        assert.true(note.textContent.includes('extract-audio'), 'and who sent it — never silent')
+
+        assert.strictEqual(await receive({ mount }), null, 'a second arrival finds nothing')
+    })
+
+    QUnit.test('receiving nothing is the normal case and does nothing at all', async assert => {
+        const mount = document.createElement('div')
+        document.getElementById('qunit-fixture').appendChild(mount)
+        let called = false
+        const got = await receive({ mount, onFile: () => { called = true } })
+        assert.strictEqual(got, null)
+        assert.false(called, 'no file, no callback')
+        assert.strictEqual(mount.querySelector('.handoff-note'), null, 'and no stray note on every page load')
+    })
+
+    QUnit.test('an extracted result can be handed straight over', async assert => {
+        const r = await extract({ file: video() })
+        const { sendToApp } = await import('../../tools/extract-audio/extract-tool.js')
+        const receipt = await sendToApp(r)
+        assert.strictEqual(receipt.name, 'holiday_audio.m4a')
+        const got = await take()
+        assert.strictEqual(got.file.name, 'holiday_audio.m4a', 'and the app finds exactly that file')
+        assert.true(got.note.includes('holiday.mp4'), 'with a note saying where it came from')
+    })
+})

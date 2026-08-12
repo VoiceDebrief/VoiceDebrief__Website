@@ -68,6 +68,30 @@ async function main() {
     // Version stamp (written by CI at publish time).
     fetch('../version.txt', { cache: 'no-store' }).then(r => r.ok ? r.text() : 'dev').then(v => { $('#site-version').textContent = v.trim() }).catch(() => {})
 
+    /* A file handed over by another page on this site (issue 065) — the
+       extract-audio tool puts a video's soundtrack where we can find it.
+
+       BEFORE the engine boots, deliberately. Picking it up needs nothing but
+       IndexedDB and the DOM, and the JS API diagnostic (issue 064) taught this
+       exact lesson: a local capability must not inherit a remote origin's
+       availability. A slow engine would otherwise delay the file appearing, and
+       an unreachable one would lose it entirely.
+
+       No URL parameter is consulted — issue 041's rule holds, and there is
+       nothing here for a link to switch on. The file is treated as a dropped
+       one because that is what it is: the user chose it, one click ago, in this
+       browser. It is announced rather than silently pre-filled, so nobody has to
+       wonder where a file came from. */
+    await import('../shared/handoff.js').then(({ receive }) => receive({
+        mount: $('#file-section'),
+        onFile: (file) => {
+            pendingFile = file
+            $('.file-name').textContent = file.name
+            $('.file-size').textContent = (file.size / 1024).toFixed(0) + ' KB'
+            show('#file-section')
+        },
+    })).catch(() => { /* a browser without IndexedDB simply never receives one */ })
+
     console.info('[whatsapp-transcribe] app modules loaded:', import.meta.url)
     const engine = await bootEngine()
     const pipeline = createPipeline({ api: engine.api, emit: engine.emit,
@@ -140,6 +164,7 @@ async function main() {
         show('#file-section')
     }
     drop.addEventListener('wa:file-chosen', (e) => takeFile(e.detail.file))
+
 
     /* Everything a demo produced sits under this banner. The one thing this
        feature must never do is let a scripted result be mistaken for the user's
