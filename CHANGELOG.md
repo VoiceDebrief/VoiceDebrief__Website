@@ -18,6 +18,24 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The record was three releases behind, and now it cannot be (Dinis, spotted)**
+  — "the versions files doesn't seem to be in sync". The `version` file was fine:
+  it is CI-owned, only `dev`/`main` bump it, and a push to `qa` never touches it,
+  so `v0.1.25` on every branch was correct. QA was fine too — the confusing part
+  is that a QA build is stamped `<next>-qa.<sha>`, so it advertises a version
+  number that does not exist as a tag yet. What was actually wrong was the public
+  record: **CHANGELOG had no heading for v0.1.23, v0.1.24 or v0.1.25**, so 34
+  entries describing work that had already shipped still read as *Unreleased*;
+  and **`/versions/` listed nothing for v0.1.25** while production was serving
+  exactly that. Each entry has been placed against the release that actually
+  contains it — determined per entry by finding the commit that introduced it and
+  testing it against each tag with `merge-base --is-ancestor`, not by memory — and
+  v0.1.25 now has its page. **Two new gates** make the drift impossible to repeat
+  quietly: the release named by the `version` file must be published on
+  `/versions/`, and every published version must have its CHANGELOG heading. Both
+  are file-only on purpose — CI checks out shallow, so a tag-based check would
+  pass by knowing nothing.
+
 - **An agent could not find the JS API, and it was right (issue 064)** — an
   external diagnostic reported `window.__tool` as `undefined` after a normal load
   of the text-to-speech tool. Reproducing it against the deployed bytes with the
@@ -102,6 +120,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   and "your credits stay with you". An LLM caveat now appears *with* the transcript,
   never before the thing it qualifies exists, and BETA is persistent chrome beside
   the name instead of hero copy that scrolls away.
+
 - **You are no longer asked for a key before you have seen anything** — the app's
   first screen was a password field for an account most visitors did not have. Now
   a stranger can load a recording, choose a translation and an infographic, and read
@@ -110,10 +129,12 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   that gets someone from nothing to a working key in five steps, with *set a spend
   limit* called out as the one that matters — reachable from the key panel itself,
   the nav, the home page and the footer.
+
 - **VoiceDebrief** — the rename is complete on every page the site serves. WhatsApp
   is one of several ways audio arrives here, so the home page now names six of them
   (chat voice messages, iPhone Voice Memos, Android recorders, meeting exports,
   dictaphones, anything else) with the Meta non-affiliation line beside them.
+
 - **Two gates that were not running now run.** `demo.test.mjs` — the test that
   proves the keyless demo touches no network — had been written and never added to
   a workflow. And the locale gate only walked `website/app`, so a `data-i18n` key
@@ -123,6 +144,34 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   English pass had marked two of those chips `decide`; the sign-off deleted the
   control rather than relabelling it, and `_resolved` in `concepts.json` records
   that a review reached a verdict which was then overtaken by a better answer.
+
+- **See it work without a key, and a setup step that finishes (issue 064, Dinis)** —
+  a **demo path**: one button runs a full pass with no OpenRouter key, no account
+  and no request. The decision that makes it worth trusting is that it does **not
+  simulate the product — it runs it**: the declared workflow, the executor shape,
+  the wa:* stream, the trace, the budget accounting and every card are the
+  production ones, and only the model answers are substituted. A demo that drifts
+  from the product would lie first about the thing it exists to show. Its test sets
+  no key and **aborts** any OpenRouter request rather than mocking it, so reaching
+  the network fails the build instead of quietly costing somebody money. The
+  infographic is deliberately not faked — a canned picture of someone else's data
+  would be the most misleading thing on the page — so that step degrades with a
+  reason, which demonstrates the product's real degrade behaviour.
+
+  And `wa-key-panel` v0.1.3 **collapses once a key is saved**: one quiet line with a
+  *change* control, instead of a full labelled form with an empty input greeting
+  everybody who had already done it. A rejected key reopens the form, because
+  collapsing on failure hides the problem behind a tick saying everything is fine.
+
+  Three bugs came from one cause and are worth recording: the demo button borrowed
+  the `.sample-chip` class for its styling, and three separate things selected on
+  that class — the sample loader (which fetched `undefined` and painted *"that
+  doesn't look like an audio file"* over the demo), a test count, and a screenshot
+  journey. All now qualify on `[data-sample]` — what a sample chip *is* rather than
+  how it looks. A styling class had quietly become an API.
+
+## [v0.1.25](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.24...v0.1.25) — 12 Aug 2026
+
 - **The Updates can read themselves aloud (issue 062, Dinis's steer)** — a 🎙
   side pane on `/updates/`, in the family of the chat, debug and flow panes:
   pick a post, edit the news-style script it pre-fills, pick a voice, hear it,
@@ -157,30 +206,6 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   an RSS `<enclosure>` that turns the feed into a podcast, a plain statement that
   the voice is synthetic, and a scripted-`fetchImpl` test that proves the pipeline
   with **no key and no spend**. Nothing built; four decisions are Dinis's.
-- **See it work without a key, and a setup step that finishes (issue 064, Dinis)** —
-  a **demo path**: one button runs a full pass with no OpenRouter key, no account
-  and no request. The decision that makes it worth trusting is that it does **not
-  simulate the product — it runs it**: the declared workflow, the executor shape,
-  the wa:* stream, the trace, the budget accounting and every card are the
-  production ones, and only the model answers are substituted. A demo that drifts
-  from the product would lie first about the thing it exists to show. Its test sets
-  no key and **aborts** any OpenRouter request rather than mocking it, so reaching
-  the network fails the build instead of quietly costing somebody money. The
-  infographic is deliberately not faked — a canned picture of someone else's data
-  would be the most misleading thing on the page — so that step degrades with a
-  reason, which demonstrates the product's real degrade behaviour.
-
-  And `wa-key-panel` v0.1.3 **collapses once a key is saved**: one quiet line with a
-  *change* control, instead of a full labelled form with an empty input greeting
-  everybody who had already done it. A rejected key reopens the form, because
-  collapsing on failure hides the problem behind a tick saying everything is fine.
-
-  Three bugs came from one cause and are worth recording: the demo button borrowed
-  the `.sample-chip` class for its styling, and three separate things selected on
-  that class — the sample loader (which fetched `undefined` and painted *"that
-  doesn't look like an audio file"* over the demo), a test count, and a screenshot
-  journey. All now qualify on `[data-sample]` — what a sample chip *is* rather than
-  how it looks. A styling class had quietly become an API.
 
 - **The pass reads the note before deciding what to do with it (issue 061, Dinis)** —
   a **classify** step between transcribe and translate, on every pass. It returns
@@ -210,6 +235,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   voice-note fraud. The card labels them **observations, not a security check**,
   because the classifier reads the same untrusted text as everything else and can be
   talked out of reporting.
+
+## [v0.1.24](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.23...v0.1.24) — 10 Aug 2026
 
 - **Two briefs were in the repo and invisible on the site (Dinis, 404)** — the
   go-live design brief and the semantic-graphs pack were both added to
@@ -244,6 +271,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   the nav gains *Engineering ▾ → Design candidates* (`wa-site-nav` v0.1.7), the
   Engineering hub explains both families and what each is testing, the Library page
   links the briefs to the running thing, and live-QA fetches the hub every deploy.
+
 - **Go-live design brief: VoiceDebrief for WhatsApp (issue 060)** —
   `library/briefs/go-live/`: a brief for Claude Design covering the home page
   rebuild. Five requirements — put **the workflow on the home page** (the tool's
@@ -419,6 +447,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   gets its first real customer. Amended same day (Dinis): further to five
   top-level items — **App · Pricing · Library ▾ · News ▾ · Engineering ▾** —
   with How it works, Privacy and User guide grouped under Library.
+
 - **Product name analysis written (Dinis's request; decision his)** —
   `library/briefs/naming/`: all five "WhatsApp …" candidates fail the same two
   tests (Meta's mark can't lead a product name; the SERP head is owned by
@@ -432,6 +461,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   **VoiceDebrief for WhatsApp** (clean .com/.ai/.io field; adjacency to
   voicebrief.io accepted, different focus). Registrar + trademark checks
   pending; no renaming done.
+
 - **The theme gate was missing every page's header (issue 050)** — merging the
   new `wa-site-nav` revealed it sat on every page of the site with 26 hardcoded
   colours and no tokens, while `check_themes.py` reported "themes ok". The check
@@ -441,6 +471,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   sibling `.css`. The nav is tokenised at v0.1.2, each colour keeping its literal
   as a `var()` fallback because the nav also ships on pages that do not load the
   theme sheet and must look identical there. Verified invisible.
+
 - **Every language now has its own URL (issue 056, Dinis)** — `/app/pt-pt/`,
   `/app/pt-br/`, `/app/en-us/`, `/app/en-gb/` are real directories generated
   from the locale allowlist, so a translated page can be linked, shared,
@@ -457,6 +488,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   language on the un-based page silently broke every relative fetch from that
   moment on. Both pages now pin a base, and a gate asserts a relative fetch
   still resolves after the URL moves.
+
 - **The debrief now comes back in YOUR language (issue 055, Dinis)** — a
   `translate` step joins the declared workflow between transcribe and summary,
   on by default. The transcript stays in the language spoken — it is the record
@@ -473,6 +505,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   `when` clauses, so the run looked correct while doing nothing. Not built:
   language detection, so a note already in the reader's language still costs
   one call.
+
 - **The locale picker follows the sgraph.ai pattern (Dinis)** — a compact
   trigger showing the current culture, opening a two-column panel of every
   culture with flags. Flags are correct here where they usually are not: the
@@ -480,6 +513,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   country — 🇵🇹 and 🇧🇷 are exactly the distinction being drawn. Cultures we do
   not ship yet are listed dimmed and inert as SOON, so the list reads as a
   roadmap rather than a promise.
+
 - **The app speaks four languages (issue 050, M2 first pass)** — `en-gb`,
   `en-us`, `pt-pt`, `pt-br`, each a folder of per-domain files, plus
   `wa-locale-picker`: native-script names, no flags (a flag is a country and a
@@ -492,6 +526,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   drafts, so an en-US browser was silently served an unreviewed translation.
   Drafts are now picked, never assigned. (`en-uk` was requested; the valid tag
   is `en-gb`, which already existed.)
+
 - **Strings and culture are now data (issue 050, M1b foundation + M1c)** —
   `website/app/i18n.js` is the entire runtime: key lookup, one-hop fallback to
   en-gb, `data-i18n` rendering, and `setLocale()` that re-renders in place so a
@@ -516,6 +551,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   options screen whose chip labels were re-wrapped to make them translatable.
   Still to come in M1b: the eight components' own strings (~160 literals across
   the chat, flow, debug and errors domains).
+
 - **The app's design is now one swappable sheet (issue 050, M1a)** — every
   colour, overlay and font stack the app uses is declared as a `--wa-*` token on
   `:root` in `website/app/themes/default.css`; `app.css` and all eight live
@@ -538,6 +574,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   at runtime unstamped, so a cached published version would have kept its
   hardcoded colours and ignored the theme — the exact failure this refactor
   exists to prevent, arriving through the cache instead of the code.
+
 - **llms.txt gets a public explanation, fresh links, and a rulebook clause
   (Dinis)** — `/engineering/docs/` now explains and links `/llms.txt` (nothing
   on the site referenced it before); the file itself caught up with the newest
@@ -550,6 +587,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   `git diff --quiet`, which is blind to untracked files — precisely what a
   newly-armed shot or the first-run change log is — so new files were never
   committed; it now checks `git status --porcelain`.
+
 - **Fixed: a fully-healthy QA build could not deploy (runs #28–#29, found by
   Dinis)** — once every screenshot baseline is armed and matching, the
   qa-to-docs run produces no candidates, so no `qa-to-docs` artifact is
@@ -558,6 +596,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   8 Aug Updates posts sat undeployed behind it. The download is now
   `continue-on-error`: a missing artifact means "nothing to arm", the healthy
   steady state, and the deploy proceeds.
+
 - **Strategy: the app in many languages, cultures and designs (issue 050,
   requested by Dinis)** — a dev pack
   (`library/dev_packs/v0.1.22__app-i18n-culture-themes/`) grounding the refactor
@@ -573,6 +612,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   one-file-per-locale rejected on its own evidence — token explosion), first
   locales pt-PT + pt-BR together, and GBP everywhere for now — declared in each
   locale's culture data, never hardcoded.
+
 - **Live-QA made honest about networks, part two (run #33)** — the outbound
   LINK checks got retries yesterday, but the site's own `get()` helper had no
   handling at all: one `ECONNRESET` (common just after a deploy while the CDN
@@ -580,6 +620,23 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   successful deploy red with most checks never run. Same treatment one layer
   deeper: page/asset fetches retry three times with backoff; a site that truly
   cannot answer is a failing check, never an unhandled TypeError.
+
+- **Screenshot baselines now record UI change instead of blocking it (issue 053, renumbered from 050 on merge — that number was taken by the i18n strategy)** —
+  the pixel gate armed by M-qtd-2 would have failed the build on the first
+  legitimate UI change, with no CI path back to green (`UPDATE_BASELINES=1` existed
+  only as a local env var, which the baseline policy forbids). Arming a gate before
+  building its refresh path was the sequencing error. Now a changed shot updates its
+  baseline, passes the run, and is written to
+  `website/user-guide/baseline-changes.md` — every shot that moved, by how much,
+  against the **commit and CI run that moved it**, so the diff explaining it is one
+  click away. Append-only: git history holds the old pixels, the log holds the
+  narrative. A threshold can only say that something moved; whether the movement is
+  the feature or the regression needs a reader who knows what the commit intended,
+  so CI records and an agent reviews (issue 051 — **not yet built**, and until it is,
+  nobody is required to read the log).
+
+## [v0.1.23](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.22...v0.1.23) — 7 Aug 2026
+
 - **Live-QA link check made honest about networks**: the recurring
   `status ERR` failures ("on every other build", Dinis) were dropped
   connections, not dead links — the check bursts sequential requests at
@@ -587,6 +644,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   thrown fetch failed the job. Link fetches now retry three times with
   backoff and pace themselves; a link that still never answers is a loud
   warning, while an actual HTTP 404 stays exactly as fatal as before.
+
 - **Browser unit tests (issue 049, requested by Dinis)** — the app's JS modules
   re-tested under REAL browser semantics with QUnit (vendored 2.24.1, MIT):
   genuine `File`/`Blob` for the audio sniffer, genuine localStorage for the
@@ -601,6 +659,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   `wa-site-nav` ref — a 404 in the check, not on the site (the file served 200
   all along). Site-absolute refs now resolve from the root; verified green
   against the deployed QA estate.
+
 - **One menu, one source (issue 048)** — the site header is now `wa-site-nav`,
   a single dependency-free web component on every page and template. The five
   drifted variants are gone (the app page never linked Videos or Engineering;
@@ -608,6 +667,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   Active link derived from the path, engineering pages get their section row,
   the app page its BETA badge; dead header CSS stripped from every stylesheet.
   Render-verified on all pages; live-QA checks the component resolves.
+
 - **Fixed: a finished run could be invisible (issue 046, found live by Dinis)**
   — "do another voice note" and remove-file reset the page but did not cancel
   an in-flight pass, which then completed headless into hidden sections (the
@@ -615,6 +675,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   reset paths now cancel the active pass, and a completing pass re-shows its
   results if the page lost them — a finished run the user paid for can no
   longer be invisible.
+
 - **LLM-friendly + SEO (issue 047)** — `/llms.txt` indexes the site's
   agent-facing surfaces (the `window.__tool` skills docs, action manifest, the
   declared workflow, and every CI-emitted JSON manifest); `build_content.py`
@@ -623,19 +684,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   (SoftwareApplication) and Updates (Blog) pages; the QA estate is noindexed
   at deploy so the preview never competes with production in search; live-QA
   checks the new surfaces on every deploy.
-- **Screenshot baselines now record UI change instead of blocking it (issue 053, renumbered from 050 on merge — that number was taken by the i18n strategy)** —
-  the pixel gate armed by M-qtd-2 would have failed the build on the first
-  legitimate UI change, with no CI path back to green (`UPDATE_BASELINES=1` existed
-  only as a local env var, which the baseline policy forbids). Arming a gate before
-  building its refresh path was the sequencing error. Now a changed shot updates its
-  baseline, passes the run, and is written to
-  `website/user-guide/baseline-changes.md` — every shot that moved, by how much,
-  against the **commit and CI run that moved it**, so the diff explaining it is one
-  click away. Append-only: git history holds the old pixels, the log holds the
-  narrative. A threshold can only say that something moved; whether the movement is
-  the feature or the regression needs a reader who knows what the commit intended,
-  so CI records and an agent reviews (issue 051 — **not yet built**, and until it is,
-  nobody is required to read the log).
+
 - **The user guide now writes itself from the tests (issue 038, M-qtd-2)** — a new
   `/user-guide/` page, generated by `scripts/build_user_guide.py` from the QA-to-docs
   manifest and the committed screenshots. Every picture on it was taken by a journey
@@ -658,6 +707,7 @@ the Updates page is the story. One entry per tag, newest first, grounded in
     section, or a panel inside the shadow DOM, instead of a full-page capture that
     buried the subject under the hero and made the whole page the diff surface.
     Done before any baseline was armed, so nothing needed re-arming.
+
 ## [v0.1.22](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.21...v0.1.22) — 7 Aug 2026
 
 - **Each estate's derived links now point at itself** — `build_content.py` gains

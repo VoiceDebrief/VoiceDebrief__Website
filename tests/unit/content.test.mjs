@@ -98,3 +98,30 @@ test('bad content fails the build rather than shipping', () => {
     }
     assert.match(run('--check'), /content ok/, 'the suite must leave content valid')
 })
+
+/* The record kept drifting behind the releases, silently and three times over
+   (12 Aug): CHANGELOG had no heading for v0.1.23, v0.1.24 or v0.1.25 — so work
+   that had shipped still read as "Unreleased" — and /versions/ listed nothing
+   for v0.1.25 while production was serving exactly that. Both are one-line
+   habits the discipline already asks for ("rename Unreleased once CI tags",
+   "every version tag gets an entry"), and habits are what gates are for.
+
+   Deliberately file-only: CI checks out shallow, so `git tag` is empty there
+   and a tag-based check would pass by knowing nothing. The `version` file is
+   CI-owned and names the release that actually shipped, which is the same fact
+   from a source the test can see. */
+test('the release named by the version file is published on /versions/', () => {
+    const version = readFileSync(path.join(repo, 'version'), 'utf8').trim()
+    assert.ok(versions.versions.some(v => v.v === version),
+        `${version} is tagged and deployed but /versions/ does not list it — `
+        + `write content/versions/${version}.md`)
+})
+
+test('every published version has its CHANGELOG entry', () => {
+    const changelog = readFileSync(path.join(repo, 'CHANGELOG.md'), 'utf8')
+    // v0.1.0 has no predecessor, so its heading carries no compare link.
+    const missing = versions.versions.map(v => v.v)
+        .filter(v => !changelog.includes(`## [${v}](`) && !changelog.includes(`## ${v} —`))
+    assert.deepEqual(missing, [],
+        `released, but still described under "Unreleased": ${missing.join(', ')}`)
+})
