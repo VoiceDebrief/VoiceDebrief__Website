@@ -32,7 +32,7 @@ import argparse, json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_DEFAULT = os.path.join(ROOT, 'website')
-PROD = 'https://whatsapp-voice-transcription.sgraph.ai'
+PROD = 'https://voicedebrief.ai'
 
 
 def bcp47(name):

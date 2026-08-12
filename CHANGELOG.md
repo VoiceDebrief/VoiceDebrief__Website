@@ -18,6 +18,20 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The domain moved, and 39 files were still naming the old one (issue 060)** —
+  `voicedebrief.ai` / `qa.voicedebrief.ai` are live, and the old hosts have **no
+  DNS at all**: not a redirect, not a 404, nothing resolves. The rename pass had
+  swept the brand but not the address, which left every absolute URL on the site
+  pointing at a host that cannot answer — `llms.txt` (the file we require to
+  resolve on the deployed estates), `sitemap.xml`, the `Sitemap:` line in
+  `robots.txt`, every canonical tag and `og:url`, the `hreflang` alternates, the
+  skills documents an agent reads, and — the one that actually broke for readers —
+  **every `<link>` in the RSS feed**, so following any of the 24 posts led nowhere.
+  Swept across the published surface, its generators, the page templates and
+  live-QA's default `LIVE_URL`. Not swept: the dated record (`library/`, `team/`
+  reviews and debriefs, `issues/done/`, this file's own history) — those say what
+  was true when they were written, and rewriting history is not a link fix.
+
 - **A Tools section, and the voice pane becomes a tool (issue 064, Dinis)** — the
   🎙 pane shipped on `/updates/` yesterday did its job so well that it was
   obviously in the wrong place: a general capability bolted to one page,

@@ -1,6 +1,6 @@
 # Reality: What Exists Today
 
-*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+*Part of the [project library](https://voicedebrief.ai/library/) — every doc behind this product, organised by audience.*
 
 
 **maintained by** Librarian
@@ -27,7 +27,8 @@
 | Issues READMEs: top-level table + per-folder views (maintained manually per commit) | `issues/*/README.md` | 2026-07-29 |
 | Dev pack: audio-transcribe integration briefs (the work they proposed shipped as M1–M2, issues 008/024) | `library/dev_packs/v0.1.1__audio-transcribe-integration/` | 2026-07-29 |
 | GH Pages + Route 53 DNS guide | `library/guides/v0.1.1__guide__github-pages-and-route53-dns.md` | 2026-07-29 |
-| Custom domain LIVE: Route 53 CNAME + Pages claim, HTTPS enforced, HTTP 301s, version-stamped (issue 021 closed) | https://whatsapp-voice-transcription.sgraph.ai | 2026-07-29 |
+| **Domain: `voicedebrief.ai` (prod) and `qa.voicedebrief.ai` (QA)** — live and serving. The former hosts `whatsapp-voice-transcription.sgraph.ai` / `qa.…` have **no DNS**, so every absolute URL naming them is dead; swept out of the published surface, its generators, the page templates, `llms.txt`, `sitemap.xml`, `robots.txt`, the RSS feed's links and live-QA's default `LIVE_URL` on 12 Aug. The dated record (library, reviews, debriefs, done issues, CHANGELOG) still names the old host, deliberately — it describes what was true then | `website/`, `scripts/`, `tests/qa/live-site-check.mjs` | 2026-08-12 |
+| Custom domain LIVE: Route 53 CNAME + Pages claim, HTTPS enforced, HTTP 301s, version-stamped (issue 021 closed) | https://voicedebrief.ai | 2026-07-29 |
 | Journalist role (active): owns the public record — 11 Updates posts, the Versions list and the Videos page, all authored as markdown under `content/` (one file per post; see issue 039) | `team/roles/journalist/`, `content/updates/` | 2026-07-29 (posts current to 2026-08-06) |
 | Public Library page (Librarian-maintained doc front door) | `website/library/` | 2026-07-29 |
 | CHANGELOG.md + Librarian-Journalist per-version capture discipline | `CHANGELOG.md`, both ROLE files, `.claude/CLAUDE.md` | 2026-07-29 |
@@ -43,7 +44,7 @@
 | Sample voice notes clickable in the UI (load + auto-run with a saved key) | `website/app/samples/`, app page chips | 2026-08-05 |
 | CI test gate: unit (22, node --test) + integration (11-check Playwright app boot) before tag/publish; post-deploy live-site QA job (issue 028) | `tests/unit/`, `tests/integration/`, `tests/qa/`, `ci-pipeline.yml` | 2026-08-05 |
 | Repeat-pass fix: same-file rerun reuses the engine's deduped queue item instead of failing "not-audio" (issue 029; upstream reported) | `website/app/pipeline.js`, `team/comms/briefs/08/05/` | 2026-08-05 |
-| QA estate LIVE: `qa` branch → Netlify (test gate → stamped `-qa.<sha>` build → netlify-cli publish → 16-check live verification). Secrets in place; verified serving v0.1.14-qa.cbd4382 (issue 030 closed) | `.github/workflows/qa-deploy.yml`, branch `qa`, https://qa.whatsapp-voice-transcription.sgraph.ai | 2026-08-05 |
+| QA estate LIVE: `qa` branch → Netlify (test gate → stamped `-qa.<sha>` build → netlify-cli publish → 16-check live verification). Secrets in place; verified serving v0.1.14-qa.cbd4382 (issue 030 closed) | `.github/workflows/qa-deploy.yml`, branch `qa`, https://qa.voicedebrief.ai | 2026-08-05 |
 | Infographic v2 (issue 031): default model `google/gemini-3.1-flash-image-preview` returns a finished image; model picker + redraw on the card (`redrawInfographic` action); editable infographic system prompt (4th debug-pane template); spinner + elapsed heartbeat in main UX and debug pane v0.1.1; samples load into the options screen. Verified e2e (image ~850KB + SVG redraw, real key) | `website/app/infographic.js`, `website/components/wa-debug-panel/v0/v0.1/v0.1.1/` | 2026-08-05 |
 | Disabled-key diagnosis (issue 032): network-shaped LLM failures re-checked via GET /api/v1/key; rejected keys named in the error card and on the key panel | `website/app/app.js` | 2026-08-05 |
 | Versions page (issue 033): per-tag timeline with diffs (`versions.json` kept in step with CHANGELOG); version chip on every page footer; QA builds stamped `<next-version>-qa.<sha>` from the tags | `website/versions/`, both workflows | 2026-08-05 |

@@ -1,6 +1,6 @@
 # `content/` — everything the site publishes, one file at a time
 
-*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+*Part of the [project library](https://voicedebrief.ai/library/) — every doc behind this product, organised by audience.*
 
 This folder is the **source of truth for published content**. The pages under
 `website/updates/`, `website/videos/` and the data behind `website/versions/` are

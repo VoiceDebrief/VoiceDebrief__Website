@@ -3,12 +3,12 @@
    failure), and are its upstream dependencies reachable?
 
    Environment:
-     LIVE_URL         (default https://whatsapp-voice-transcription.sgraph.ai)
+     LIVE_URL         (default https://voicedebrief.ai)
      EXPECT_VERSION   if set, version.txt must match (CI passes the fresh tag)
 
    Run: node tests/qa/live-site-check.mjs */
 
-const LIVE = (process.env.LIVE_URL || 'https://whatsapp-voice-transcription.sgraph.ai').replace(/\/$/, '')
+const LIVE = (process.env.LIVE_URL || 'https://voicedebrief.ai').replace(/\/$/, '')
 const EXPECT_VERSION = (process.env.EXPECT_VERSION || '').trim()
 
 let failures = 0

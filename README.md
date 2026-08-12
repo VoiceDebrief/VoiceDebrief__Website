@@ -26,7 +26,7 @@ arrangement — is built in the open and published as it is produced.
 ## Working Here
 
 - Default branch is **`dev`** — and for now it is production: it is the branch that
-  publishes https://whatsapp-voice-transcription.sgraph.ai. `dev` and `main` go to
+  publishes https://voicedebrief.ai. `dev` and `main` go to
   the same place until a separate production estate is split out (decision, 6 Aug
   2026). CI auto-tags both and publishes the site after tagging.
 - The `version` file (and the version in `pyproject.toml`) are **owned by CI** — never

@@ -1,6 +1,6 @@
 # The Agentic Team — WhatsApp Audio Transcription
 
-*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+*Part of the [project library](https://voicedebrief.ai/library/) — every doc behind this product, organised by audience.*
 
 
 This repo is developed in the open by an agentic team plus humans, following the working

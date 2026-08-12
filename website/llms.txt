@@ -24,48 +24,48 @@ so an agent can do what a person does there without a UI.
 
 ## The app, for agents
 
-- [API skill](https://whatsapp-voice-transcription.sgraph.ai/app/skills/SKILL__api.md): every `window.__tool` action with params and returns — run a pass, read results, drive the chat, read the workflow and its execution trace
-- [Browser-use skill](https://whatsapp-voice-transcription.sgraph.ai/app/skills/SKILL__browser.md): operating the app through its UI
-- [Human guide](https://whatsapp-voice-transcription.sgraph.ai/app/skills/SKILL__human.md): the app explained for people
-- [Action manifest](https://whatsapp-voice-transcription.sgraph.ai/app/manifest.json): the full action list, machine-readable
-- [The declared workflow](https://whatsapp-voice-transcription.sgraph.ai/app/workflows/standard.json): the one-pass as a JSON state machine — steps, models, per-step spending ceilings, transitions, failure behaviour. The app executes from this file
+- [API skill](https://voicedebrief.ai/app/skills/SKILL__api.md): every `window.__tool` action with params and returns — run a pass, read results, drive the chat, read the workflow and its execution trace
+- [Browser-use skill](https://voicedebrief.ai/app/skills/SKILL__browser.md): operating the app through its UI
+- [Human guide](https://voicedebrief.ai/app/skills/SKILL__human.md): the app explained for people
+- [Action manifest](https://voicedebrief.ai/app/manifest.json): the full action list, machine-readable
+- [The declared workflow](https://voicedebrief.ai/app/workflows/standard.json): the one-pass as a JSON state machine — steps, models, per-step spending ceilings, transitions, failure behaviour. The app executes from this file
 
 ## The tools, for agents
 
-- [Tools](https://whatsapp-voice-transcription.sgraph.ai/tools/): the index — small, single-purpose browser tools built alongside the app
-- [Text to speech](https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/): text in, a spoken `.wav` out, in the browser on the caller's own OpenRouter key
-- [Text to speech — API skill](https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/skills/SKILL__api.md): every action with params, returns, typed errors and a Playwright example. Audio comes back as base64, because a Blob does not survive `page.evaluate`
-- [Text to speech — human guide](https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/skills/SKILL__human.md)
-- [Text to speech — action manifest](https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/manifest.json)
+- [Tools](https://voicedebrief.ai/tools/): the index — small, single-purpose browser tools built alongside the app
+- [Text to speech](https://voicedebrief.ai/tools/text-to-speech/): text in, a spoken `.wav` out, in the browser on the caller's own OpenRouter key
+- [Text to speech — API skill](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__api.md): every action with params, returns, typed errors and a Playwright example. Audio comes back as base64, because a Blob does not survive `page.evaluate`
+- [Text to speech — human guide](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__human.md)
+- [Text to speech — action manifest](https://voicedebrief.ai/tools/text-to-speech/manifest.json)
 
 ## Live state, machine-readable
 
-- [status.json](https://whatsapp-voice-transcription.sgraph.ai/engineering/status.json): the deployed version, commit, and the per-layer test results this deploy passed
-- [issues.json](https://whatsapp-voice-transcription.sgraph.ai/engineering/issues.json): the full issue queue (open/blocked/done) as of this deploy
-- [docs.json](https://whatsapp-voice-transcription.sgraph.ai/engineering/docs.json): the public documentation inventory
-- [versions.json](https://whatsapp-voice-transcription.sgraph.ai/versions/versions.json): every release with date, headline and changes
-- [updates.json](https://whatsapp-voice-transcription.sgraph.ai/updates/updates.json): every Updates post, structured
-- [videos.json](https://whatsapp-voice-transcription.sgraph.ai/videos/videos.json): the demo videos
-- [RSS feed](https://whatsapp-voice-transcription.sgraph.ai/updates/feed.xml)
-- [guide.json](https://whatsapp-voice-transcription.sgraph.ai/user-guide/guide.json): the user guide as data — each step with its test-captured screenshot
-- [baseline-changes.json](https://whatsapp-voice-transcription.sgraph.ai/user-guide/baseline-changes.json): every time the product's screenshots moved, tied to the commit and CI run that moved them (the agent-review surface for UI change)
+- [status.json](https://voicedebrief.ai/engineering/status.json): the deployed version, commit, and the per-layer test results this deploy passed
+- [issues.json](https://voicedebrief.ai/engineering/issues.json): the full issue queue (open/blocked/done) as of this deploy
+- [docs.json](https://voicedebrief.ai/engineering/docs.json): the public documentation inventory
+- [versions.json](https://voicedebrief.ai/versions/versions.json): every release with date, headline and changes
+- [updates.json](https://voicedebrief.ai/updates/updates.json): every Updates post, structured
+- [videos.json](https://voicedebrief.ai/videos/videos.json): the demo videos
+- [RSS feed](https://voicedebrief.ai/updates/feed.xml)
+- [guide.json](https://voicedebrief.ai/user-guide/guide.json): the user guide as data — each step with its test-captured screenshot
+- [baseline-changes.json](https://voicedebrief.ai/user-guide/baseline-changes.json): every time the product's screenshots moved, tied to the commit and CI run that moved them (the agent-review surface for UI change)
 
 ## Pages
 
-- [How it works, where the audio goes, what it costs](https://whatsapp-voice-transcription.sgraph.ai/): the landing page — the tool runs on the page itself; the beta is bring-your-own-key and there is no plan, credit or card
-- [The app](https://whatsapp-voice-transcription.sgraph.ai/app/)
-- [Getting an OpenRouter key](https://whatsapp-voice-transcription.sgraph.ai/openrouter-key/): why the product is bring-your-own-key, the five steps to create one, how to cap its spend, and how to revoke it. Nobody can use the product without this
-- [User guide](https://whatsapp-voice-transcription.sgraph.ai/user-guide/): step-by-step usage — every screenshot taken by a passing test on the same build
-- [Engineering](https://whatsapp-voice-transcription.sgraph.ai/engineering/): how it is built — pipeline, testing, docs, security posture (including open findings, honestly labelled), team, concepts
-- [Concepts](https://whatsapp-voice-transcription.sgraph.ai/engineering/concepts/): the concept scheme behind the interface vocabulary — meaning stored in a definition, one label per culture, and the English review that found three words naming the wrong thing. NOT wired to the shipped strings; it is a review surface
-- [concepts.json](https://whatsapp-voice-transcription.sgraph.ai/engineering/concepts/concepts.json): that scheme as data — definitions, scope notes, per-culture labels, verdicts and broader/narrower/related relations
-- [Design candidates](https://whatsapp-voice-transcription.sgraph.ai/design/): the A/B hub — three theme prototypes and four culture packs, each runnable with synthetic data and no key. Design references under evaluation, not the shipping product (noindex, absent from the sitemap)
-- [Browser unit tests](https://whatsapp-voice-transcription.sgraph.ai/tests/browser/): the app's unit suite, runnable in your browser against the deployed modules
-- [Updates](https://whatsapp-voice-transcription.sgraph.ai/updates/): the dated build-in-public record
-- [Versions](https://whatsapp-voice-transcription.sgraph.ai/versions/): every release, with diffs
-- [Videos](https://whatsapp-voice-transcription.sgraph.ai/videos/): demos and shorts
-- [Tools](https://whatsapp-voice-transcription.sgraph.ai/tools/): small browser tools built alongside the app — today, text to speech
-- [Library](https://whatsapp-voice-transcription.sgraph.ai/library/): every document behind the product
+- [How it works, where the audio goes, what it costs](https://voicedebrief.ai/): the landing page — the tool runs on the page itself; the beta is bring-your-own-key and there is no plan, credit or card
+- [The app](https://voicedebrief.ai/app/)
+- [Getting an OpenRouter key](https://voicedebrief.ai/openrouter-key/): why the product is bring-your-own-key, the five steps to create one, how to cap its spend, and how to revoke it. Nobody can use the product without this
+- [User guide](https://voicedebrief.ai/user-guide/): step-by-step usage — every screenshot taken by a passing test on the same build
+- [Engineering](https://voicedebrief.ai/engineering/): how it is built — pipeline, testing, docs, security posture (including open findings, honestly labelled), team, concepts
+- [Concepts](https://voicedebrief.ai/engineering/concepts/): the concept scheme behind the interface vocabulary — meaning stored in a definition, one label per culture, and the English review that found three words naming the wrong thing. NOT wired to the shipped strings; it is a review surface
+- [concepts.json](https://voicedebrief.ai/engineering/concepts/concepts.json): that scheme as data — definitions, scope notes, per-culture labels, verdicts and broader/narrower/related relations
+- [Design candidates](https://voicedebrief.ai/design/): the A/B hub — three theme prototypes and four culture packs, each runnable with synthetic data and no key. Design references under evaluation, not the shipping product (noindex, absent from the sitemap)
+- [Browser unit tests](https://voicedebrief.ai/tests/browser/): the app's unit suite, runnable in your browser against the deployed modules
+- [Updates](https://voicedebrief.ai/updates/): the dated build-in-public record
+- [Versions](https://voicedebrief.ai/versions/): every release, with diffs
+- [Videos](https://voicedebrief.ai/videos/): demos and shorts
+- [Tools](https://voicedebrief.ai/tools/): small browser tools built alongside the app — today, text to speech
+- [Library](https://voicedebrief.ai/library/): every document behind the product
 
 ## Source
 

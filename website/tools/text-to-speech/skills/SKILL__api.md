@@ -1,7 +1,7 @@
 # Text to speech — JS API
 
 Published as `window.__tool` (SgToolApi, name `text-to-speech`) after `tool:ready`,
-on <https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/>.
+on <https://voicedebrief.ai/tools/text-to-speech/>.
 Every action returns a Promise. Authoritative list: `../manifest.json` `api` section.
 
 Audio is returned as **base64**, not a Blob — a Blob does not survive
@@ -25,7 +25,7 @@ Typed errors: `no-text`, `no-key`, `bad-voice`, plus the module's own
 ## Playwright
 
 ```js
-await page.goto('https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/')
+await page.goto('https://voicedebrief.ai/tools/text-to-speech/')
 await page.waitForFunction(() => window.__tool)
 await page.evaluate(k => window.__tool.setApiKey({ apiKey: k }), process.env.OPENROUTER_KEY)
 

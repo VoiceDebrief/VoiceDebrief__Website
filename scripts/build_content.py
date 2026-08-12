@@ -410,7 +410,7 @@ def render_feed(posts):
         d = datetime.date.fromisoformat(p['date'])
         pub = (f'{DAYS_RFC[d.weekday()]}, {d.day:02d} {MONTHS_RFC[d.month - 1]} {d.year} '
                f'09:00:00 +0000')
-        link = f'https://whatsapp-voice-transcription.sgraph.ai/updates/#{p["slug"]}'
+        link = f'https://voicedebrief.ai/updates/#{p["slug"]}'
         items.append(
             '    <item>\n'
             f'      <title>{html.escape(p["title"])}</title>\n'
@@ -422,7 +422,7 @@ def render_feed(posts):
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<rss version="2.0">\n  <channel>\n'
             '    <title>VoiceDebrief — Updates</title>\n'
-            '    <link>https://whatsapp-voice-transcription.sgraph.ai/updates/</link>\n'
+            '    <link>https://voicedebrief.ai/updates/</link>\n'
             '    <description>What shipped, and what it means for you.</description>\n'
             + '\n'.join(items) + '\n  </channel>\n</rss>\n')
 
@@ -486,7 +486,7 @@ def build(out_dir, check_only=False):
     # sitemap.xml — the pages a crawler should know about, lastmod derived from
     # the content (never from the clock: same content, same sitemap). URLs always
     # name the production domain; the QA estate is noindexed at deploy anyway.
-    site = 'https://whatsapp-voice-transcription.sgraph.ai'
+    site = 'https://voicedebrief.ai'
     content_mod = max([p['date'] for p in published] + [v['date'] for v in versions])
     pages = [('/', content_mod), ('/app/', None), ('/updates/', max(p['date'] for p in published)),
              ('/versions/', max(v['date'] for v in versions)),

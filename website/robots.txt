@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://whatsapp-voice-transcription.sgraph.ai/sitemap.xml
+Sitemap: https://voicedebrief.ai/sitemap.xml
 
 # LLM-facing index of this site's machine-readable surfaces:
-# https://whatsapp-voice-transcription.sgraph.ai/llms.txt
+# https://voicedebrief.ai/llms.txt

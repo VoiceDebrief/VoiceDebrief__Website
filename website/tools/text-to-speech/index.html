@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/">
+<link rel="canonical" href="https://voicedebrief.ai/tools/text-to-speech/">
 <title>Text to speech — Tools</title>
 <meta name="description" content="Turn any text into a spoken audio file in your browser, with your own OpenRouter key. Six voices, a .wav to download, and a JS API so agents can do the same.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VoiceDebrief">
 <meta property="og:title" content="Text to speech — text in, a spoken file out">
 <meta property="og:description" content="Paste text, pick a voice, download the .wav. Runs in your browser on your own OpenRouter key, and publishes a JS API agents can drive.">
-<meta property="og:url" content="https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/">
+<meta property="og:url" content="https://voicedebrief.ai/tools/text-to-speech/">
 <meta name="twitter:card" content="summary">
 <!-- Same allowlist as the app (issue 037): the engine origin for the module,
      OpenRouter for the one call that costs money, and nothing else. The audio
@@ -142,7 +142,7 @@ Paste any text here and a synthetic voice will read it back. Nothing is uploaded
         </tbody>
       </table>
       <pre><code>// Playwright: text in, .wav on disk, no UI involved.
-await page.goto('https://whatsapp-voice-transcription.sgraph.ai/tools/text-to-speech/')
+await page.goto('https://voicedebrief.ai/tools/text-to-speech/')
 await page.waitForFunction(() =&gt; window.__tool)
 await page.evaluate(k =&gt; window.__tool.setApiKey({ apiKey: k }), process.env.OPENROUTER_KEY)
 

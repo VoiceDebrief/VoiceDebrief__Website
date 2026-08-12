@@ -1,11 +1,11 @@
 # The daily Journalist routine — standing brief
 
-*Part of the [project library](https://whatsapp-voice-transcription.sgraph.ai/library/) — every doc behind this product, organised by audience.*
+*Part of the [project library](https://voicedebrief.ai/library/) — every doc behind this product, organised by audience.*
 
 **Runs** daily at 05:00 BST, unattended, via a Claude Routine on this repository.
 **Prompt** lives in the Routine; this file is the detail it points at. Keep the two in
 step — if you change how publishing works, change this file *and* the Routine prompt.
-**Verify at** https://qa.whatsapp-voice-transcription.sgraph.ai (QA estate — the `qa`
+**Verify at** https://qa.voicedebrief.ai (QA estate — the `qa`
 branch deploys here automatically, usually within three minutes of a push).
 
 ---

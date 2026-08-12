@@ -39,7 +39,7 @@ LOG_JSON = os.path.join(GUIDE, 'baseline-changes.json')
 
 HEADER = """# Screenshot baseline changes
 
-*Part of the [user guide](https://whatsapp-voice-transcription.sgraph.ai/user-guide/) —
+*Part of the [user guide](https://voicedebrief.ai/user-guide/) —
 the record of every time the product's pictures moved.*
 
 Written by CI (`scripts/record_baseline_changes.py`) on each `qa` push whose

@@ -23,7 +23,7 @@ decisions, do not casually revisit:
 4. **One repo, three targets**: web, iOS, Android (Chrome extension deliberately later).
 5. **Two branches, one estate for now** (decided 6 Aug 2026): `dev` and `main` go to
    the same place, and `dev` is treated as production — it is the branch that
-   publishes https://whatsapp-voice-transcription.sgraph.ai. A separate `main`
+   publishes https://voicedebrief.ai. A separate `main`
    estate is a future split, not current reality.
 
 ## Repository Rules
