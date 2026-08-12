@@ -95,6 +95,7 @@ for (const ref of stamped) {
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
                     '/components/wa-site-nav/v0/v0.1/v0.1.7/wa-site-nav.js',
+                    '/components/wa-voice-panel/v0/v0.1/v0.1.0/wa-voice-panel.js',
                     '/app/skills/SKILL__api.md', '/app/workflows/standard.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
                     '/engineering/concepts/concepts.json',

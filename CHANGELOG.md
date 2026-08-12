@@ -18,6 +18,24 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **The Updates can read themselves aloud (issue 062, Dinis's steer)** — a 🎙
+  side pane on `/updates/`, in the family of the chat, debug and flow panes:
+  pick a post, edit the news-style script it pre-fills, pick a voice, hear it,
+  download the `.wav`. Starting with a panel rather than the pipeline the brief
+  described **dissolved three of its four blockers**: no CI secret (the key is
+  already in the browser under the same name the app uses), no committed audio
+  and no ffmpeg (you download only what is worth keeping, so WAV's 2.9 MB/min
+  never has to be solved), and no vendoring — Node cannot import an https URL
+  but a browser can, so the TTS module loads straight from the engine origin.
+  It also answers what a pipeline could not: whether the voice sounds right.
+  The pane reports the **real** cost by looking the generation up rather than
+  repeating "a fraction of a penny"; it is dependency-free and imports the TTS
+  module only on first synthesis, so a reader who never opens it fetches
+  nothing. Four browser tests, 16 assertions, **no key, no network and no
+  spend** — `panel.synthesize` is an injectable seam, the same shape as the
+  module's own `fetchImpl`. Publishing (scripts in the markdown, MP3, an RSS
+  enclosure) is still open.
+
 - **Brief: the Updates, read aloud (issue 062, Dinis)** — a tool that turns voice
   notes into writing, publishing its own news as voice notes. The brief is
   grounded against the **real** TTS module rather than its capabilities doc, and

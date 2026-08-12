@@ -43,3 +43,42 @@ headless-capable) from the engine origin we already pin.
 Voice (`onyx`/`echo`), where it runs (local key vs CI secret), how much back
 catalogue, and whether the MP3s are committed or parked in object storage — the
 last one is the only part that does not scale quietly.
+
+## Status 11 Aug — the PANEL shipped first (Dinis's call), publishing still open
+
+Dinis: *"what about if we start with a side panel, like the one we did for the
+chat, debug and flow, that allows the creation of those voice memos on demand
+using the key that we already have."* That inverts the brief's order, and it
+dissolves three of its four blockers outright:
+
+- **no CI secret** — the key is already in this browser under the same name the
+  app uses (`sg-openrouter-mgmt-key`);
+- **no committed audio and no ffmpeg** — you listen in the pane and download
+  only what is worth keeping, so WAV's 2.9 MB/min never has to be solved;
+- **no vendoring** — the Node https-import limitation does not apply in a
+  browser, so the module loads straight from the engine origin (CORS `*`).
+
+And it answers the one thing a pipeline could not: *does the voice sound right.*
+
+**`wa-voice-panel` v0.1.0** on `/updates/`: a 🎙 right-edge pane (joining the
+one-pane-at-a-time protocol) that lists the published posts from the same
+`updates.json` the page and feed are built from, pre-fills an editable
+**news-style script**, offers the six voices, synthesises, plays, and offers the
+`.wav` for download. It reports the **real** cost by looking the `generationId`
+up against OpenRouter rather than repeating "a fraction of a penny".
+
+Deliberately dependency-free and one file: the Updates page loads no engine, a
+reader who never opens the pane fetches nothing extra (the TTS module is
+imported on first synthesis), and a sibling `.css` fetched unstamped could
+outlive a deploy — the trap issue 050 recorded.
+
+Four browser tests, 16 assertions, **no key, no network, no spend**:
+`panel.synthesize` is an injectable seam, the same shape as the module's own
+`fetchImpl`. Live-QA fetches the component so a broken path cannot ship quietly.
+
+### Still open (the publishing half)
+The `## Spoken` script in the post's markdown, the deliberate generator with its
+USD ceiling and hash-skip, MP3 encoding, the RSS `<enclosure>`, and the player
+on the page. The panel is now the authoring tool that makes those worth doing —
+and the storage decision (commit vs object storage) is still the only part that
+does not scale quietly.

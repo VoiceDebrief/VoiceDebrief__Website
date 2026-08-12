@@ -20,6 +20,7 @@ import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
 import '../../components/wa-site-nav/v0/v0.1/v0.1.7/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
+import { draftScript } from '../../components/wa-voice-panel/v0/v0.1/v0.1.0/wa-voice-panel.js'
 
 const standard = await (await fetch('../../app/workflows/standard.json')).json()
 
@@ -346,6 +347,74 @@ QUnit.module('wa-locale-picker — closed means painting nothing', hooks => {
         const home = mount()
         assert.strictEqual(home.shadowRoot.querySelector('.home'), null,
             'in en-GB there is nothing to escape from, so no second button')
+    })
+})
+
+
+/* ── wa-voice-panel (issue 062): the Updates read aloud, on demand ──────── */
+QUnit.module('wa-voice-panel — generate without spending anything', hooks => {
+    const POSTS = { posts: [{ slug: 'a-post', title: 'The menu no longer vanishes — on a phone',
+                              date: '2026-08-10', date_label: '10 August', summary: 'It used to disappear entirely.' }] }
+    let panel
+    hooks.beforeEach(async () => {
+        panel = document.createElement('wa-voice-panel')
+        document.getElementById('qunit-fixture').appendChild(panel)
+        // The real module is never imported: this is the seam that makes the
+        // whole flow testable with no key, no network and no spend.
+        panel.synthesize = async (text, opts) => {
+            panel.__seen = { text, opts }
+            return { blob: new Blob([new Uint8Array(64)], { type: 'audio/wav' }),
+                     durationMs: 4200, generationId: 'gen-test-1' }
+        }
+        panel.lookupCost = async () => 0.0012
+        await panel.loadPosts(URL.createObjectURL(new Blob([JSON.stringify(POSTS)], { type: 'application/json' })))
+    })
+    hooks.afterEach(() => { panel.remove() })
+
+    QUnit.test('the draft script is a news read, not the post pasted in', assert => {
+        const s = draftScript(POSTS.posts[0])
+        assert.true(s.startsWith('Here is the latest from Voice Note Transcribe.'), 'it opens with a lead-in')
+        assert.true(s.includes('The menu no longer vanishes, on a phone.'), 'the em dash becomes a spoken pause')
+        assert.true(s.includes('It used to disappear entirely.'), 'the story follows')
+        assert.strictEqual(draftScript(null), '', 'no post, no script')
+    })
+
+    QUnit.test('a generated memo becomes playable and downloadable, and reports its cost', async assert => {
+        const sr = panel.shadowRoot
+        sr.getElementById('key').value = 'sk-or-v1-test'
+        assert.true(sr.getElementById('script').value.length > 20, 'the script is pre-filled from the post')
+        sr.getElementById('voice').value = 'echo'
+
+        const done = new Promise(r => panel.addEventListener('wa:voice:generated', r, { once: true }))
+        sr.getElementById('go').click()
+        const ev = await done
+
+        assert.strictEqual(panel.__seen.opts.voice, 'echo', 'the chosen voice is passed through')
+        assert.strictEqual(panel.__seen.opts.apiKey, 'sk-or-v1-test', 'the key from the field is used')
+        assert.strictEqual(ev.detail.generationId, 'gen-test-1')
+        assert.false(sr.getElementById('out').classList.contains('hide'), 'the player is revealed')
+        assert.true(sr.getElementById('audio').src.startsWith('blob:'), 'the audio has a blob source')
+        assert.true(sr.getElementById('dl').download.endsWith('.wav'), 'the download is named after the post')
+        assert.true(sr.getElementById('meta').textContent.includes('$0.0012'), 'the real cost is shown, not a guess')
+    })
+
+    QUnit.test('no key means an honest refusal, not a failed call', async assert => {
+        const sr = panel.shadowRoot
+        sr.getElementById('key').value = ''
+        let called = false
+        panel.synthesize = async () => { called = true }
+        sr.getElementById('go').click()
+        await new Promise(r => setTimeout(r, 20))
+        assert.false(called, 'nothing is sent without a key')
+        assert.true(/key/i.test(sr.getElementById('status').textContent), 'and the panel says why')
+    })
+
+    QUnit.test('it joins the one-pane-at-a-time protocol', assert => {
+        panel.setOpen(true)
+        assert.true(panel.shadowRoot.querySelector('.panel').classList.contains('open'))
+        window.dispatchEvent(new CustomEvent('wa:panel-opened', { detail: { id: 'chat' } }))
+        assert.false(panel.shadowRoot.querySelector('.panel').classList.contains('open'),
+            'another pane opening closes this one')
     })
 })
 
