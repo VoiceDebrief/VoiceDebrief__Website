@@ -52,6 +52,30 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   an RSS `<enclosure>` that turns the feed into a podcast, a plain statement that
   the voice is synthetic, and a scripted-`fetchImpl` test that proves the pipeline
   with **no key and no spend**. Nothing built; four decisions are Dinis's.
+- **See it work without a key, and a setup step that finishes (issue 063, Dinis)** —
+  a **demo path**: one button runs a full pass with no OpenRouter key, no account
+  and no request. The decision that makes it worth trusting is that it does **not
+  simulate the product — it runs it**: the declared workflow, the executor shape,
+  the wa:* stream, the trace, the budget accounting and every card are the
+  production ones, and only the model answers are substituted. A demo that drifts
+  from the product would lie first about the thing it exists to show. Its test sets
+  no key and **aborts** any OpenRouter request rather than mocking it, so reaching
+  the network fails the build instead of quietly costing somebody money. The
+  infographic is deliberately not faked — a canned picture of someone else's data
+  would be the most misleading thing on the page — so that step degrades with a
+  reason, which demonstrates the product's real degrade behaviour.
+
+  And `wa-key-panel` v0.1.3 **collapses once a key is saved**: one quiet line with a
+  *change* control, instead of a full labelled form with an empty input greeting
+  everybody who had already done it. A rejected key reopens the form, because
+  collapsing on failure hides the problem behind a tick saying everything is fine.
+
+  Three bugs came from one cause and are worth recording: the demo button borrowed
+  the `.sample-chip` class for its styling, and three separate things selected on
+  that class — the sample loader (which fetched `undefined` and painted *"that
+  doesn't look like an audio file"* over the demo), a test count, and a screenshot
+  journey. All now qualify on `[data-sample]` — what a sample chip *is* rather than
+  how it looks. A styling class had quietly become an API.
 
 - **The pass reads the note before deciding what to do with it (issue 061, Dinis)** —
   a **classify** step between transcribe and translate, on every pass. It returns
