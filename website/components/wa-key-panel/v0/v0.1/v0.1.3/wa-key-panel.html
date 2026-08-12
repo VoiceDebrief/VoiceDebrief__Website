@@ -1,0 +1,22 @@
+<div class="wa-key">
+  <!-- Shown ONLY when a key is already saved. The full form is a setup step, and
+       leaving a setup step permanently open on a page you use every day is the
+       thing being fixed here (Dinis). -->
+  <div class="wa-key__saved" hidden>
+    <span class="tick">✓</span>
+    <span class="saved-text" data-i18n="core.keySaved">Your OpenRouter key is saved in this browser</span>
+    <button type="button" class="wa-key__change" data-i18n="core.keyChange">change</button>
+  </div>
+
+  <div class="wa-key__form">
+    <label for="key" data-i18n="core.keyLabel">Your OpenRouter key</label>
+    <div class="wa-key__row">
+      <input id="key" type="password" autocomplete="off" spellcheck="false"
+             data-i18n-placeholder="core.keyPlaceholder" placeholder="sk-or-…  (get one at openrouter.ai/keys)">
+      <button type="button" class="wa-key__save" data-i18n="core.keySave">Save key</button>
+      <button type="button" class="wa-key__cancel" hidden data-i18n="core.keyCancel">cancel</button>
+    </div>
+    <p class="wa-key__status">Bring your own key for the beta. It is stored only in this
+       browser and sent only to OpenRouter with each request.</p>
+  </div>
+</div>

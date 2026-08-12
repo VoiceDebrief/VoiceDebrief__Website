@@ -52,5 +52,11 @@
   "stepTranslate": "traduzindo",
   "translateWhy": "A transcrição fica sempre no idioma falado. O resumo e o infográfico são criados a partir da tradução.",
   "localeSoon": "em breve",
-  "stepClassify": "lendo o conteúdo"
+  "stepClassify": "lendo o conteúdo",
+  "keySaved": "A sua chave OpenRouter está salva neste navegador",
+  "keyChange": "alterar",
+  "keyCancel": "cancelar",
+  "demoTry": "▶ ver como funciona — sem chave",
+  "demoBadge": "DEMONSTRAÇÃO",
+  "demoNote": "Este é um exemplo preparado, não uma gravação real. Nada foi enviado para lugar nenhum e nada foi cobrado."
 }

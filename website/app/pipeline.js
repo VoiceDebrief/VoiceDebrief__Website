@@ -7,6 +7,7 @@
 
 import { SUMMARY_PROMPT_URL, INFOGRAPHIC_PROMPT_URL, TRANSLATE_PROMPT_URL, CLASSIFY_PROMPT_URL } from './config.js'
 import { parseJson, normalise, needsTranslation } from './classify.js'
+import { demoExecutors, DEMO_FILE } from './demo.js'
 import { culture, getLocale } from './i18n.js'
 import { generateInfographic } from './infographic.js'
 import { normaliseAudioFile } from './audio-normalise.js'
@@ -64,7 +65,11 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
        wa:pass:complete · wa:pass:error {code,stage} — plus the workflow trace:
        wa:workflow:started · wa:workflow:step · wa:workflow:complete */
     async function runPass(params = {}) {
-        const chosen = params.file
+        /* A DEMO pass needs no file and no key — that is the whole point. It
+           still runs the real declaration, so everything below this line behaves
+           exactly as it does for a real pass. */
+        const demo = !!params.demo
+        const chosen = demo ? DEMO_FILE : params.file
         if (!chosen) throw Object.assign(new Error('runPass requires { file }'), { code: 'no-file' })
 
         const def = await loadWorkflow(WORKFLOW_URL)
@@ -244,7 +249,14 @@ export function createPipeline({ api, emit, getKey, infographicMount }) {
             },
         }
 
-        const trace = await runWorkflow(def, { options, executors, emit })
+        /* The demo swaps the executor MAP and nothing else. The workflow machine,
+           the budget accounting, the trace and the wa:* stream are the production
+           ones, so a demo that passes is evidence about the product. */
+        const chosenExecutors = demo
+            ? demoExecutors({ results, emit, options, infographicMount, normalise, needsTranslation })
+            : executors
+        const trace = await runWorkflow(def, { options, executors: chosenExecutors, emit })
+        trace.demo = demo
         current.trace = trace
         results.trace = trace
         emit('wa:pass:complete', { results })
