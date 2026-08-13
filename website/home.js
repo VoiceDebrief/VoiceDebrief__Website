@@ -23,7 +23,7 @@
 import { bootEngine } from './app/engine.js'
 import { createPipeline } from './app/pipeline.js'
 import { fmtGbp } from './app/config.js'
-import './components/vd-workflow/v0/v0.1/v0.1.1/vd-workflow.js'
+import './components/vd-workflow/v0/v0.1/v0.1.2/vd-workflow.js'
 
 const panel = document.querySelector('vd-workflow')
 if (panel) main().catch(e => {
@@ -68,11 +68,25 @@ async function main() {
         .register('getResults', () => pipeline.results(),   { async: false })
         .register('getWorkflow', (p) => pipeline.getWorkflow(p), { async: true })
         .register('getWorkflowTrace', () => pipeline.trace(), { async: false })
+        /* Redraw is the natural second attempt at the one step that can fail
+           without costing you the pass, and it is the same pipeline call the
+           workbench uses. Registered here so an agent driving this page has it,
+           and so the drawing path itself is testable — the panel offers no model
+           choice, by design: that lives in the workbench. */
+        .register('redrawInfographic', (p) => pipeline.redrawInfographic(p), { async: true })
     engine.api.activate()
 
-    // The infographic draws into a detached node; the finished markup is handed
-    // to the panel as one of its tabs rather than the panel owning a canvas.
-    const mount = document.createElement('div')
+    /* THE MOUNT MUST BE IN THE DOCUMENT. The infographic renderer appends
+       <sg-llm-request> into it and waits for that element to do the work — and a
+       custom element in a DETACHED tree never upgrades, so it never connects,
+       never calls anything, and the step sits at "running" with no request
+       behind it. This was `document.createElement('div')` and that is exactly
+       what happened (Dinis, from QA, 86 seconds of nothing).
+
+       It is the light-DOM node slotted into the panel's infographic tab, so the
+       drawing is watched where it will be read, and the panel re-rendering its
+       shadow tree on every trace update cannot tear it out mid-draw. */
+    const mount = document.getElementById('infographic-mount')
 
     let pendingFile = null, runAfterKey = false, ran = null, demoRun = false
 
@@ -103,7 +117,7 @@ async function main() {
 
     panel.addEventListener('vd:demo', async () => {
         demoRun = true
-        panel.startRun(steps({ translate: false, infographic: false }, true))
+        panel.startRun(steps({ translate: false, infographic: false }, true), { infographic: false })
         try { await window.__tool.runPass({ demo: true, infographic: false, translate: false }) }
         catch (e) { console.warn('[voicedebrief] demo:', e) }
     })
@@ -171,7 +185,7 @@ async function main() {
         demoRun = false
         const o = options()
         ran = { }
-        panel.startRun(steps(o))
+        panel.startRun(steps(o), { infographic: o.infographic })
         try {
             await window.__tool.runPass({ ...o, file: pendingFile })
         } catch (e) {
@@ -221,7 +235,11 @@ async function main() {
             const item = (s?.perItem || []).slice(-1)[0]
             costText = item ? fmtGbp(item.usd) : ''
         } catch { /* the cost line is a nicety; its absence is not a failure */ }
-        const r = window.__tool.getResults?.() || {}
+        /* AWAITED. Actions registered on the tool API return a promise whether or
+           not they were declared async, so reading `.summary` off the call
+           itself yields undefined — it was masked here only because `ran` had
+           the same values from the event stream. app.js has always awaited it. */
+        const r = (await window.__tool.getResults?.()) || {}
         panel.showResults({
             summary: ran?.summary || r.summary,
             transcript: ran?.transcript || r.transcript,
@@ -242,3 +260,15 @@ async function main() {
             actions: [{ label: 'Try again', event: 'retry', primary: true }] })
     })
 }
+
+
+/* The version stamp. It used to be an inline <script> at the foot of the page,
+   which the home page's own CSP blocked the moment M3 added one — `script-src
+   'self'` with no 'unsafe-inline' (visible in the console as "Executing inline
+   script violates…"). Moving it into this module is the fix; loosening the
+   policy to print a version number would not have been. */
+const stamp = document.getElementById('site-version')
+if (stamp) fetch('/version.txt', { cache: 'no-store' })
+    .then(r => (r.ok ? r.text() : 'dev'))
+    .then(v => { stamp.textContent = v.trim() })
+    .catch(() => {})

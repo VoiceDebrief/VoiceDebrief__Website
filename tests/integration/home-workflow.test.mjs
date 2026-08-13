@@ -15,15 +15,24 @@
       the panel, and not styled as a warning. Also asserted by measurement: it is
       inside the panel's bounding box and above the fold at 1100x1000.
 
-   No key is set at any point, and every request to OpenRouter is ABORTED rather
-   than mocked — so if the home panel ever reached the network without a key,
-   this breaks instead of quietly costing somebody money.
+   No key is set for the keyless part, and every request to OpenRouter is ABORTED
+   rather than mocked — so if the home panel ever reached the network without a
+   key, this breaks instead of quietly costing somebody money.
+
+   The LAST section is different on purpose: it runs a real pass against the
+   scripted OpenRouter the screenshot suite uses, because the infographic is the
+   one artefact that cannot be proved any other way. It shipped broken — the
+   mount handed to the renderer was a detached node, so the custom element inside
+   it never upgraded, never connected and never made a request, and the step sat
+   at "running" for 86 seconds with nothing behind it (Dinis, from QA). Nothing
+   short of drawing one catches that.
 
    Run: node tests/integration/home-workflow.test.mjs */
 
 import { chromium } from 'playwright'
 import { spawn } from 'node:child_process'
 import { readFileSync } from 'node:fs'
+import { installMockOpenRouter, MOCK_SVG } from '../qa-to-docs/mock-openrouter.mjs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
@@ -235,6 +244,94 @@ try {
         await page.evaluate(() => /already transcribed/.test(
             document.querySelector('vd-workflow').shadowRoot.querySelector('[data-pane=transcript]')?.textContent || '')))
     check('and there is a way forward from it', await painted('[data-act=retry]'))
+
+    /* ── 6. an infographic, actually drawn ───────────────────────────────
+       A second page, with the scripted OpenRouter installed and a key set, so
+       the pass reaches the infographic step for real. */
+    const p2 = await browser.newPage({ viewport: { width: 1100, height: 1000 } })
+    const p2errs = []
+    p2.on('pageerror', e => p2errs.push(String(e).slice(0, 180)))
+    if (MIRROR_DIR) {
+        await p2.route(TOOLS_ORIGIN + '/**', route => {
+            const u = new URL(route.request().url())
+            try { route.fulfill({ body: readFileSync(path.join(MIRROR_DIR, u.pathname)), contentType: 'text/javascript',
+                headers: { 'access-control-allow-origin': '*' } }) }
+            catch { route.fulfill({ status: 404, body: 'not mirrored' }) }
+        })
+    }
+    await installMockOpenRouter(p2)
+    await p2.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'domcontentloaded' })
+    await p2.waitForFunction(() => !!window.__tool, null, { timeout: 30000 })
+    await p2.evaluate(async () => {
+        localStorage.setItem('sg-openrouter-mgmt-key', 'sk-or-v1-mock-home')
+        await window.__tool.setApiKey({ apiKey: 'sk-or-v1-mock-home' })
+    })
+
+    // The mount must be a CONNECTED node or the renderer's custom element never
+    // upgrades. Asserted directly, because this is the bug.
+    check('the infographic mount is in the document, not detached', await p2.evaluate(() => {
+        const m = document.getElementById('infographic-mount')
+        return !!m && m.isConnected && m.getRootNode() === document
+    }))
+
+    await p2.evaluate(() => document.querySelector('vd-workflow')
+        .dispatchEvent(new CustomEvent('vd:sample', { bubbles: true, composed: true })))
+    await p2.waitForFunction(() => document.querySelector('vd-workflow').state === 'ready', null, { timeout: 20000 })
+    await p2.evaluate(() => document.querySelector('vd-workflow').shadowRoot.querySelector('[data-act=run]').click())
+
+    // The tab exists WHILE it draws — that is the difference between a slow step
+    // and one that looks broken.
+    const tabEarly = await p2.waitForFunction(() => {
+        const sr = document.querySelector('vd-workflow').shadowRoot
+        return sr.querySelector('[data-tab=infographic]') ? true : null
+    }, null, { timeout: 30000 }).then(() => true).catch(() => false)
+    check('the Infographic tab is there while it is still drawing', tabEarly)
+
+    await p2.waitForFunction(() => ['results', 'error'].includes(document.querySelector('vd-workflow').state),
+        null, { timeout: 90000 }).catch(() => {})
+    check('the pass finishes rather than sitting at running', await p2.evaluate(() =>
+        document.querySelector('vd-workflow').state) === 'results')
+
+    /* THE DRAWING PATH ITSELF. The product's default is an image model, which the
+       scripted OpenRouter cannot produce — so this redraws with the drawn-SVG
+       model, exactly as the screenshot suite does for the same reason. What is
+       being proved is the thing that was broken: that the renderer, given this
+       page's mount, connects and produces. With the old detached mount it never
+       returned at all. */
+    const redrawn = await p2.evaluate(async () => {
+        try { await window.__tool.redrawInfographic({ model: 'google/gemini-3.5-flash' }); return 'ok' }
+        catch (e) { return String(e?.message || e).slice(0, 120) }
+    })
+    check('redrawing returns instead of hanging', redrawn === 'ok', redrawn)
+    const drew = await p2.evaluate(async () => {
+        const m = document.getElementById('infographic-mount')
+        // Awaited: a registered action returns a promise even when declared
+        // sync, so reading .svg off the call itself is always undefined.
+        const r = (await window.__tool.getResults()) || {}
+        // The drawn SVG lives inside the renderer's own shadow root, so the DOM
+        // probe is for the renderer having CONNECTED at all — the thing a
+        // detached mount prevented. The artefact itself is the returned string.
+        return { mounted: m.children.length > 0,
+                 renderer: !!m.querySelector('sg-llm-infographic, sg-llm-request'),
+                 svgLen: (r.svg || '').length, isSvg: /^<svg|<svg /.test(r.svg || '') }
+    })
+    check('the renderer connected inside the page\'s mount', drew.mounted && drew.renderer,
+        JSON.stringify(drew))
+    check('an infographic is actually produced', drew.svgLen > 50 && drew.isSvg,
+        `${drew.svgLen} chars`)
+    const shown = await p2.evaluate(() => {
+        const sr = document.querySelector('vd-workflow').shadowRoot
+        sr.querySelector('[data-tab=infographic]')?.click()
+        const pane = sr.querySelector('[data-pane=infographic]')
+        const slot = pane?.querySelector('slot[name=infographic]')
+        return { paneVisible: pane && !pane.hidden,
+                 slotted: (slot?.assignedElements() || []).length > 0,
+                 mountHasContent: (document.getElementById('infographic-mount')?.children.length || 0) > 0 }
+    })
+    check('and it is reachable as a tab, through the slot',
+        shown.paneVisible && shown.slotted && shown.mountHasContent, JSON.stringify(shown))
+    check('no page errors on the drawing run', p2errs.length === 0, p2errs.slice(0, 3).join(' | '))
+    await p2.close()
 
     check('no page errors', errs.length === 0, errs.slice(0, 3).join(' | '))
 } catch (e) {

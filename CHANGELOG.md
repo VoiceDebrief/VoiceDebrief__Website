@@ -48,6 +48,19 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   the engine boot (making a local capability depend on a remote origin — issue
   064's lesson, immediately), and the FFmpeg instance was cached in a way that
   could outlive its module. Eight browser tests, no download and no network.
+- **The infographic actually draws now, and you can watch it (issue 060)** — it
+  never ran on the home page, and the reason was one line: the page handed the
+  renderer a container that was never attached to the document, so the element
+  inside it never came alive, never called anything, and the step sat there. It
+  now draws into its own tab, which appears as soon as you ask for an infographic
+  rather than when one arrives — an image model takes a minute or so, and the
+  debrief and transcript are readable while it works.
+  Two smaller things from the same report: the home page's version stamp was an
+  inline script that its own security policy blocked, which is now fixed and
+  guarded by a test; and the 404s in the console are OpenRouter's billing record
+  not being queryable for a couple of seconds after a call. Those are expected,
+  capped at two attempts, and reported as "cost unknown" rather than as zero.
+
 - **A running pass now shows its work, and can be stopped (issue 060)** — from
   QA: a step sat spinning while a later one had already finished, and there was
   no way out of it. The panel was keeping its own list of steps and advancing it
