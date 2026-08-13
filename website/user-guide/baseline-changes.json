@@ -2,6 +2,87 @@
   "note": "Written by scripts/record_baseline_changes.py on each qa push whose screenshots moved. A change is a record, not a failure \u2014 the review question is whether the movement matches the work the commit set out to do.",
   "entries": [
     {
+      "date": "2026-08-13 00:04 UTC",
+      "commit": "a0c6a520e2c7245113fb6e626a9e1e8039c3e2c7",
+      "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/a0c6a520e2c7245113fb6e626a9e1e8039c3e2c7",
+      "run": "77",
+      "run_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31653040308",
+      "base_version": "v0.1.25",
+      "armed": [],
+      "changes": [
+        {
+          "id": "01-app-start",
+          "kind": "changed",
+          "pixels": 153884,
+          "area": 1024000,
+          "percent": 15.028,
+          "threshold": 0.1,
+          "caption": "The app as you arrive: a drop zone and three sample notes. No key, no account, nothing to fill in.",
+          "slot": "getting-started/arrival"
+        },
+        {
+          "id": "03-options",
+          "kind": "changed",
+          "pixels": 7763,
+          "area": 341120,
+          "percent": 2.276,
+          "threshold": 0.1,
+          "caption": "A loaded voice note: choose a translation and an infographic, read the quoted maximum, then transcribe.",
+          "slot": "one-pass/options"
+        },
+        {
+          "id": "04-results",
+          "kind": "changed",
+          "pixels": 2283,
+          "area": 965960,
+          "percent": 0.236,
+          "threshold": 0.1,
+          "caption": "The one pass, done: transcript, summary and the infographic together.",
+          "slot": "one-pass/results"
+        },
+        {
+          "id": "08-flow-run",
+          "kind": "changed",
+          "pixels": 5920,
+          "area": 336800,
+          "percent": 1.758,
+          "threshold": 0.1,
+          "caption": "The \ud83e\udded flow tab: the declared workflow \u2014 every step's model and spending ceiling, and what this run actually did and cost.",
+          "slot": "one-pass/workflow"
+        },
+        {
+          "id": "05-chat-open",
+          "kind": "changed",
+          "pixels": 5352,
+          "area": 368800,
+          "percent": 1.451,
+          "threshold": 0.1,
+          "caption": "The chat pane: tick what the assistant may see \u2014 the rows ARE the request.",
+          "slot": "chat/open"
+        },
+        {
+          "id": "06-chat-thread",
+          "kind": "changed",
+          "pixels": 12773,
+          "area": 368800,
+          "percent": 3.463,
+          "threshold": 0.1,
+          "caption": "Ask for work, not just answers: the assistant drives the tool, every call visible in the thread.",
+          "slot": "chat/tools"
+        },
+        {
+          "id": "07-chat-edited",
+          "kind": "changed",
+          "pixels": 5386,
+          "area": 988920,
+          "percent": 0.545,
+          "threshold": 0.1,
+          "caption": "The assistant edited the summary \u2014 the original is always one click away.",
+          "slot": "chat/edit-restore"
+        }
+      ]
+    },
+    {
       "date": "2026-08-12 15:29 UTC",
       "commit": "11772240779621053e655bd031c25dd8509b6d1b",
       "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/11772240779621053e655bd031c25dd8509b6d1b",
