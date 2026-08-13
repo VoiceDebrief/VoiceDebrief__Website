@@ -2,6 +2,63 @@
   "note": "Written by scripts/record_baseline_changes.py on each qa push whose screenshots moved. A change is a record, not a failure \u2014 the review question is whether the movement matches the work the commit set out to do.",
   "entries": [
     {
+      "date": "2026-08-13 12:01 UTC",
+      "commit": "795e30862c7f739e5b0f6a68f445dcaec946daec",
+      "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/795e30862c7f739e5b0f6a68f445dcaec946daec",
+      "run": "79",
+      "run_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/actions/runs/31697992211",
+      "base_version": "v0.1.25",
+      "armed": [],
+      "changes": [
+        {
+          "id": "01-app-start",
+          "kind": "changed",
+          "pixels": 37810,
+          "area": 1024000,
+          "percent": 3.692,
+          "threshold": 0.1,
+          "caption": "The app as you arrive: a drop zone and three sample notes. No key, no account, nothing to fill in.",
+          "slot": "getting-started/arrival"
+        },
+        {
+          "id": "03-options",
+          "kind": "resized",
+          "from": "820x416",
+          "to": "820x417",
+          "caption": "A loaded voice note: choose a translation and an infographic, read the quoted maximum, then transcribe.",
+          "slot": "one-pass/options"
+        },
+        {
+          "id": "02-key-saved",
+          "kind": "resized",
+          "from": "820x57",
+          "to": "820x58",
+          "caption": "Press Transcribe and the key is asked for \u2014 once, and it stays in your browser. The pass carries on by itself.",
+          "slot": "one-pass/key"
+        },
+        {
+          "id": "04-results",
+          "kind": "changed",
+          "pixels": 15393,
+          "area": 965960,
+          "percent": 1.594,
+          "threshold": 0.1,
+          "caption": "The one pass, done: transcript, summary and the infographic together.",
+          "slot": "one-pass/results"
+        },
+        {
+          "id": "07-chat-edited",
+          "kind": "changed",
+          "pixels": 15247,
+          "area": 988920,
+          "percent": 1.542,
+          "threshold": 0.1,
+          "caption": "The assistant edited the summary \u2014 the original is always one click away.",
+          "slot": "chat/edit-restore"
+        }
+      ]
+    },
+    {
       "date": "2026-08-13 00:04 UTC",
       "commit": "a0c6a520e2c7245113fb6e626a9e1e8039c3e2c7",
       "commit_url": "https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/commit/a0c6a520e2c7245113fb6e626a9e1e8039c3e2c7",
