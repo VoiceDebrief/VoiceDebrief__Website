@@ -13,6 +13,16 @@ let chosen = null
 let result = null
 let objectUrl = null
 
+/** The next-step controls follow the RESULT, not the file and not the run.
+    Hiding the block is what a reader sees; disabling the buttons is what a
+    keyboard and an automated pass see, and both have to say the same thing —
+    a visible-but-dead button is the same lie as a hidden-but-focusable one. */
+const showResult = (on) => {
+    $('out').hidden = !on
+    $('send').disabled = !on
+    $('dl').disabled = !on
+}
+
 /* ── choosing a file ─────────────────────────────────────────────────────────
    Once there IS a file, the drop zone goes away (Dinis). A target that says
    "drop a video here" while a video is sitting under it is offering a decision
@@ -27,7 +37,7 @@ const take = (file) => {
     $('chosen').hidden = false
     $('drop').hidden = true
     $('go').disabled = false
-    $('out').hidden = true
+    showResult(false)
     say('')
 }
 
@@ -42,7 +52,7 @@ const clearChoice = () => {
     $('chosen').hidden = true
     $('drop').hidden = false
     $('go').disabled = true
-    $('out').hidden = true
+    showResult(false)
     $('bar').hidden = true
     say('')
     $('drop').focus?.()
@@ -63,7 +73,7 @@ $('change').addEventListener('click', clearChoice)
 $('go').addEventListener('click', async () => {
     if (!chosen) return
     $('go').disabled = true
-    $('out').hidden = true
+    showResult(false)
     $('bar').hidden = false
     $('bar').removeAttribute('value')          // indeterminate until FFmpeg reports
     say('Getting FFmpeg ready — about 32 MB the first time, then it is cached…')
@@ -85,7 +95,7 @@ $('go').addEventListener('click', async () => {
         if (objectUrl) URL.revokeObjectURL(objectUrl)
         objectUrl = URL.createObjectURL(result.blob)
         $('audio').src = objectUrl
-        $('out').hidden = false
+        showResult(true)
         say(result.reencoded
             ? 'Done — this file’s audio could not be copied across, so it was re-encoded to AAC.'
             : `Done in ${(result.tookMs / 1000).toFixed(1)}s — copied out losslessly, nothing re-encoded.`)

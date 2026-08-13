@@ -84,6 +84,22 @@
   .artefact span{font-size:.7rem;color:var(--vd-m);margin-top:3px;display:block}
   .artefact.opt span{color:var(--vd-at)}
 
+  /* The infographic is drawn into a LIGHT-DOM mount that is slotted into the
+     panel's Infographic tab, and the component's own sheet can only reach the
+     slotted node itself — `::slotted()` matches the assigned element, never its
+     descendants. So the <img> the image model returns, which is 1024px+ wide,
+     had nothing constraining it and ran straight out of the tab (Dinis, from
+     QA: "not all is visible"). The rule has to live here, on the page that owns
+     the node. `max-width` rather than `width`: fit what the tab gives, never
+     blow a small drawing up past its own resolution.
+     /app/ has carried the equivalent since M2 — this is the same rule, moved to
+     where the second mount lives. */
+  #infographic-mount{display:block;max-width:100%}
+  #infographic-mount>div{max-width:100%}
+  #infographic-mount img,#infographic-mount svg{display:block;max-width:100%;height:auto;
+     margin-inline:auto;border-radius:var(--vd-r-ctl)}
+  #infographic-mount sg-llm-infographic{display:block;width:100%;min-height:340px}
+
   /* The panel is <vd-workflow>; its styles live in the component. What stays
      here is the page's own button pair, used by the closing section. */
   .drop-actions{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
@@ -152,7 +168,7 @@
     section{padding:44px 0 0;margin-top:40px}
   }
 </style>
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.11/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.12/wa-site-nav.js"></script>
 <script type="module" src="/home.js"></script>
 </head>
 <body>

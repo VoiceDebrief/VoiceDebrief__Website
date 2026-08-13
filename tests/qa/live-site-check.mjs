@@ -59,6 +59,7 @@ for (const [path, marker] of [['/', 'Getting the audio'], ['/app/', 'wa-drop-zon
                               ['/engineering/testing/', 'Three layers'], ['/engineering/docs/', 'reality doc'],
                               ['/engineering/security/', 'ciphertext'], ['/engineering/team/', 'agent roles'],
                               ['/engineering/concepts/', 'concept'],
+                              ['/engineering/wasm/', 'WebAssembly'],
                               ['/tests/browser/', 'qunit'],
                               ['/design/', 'design candidates'],
                               ['/tools/', 'What makes something a tool here'],
@@ -101,7 +102,7 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
-                    '/components/wa-site-nav/v0/v0.1/v0.1.11/wa-site-nav.js',
+                    '/components/wa-site-nav/v0/v0.1/v0.1.12/wa-site-nav.js',
                     '/components/vd-workflow/v0/v0.1/v0.1.1/vd-workflow.js',
                     '/vd-tokens.css', '/vd-theme.js', '/home.js',
                     '/tools/text-to-speech/tts-tool.js', '/tools/text-to-speech/manifest.json',

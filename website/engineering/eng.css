@@ -59,3 +59,18 @@ footer{background:var(--navy);color:var(--vd-km);padding:32px 0;font-size:.85rem
 footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
 footer a{color:var(--vd-km)}
 .loading{color:var(--muted);font-size:.9rem}
+
+/* A numbered sequence with a lead-in phrase per step — used by /engineering/wasm/
+   to walk the extraction, where the ORDER is the explanation. Colour comes from
+   the tokens like everything else; this file declares none of its own. */
+ol.flow{margin:10px 0 0 20px;max-width:820px;font-size:.95rem;color:var(--muted)}
+ol.flow li{margin-bottom:9px}
+ol.flow b{color:var(--ink)}
+.note{border:1px dashed var(--line);border-radius:var(--radius);background:var(--vd-c);
+      padding:14px 16px;margin-top:18px;max-width:820px;font-size:.9rem;color:var(--muted)}
+.note b{color:var(--ink)}
+/* A link in the hero's lead sits on navy, where the browser's default blue —
+   and the visited purple — are barely legible. The nav shipped exactly this bug
+   in v0.1.6 on exactly this background; one rule stops it recurring on every
+   engineering page that puts a link in its opening sentence. */
+.hero p a{color:var(--vd-tl)}

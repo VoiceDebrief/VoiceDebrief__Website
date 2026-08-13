@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://voicedebrief.ai/engineering/wasm/">
+<title>WebAssembly — Engineering</title>
+<meta name="description" content="How the extract-audio tool takes the soundtrack out of a video with no server: FFmpeg compiled to WebAssembly, running in the tab, on a file that is never uploaded. What WASM makes possible, what it costs, and the two failures we hit getting there.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VoiceDebrief">
+<meta property="og:title" content="A 400 MB video, no upload: FFmpeg as WebAssembly in the tab">
+<meta property="og:description" content="The whole of FFmpeg, compiled to WebAssembly, running in a browser tab on a file that never leaves the machine. What that buys, what it costs, and the two failures we hit.">
+<meta property="og:url" content="https://voicedebrief.ai/engineering/wasm/">
+<link rel="stylesheet" href="/vd-tokens.css">
+<script src="/vd-theme.js"></script>
+<link rel="stylesheet" href="../eng.css">
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.12/wa-site-nav.js"></script>
+</head>
+<body>
+
+<wa-site-nav></wa-site-nav>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="../">engineering</a> / webassembly</div>
+    <h1>A 400 MB video, no upload, no server, no bill: FFmpeg runs in the tab.</h1>
+    <p class="lead">The <a href="/tools/extract-audio/">extract-audio tool</a> takes the
+      soundtrack out of a video without sending the video anywhere. This is how that works,
+      and why WebAssembly is the reason a product with no backend can still do real work.</p>
+    <div class="status-strip">
+      <div class="stat"><div class="k">runs on</div><div class="v">your machine</div></div>
+      <div class="stat"><div class="k">uploaded</div><div class="v">0 bytes</div></div>
+      <div class="stat"><div class="k">key needed</div><div class="v">none</div></div>
+      <div class="stat"><div class="k">cost per run</div><div class="v">£0.00</div></div>
+      <div class="stat"><div class="k">first-run download</div><div class="v">~32 MB</div></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The principle</span>
+    <h2>WebAssembly moves the work to where the data already is</h2>
+    <p class="sub">Every other way of doing this starts by moving the file. WebAssembly
+      starts by moving the program — which, for media, is the smaller of the two.</p>
+    <p class="sub">A browser can run compiled code at close to native speed, inside the same
+      sandbox that contains the page: no filesystem, no network it is not given, no escape
+      into the operating system. FFmpeg — a twenty-year-old C codebase — is compiled to that
+      target and shipped as a <code>.wasm</code> file. Loading it is a download, not an
+      install; running it is a function call, not a process.</p>
+    <p class="sub">Turn that round and it becomes an architecture. The conventional design
+      for "extract the audio from this video" is: upload 400 MB, queue a job, run FFmpeg on
+      a server you rent, store the output, hand back a link, delete it on a schedule, and
+      answer for all of it when somebody asks where their file went. The WASM design is:
+      fetch a 32 MB program once, run it on a file that never moves.</p>
+    <div class="grid cols-3">
+      <div class="card"><h3>Nothing to upload</h3>
+        <p>The video is read from a <code>File</code> object the browser already holds. There
+        is no bandwidth cost, no wait proportional to file size, and no copy of somebody's
+        holiday footage on our disk — because there is no disk of ours.</p></div>
+      <div class="card"><h3>Nothing to pay</h3>
+        <p>The compute is the visitor's, already bought and paid for. The marginal cost of a
+        run is zero, so the tool can be free without a plan, a quota or a login — the first
+        thing here that costs nothing, because nothing leaves the machine.</p></div>
+      <div class="card"><h3>Nothing to secure</h3>
+        <p>Privacy by construction rather than by policy. There is no bucket to misconfigure,
+        no retention schedule to honour and no breach to disclose, because the interesting
+        data never arrives.</p></div>
+      <div class="card"><h3>Nothing to keep running</h3>
+        <p>Static hosting serves bytes. No queue, no worker fleet, no autoscaling, nothing
+        that costs money while idle and nothing to be woken at 3am for.</p></div>
+      <div class="card"><h3>It scales by not scaling</h3>
+        <p>A thousand people extracting audio at once is a thousand independent browsers
+        doing their own work. The load on us is a thousand cached file fetches.</p></div>
+      <div class="card"><h3>It is the same everywhere</h3>
+        <p>The same module runs in Chrome, Safari and Firefox on desktop and phone. Sandboxed
+        code that cannot see the filesystem is also code we can ship to the iOS and Android
+        targets later without porting it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">The sequence</span>
+    <h2>What actually happens when you press Extract</h2>
+    <p class="sub">Nine steps. None of them is an upload, and the first four do not happen
+      at all until the button is pressed.</p>
+    <ol class="flow">
+      <li><b>You choose a video.</b> The browser hands the page a <code>File</code> — a
+        handle, not a copy. Nothing has been read yet.</li>
+      <li><b>The page imports <code>sg-video.js</code></b> from the SGraph tools origin. That
+        module is the FFmpeg wrapper, shared with the other tools rather than written again
+        here.</li>
+      <li><b>FFmpeg's ES module and its <code>util</code> helper are imported</b> from
+        <code>unpkg.com</code>.</li>
+      <li><b>A same-origin worker is built.</b> FFmpeg wants to run its commands in a Web
+        Worker created from its own URL — which is another origin, and
+        <code>new Worker()</code> refuses those. So the wrapper fetches the worker's source,
+        rewrites its relative imports to absolute CDN URLs (a <code>blob:</code> URL has no
+        path to resolve <code>./const.js</code> against) and creates the worker from a blob.
+        This detail costs us a CSP directive — see below.</li>
+      <li><b>The core arrives: ~32 MB</b> of <code>ffmpeg-core.js</code> plus
+        <code>ffmpeg-core.wasm</code>, fetched inside the worker and compiled by the browser's
+        WebAssembly engine. This is the whole download, it happens once, and the browser
+        caches it. A visitor who only reads the page pays none of it.</li>
+      <li><b>Your file is written into a virtual filesystem</b> — an in-memory Emscripten FS
+        that exists inside the sandbox. FFmpeg believes it is reading a file on disk. It is
+        reading your tab's memory.</li>
+      <li><b>The command runs: <code>-vn -c:a copy</code>.</b> Drop the video stream, copy
+        the audio across untouched. No decode, no re-encode, no quality lost, and fast —
+        it is a copy, not a conversion.</li>
+      <li><b>The result is read back as a <code>Blob</code></b> and the virtual files are
+        deleted. An object URL makes it playable and downloadable without ever touching your
+        downloads folder.</li>
+      <li><b>Or it goes straight on.</b> "Transcribe this in VoiceDebrief" hands the blob to
+        the workbench through same-origin storage — no round trip through the filesystem, and
+        still no upload.</li>
+    </ol>
+    <p class="note"><b>The one exception, stated plainly.</b> Copying only works if the audio
+      can live in an MP4 container. A phone or WhatsApp video is AAC and copies perfectly; a
+      screen recording or a web download is usually Opus in WebM, which cannot be. FFmpeg
+      reports that as "the file may not contain an audio stream", which is untrue — it has
+      one, it just cannot be copied. The tool catches that specific failure, retries with
+      <code>-c:a aac</code>, and tells you it re-encoded, rather than letting you believe
+      your recording was silent.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">The honest part</span>
+    <h2>What WebAssembly costs</h2>
+    <p class="sub">It is not free, and a page that only lists the upside is marketing. The
+      trade is real and we took it deliberately.</p>
+    <div class="grid cols-2">
+      <div class="card"><h3>32 MB, once</h3>
+        <p>The core is large because it is <em>all of FFmpeg</em>. We load it on demand
+        rather than on page load, say so in the UI before it starts, and let the browser
+        cache handle every run after the first. A build trimmed to the codecs this tool
+        needs would be far smaller — that is a future optimisation, not a shipped one.</p></div>
+      <div class="card"><h3>Memory is the tab's</h3>
+        <p>The file is held in memory rather than streamed from disk, so a very large video
+        is limited by what the tab can allocate. Stream copy keeps this as small as it can
+        be: no decoded frames are ever materialised.</p></div>
+      <div class="card"><h3>Single-threaded here</h3>
+        <p>Multi-threaded FFmpeg needs <code>SharedArrayBuffer</code>, which needs
+        cross-origin isolation headers a static host does not send by default. For a stream
+        copy this costs nothing measurable; for heavy re-encoding it would.</p></div>
+      <div class="card"><h3>A CDN in the trust boundary</h3>
+        <p>The core is fetched from <code>unpkg.com</code>, so that origin is named in this
+        site's Content-Security-Policy. It is allowed to supply <em>code</em> and nothing
+        else: no key and no audio ever travels there. Pinning our own copy of the core is
+        <a href="/engineering/security/">on the security page as an open item</a>, not a
+        solved one.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker">The receipts that matter most</span>
+    <h2>Two failures this design produced, and what they taught</h2>
+    <div class="story"><span class="t">The worker was refused before a single byte was fetched</span>
+      <p>Extraction stopped instantly, with four CSP errors and a progress bar that never
+      moved. The cause: <b>a blob worker inherits the creating page's CSP</b>, and the module
+      imports it then makes are checked against <em>that</em> policy — not against the policy
+      of wherever the worker's source came from. The page allowed <code>unpkg.com</code> in
+      <code>script-src</code> and <code>connect-src</code>, but not in
+      <code>worker-src</code>. Adding it fixed the tool. What made this worth writing down is
+      how it was confirmed: by building the same blob-worker shape against a local stand-in
+      CDN and watching it be refused without the origin and load with it — not by reading the
+      specification and believing it.</p></div>
+    <div class="story"><span class="t">The next-step controls existed before there was a result</span>
+      <p>The player and both follow-on buttons were on screen from page load. The
+      <code>hidden</code> attribute was set correctly the whole time — but
+      <code>hidden</code> is a user-agent rule, and any author rule that sets
+      <code>display</code> outranks it. <code>#out{display:flex}</code> quietly won. The fix
+      is one line; the lesson is the test that now guards it, which asks the browser what it
+      <em>paints</em> rather than what attribute we set. The first version of that test
+      consulted <code>.hidden</code> and passed against the broken page.</p></div>
+    <p class="sub" style="margin-top:20px">Both are the same shape, and it is the shape most
+      of this project's bugs have had: <b>asserting the thing that was supposed to cause an
+      effect, instead of the effect.</b> A CSP directive is not a loaded worker; an attribute
+      is not a painted pixel.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">Where this goes next</span>
+    <h2>The same argument, applied further</h2>
+    <p class="sub">WebAssembly is not a trick for one tool. It is the reason "no backend" is
+      an architecture here rather than a limitation — and the line is worth stating exactly.</p>
+    <div class="grid cols-2">
+      <div class="card"><h3>What runs locally today</h3>
+        <p>Video → audio, in the extract-audio tool. That is the whole of the WASM surface
+        right now, and this page will say so until more of it is true.</p></div>
+      <div class="card"><h3>What does not</h3>
+        <p><b>Transcription is not local.</b> The one pass sends your audio to OpenRouter and
+        on to a model provider — that is stated on the landing page, in the workflow panel,
+        and again here. A browser-local mode is a design goal, not a shipped feature.</p></div>
+    </div>
+    <div class="receipts" style="margin-top:24px"><strong>Receipts</strong>
+      <ul>
+        <li><a href="/tools/extract-audio/">The tool itself</a> — with a JS API
+          (<code>window.__tool</code>) so an agent can do this without the UI</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/website/tools/extract-audio/extract-tool.js">extract-tool.js</a>
+          — the copy-first, re-encode-only-if-you-must logic, and the test seam that lets the
+          whole flow run with no network</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/tests/integration/extract-audio-page.test.mjs">extract-audio-page.test.mjs</a>
+          — the painted-not-declared checks, including "nothing is fetched from the CDN just
+          by loading the page"</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/blob/dev/tests/unit/csp.test.mjs">csp.test.mjs</a>
+          — the rule that keeps the worker origin and the policy in step</li>
+        <li><a href="https://github.com/sgraph-ai/SGraph-AI__Tools/blob/dev/sgraph_ai_tools__static/core/video/v1/v1.0/v1.0.1/sg-video.js">sg-video.js</a>
+          — the shared FFmpeg wrapper, including the two-layer worker architecture</li>
+        <li><a href="/engineering/security/">Security posture</a> · <a href="/engineering/testing/">How this is tested</a></li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 SGraph / The Cyber Boardroom · Site content CC BY 4.0 &nbsp;·&nbsp;
+      <a href="../../versions/"><span id="site-version">dev</span></a></div>
+    <div><a href="https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription">GitHub</a></div>
+  </div>
+</footer>
+
+<script type="module" src="./wasm-page.js"></script>
+
+</body>
+</html>

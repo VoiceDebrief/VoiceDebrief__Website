@@ -44,6 +44,25 @@ test('every hash the nav names exists on the page it points at', () => {
     }
 })
 
+/* The other half of the same failure. A menu entry that names a PAGE which is
+   not on disk 404s on the live site — loudly, but only after a deploy, and only
+   if somebody clicks it. This was worth adding the moment the Library menu
+   stopped being home-page fragments and became five real addresses (v0.1.12):
+   the fragments could not 404, and their replacements can. */
+test('every page the nav names is a page that exists', () => {
+    const home = read('website/index.html')
+    const loaded = [...home.matchAll(/components\/(wa-site-nav\/v0\/v[\d.]+\/v[\d.]+)/g)].map(m => m[1])
+    const nav = read(`website/components/${loaded[0]}/wa-site-nav.js`)
+
+    const hrefs = [...nav.matchAll(/'(\/[a-z0-9/-]*\/)'/g)].map(m => m[1])
+    assert.equal(hrefs.length >= 5, true, 'the nav names several pages')
+    const missing = hrefs.filter((href) => {
+        try { readFileSync(path.join(repo, 'website', href.slice(1), 'index.html')); return false }
+        catch { return true }
+    })
+    assert.deepEqual(missing, [], 'the nav links these, and they are not on disk — they 404 once deployed')
+})
+
 test('every hash a page points at another page also exists there', () => {
     const pages = []
     const walk = (dir) => {

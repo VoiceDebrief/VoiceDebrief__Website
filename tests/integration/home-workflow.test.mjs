@@ -330,6 +330,28 @@ try {
     })
     check('and it is reachable as a tab, through the slot',
         shown.paneVisible && shown.slotted && shown.mountHasContent, JSON.stringify(shown))
+
+    /* IT MUST FIT THE TAB IT IS IN. The image model returns something 1024px+
+       wide and the mount is LIGHT DOM: `::slotted()` reaches the mount itself
+       and nothing inside it, so the component's own `max-width` never touched
+       the <img> and the drawing ran out of the panel (Dinis, from QA: "not all
+       is visible"). Injected here exactly the way infographic.js delivers it —
+       `mount.replaceChildren(img)` — and then measured against the pane, because
+       what is being asserted is a painted width, not a stylesheet's intentions. */
+    const fit = await p2.evaluate(async () => {
+        const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"></svg>'
+        const img = document.createElement('img')
+        img.alt = 'Generated infographic'
+        img.src = 'data:image/svg+xml;base64,' + btoa(svg)
+        document.getElementById('infographic-mount').replaceChildren(img)
+        await img.decode().catch(() => {})
+        await new Promise(r => requestAnimationFrame(r))
+        const pane = document.querySelector('vd-workflow').shadowRoot.querySelector('[data-pane=infographic]')
+        return { img: img.getBoundingClientRect().width, pane: pane.getBoundingClientRect().width,
+                 natural: img.naturalWidth }
+    })
+    check('a 1600px infographic is scaled down to the tab it sits in',
+        fit.natural === 1600 && fit.img > 0 && fit.img <= fit.pane + 0.5, JSON.stringify(fit))
     check('no page errors on the drawing run', p2errs.length === 0, p2errs.slice(0, 3).join(' | '))
     await p2.close()
 
