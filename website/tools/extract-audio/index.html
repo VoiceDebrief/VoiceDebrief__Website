@@ -14,13 +14,23 @@
 <meta name="twitter:card" content="summary">
 <!-- FFmpeg runs here as WebAssembly. That needs three things beyond the usual
      allowlist, and each is deliberate (issue 065, AppSec note):
-       unpkg.com   — the FFmpeg core (32 MB) and its two ESM wrappers. sg-video.js
+       unpkg.com   — the FFmpeg core (32 MB) and its two ESM wrappers, and it is
+                     in worker-src as well as script-src. sg-video.js builds
+                     FFmpeg's class worker as a BLOB whose module imports it
+                     rewrites to absolute unpkg URLs (a blob has no path context
+                     for a relative import). A blob worker INHERITS this page's
+                     policy, and the imports it then makes are checked against
+                     it — so without unpkg here the worker is refused and the
+                     extraction stops before a single byte of the core is
+                     fetched. Verified by building the same blob-worker shape
+                     against a local stand-in CDN: refused without the origin,
+                     loads with it. sg-video.js
                      hardcodes this origin; it accepts no override today.
        blob:       — the module builds a SAME-ORIGIN blob worker, which is the
                      standard fix for FFmpeg's cross-origin Worker limitation.
        wasm-unsafe-eval — compiling the WebAssembly module itself.
      No key and no user data reach any of them: the video never leaves the tab. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'wasm-unsafe-eval' https://tools.sgraph.ai https://dev.tools.sgraph.ai https://unpkg.com; connect-src 'self' blob: https://tools.sgraph.ai https://dev.tools.sgraph.ai https://unpkg.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'wasm-unsafe-eval' https://tools.sgraph.ai https://dev.tools.sgraph.ai https://unpkg.com; connect-src 'self' blob: https://tools.sgraph.ai https://dev.tools.sgraph.ai https://unpkg.com; worker-src 'self' blob: https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.11/wa-site-nav.js"></script>
 <link rel="stylesheet" href="/vd-tokens.css">
 <script src="/vd-theme.js"></script>
@@ -49,6 +59,10 @@
   .chosen{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-top:14px;font-size:.92rem}
   .chosen .nm{font-weight:600}
   .chosen .sz,.muted{color:var(--muted);font-size:.85rem}
+  .chosen .change{margin-left:auto;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;
+    background:var(--vd-c);border:1px solid var(--vd-L);color:var(--vd-i);
+    border-radius:var(--vd-r-ctl);padding:6px 12px;min-height:32px}
+  .chosen .change:hover{border-color:var(--vd-a)}
   button{font:inherit;font-weight:700;font-size:.95rem;padding:12px 20px;border:0;border-radius:10px;
          background:var(--vd-a);color:var(--vd-ai);cursor:pointer;margin-top:16px}
   button.secondary{background:var(--vd-tn);color:var(--accent)}
@@ -106,8 +120,12 @@
         <span>or click to choose one — mp4, mov, webm, mkv, avi…</span>
       </div>
       <input type="file" id="file" accept="video/*,.mp4,.mov,.webm,.mkv,.avi,.m4v">
+      <!-- Replaces the drop zone rather than sitting under it: once a video is
+           chosen the next thing to look at is the extract button, not a target
+           offering a choice already made. -->
       <div class="chosen" id="chosen" hidden>
         <span class="nm" id="nm"></span><span class="sz" id="sz"></span>
+        <button type="button" class="change" id="change">Change</button>
       </div>
       <button id="go" disabled>Extract the audio</button>
       <p class="status" id="status"></p>
