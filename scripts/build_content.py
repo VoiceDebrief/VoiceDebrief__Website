@@ -498,7 +498,7 @@ def build(out_dir, check_only=False):
              ('/engineering/', None), ('/engineering/pipeline/', None),
              ('/engineering/testing/', None), ('/engineering/docs/', None),
              ('/engineering/security/', None), ('/engineering/team/', None),
-             ('/engineering/concepts/', None)]
+             ('/engineering/concepts/', None), ('/engineering/wasm/', None)]
     with open(os.path.join(out_dir, 'sitemap.xml'), 'w', encoding='utf-8') as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')

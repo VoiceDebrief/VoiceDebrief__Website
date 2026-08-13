@@ -57,6 +57,45 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   now gives way to the video you chose, with a **Change** button to pick another;
   picking the same file twice in a row works too, which it did not before.
 
+- **How the browser does the work, written down (Dinis)** — a new engineering
+  page, **[/engineering/wasm/](website/engineering/wasm/index.html)**, explains
+  the extract-audio tool end to end: the nine steps from pressing the button to
+  the `.m4a`, why FFmpeg-as-WebAssembly is what makes a product with no backend
+  able to do real work (nothing to upload, nothing to pay, nothing to secure,
+  nothing to keep running), and — because a page that only lists the upside is
+  marketing — **what it costs**: 32 MB once, the tab's memory, single-threaded
+  without cross-origin isolation, and a CDN inside the CSP. It states plainly
+  that **transcription is not local**. The two failures this design produced are
+  written up as receipts, both the same shape: asserting the thing that was
+  supposed to cause an effect instead of the effect itself.
+
+- **The Library menu goes to pages again (Dinis, from QA)** — three of its five
+  entries were home-page fragments, so "How it works" scrolled the page you were
+  already on rather than opening anything. Each is now the page that owns the
+  subject: **How it works → the user guide**, which CI rebuilds every deploy from
+  screenshots a passing test took of that same build; *How the browser does the
+  work* → the new WebAssembly page; *Where your audio goes* → the security
+  posture; *Getting the audio* → the extract-audio tool. The home page keeps
+  every one of those ids — they are published addresses — and a new unit test
+  fails the build if any menu entry names a page that is not on disk.
+  (`wa-site-nav` v0.1.12.)
+
+- **The next steps on the extract-audio page wait for a result (Dinis)** — the
+  player, *Transcribe this in VoiceDebrief* and *Download the .m4a* were on
+  screen from page load, offering actions with nothing to act on. `hidden` was
+  set correctly the whole time: it is a user-agent rule, and any author rule that
+  sets `display` outranks it, which `#out{display:flex}` quietly did. Fixed
+  page-wide, and the buttons now ship disabled so a keyboard cannot reach them
+  either. The test that guards it asks what the browser **paints** — its first
+  version consulted the attribute and passed against the broken page.
+
+- **The infographic fits the tab it is drawn in (Dinis, from QA)** — the image
+  model returns something 1024px or wider and it ran straight out of the panel.
+  The mount is light DOM slotted into the shadow tree, and `::slotted()` reaches
+  the slotted node but nothing inside it, so the component's own `max-width`
+  never touched the image. One rule on the page that owns the mount; the test
+  measures a 1600px drawing against the pane it sits in.
+
 - **The infographic actually draws now, and you can watch it (issue 060)** — it
   never ran on the home page, and the reason was one line: the page handed the
   renderer a container that was never attached to the document, so the element
