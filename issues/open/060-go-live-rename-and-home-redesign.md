@@ -273,3 +273,62 @@ component through its own **module**, not only by naming the path in its markup.
 page loads `/home.js`, which imports `vd-workflow` — invisible to the walk until it
 followed module entry points. Third time this gate has been widened, same lesson each
 time.
+
+
+## 13 Aug — the running state could not tell the truth, and had no way out
+
+From QA, with a screenshot: *"looks like it hanged in that step"*, and *"we need to show
+the user what has been done on each phase … at the moment the UX is just stuck"*.
+
+**What was actually wrong.** The screenshot shows *Translating into your language* still
+spinning while *Writing the debrief* had already ticked. `vd-workflow` v0.1.0 kept its
+**own** list of steps and advanced it by guessing — mark one done, promote the next. A run
+does not work like that. A step can be **skipped** (translate, when the recording is
+already in the reader's language), **degraded** (it failed and the pass carried on), or
+**blocked** (the budget gate stopped it), and none of those emit the completion event the
+guess was waiting for. So a row sat spinning for something that had already been decided
+against, and the panel's account of the run disagreed with the run's own.
+
+It was not, in that screenshot, actually hung: the infographic step was still drawing, and
+an image model takes 60–90 seconds. But a panel that shows nothing moving for a minute and
+a half is indistinguishable from a broken one, which is the same defect wearing a
+different hat.
+
+**v0.1.1, three changes with one cause:**
+
+1. **The step list IS the trace.** `setTrace()` renders whatever the declared workflow
+   says — every status, including the three a guess cannot infer — and every status has a
+   WORD beside its mark, so a reader learns *why* translate was skipped rather than
+   inferring it from a dash. One source for what happened, and it is the executing one.
+2. **Artefacts appear as they arrive.** The transcript is readable while the infographic is
+   still drawing. The caveat follows the transcript rather than the state, because rule 3
+   is about what is on screen, not about which state we are in.
+3. **There is a way out.** *Stop this pass* cancels the run and keeps whatever it had
+   already produced — after a stop, clearing the panel would be actively misleading,
+   because the reader asked the run to end, not the results to vanish. A stopped or failed
+   run offers *Run it again*.
+
+Every running row carries its own elapsed seconds, so slow and stuck stop looking the
+same. And the run record **outlives the run**: a folded *What ran* on every finished pass,
+open by default when something did not go cleanly.
+
+## 13 Aug — the five schemes, offered
+
+`website/vd-theme.js` is a classic script, loaded before paint on every page — a module is
+deferred by definition, so a module would paint Signal and then flip. It is also why this
+is `script-src 'self'` rather than an inline snippet: the app and home pages ship a CSP
+with no `'unsafe-inline'`, and adding it to switch a colour would be a poor trade. The
+stored value is checked against the allowlist before it reaches the DOM (the issue-041
+rule) — localStorage is writable by anything on this origin.
+
+`wa-site-nav` v0.1.11 puts the picker beside the language picker. Each swatch shows its
+own scheme's accent, which means reading a token from a scheme that is not active — done
+with a scoped throwaway element rather than a hardcoded hex.
+
+**The workbench pins itself to Signal**, and says so in the picker. Its nine `wa-*`
+components still read colour through the `--wa-*` bridge, where one name does two jobs — a
+card SURFACE (39 reads) and ink on the dark chrome (98 reads). That conflation is
+invisible while both are near-white and unreadable the moment a dark scheme separates
+them. Rather than ship a workbench that goes dark-on-dark in Night, that page stays light
+and explains why. The lock comes off one component at a time, as each is ported to
+`--vd-*` — the nav is already across.

@@ -159,6 +159,26 @@ try {
                  steps: [], demo: true, spent: 0,
                  rendered: sr.querySelector('[data-pane=debrief]')?.innerHTML || '' }
     })
+    /* THE BUG THIS FILE EXISTS FOR NOW (Dinis, from QA, with a screenshot):
+       "Translating…" sat spinning while "Writing the debrief" had already
+       ticked. The panel kept its own step list and advanced it by guessing, and
+       a guess cannot see a SKIPPED step — translate is skipped whenever the
+       recording is already in the reader's language, and emits no completion
+       event to guess from. Asserted on what the row actually SAYS, because a
+       reader cannot see a data attribute. */
+    const rows = await page.evaluate(() => [...document.querySelector('vd-workflow')
+        .shadowRoot.querySelectorAll('.steps li')].map(li => ({
+            status: li.dataset.status,
+            text: li.textContent.replace(/\s+/g, ' ').trim(),
+        })))
+    check('every declared step is listed, with the status the RUN gave it',
+        rows.length >= 5 && rows.every(r => r.status), rows.map(r => `${r.status}`).join(' '))
+    check('no step is left looking like it is still running when the pass is over',
+        rows.every(r => r.status !== 'running'), rows.filter(r => r.status === 'running').map(r => r.text).join(' | '))
+    const skipped = rows.filter(r => r.status === 'skipped')
+    check('a skipped step SAYS it was skipped, rather than spinning', skipped.length >= 1 &&
+        skipped.every(r => /not needed/.test(r.text)), skipped.map(r => r.text).join(' | '))
+
     check('a scripted result is STAMPED, at the top, above the artefacts',
         /DEMO/.test(demo.stamp) && /not a real recording/.test(demo.stamp), demo.stamp.slice(0, 60))
     check('the debrief is rendered markdown, not markdown source',
@@ -188,6 +208,33 @@ try {
         .shadowRoot.querySelector('.caveat').textContent.replace(/\s+/g, ' ').trim())
     check('the caveat says the model can invent, not just err',
         /mishear/.test(caveat) && /add words nobody said/.test(caveat))
+
+    /* A running pass must be leaveable, and what it already produced must not be
+       thrown away when it is. This was the other half of "the UX is just stuck". */
+    await page.evaluate(() => {
+        const el = document.querySelector('vd-workflow')
+        el.reset()
+        el.startRun([{ id: 'ingest', label: 'Reading' }, { id: 'transcribe', label: 'Transcribing' }])
+        el.artefact('transcript', 'words that were already transcribed')
+    })
+    check('a pass in flight offers a way to stop it', await painted('[data-act=stop]'))
+    check('an artefact is readable WHILE the pass is still running',
+        await page.evaluate(() => /already transcribed/.test(
+            document.querySelector('vd-workflow').shadowRoot.querySelector('[data-pane=transcript]')?.textContent || '')))
+    check('and the caveat is already with it, mid-run', await painted('.caveat'))
+
+    const stopped = page.evaluate(() => new Promise(r =>
+        document.querySelector('vd-workflow').addEventListener('vd:stop', () => r(true), { once: true })))
+    await page.evaluate(() => document.querySelector('vd-workflow').shadowRoot
+        .querySelector('[data-act=stop]').click())
+    check('stopping emits the event the page acts on', await stopped)
+
+    await page.evaluate(() => document.querySelector('vd-workflow').showError({
+        title: 'Stopped.', body: 'x', actions: [{ label: 'Run it again', event: 'retry', primary: true }] }))
+    check('after a stop, what was finished is still on screen',
+        await page.evaluate(() => /already transcribed/.test(
+            document.querySelector('vd-workflow').shadowRoot.querySelector('[data-pane=transcript]')?.textContent || '')))
+    check('and there is a way forward from it', await painted('[data-act=retry]'))
 
     check('no page errors', errs.length === 0, errs.slice(0, 3).join(' | '))
 } catch (e) {

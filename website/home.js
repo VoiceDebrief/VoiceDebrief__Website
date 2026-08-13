@@ -23,7 +23,7 @@
 import { bootEngine } from './app/engine.js'
 import { createPipeline } from './app/pipeline.js'
 import { fmtGbp } from './app/config.js'
-import './components/vd-workflow/v0/v0.1/v0.1.0/vd-workflow.js'
+import './components/vd-workflow/v0/v0.1/v0.1.1/vd-workflow.js'
 
 const panel = document.querySelector('vd-workflow')
 if (panel) main().catch(e => {
@@ -67,6 +67,7 @@ async function main() {
         .register('runPass',    (p) => pipeline.runPass(p), { async: true })
         .register('getResults', () => pipeline.results(),   { async: false })
         .register('getWorkflow', (p) => pipeline.getWorkflow(p), { async: true })
+        .register('getWorkflowTrace', () => pipeline.trace(), { async: false })
     engine.api.activate()
 
     // The infographic draws into a detached node; the finished markup is handed
@@ -121,7 +122,33 @@ async function main() {
     })
 
     panel.addEventListener('vd:workbench', () => { location.href = '/app/' })
-    panel.addEventListener('vd:retry', () => { if (pendingFile) panel.setFile({ name: pendingFile.name, bytes: pendingFile.size }) })
+
+    /* A way out of a running pass. cancelItem stops the engine's work; whatever
+       the pass had already produced stays on screen, because the honest thing
+       after a stop is what was actually finished, not an empty panel. */
+    panel.addEventListener('vd:stop', () => {
+        try { pipeline.cancel() } catch (e) { console.warn('[voicedebrief] stop:', e) }
+        panel.showError({
+            title: 'Stopped.',
+            body: pendingFile
+                ? 'Anything finished before you stopped is below. The recording is still loaded, so you can run it again.'
+                : 'Anything finished before you stopped is below.',
+            actions: pendingFile
+                ? [{ label: 'Run it again', event: 'retry', primary: true }, { label: 'Start another', event: 'reset' }]
+                : [{ label: 'Start another', event: 'reset', primary: true }],
+        })
+    })
+
+    /* Retry is a fresh run of the same file with the same options, not a resume:
+       the pass is one declared workflow and re-entering it half way would mean
+       two code paths through the same steps. Re-running is cheap (the quote is
+       the same) and it is the behaviour the reader expects from the word. */
+    panel.addEventListener('vd:retry', () => {
+        if (!pendingFile) return panel.reset()
+        panel.setFile({ name: pendingFile.name, bytes: pendingFile.size })
+        quote()
+        if (engine.hasKey()) run(); else { runAfterKey = true; panel.askForKey() }
+    })
 
     function take(file) {
         demoRun = false
@@ -165,19 +192,27 @@ async function main() {
     /* ── the pass, as it happens ───────────────────────────────────────── */
 
     const on = (name, fn) => window.addEventListener(name, fn)
-    on('wa:ingested',    () => { panel.stepDone('ingest') })
-    on('wa:transcript',  (e) => { panel.stepDone('transcribe'); ran = { ...ran, transcript: e.detail.text } })
-    on('wa:facts',       () => panel.stepDone('classify'))
-    on('wa:facts:error', () => panel.stepFail('classify'))
-    on('wa:translation', (e) => { panel.stepDone('translate'); ran = { ...ran, translation: e.detail.text } })
-    on('wa:translation:error', () => panel.stepFail('translate'))
-    on('wa:summary',     (e) => { panel.stepDone('summary'); ran = { ...ran, summary: e.detail.text } })
-    on('wa:summary:error', () => panel.stepFail('summary'))
+
+    /* THE STEP LIST IS THE TRACE, not a guess. v0.1.0 of the panel advanced its
+       own list on completion events, which cannot see a SKIPPED step (translate,
+       when the recording is already in the reader's language) — so that row sat
+       spinning while later rows ticked, and the panel's account of the run
+       disagreed with the run's own. The declared workflow emits its whole trace
+       on every transition; that is the only thing worth rendering. */
+    on('wa:workflow:started', (e) => panel.setTrace(e.detail.trace))
+    on('wa:workflow:step',    (e) => panel.setTrace(e.detail.trace))
+    on('wa:workflow:complete', (e) => panel.setTrace(e.detail.trace))
+
+    // Each artefact goes up the moment it exists, so a long step is something to
+    // read through rather than something to stare at.
+    on('wa:transcript',  (e) => { ran = { ...ran, transcript: e.detail.text }; panel.artefact('transcript', e.detail.text) })
+    on('wa:translation', (e) => { ran = { ...ran, translation: e.detail.text }; panel.artefact('translation', e.detail.text) })
+    on('wa:summary',     (e) => { ran = { ...ran, summary: e.detail.text }; panel.artefact('summary', e.detail.text) })
     on('wa:infographic', (e) => {
-        panel.stepDone('infographic')
-        ran = { ...ran, infographicHtml: e.detail.svg || (e.detail.image ? `<img alt="" src="${e.detail.image}">` : '') }
+        const html = e.detail.svg || (e.detail.image ? `<img alt="" src="${e.detail.image}">` : '')
+        ran = { ...ran, infographicHtml: html }
+        panel.artefact('infographicHtml', html)
     })
-    on('wa:infographic:error', () => panel.stepFail('infographic'))
 
     on('wa:pass:complete', async () => {
         let costText = ''

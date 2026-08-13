@@ -48,6 +48,24 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   the engine boot (making a local capability depend on a remote origin — issue
   064's lesson, immediately), and the FFmpeg instance was cached in a way that
   could outlive its module. Eight browser tests, no download and no network.
+- **A running pass now shows its work, and can be stopped (issue 060)** — from
+  QA: a step sat spinning while a later one had already finished, and there was
+  no way out of it. The panel was keeping its own list of steps and advancing it
+  by guessing, which cannot see a step that was *skipped* — translation, when the
+  recording is already in your language — or one that failed and was carried
+  past. It now renders the workflow's own trace, so every step says what happened
+  to it and why. Each artefact appears the moment it exists, so the transcript is
+  readable while the infographic is still drawing; that wait is 60–90 seconds and
+  was most of what "hung" meant. There is a **Stop this pass** button, a running
+  clock on the step in progress, and — on every finished run — a folded **What
+  ran** record that opens itself when something did not go cleanly.
+- **Five colour schemes, switchable from the header** — Signal (light, the
+  default), Night, Paper, Blueprint and Ember, remembered per browser. The
+  workbench stays light for now and says so in the picker: its older components
+  still read colour through a compatibility layer where one name means two
+  different things, which is invisible in a light scheme and unreadable in a dark
+  one. That comes off a component at a time.
+
 - **The workflow is on the home page (issue 060)** — the first thing the brief
   asked for. Drop a recording on the landing page, choose whether you want it
   translated and whether you want an infographic, read the most it can cost, and
