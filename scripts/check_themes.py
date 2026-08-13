@@ -40,10 +40,16 @@ SITE = os.path.join(ROOT, 'website')
 TOKENS = os.path.join(SITE, 'vd-tokens.css')
 INDEX = os.path.join(SITE, 'app/themes/index.json')
 
-DECLARE_RE = re.compile(r'(--(?:vd|wa)-[a-zA-Z0-9-]+)\s*:')
+# ANY custom property, not only the --vd-/--wa- prefixed ones. Restricting these
+# to the prefixes left a hole exactly where the rule matters: a page declaring
+# its own `--green` in a :root block, and still reading it after that block was
+# deleted, resolved to nothing and painted a transparent border — the silent
+# fallback this check exists to catch, invisible because the name did not carry a
+# prefix the regex knew about.
+DECLARE_RE = re.compile(r'(--[a-zA-Z][a-zA-Z0-9-]*)\s*:')
 # A read is var(--x) or var(--x, fallback); the fallback may itself be a var()
 # call, so stop at the first comma or paren.
-READ_RE = re.compile(r'var\(\s*(--(?:vd|wa)-[a-zA-Z0-9-]+)\s*[,)]')
+READ_RE = re.compile(r'var\(\s*(--[a-zA-Z][a-zA-Z0-9-]*)\s*[,)]')
 # Hex literals and the rgb()/hsl() families. A literal inside a var() fallback
 # is fine and expected — that is the standalone-render guarantee — so those are
 # stripped before this runs.
@@ -177,14 +183,19 @@ def main():
     # 1. every token read anywhere is declared here. The tokens file reads
     #    itself — layers B and C are var(--vd-*) all the way down — so it is
     #    part of the read set even though rule 3 exempts it.
-    read = set(READ_RE.findall(tokens_text))
+    read, local = set(READ_RE.findall(tokens_text)), set()
     for path in sheets:
         if exempt(path):
             continue
         with open(path, encoding='utf-8') as f:
-            read.update(READ_RE.findall(f.read()))
-    for tok in sorted(read - declared):
-        problems.append(f'{tok} is read but declared nowhere — add it to vd-tokens.css')
+            text = f.read()
+        read.update(READ_RE.findall(text))
+        # A sheet may declare its own names; what it may not do is read one that
+        # nothing declares.
+        local.update(DECLARE_RE.findall(text))
+    for tok in sorted(read - declared - local):
+        problems.append(f'{tok} is read but declared nowhere — add it to vd-tokens.css, '
+                        f'or declare it in the sheet that reads it')
     # Declared ahead of the component that will read it. Every entry names the
     # component it is waiting for, and comes OFF this list when that lands — an
     # exception with no expiry is just a hole in the rule with a comment on it.
@@ -192,7 +203,7 @@ def main():
         '--vd-pz':      'the phone mock in the design pack (not built)',
         '--vd-ps':      'the phone mock in the design pack (not built)',
     }
-    for tok in sorted(declared - read - set(AHEAD)):
+    for tok in sorted({t for t in declared if t.startswith(('--vd-', '--wa-'))} - read - set(AHEAD)):
         problems.append(f'{tok} is declared in vd-tokens.css but read by nothing — '
                         f'remove it, or fix the rule that should use it')
     for tok in sorted(set(AHEAD) & read):

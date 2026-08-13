@@ -1,15 +1,9 @@
 /* wa-site-nav v0.1.9 — THE site header (issues 048 + 054). One source for every
    page.
 
-   v0.1.9 is colour only (issue 060). Ten literal rgba() overlays became reads of
-   the tokens that already carried those exact values, so the header follows the
-   scheme like everything else. Until this, the site's own gate reported "themes
-   ok" while the one component on every page kept its own colours — the second
-   time that has happened here, and the reason check_themes.py now fails the
-   build on ANY colour written outside vd-tokens.css rather than only on a token
-   read that nothing declares.
+   v0.1.9 adds the second tool, Extract audio (issue 065).
 
-   v0.1.8 carries two pieces of work that landed together:
+   v0.1.8 carried two pieces of work that landed together:
 
    Tools ▾ (issue 064). The site now has small things that are not the product —
    the first is text to speech — and they needed somewhere to live that is
@@ -75,6 +69,7 @@ const ENGINEERING = [
 
 const TOOLS = [
     ['/tools/',                'All tools'],
+    ['/tools/extract-audio/',  'Extract audio'],
     ['/tools/text-to-speech/', 'Text to speech'],
 ]
 
@@ -128,10 +123,10 @@ header{background:var(--wa-navy,#0b1f3a);color:var(--wa-fg,#fff);padding:12px 0;
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px;min-width:0}
 .brand a{color:var(--wa-fg,#fff);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dot{width:12px;height:12px;border-radius:50%;background:var(--wa-green,#25d366);
-  box-shadow:0 0 0 4px var(--wa-ring-green,rgba(37,211,102,.18))}
+  box-shadow:0 0 0 4px rgba(37,211,102,.18)}
 .badge{font-size:.66rem;font-weight:700;letter-spacing:.6px;padding:2px 8px;
-  border-radius:999px;background:var(--wa-ring-green,rgba(37,211,102,.18));color:var(--wa-green-soft,#8ff0b6);
-  border:1px solid var(--wa-ring-green-2,rgba(37,211,102,.45))}
+  border-radius:999px;background:rgba(37,211,102,.18);color:var(--wa-green-soft,#8ff0b6);
+  border:1px solid rgba(37,211,102,.45)}
 nav.main{display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px}
 /* The App link is wrapped in .i18n-link (it is the one page that exists in other
    languages), so the nav.main > a selector stopped matching it in v0.1.3 and it
@@ -144,22 +139,22 @@ nav.main a.active{color:var(--wa-fg,#fff);font-weight:600;border-bottom:2px soli
 .group{position:relative}
 .group > a .caret{font-size:.62rem;opacity:.7;margin-left:4px}
 .menu{position:absolute;top:100%;left:-14px;min-width:160px;padding:8px 0;margin:0;
-  background:var(--wa-navy-2,#122c50);border:1px solid var(--wa-on-dark-12,rgba(255,255,255,.12));border-radius:10px;
-  box-shadow:0 12px 28px var(--wa-shadow-panel,rgba(0,0,0,.35));list-style:none;z-index:50;
+  background:var(--wa-navy-2,#122c50);border:1px solid rgba(255,255,255,.12);border-radius:10px;
+  box-shadow:0 12px 28px rgba(0,0,0,.35);list-style:none;z-index:50;
   opacity:0;visibility:hidden;transform:translateY(6px);transition:.14s}
 .group:hover .menu,.group:focus-within .menu{opacity:1;visibility:visible;transform:none}
 .menu a{display:block;padding:7px 16px;font-size:.88rem;color:var(--wa-link-on-dark,#dbe6f5);text-decoration:none}
-.menu a:hover{background:var(--wa-tint-green,rgba(37,211,102,.12));color:var(--wa-fg,#fff)}
+.menu a:hover{background:rgba(37,211,102,.12);color:var(--wa-fg,#fff)}
 .menu a.active{color:var(--wa-green-soft,#8ff0b6);font-weight:600}
-.burger{display:none;background:none;border:1px solid var(--wa-on-dark-28,rgba(255,255,255,.25));border-radius:8px;
+.burger{display:none;background:none;border:1px solid rgba(255,255,255,.25);border-radius:8px;
   color:var(--wa-link-on-dark,#dbe6f5);font-size:1.15rem;line-height:1;padding:6px 10px;cursor:pointer}
-.burger:hover{color:var(--wa-fg,#fff);border-color:var(--wa-on-dark-30,rgba(255,255,255,.5))}
-.panel{display:none;background:var(--wa-navy-hover,#0e2647);border-top:1px solid var(--wa-on-dark-08,rgba(255,255,255,.1));padding:10px 0 16px}
+.burger:hover{color:var(--wa-fg,#fff);border-color:rgba(255,255,255,.5)}
+.panel{display:none;background:var(--wa-navy-hover,#0e2647);border-top:1px solid rgba(255,255,255,.1);padding:10px 0 16px}
 .panel .wrap{display:block}
 .panel h6{font-size:.68rem;font-weight:700;letter-spacing:1.2px;color:var(--wa-green-soft,#8ff0b6);
   margin:14px 0 4px;text-transform:uppercase}
 .panel a{display:block;padding:8px 0;color:var(--wa-link-on-dark,#dbe6f5);text-decoration:none;font-size:1rem;
-  border-bottom:1px solid var(--wa-on-dark-04,rgba(255,255,255,.06))}
+  border-bottom:1px solid rgba(255,255,255,.06)}
 .panel a:hover{color:var(--wa-fg,#fff)}
 .panel a.active{color:var(--wa-green-soft,#8ff0b6);font-weight:600}
 :host(.open) .panel{display:block}

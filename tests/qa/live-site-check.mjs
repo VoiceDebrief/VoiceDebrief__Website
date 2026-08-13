@@ -62,7 +62,8 @@ for (const [path, marker] of [['/', 'Getting the audio'], ['/app/', 'wa-drop-zon
                               ['/tests/browser/', 'qunit'],
                               ['/design/', 'design candidates'],
                               ['/tools/', 'What makes something a tool here'],
-                              ['/tools/text-to-speech/', 'window.__tool']]) {
+                              ['/tools/text-to-speech/', 'window.__tool'],
+                              ['/tools/extract-audio/', 'Extract the audio from a video']]) {
     const r = await get(path)
     check(`GET ${path} → 200 + expected content`, r.ok && r.text.includes(marker), `status ${r.status}`)
 }
@@ -102,6 +103,9 @@ for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
                     '/components/wa-site-nav/v0/v0.1/v0.1.10/wa-site-nav.js',
                     '/tools/text-to-speech/tts-tool.js', '/tools/text-to-speech/manifest.json',
+                    '/tools/extract-audio/extract-tool.js', '/tools/extract-audio/extract-page.js',
+                    '/tools/extract-audio/manifest.json', '/tools/extract-audio/skills/SKILL__api.md',
+                    '/shared/handoff.js',
                     '/tools/text-to-speech/skills/SKILL__api.md',
                     '/tools/text-to-speech/skills/SKILL__human.md',
                     '/app/skills/SKILL__api.md', '/app/workflows/standard.json',

@@ -5,6 +5,7 @@ issue change. Last updated: 2026-08-12.
 
 | # | Title | Outcome |
 |---|-------|---------|
+| [065](065-extract-audio-from-video.md) | Extract audio from a video | `/tools/extract-audio/` — FFmpeg WASM in the tab, no upload/key/cost; AAC re-encode fallback for Opus-in-WebM (which the brief called rare and is not); same-origin IndexedDB hand-off into `/app/`; unpkg.com allowed on that page only (AppSec note); 8 browser tests, no download or network |
 | [064](064-tools-section-and-tts-tool.md) | A Tools section, and text to speech as its first tool | `/tools/` + `/tools/text-to-speech/`, `wa-site-nav` v0.1.8 (Tools ▾); `wa-voice-panel` retired off /updates/; one `speak()` serves the button and `window.__tool` (7 actions, base64 not Blob); 6 browser tests, 30 assertions, no key/network/spend |
 | [059](059-design-candidates-live-on-the-site.md) | Design candidates live at /design/ | 3 themes + 4 culture packs runnable with synthetic data behind one A/B hub; prototypes byte-identical on a /design/-only runtime; found the table foster-parenting bug that hid the comparison matrix |
 | [054](054-nav-second-level-mobile.md) | Nav second level + mobile | `wa-site-nav` v0.1.1 — 6 primary + News/Engineering dropdowns, hamburger panel ≤760px; 17 refs flipped; 12 browser tests |

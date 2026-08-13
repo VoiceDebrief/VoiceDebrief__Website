@@ -15,7 +15,12 @@
    component off the --wa-* bridge, so it is also the proof that the bridge is
    removable rather than permanent.
 
-   v0.1.9 was colour only (issue 060). Ten literal rgba() overlays became reads of
+   v0.1.9 landed twice, from two agents on the same day: one adding Extract audio
+   to the Tools menu (issue 065), one turning the header's ten literal rgba()
+   overlays into token reads (issue 060). The published one is the tools version;
+   this carries both, and its Tools menu is theirs.
+
+   v0.1.9 (the colour half) was colour only (issue 060). Ten literal rgba() overlays became reads of
    the tokens that already carried those exact values, so the header follows the
    scheme like everything else. Until this, the site's own gate reported "themes
    ok" while the one component on every page kept its own colours — the second
@@ -89,6 +94,7 @@ const ENGINEERING = [
 
 const TOOLS = [
     ['/tools/',                'All tools'],
+    ['/tools/extract-audio/',  'Extract audio'],
     ['/tools/text-to-speech/', 'Text to speech'],
 ]
 
