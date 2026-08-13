@@ -13,16 +13,39 @@ let chosen = null
 let result = null
 let objectUrl = null
 
-/* ── choosing a file ─────────────────────────────────────────────────────── */
+/* ── choosing a file ─────────────────────────────────────────────────────────
+   Once there IS a file, the drop zone goes away (Dinis). A target that says
+   "drop a video here" while a video is sitting under it is offering a decision
+   that has already been made, and it pushes the thing you now care about — the
+   extract button — further down the page. `Change` puts it back; that is the
+   only way it returns, so nothing about the state is ambiguous. */
 const take = (file) => {
     if (!file) return
     chosen = file
     $('nm').textContent = file.name
     $('sz').textContent = mb(file.size)
     $('chosen').hidden = false
+    $('drop').hidden = true
     $('go').disabled = false
     $('out').hidden = true
     say('')
+}
+
+/** Back to an empty page: the drop zone returns and nothing of the last file
+    is left behind — including the input's own value, which would otherwise
+    refuse to fire `change` if the same file were picked again. */
+const clearChoice = () => {
+    chosen = null
+    result = null
+    if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null }
+    $('file').value = ''
+    $('chosen').hidden = true
+    $('drop').hidden = false
+    $('go').disabled = true
+    $('out').hidden = true
+    $('bar').hidden = true
+    say('')
+    $('drop').focus?.()
 }
 
 $('drop').addEventListener('click', () => $('file').click())
@@ -34,6 +57,7 @@ for (const ev of ['dragleave', 'drop']) {
     $('drop').addEventListener(ev, (e) => { e.preventDefault(); $('drop').classList.remove('over') })
 }
 $('drop').addEventListener('drop', (e) => take(e.dataTransfer?.files?.[0]))
+$('change').addEventListener('click', clearChoice)
 
 /* ── extracting ──────────────────────────────────────────────────────────── */
 $('go').addEventListener('click', async () => {

@@ -75,3 +75,32 @@ test('every page that runs a pass pins where code and data may go', () => {
         assert.equal((csp['base-uri'] || []).includes("'self'"), true, `${page}: base-uri 'self'`)
     }
 })
+
+
+/* A blob worker inherits the page's CSP, and the module imports IT then makes
+   are checked against that inherited policy — not against the policy of
+   wherever the worker's source came from.
+
+   That is the whole of the extract-audio failure. `sg-video.js` builds FFmpeg's
+   class worker as a blob (it has to: FFmpeg's own worker URL is cross-origin,
+   and `new Worker()` refuses those), rewriting the worker's relative imports to
+   absolute unpkg URLs because a blob has no path to resolve them against. The
+   page allowed unpkg in `script-src` and `connect-src` but not in `worker-src`,
+   so the worker was refused and the extraction stopped before a single byte of
+   the 32 MB core was fetched — four CSP errors in the console and a progress bar
+   that never moved (Dinis, from QA).
+
+   Verified by construction, not by reading the spec: the same blob-worker shape
+   built against a local stand-in CDN is refused without the origin in
+   `worker-src` and loads with it. */
+test('a page whose worker imports from a CDN names that CDN in worker-src', () => {
+    const page = 'website/tools/extract-audio/index.html'
+    const csp = cspOf(readFileSync(path.join(repo, page), 'utf8'))
+    assert.ok(csp, `${page} ships no Content-Security-Policy`)
+    const worker = csp['worker-src'] || csp['child-src'] || csp['default-src'] || []
+    assert.ok(worker.includes('https://unpkg.com'),
+        'the FFmpeg class worker is a blob that imports from unpkg; without unpkg in ' +
+        'worker-src the browser refuses it and extraction never starts')
+    // …and blob: itself, since the worker IS one.
+    assert.ok(worker.includes('blob:'), 'the worker is created from a blob: URL')
+})

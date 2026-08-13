@@ -97,3 +97,49 @@ engine origin at module level, so the app cannot boot in a sandbox at all.
   chain (video → audio → transcript → re-voice) is used in anger.
 - Ask the tools repo for a `coreBase` override so the 32 MB can come from
   `tools.sgraph.ai` and the CSP can be tightened back.
+
+
+## 13 Aug — reopened briefly: the worker was refused, and the drop zone overstayed
+
+Both from Dinis, on QA.
+
+### FFmpeg never loaded: `worker-src` was one origin short
+
+Four console errors, a progress bar that never moved, and no 32 MB download —
+because nothing got as far as fetching it.
+
+`sg-video.js` cannot let FFmpeg create its own worker: FFmpeg does
+`new Worker(new URL('./worker.js', import.meta.url))`, and when the module came
+from a CDN that URL is cross-origin, which `new Worker()` refuses outright. So
+the engine fetches `worker.js`, rewrites its relative imports to absolute unpkg
+URLs (a blob has no path to resolve `./const.js` against) and passes the blob as
+`classWorkerURL`. That part is correct and already shipped.
+
+What was missed is what happens next: **a blob worker inherits the creating
+page's CSP**, and the module imports it then makes are checked against that
+inherited policy. This page allowed `https://unpkg.com` in `script-src` and
+`connect-src` but not in `worker-src`, so the worker's own import of
+`const.js` was refused and the load died there.
+
+Verified by construction rather than by reading the spec — the same blob-worker
+shape built against a local stand-in CDN is **refused** without the origin in
+`worker-src` and **loads** with it. `tests/unit/csp.test.mjs` now asserts it,
+with the reasoning in the test, and the page's CSP comment says why the origin
+appears twice.
+
+### The drop zone now gives way to the file
+
+A target still reading "drop a video here" while a video sits under it offers a
+decision already made, and pushes the extract button — the only thing that
+matters at that point — further down the page. Choosing a file hides the zone and
+shows the file with a **Change** control; Change is the only way back, so the
+state is never ambiguous.
+
+Change also clears the input's `value`. Without that, picking the *same* file
+again fires no `change` event at all and the page would sit there looking broken
+for the second most likely thing a person does.
+
+`tests/integration/extract-audio-page.test.mjs` gates both, and one thing nobody
+had checked: **nothing is fetched from the CDN by loading the page or choosing a
+file**. A tool that downloaded 32 MB on arrival would cost every visitor that
+whether or not they used it.

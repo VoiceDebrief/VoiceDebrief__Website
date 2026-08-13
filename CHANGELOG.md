@@ -48,6 +48,15 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   the engine boot (making a local capability depend on a remote origin — issue
   064's lesson, immediately), and the FFmpeg instance was cached in a way that
   could outlive its module. Eight browser tests, no download and no network.
+- **Extracting audio from a video works again (issue 065)** — it was failing
+  before it started: the browser refused to create FFmpeg's worker, so the 32 MB
+  core was never even requested. The worker is built as a blob (FFmpeg's own is
+  on a CDN, and browsers refuse cross-origin workers outright), and a blob worker
+  inherits the page's security policy — which allowed the CDN for scripts and
+  fetches but not for workers. One origin, in one more place. And the drop zone
+  now gives way to the video you chose, with a **Change** button to pick another;
+  picking the same file twice in a row works too, which it did not before.
+
 - **The infographic actually draws now, and you can watch it (issue 060)** — it
   never ran on the home page, and the reason was one line: the page handed the
   renderer a container that was never attached to the document, so the element
