@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.10/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.11/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 import { newsScript, speak, wirePage, publishApi, bytesToBase64, VOICES } from '../../tools/text-to-speech/tts-tool.js'
 import { extract, publishApi as publishExtractApi } from '../../tools/extract-audio/extract-tool.js'
@@ -192,6 +192,45 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
         // from inside the app (issue 060).
         assert.true([...sr.querySelectorAll('a')].some(a => a.getAttribute('href') === '/openrouter-key/'),
             'the key guide is in the menu')
+    })
+
+    /* The five schemes, offered (Dinis). The picker is chrome, so it is asserted
+       here rather than on one page — and on the COMPUTED result of switching,
+       inside the shadow root, because an attribute on <html> proves only that
+       something was set, not that anything was painted. */
+    QUnit.test('the colour scheme can be chosen, and switching repaints the shadow DOM (v0.1.11)', assert => {
+        const done = assert.async()
+        const saved = window.__vdTheme && window.__vdTheme.get()
+        const el = document.createElement('wa-site-nav')
+        document.getElementById('qunit-fixture').appendChild(el)
+        const sr = el.shadowRoot
+        if (!window.__vdTheme) {
+            assert.strictEqual(sr.querySelector('.scheme'), null,
+                'without vd-theme.js the control does not render — the nav never depends on it')
+            return done()
+        }
+        const options = [...sr.querySelectorAll('[data-scheme]')].map(b => b.dataset.scheme)
+        assert.deepEqual(options, ['signal', 'night', 'paper', 'blueprint', 'ember'],
+            'all five schemes are offered')
+
+        const bg = () => getComputedStyle(sr.querySelector('header')).backgroundColor
+        const before = bg()
+        window.__vdTheme.set('night')
+        // The nav re-renders on vd:theme-changed, so read the header again.
+        const after = getComputedStyle(el.shadowRoot.querySelector('header')).backgroundColor
+        assert.notStrictEqual(after, before, `the header repainted (${before} → ${after})`)
+        assert.strictEqual(document.documentElement.getAttribute('data-vd-theme'), 'night')
+        assert.strictEqual(el.shadowRoot.querySelector('[data-scheme-toggle]').textContent.includes('Night'), true,
+            'and the button names the scheme now in force, however it was changed')
+
+        // An unknown value must degrade to a readable page, never to an unstyled
+        // one — and must not reach the DOM at all (the issue-041 rule).
+        window.__vdTheme.set('nonsense-scheme')
+        assert.strictEqual(document.documentElement.getAttribute('data-vd-theme'), 'night',
+            'an unknown scheme is refused rather than applied')
+
+        window.__vdTheme.set(saved || 'signal')
+        done()
     })
 
     /* BETA is a standing statement about the product, so it cannot depend on a
