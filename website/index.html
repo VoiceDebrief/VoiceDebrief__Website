@@ -193,7 +193,16 @@
          routing block now lives in the shadow root, and a fragment anchor cannot
          address anything in there. Scrolling to the panel does land the reader on
          it, which is what the published /#privacy link has always meant. -->
-    <vd-workflow id="privacy"></vd-workflow>
+    <vd-workflow id="privacy">
+      <!-- The infographic renders HERE, in the page's light DOM, and is slotted
+           into the panel's Infographic tab. It has to be a connected node: the
+           renderer appends a custom element into it and waits for it, and a
+           custom element in a detached tree never upgrades — which is why the
+           step ran for 86 seconds without making a single request. Keeping it in
+           the light DOM also means the panel re-rendering its shadow tree cannot
+           destroy a half-drawn SVG. -->
+      <div id="infographic-mount" slot="infographic"></div>
+    </vd-workflow>
   </section>
 
   <section id="sources">
@@ -329,6 +338,5 @@
   </div>
 </footer>
 
-<script>fetch('/version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'dev').then(v=>{document.getElementById('site-version').textContent=v.trim()}).catch(()=>{})</script>
 </body>
 </html>

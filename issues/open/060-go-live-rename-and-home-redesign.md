@@ -332,3 +332,65 @@ invisible while both are near-white and unreadable the moment a dark scheme sepa
 them. Rather than ship a workbench that goes dark-on-dark in Night, that page stays light
 and explains why. The lock comes off one component at a time, as each is ported to
 `--vd-*` — the nav is already across.
+
+
+## 13 Aug — the infographic never ran, and the console said why twice over
+
+Three findings from QA, two of them ours.
+
+### 1. The infographic step ran for 86 seconds and made no request
+
+`home.js` handed the pipeline `document.createElement('div')` as its infographic
+mount — **a node that was never attached to the document**. The renderer appends
+`<sg-llm-request>` into that mount and waits for it to do the work, and a custom
+element in a DETACHED tree never upgrades: it never connects, never calls
+anything, and the promise it is awaited on never settles. The step sat at
+`running` with nothing behind it. The app page has always passed a real node
+(`#infographic-mount`), which is why this only showed up on the home page.
+
+The mount is now a light-DOM node **slotted into the panel's Infographic tab**
+(`vd-workflow` v0.1.2). Light DOM because it must stay connected across the
+panel's re-renders — the shadow tree is rebuilt on every trace update, and
+`innerHTML` would tear a half-drawn SVG out from under the renderer. And in the
+tab because a 60–90 second image model should be watched where it will be read:
+the tab now exists from the moment a run asks for one, with a line saying what it
+is waiting for.
+
+Gated in `home-workflow.test.mjs` against the scripted OpenRouter the screenshot
+suite uses — the mount is asserted `isConnected`, and an infographic is actually
+drawn. Nothing short of drawing one would have caught this.
+
+A second, latent bug fell out of writing that test: `home.js` read
+`window.__tool.getResults()` **without awaiting it**. A registered action returns
+a promise whether or not it was declared async, so `.summary` was always
+undefined — masked only because the event stream had already supplied the same
+values. `app.js` has always awaited it.
+
+### 2. "Executing inline script violates … script-src 'self'"
+
+The home page's version stamp was an inline `<script>`, written long before that
+page had a CSP. M3 gave it the workbench's policy — no `'unsafe-inline'` — and
+the stamp went dead with nothing failing anywhere a test could see it. It is now
+in `home.js`. Loosening the policy so a version number could print would have
+been the wrong trade, and `tests/unit/csp.test.mjs` now fails the build on any
+inline script in a page whose own CSP forbids it (and checks that both pages
+which reach OpenRouter actually name it in `connect-src`).
+
+### 3. The two 404s are the engine's cost lookup, and they are correct
+
+Read exactly right. `fetchGenerationCostDeferred` (in the **tools** repo, served
+from the engine origin — not ours) waits 2.5s, asks
+`GET /api/v1/generation?id=…`, and on failure waits 2.5s and asks once more.
+OpenRouter's generation row is not queryable immediately, so a 404 on the way is
+expected; the function returns `null` for "unknown", **never zero**, and the cost
+line shows an em-dash rather than a wrong number.
+
+So: harmless, bounded at two requests per generation, and not fixable from this
+repo. Worth raising upstream — a longer first delay would remove the noise, and
+console noise matters because it is where a real error would have to be noticed.
+
+### 4. "Are you going to add it as a tab?"
+
+It already is — Debrief / Transcript / Translation / Infographic, each appearing
+as soon as that artefact exists. The infographic's tab appears *before* it
+exists, because that is the one worth watching.
