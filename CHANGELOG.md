@@ -18,6 +18,8 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+## [v0.1.26](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.25...v0.1.26) — 14 Aug 2026
+
 - **A video goes in, a transcript comes out (issue 065, Dinis)** — the second
   tool: **[/tools/extract-audio/](website/tools/extract-audio/)** pulls the
   soundtrack out of an `.mp4`, `.mov` or `.webm` and hands it to the app. FFmpeg
