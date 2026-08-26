@@ -18,6 +18,21 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+- **A podcast episode or a YouTube link in, a transcript and a short analysis
+  out** — the third tool, **[/tools/transcribe-media/](website/tools/transcribe-media/)**,
+  integrated from a standalone prototype onto the site's own design tokens,
+  nav and page shell. It is the one deliberate exception to "no backend": a
+  podcast feed/episode and a YouTube transcript cannot be fetched from this
+  origin (neither host sends CORS headers for us), so the fetch and the
+  speech-to-text run behind `n8n.itwithus.com` instead of the caller's own
+  OpenRouter key — no key involved and nothing billed either way, stated on
+  the page and in `window.__toolStatus.backend` rather than left implicit.
+  Publishes `window.__tool` synchronously like the other two tools
+  (`transcribe`, `detect`, `getSteps`, `getLast`, `saveLast`). `wa-site-nav`
+  **v0.1.13** adds the Tools submenu entry.
+
+## [v0.1.26](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.25...v0.1.26) — 14 Aug 2026
+
 - **A video goes in, a transcript comes out (issue 065, Dinis)** — the second
   tool: **[/tools/extract-audio/](website/tools/extract-audio/)** pulls the
   soundtrack out of an `.mp4`, `.mov` or `.webm` and hands it to the app. FFmpeg
