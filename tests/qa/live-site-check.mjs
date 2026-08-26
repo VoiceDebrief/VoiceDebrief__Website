@@ -65,7 +65,7 @@ for (const [path, marker] of [['/', 'Getting the audio'], ['/app/', 'wa-drop-zon
                               ['/tools/', 'What makes something a tool here'],
                               ['/tools/text-to-speech/', 'window.__tool'],
                               ['/tools/extract-audio/', 'Extract the audio from a video'],
-                              ['/tools/transcribe-media/', 'Not browser-only, and that is a deliberate exception']]) {
+                              ['/tools/transcribe-media/', 'Podcast &amp; YouTube transcriber']]) {
     const r = await get(path)
     check(`GET ${path} → 200 + expected content`, r.ok && r.text.includes(marker), `status ${r.status}`)
 }

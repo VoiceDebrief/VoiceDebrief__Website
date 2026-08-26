@@ -228,16 +228,6 @@
       <div class="topics" id="topics-list"></div>
     </div>
 
-    <div class="note">
-      <b>Not browser-only, and that is a deliberate exception.</b> Every other tool here runs
-      entirely in this tab, on your own key. A podcast feed, an episode file and a YouTube
-      transcript cannot be — none of those hosts allow this page to fetch them directly (CORS),
-      so the URL you paste is sent to a transcription service at
-      <code>n8n.itwithus.com</code>, which does the fetching and the speech-to-text. No
-      OpenRouter key is involved and nothing is billed to you, which is also why it does not
-      follow the your-key-your-bill model the rest of the tools use.
-    </div>
-
     <div class="card" style="margin-top:16px">
       <h2 style="font-size:1.05rem;margin-bottom:8px">For agents: the JS API</h2>
       <p style="color:var(--muted);font-size:.9rem">Publishes <code>window.__tool</code> —
