@@ -18,6 +18,14 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+## [v0.1.28](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.27...v0.1.28) — 26 Aug 2026
+
+- **[/tools/transcribe-media/](website/tools/transcribe-media/)** sends its
+  requests to a Cloudflare Worker proxy (`voicedebrief-proxy.joeybota.workers.dev`)
+  instead of `n8n.itwithus.com` directly — same paths, domain only. `manifest.json`
+  and the reality doc still name the backend exception; the backend host itself
+  is no longer named on the page or in the client code.
+
 ## [v0.1.27](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.26...v0.1.27) — 26 Aug 2026
 
 - **[/tools/transcribe-media/](website/tools/transcribe-media/)** drops the
