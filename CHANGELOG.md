@@ -18,6 +18,17 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+## [v0.1.27](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.26...v0.1.27) — 26 Aug 2026
+
+- **[/tools/transcribe-media/](website/tools/transcribe-media/)** drops the
+  on-page notes about running through a third-party transcription service and
+  about its JS API. Nothing about how the tool works changed: it still runs
+  through `n8n.itwithus.com` and still publishes `window.__tool` the same way
+  — both remain documented in `manifest.json` and the reality doc, just not
+  on the page itself.
+
+## [v0.1.26](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.25...v0.1.26) — 14 Aug 2026
+
 - **A podcast episode or a YouTube link in, a transcript and a short analysis
   out** — the third tool, **[/tools/transcribe-media/](website/tools/transcribe-media/)**,
   integrated from a standalone prototype onto the site's own design tokens,
@@ -25,13 +36,10 @@ the Updates page is the story. One entry per tag, newest first, grounded in
   podcast feed/episode and a YouTube transcript cannot be fetched from this
   origin (neither host sends CORS headers for us), so the fetch and the
   speech-to-text run behind `n8n.itwithus.com` instead of the caller's own
-  OpenRouter key — no key involved and nothing billed either way, stated on
-  the page and in `window.__toolStatus.backend` rather than left implicit.
-  Publishes `window.__tool` synchronously like the other two tools
-  (`transcribe`, `detect`, `getSteps`, `getLast`, `saveLast`). `wa-site-nav`
-  **v0.1.13** adds the Tools submenu entry.
-
-## [v0.1.26](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.25...v0.1.26) — 14 Aug 2026
+  OpenRouter key — no key involved and nothing billed either way, documented
+  in `window.__toolStatus.backend`. Publishes `window.__tool` synchronously
+  like the other two tools (`transcribe`, `detect`, `getSteps`, `getLast`,
+  `saveLast`). `wa-site-nav` **v0.1.13** adds the Tools submenu entry.
 
 - **A video goes in, a transcript comes out (issue 065, Dinis)** — the second
   tool: **[/tools/extract-audio/](website/tools/extract-audio/)** pulls the
