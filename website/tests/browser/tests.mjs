@@ -18,7 +18,7 @@ import { validateWorkflow, pathFor, pathUsd, maxUsd, runWorkflow } from '../../a
 import { ORIGIN, fmtGbp, USD_TO_GBP } from '../../app/config.js'
 import { sniffAudio, normaliseAudioFile } from '../../app/audio-normalise.js'
 import { debugStore } from '../../app/debug-store.js'
-import '../../components/wa-site-nav/v0/v0.1/v0.1.12/wa-site-nav.js'
+import '../../components/wa-site-nav/v0/v0.1/v0.1.13/wa-site-nav.js'
 import '../../components/wa-locale-picker/v0/v0.1/v0.1.4/wa-locale-picker.js'
 import { newsScript, speak, wirePage, publishApi, bytesToBase64, VOICES } from '../../tools/text-to-speech/tts-tool.js'
 import { extract, publishApi as publishExtractApi } from '../../tools/extract-audio/extract-tool.js'
@@ -166,7 +166,7 @@ QUnit.module('debug-store — real localStorage round-trips', hooks => {
 
 /* ── wa-site-nav as a REAL custom element (issue 048) ───────────────────── */
 QUnit.module('wa-site-nav — real custom-element upgrade', () => {
-    QUnit.test('two-level menu: two primary links, four groups, twenty grouped pages, none a fragment (v0.1.12)', assert => {
+    QUnit.test('two-level menu: two primary links, four groups, twenty-one grouped pages, none a fragment (v0.1.13)', assert => {
         const el = document.createElement('wa-site-nav')
         el.setAttribute('badge', 'BETA')
         document.getElementById('qunit-fixture').appendChild(el)
@@ -178,8 +178,8 @@ QUnit.module('wa-site-nav — real custom-element upgrade', () => {
             'App and What it costs stay primary')
         assert.strictEqual(sr.querySelectorAll('nav.main .group').length, 4,
             'Library + Tools + News + Engineering groups (Tools added, issue 064)')
-        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 20,
-            '5 library + 3 tools + 3 news + 9 engineering pages in the dropdowns')
+        assert.strictEqual(sr.querySelectorAll('nav.main .group .menu a').length, 21,
+            '5 library + 4 tools + 3 news + 9 engineering pages in the dropdowns')
         // Every Library entry is a PAGE since v0.1.12 — the three home-page
         // fragments it used to carry sent "How it works" to the top of the page
         // the reader was already on (Dinis, from QA).

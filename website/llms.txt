@@ -40,6 +40,8 @@ so an agent can do what a person does there without a UI.
 - [Text to speech — API skill](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__api.md): every action with params, returns, typed errors and a Playwright example. `window.__tool` is assigned while the page's module evaluates — before load completes and without waiting on any network — and `window.__toolStatus` always states the mode and any engine error. Wait with `waitForFunction(() => window.__tool)`, not on `readyState`. Audio comes back as base64, because a Blob does not survive `page.evaluate`
 - [Text to speech — human guide](https://voicedebrief.ai/tools/text-to-speech/skills/SKILL__human.md)
 - [Text to speech — action manifest](https://voicedebrief.ai/tools/text-to-speech/manifest.json)
+- [Podcast & YouTube transcriber](https://voicedebrief.ai/tools/transcribe-media/): a podcast episode or YouTube link in, a transcript, summary, key points and topics out. The one tool here that is NOT browser-only — a podcast feed/episode and a YouTube transcript cannot be fetched from this origin (CORS), so the fetch and speech-to-text run behind `n8n.itwithus.com` instead of the caller's OpenRouter key. No cost either way; the page states the exception plainly
+- [Podcast & YouTube transcriber — action manifest](https://voicedebrief.ai/tools/transcribe-media/manifest.json): `transcribe`, `detect`, `getSteps`, `getLast`, `saveLast`; `window.__toolStatus.backend` names the third-party host and why it is there
 
 ## Live state, machine-readable
 

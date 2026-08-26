@@ -1,0 +1,61 @@
+{
+  "id": "transcribe-media",
+  "name": "Podcast & YouTube transcriber",
+  "slug": "transcribe-media",
+  "description": "A podcast episode or a YouTube link in, a transcript, a summary, key points and topics out. The one tool here that is NOT browser-only: fetching a podcast feed/episode and a YouTube transcript from this origin is refused by CORS, so the fetch and the speech-to-text run behind n8n.itwithus.com. No OpenRouter key, nothing billed to the caller.",
+  "icon": "🎙",
+  "version": "0.1.0",
+  "status": "beta",
+  "category": "media",
+  "no_backend": false,
+  "backend_exception": {
+    "why": "podcast RSS/MP3 hosts and YouTube do not send Access-Control-Allow-Origin for this origin, so the browser cannot fetch them directly",
+    "origin": "https://n8n.itwithus.com"
+  },
+  "keywords": ["podcast", "youtube", "transcript", "transcription", "summary", "key points", "topics"],
+  "locale": "en-gb",
+  "api": {
+    "published_as": "window.__tool (assigned during module evaluation)",
+    "ready_event": "tool:ready",
+    "actions": [
+      {
+        "name": "transcribe",
+        "async": true,
+        "params": { "url": "string (required) — a podcast page/RSS/MP3 URL, or a YouTube URL" },
+        "returns": "{ transcript, title, channel, wordCount, thumbnail, sourceLabel, source, url, analysis, parsed: { summary, keyPoints, topics }, tookMs }"
+      },
+      {
+        "name": "detect",
+        "async": false,
+        "params": { "url": "string" },
+        "returns": "{ mode: 'podcast'|'youtube'|null, supported, reason?, platform?, videoId? }"
+      },
+      {
+        "name": "getSteps",
+        "async": false,
+        "params": { "mode": "'podcast'|'youtube'" },
+        "returns": "{ steps: string[] }"
+      },
+      {
+        "name": "getLast",
+        "async": false,
+        "returns": "the last transcribe() result, or null"
+      },
+      {
+        "name": "saveLast",
+        "async": false,
+        "params": { "filename": "optional" },
+        "returns": "{ filename, bytes } — triggers a real browser download"
+      }
+    ],
+    "events": ["transcribe:done"],
+    "errors": [
+      "no-url", "bad-youtube-url", "unsupported-platform",
+      "transcribe-http", "transcribe-timeout", "no-transcript", "no-result"
+    ],
+    "status_probe": "window.__toolStatus — { ready, mode, backend: { origin, why } }; always present"
+  },
+  "skills": {
+    "api": null
+  }
+}

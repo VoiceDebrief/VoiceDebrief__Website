@@ -495,6 +495,7 @@ def build(out_dir, check_only=False):
              # them one is a landing page in its own right, not an appendix.
              ('/openrouter-key/', None), ('/user-guide/', None),
              ('/library/', None), ('/tools/', None), ('/tools/extract-audio/', None), ('/tools/text-to-speech/', None),
+             ('/tools/transcribe-media/', None),
              ('/engineering/', None), ('/engineering/pipeline/', None),
              ('/engineering/testing/', None), ('/engineering/docs/', None),
              ('/engineering/security/', None), ('/engineering/team/', None),

@@ -64,7 +64,8 @@ for (const [path, marker] of [['/', 'Getting the audio'], ['/app/', 'wa-drop-zon
                               ['/design/', 'design candidates'],
                               ['/tools/', 'What makes something a tool here'],
                               ['/tools/text-to-speech/', 'window.__tool'],
-                              ['/tools/extract-audio/', 'Extract the audio from a video']]) {
+                              ['/tools/extract-audio/', 'Extract the audio from a video'],
+                              ['/tools/transcribe-media/', 'Not browser-only, and that is a deliberate exception']]) {
     const r = await get(path)
     check(`GET ${path} → 200 + expected content`, r.ok && r.text.includes(marker), `status ${r.status}`)
 }
@@ -102,7 +103,7 @@ for (const ref of stamped) {
 // 4. The app's runtime fetches: prompts, samples, manifest.
 for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/llms.txt', '/sitemap.xml', '/robots.txt',
-                    '/components/wa-site-nav/v0/v0.1/v0.1.12/wa-site-nav.js',
+                    '/components/wa-site-nav/v0/v0.1/v0.1.13/wa-site-nav.js',
                     '/components/vd-workflow/v0/v0.1/v0.1.1/vd-workflow.js',
                     '/vd-tokens.css', '/vd-theme.js', '/home.js',
                     '/tools/text-to-speech/tts-tool.js', '/tools/text-to-speech/manifest.json',
@@ -111,6 +112,8 @@ for (const path of ['/app/manifest.json', '/versions/versions.json',
                     '/shared/handoff.js',
                     '/tools/text-to-speech/skills/SKILL__api.md',
                     '/tools/text-to-speech/skills/SKILL__human.md',
+                    '/tools/transcribe-media/transcribe-tool.js', '/tools/transcribe-media/transcribe-page.js',
+                    '/tools/transcribe-media/manifest.json',
                     '/app/skills/SKILL__api.md', '/app/workflows/standard.json',
                     '/engineering/status.json', '/engineering/issues.json', '/engineering/docs.json',
                     '/engineering/concepts/concepts.json',

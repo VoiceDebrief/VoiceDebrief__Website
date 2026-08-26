@@ -51,7 +51,7 @@
   footer a{color:var(--vd-km)}
   a{color:var(--accent-2)}
 </style>
-<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.12/wa-site-nav.js"></script>
+<script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.13/wa-site-nav.js"></script>
 </head>
 <body>
 <wa-site-nav></wa-site-nav>
@@ -89,6 +89,15 @@
            generation, not estimated.</p>
         <p class="api"><a href="text-to-speech/skills/SKILL__api.md">JS API</a> ·
            <a href="text-to-speech/manifest.json">manifest.json</a></p></div>
+      <div class="card"><span class="tag">MEDIA</span>
+        <h3><a href="transcribe-media/">🎙 Podcast &amp; YouTube transcriber</a></h3>
+        <p>Paste a podcast episode or a YouTube link and get the transcript back, plus a
+           summary, key points and topics.</p>
+        <p><b>Not browser-only, on purpose:</b> a podcast feed and a YouTube transcript can't
+           be fetched from this origin (CORS), so this one runs through a transcription
+           service instead of your own key. No cost to you either way — see the note on the
+           page for exactly what that means.</p>
+        <p class="api"><a href="transcribe-media/manifest.json">manifest.json</a></p></div>
     </div>
 
     <div class="kicker later">Already elsewhere on this site</div>
@@ -111,8 +120,10 @@
       <h2>What makes something a tool here</h2>
       <ul>
         <li><b>One job, one page.</b> If it needs a tour, it is a product, not a tool.</li>
-        <li><b>No backend.</b> Everything runs in the browser — there is no server here to
-            send your text, your audio or your key to.</li>
+        <li><b>No backend, with one named exception.</b> Everything here runs in the browser —
+            except the podcast &amp; YouTube transcriber, which cannot: neither source sends CORS
+            headers for this origin, so it runs through a transcription service instead. It is
+            the only tool that does, and it says so on its own page.</li>
         <li><b>Your key, your bill.</b> Anything that costs money uses your own OpenRouter
             key, kept in this browser and sent only to OpenRouter.</li>
         <li><b>An API, not just a UI.</b> Every tool publishes <code>window.__tool</code>
