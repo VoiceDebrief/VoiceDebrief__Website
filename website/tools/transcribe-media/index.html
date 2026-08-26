@@ -15,9 +15,9 @@
 <!-- The one tool here that is NOT browser-only (see the note below the form):
      a podcast feed, an episode file and a YouTube transcript cannot be fetched
      from this origin — none of those hosts send CORS headers for us — so the
-     fetch and the speech-to-text happen behind n8n.itwithus.com. This CSP
-     names exactly that host and nothing else. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' https://n8n.itwithus.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://img.youtube.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+     fetch and the speech-to-text happen behind voicedebrief-proxy.joeybota.workers.dev.
+     This CSP names exactly that host and nothing else. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' https://voicedebrief-proxy.joeybota.workers.dev; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://img.youtube.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script type="module" src="/components/wa-site-nav/v0/v0.1/v0.1.13/wa-site-nav.js"></script>
 <link rel="stylesheet" href="/vd-tokens.css">
 <script src="/vd-theme.js"></script>

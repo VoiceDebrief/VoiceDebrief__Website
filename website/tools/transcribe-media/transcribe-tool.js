@@ -24,12 +24,12 @@
 
 export const ENDPOINTS = {
     podcast: {
-        submit: 'https://n8n.itwithus.com/webhook/podcast-submit',
-        status: 'https://n8n.itwithus.com/webhook/podcast-status',
+        submit: 'https://voicedebrief-proxy.joeybota.workers.dev/webhook/podcast-submit',
+        status: 'https://voicedebrief-proxy.joeybota.workers.dev/webhook/podcast-status',
     },
     youtube: {
-        transcript: 'https://n8n.itwithus.com/webhook/youtube-transcript-raw-v2',
-        analyze:    'https://n8n.itwithus.com/webhook/youtube-analyze',
+        transcript: 'https://voicedebrief-proxy.joeybota.workers.dev/webhook/youtube-transcript-raw-v2',
+        analyze:    'https://voicedebrief-proxy.joeybota.workers.dev/webhook/youtube-analyze',
     },
 }
 
