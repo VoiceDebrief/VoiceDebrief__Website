@@ -4,7 +4,7 @@
 
 
 **maintained by** Librarian
-**updated** 2026-08-26
+**updated** 2026-09-06
 **rule** If it is not in this document, it does not exist. Proposed items are labelled
 `PROPOSED — does not exist yet`.
 
@@ -115,6 +115,8 @@
 | **The infographic overflowed its own tab** (Dinis, from QA): the image model returns a drawing 1024px+ wide and it ran out of the panel. The mount is LIGHT DOM slotted into the shadow tree, and `::slotted()` matches the assigned node but never its descendants — so `vd-workflow`'s own `max-width:100%` reached the mount and not the `<img>` inside it. The rule belongs on the page that owns the node (`/app/` has carried the equivalent since M2; the home page had nothing). Gated by measurement: a 1600px drawing injected the way `infographic.js` delivers one, measured against the pane — 1600px painted before the fix, 508px after | `website/index.html`, `tests/integration/home-workflow.test.mjs` | 2026-08-13 |
 
 | **Podcast & YouTube transcriber, the third tool** (an existing prototype, integrated into the site) at `/tools/transcribe-media/`: a podcast episode or YouTube link in, a transcript, summary, key points and topics out. **This is the one deliberate exception to the "no backend" rule**: a podcast RSS feed/episode file and a YouTube transcript cannot be fetched from `voicedebrief.ai` — neither host sends `Access-Control-Allow-Origin` for us — so the fetch and the speech-to-text run behind `n8n.itwithus.com` instead of the caller's own OpenRouter key. No key is involved and nothing is billed to the visitor either way; the page states the exception in its own words, and `website/tools/index.html`'s rules list now says "no backend, with one named exception" rather than implying it universally. Restyled from a standalone prototype onto the site's own `/vd-tokens.css` tokens, `wa-site-nav`, page-head/footer shell and CSP pattern (`connect-src` names only `n8n.itwithus.com`; no inline `<script>`, so `tests/unit/csp.test.mjs` still holds). Publishes `window.__tool` synchronously (`transcribe`, `detect`, `getSteps`, `getLast`, `saveLast`); `window.__toolStatus.backend` names the third-party host and why it exists, so an agent reading the status probe is not left to infer it. `wa-site-nav` **v0.1.13** adds the Tools submenu entry (21 grouped pages, was 20); `tests/qa/live-site-check.mjs`, `scripts/build_content.py`'s sitemap page list and `website/llms.txt` all updated in the same commit | `website/tools/transcribe-media/`, `website/components/wa-site-nav/v0/v0.1/v0.1.13/` | 2026-08-26 |
+
+| **WhatsApp Bot — voice note transcription, summary & topics** (external system, not part of this repo's codebase): an n8n workflow that receives WhatsApp Cloud API webhooks, verifies Meta's handshake, and on an incoming voice note downloads the media, transcribes it via Groq (Whisper-style), then calls Groq again to summarize the transcript and extract topics — replying on WhatsApp with the summary, then the full transcript as a follow-up. Non-audio messages get a text hint to send a voice note instead. Deduplicates retried webhook deliveries (Data Table lookup) and replies 200 OK immediately so Meta doesn't retry while processing continues; any failure in the fetch/transcribe/summarize chain routes to a shared fallback-error reply. Currently published/active; exposed via MCP. Not integrated with voicedebrief.ai's own pipeline or codebase | external (n8n workflow; not hosted in this repo) | 2026-09-06 |
 
 All rows above are committed and pushed in-session on their stated date.
 
