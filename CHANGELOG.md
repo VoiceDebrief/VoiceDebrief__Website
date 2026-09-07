@@ -18,6 +18,10 @@ the Updates page is the story. One entry per tag, newest first, grounded in
 
 ## Unreleased (next tag)
 
+## [v0.1.30](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.29...v0.1.30) — 7 Sep 2026
+
+- Internal: the v0.1.29 release record written — `content/versions/v0.1.29.md` was missing, blocking dev from deploying. v0.1.29 itself shipped no user-visible change. Nothing user-visible shipped in this tag either.
+
 ## [v0.1.29](https://github.com/sgraph-ai/SGraph-AI__SaaS__WhatsApp__Audio__Transcription/compare/v0.1.28...v0.1.29) — 26 Aug 2026
 
 - Internal: the v0.1.27 and v0.1.28 release records restored — `content/versions/v0.1.27.md` had been deleted directly on GitHub, blocking dev from deploying. Nothing user-visible shipped in this tag itself.
